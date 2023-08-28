@@ -71,7 +71,7 @@ class Paginator implements PaginatorInterface, JsonSerializable
         }
 
         if (!str_contains($urlTemplate, '{page}')) {
-            throw new InvalidValueException(['`:template` url must contain {page}', 'template' => $urlTemplate]);
+            throw new InvalidValueException(['`{template}` url must contain {page}', 'template' => $urlTemplate]);
         }
 
         $str = PHP_EOL . '<ul class="pagination">' . PHP_EOL;

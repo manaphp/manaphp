@@ -29,7 +29,7 @@ class Gd extends AbstractImage
 
         $this->file = realpath($this->alias->resolve($file));
         if (!$this->file) {
-            throw new FileNotFoundException(['`:file` file is not exists', 'file' => $file]);
+            throw new FileNotFoundException(['`{file}` file is not exists', 'file' => $file]);
         }
 
         list($this->width, $this->height, $type) = getimagesize($this->file);
@@ -197,7 +197,7 @@ class Gd extends AbstractImage
         } elseif ($ext === 'png') {
             imagepng($this->image, $file);
         } else {
-            throw new PreconditionException(['`:extension` is not supported by Installed GD', 'extension' => $ext]);
+            throw new PreconditionException(['`{extension}` is not supported by Installed GD', 'extension' => $ext]);
         }
     }
 

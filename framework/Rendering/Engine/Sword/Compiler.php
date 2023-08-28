@@ -156,7 +156,7 @@ class Compiler
 
         if (($str = @file_get_contents($source)) === false) {
             $error = error_get_last()['message'] ?? '';
-            throw new InvalidArgumentException(['read `%s` sword source file failed: %s', $source, $error]);
+            throw new InvalidArgumentException(['read `{1}` sword source file failed: {2}', $source, $error]);
         }
 
         $result = $this->compileString($str);
@@ -165,7 +165,7 @@ class Compiler
 
         if (file_put_contents($compiled, $result, LOCK_EX) === false) {
             $error = error_get_last()['message'] ?? '';
-            throw new RuntimeException(['write `%s` compiled file file failed: %s', $compiled, $error]);
+            throw new RuntimeException(['write `{1}` compiled file file failed: {2}', $compiled, $error]);
         }
 
         return $this;

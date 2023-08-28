@@ -176,7 +176,7 @@ class Route implements RouteInterface
         } else {
             $r = preg_match($this->compiled, $uri, $matches);
             if ($r === false) {
-                throw new InvalidFormatException(['`%s` is invalid for `%s`', $this->compiled, $this->pattern]);
+                throw new InvalidFormatException(['`{1}` is invalid for `{2}`', $this->compiled, $this->pattern]);
             } elseif ($r === 1) {
                 $parts = $this->paths;
 

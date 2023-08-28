@@ -32,16 +32,16 @@ class Imagick extends AbstractImage
 
         $this->file = realpath($this->alias->resolve($file));
         if (!$this->file) {
-            throw new InvalidValueException(['`:file` file is not exists', 'file' => $file]);
+            throw new InvalidValueException(['`{file}` file is not exists', 'file' => $file]);
         }
 
         $this->image = new \Imagick();
         if (!$this->image->readImage($this->file)) {
-            throw new InvalidFormatException(['Imagick::readImage `:file` failed', 'file' => $file]);
+            throw new InvalidFormatException(['Imagick::readImage `{file}` failed', 'file' => $file]);
         }
 
         if ($this->image->getNumberImages() !== 1) {
-            throw new PreconditionException(['not support multiple iterations: `:file`', 'file' => $file]);
+            throw new PreconditionException(['not support multiple iterations: `{file}`', 'file' => $file]);
         }
 
         if (!$this->image->getImageAlphaChannel()) {
@@ -136,7 +136,7 @@ class Imagick extends AbstractImage
         }
 
         if ($watermark->getNumberImages() !== 1) {
-            throw new PreconditionException(['not support multiple iterations: `:file`', 'file' => $file]);
+            throw new PreconditionException(['not support multiple iterations: `{file}`', 'file' => $file]);
         }
 
         if (!$this->image->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $offsetX, $offsetY)) {
@@ -170,7 +170,7 @@ class Imagick extends AbstractImage
         }
 
         if (!$this->image->writeImage($file)) {
-            throw new RuntimeException(['save `:file` image file failed', 'file' => $file]);
+            throw new RuntimeException(['save `{file}` image file failed', 'file' => $file]);
         }
     }
 

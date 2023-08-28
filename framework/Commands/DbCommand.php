@@ -332,7 +332,7 @@ class DbCommand extends Command
         if ($connection) {
             $db = $this->connector->get($connection);
             if (!in_array($table, $db->getTables(), true)) {
-                throw new Exception(['`:table` is not exists', 'table' => $table]);
+                throw new Exception(['`{table}` is not exists', 'table' => $table]);
             }
         } else {
             foreach ($this->getConnections() as $s) {
@@ -343,7 +343,7 @@ class DbCommand extends Command
                 }
             }
             if (!$connection) {
-                throw new Exception(['`:table` is not found in connections`', 'table' => $table]);
+                throw new Exception(['`{table}` is not found in connections`', 'table' => $table]);
             }
         }
 

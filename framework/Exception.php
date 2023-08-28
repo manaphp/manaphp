@@ -3,39 +3,33 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use Stringable;
+
 class Exception extends \Exception
 {
-    protected array $bind = [];
     protected array $json = [];
 
-    public function __construct(string|array|\Exception $message = '', int $code = 0, \Exception $previous = null)
+    public function __construct(string|Stringable|array $message = '', int $code = 0, \Exception $previous = null)
     {
-        if ($message instanceof \Exception) {
-            $code = $message->getCode();
-            $previous = $message;
-            $message = $message->getMessage();
-        } elseif (is_array($message)) {
-            if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
-                $message = sprintf(...$message);
-            } else {
-                $this->bind = $message;
-                $message = $message[0];
-                unset($this->bind[0]);
+        if (is_array($message)) {
+            $replaces = [];
 
-                $tr = [];
-                foreach ($this->bind as $k => $v) {
-                    if (is_array($v)) {
-                        $v = implode(', ', $v);
-                    } elseif ($v === null || is_bool($v)) {
-                        /** @noinspection JsonEncodingApiUsageInspection */
-                        $v = json_encode($v);
+            preg_match_all('#{(\w+)}#', $message[0], $matches);
+            foreach ($matches[1] as $key) {
+                if (($val = $message[$key] ?? null) !== null) {
+                    if (is_bool($val)) {
+                        $val = $val ? 'true' : 'false';
+                    } elseif (is_object($val)) {
+                        $val = $val instanceof Stringable ? (string)$val : json_stringify($val);
                     }
 
-                    $tr[':' . $k] = $v;
+                    $replaces['{' . $key . '}'] = $val;
                 }
-
-                $message = strtr($message, $tr);
             }
+
+            $message = strtr($message[0], $replaces);
+        } elseif ($message instanceof Stringable) {
+            $message = (string)$message;
         }
 
         parent::__construct($message, $code, $previous);
@@ -70,10 +64,5 @@ class Exception extends \Exception
             $message = $code === 500 ? 'Server Internal Error' : $this->getMessage();
             return ['code' => $code === 200 ? -1 : $code, 'message' => $message];
         }
-    }
-
-    public function getBind(): array
-    {
-        return $this->bind;
     }
 }

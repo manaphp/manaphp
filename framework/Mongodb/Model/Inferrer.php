@@ -69,7 +69,7 @@ class Inferrer implements InferrerInterface
             if ($primaryKey = $this->primaryKeyInternal($model)) {
                 return $this->primaryKey[$model] = $primaryKey;
             } else {
-                throw new NotImplementedException(['Primary key of `%s` model can not be inferred', $model]);
+                throw new NotImplementedException(['Primary key of `{1}` model can not be inferred', $model]);
             }
         } else {
             return $primaryKey;
@@ -114,7 +114,7 @@ class Inferrer implements InferrerInterface
 
             $mongodb = $this->connector->get($connection);
             if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
-                throw new RuntimeException(['`:collection` collection has none record', 'collection' => $collection]);
+                throw new RuntimeException(['`{collection}` collection has none record', 'collection' => $collection]);
             }
 
             $types = [];
@@ -136,7 +136,7 @@ class Inferrer implements InferrerInterface
                     }
                     $types[$field] = 'objectid';
                 } else {
-                    throw new RuntimeException(['`:field` field value type can not be infer.', 'field' => $field]);
+                    throw new RuntimeException(['`{field}` field value type can not be infer.', 'field' => $field]);
                 }
             }
 

@@ -80,7 +80,7 @@ class Curl implements EngineInterface
                     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
                     break;
                 default:
-                    throw new NotSupportedException(['`:method` method is not support', 'method' => $request->method]);
+                    throw new NotSupportedException(['`{method}` method is not support', 'method' => $request->method]);
             }
 
             $timeout = $request->options['timeout'];
@@ -99,7 +99,7 @@ class Curl implements EngineInterface
                 } elseif ($scheme === 'sock5') {
                     curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
                 } else {
-                    throw new NotSupportedException(['`%s` scheme of `%s` proxy is unknown', $scheme, $proxy]);
+                    throw new NotSupportedException(['`{1}` scheme of `{2}` proxy is unknown', $scheme, $proxy]);
                 }
 
                 curl_setopt($curl, CURLOPT_PROXYPORT, $parts['port']);
@@ -141,7 +141,7 @@ class Curl implements EngineInterface
             }
 
             if ($errno) {
-                throw new ConnectionException(['connect failed: `%s` %s', $request->url, curl_error($curl)]);
+                throw new ConnectionException(['connect failed: `{1}` {2}', $request->url, curl_error($curl)]);
             }
 
             $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);

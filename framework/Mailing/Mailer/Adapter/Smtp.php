@@ -96,13 +96,14 @@ class Smtp extends AbstractMailer
 
         $uri = ($this->scheme === 'smtp' ? '' : "$this->scheme://") . $this->host;
         if (!$socket = fsockopen($uri, $this->port, $errno, $errstr, $this->timeout)) {
-            throw new ConnectionException(['connect to `:1::2` mailer server failed: :3', $uri, $this->port, $errstr]);
+            throw new ConnectionException(['connect to `{1}:{2}` mailer server failed: {3}', $uri, $this->port, $errstr]
+            );
         }
 
         $response = fgets($socket);
         list($code,) = explode(' ', $response, 2);
         if ($code !== '220') {
-            throw new ConnectionException(['connection protocol is not be recognized: %s', $response]);
+            throw new ConnectionException(['connection protocol is not be recognized: {1}', $response]);
         }
 
         $context->file = $this->alias->resolve('@runtime/mail/{ymd}/{ymd_His_}{16}.log');
@@ -132,7 +133,7 @@ class Smtp extends AbstractMailer
 
         $code = (int)$code;
         if ($expected && !in_array($code, $expected, true)) {
-            throw new BadResponseException(['response is not expected: :response', 'response' => $response]);
+            throw new BadResponseException(['response is not expected: {response}', 'response' => $response]);
         }
 
         return [$code, $message];
@@ -145,7 +146,7 @@ class Smtp extends AbstractMailer
 
         if ($data !== null) {
             if (fwrite($context->socket, $data) === false) {
-                throw new TransmitException(['send data failed: :uri', 'uri' => $this->uri]);
+                throw new TransmitException(['send data failed: {uri}', 'uri' => $this->uri]);
             }
             file_put_contents($context->file, $data, FILE_APPEND);
         }
@@ -153,7 +154,7 @@ class Smtp extends AbstractMailer
         file_put_contents($context->file, PHP_EOL, FILE_APPEND);
 
         if (fwrite($context->socket, "\r\n") === false) {
-            throw new TransmitException(['send data failed: :uri', 'uri' => $this->uri]);
+            throw new TransmitException(['send data failed: {uri}', 'uri' => $this->uri]);
         }
 
         return $this;
@@ -165,7 +166,7 @@ class Smtp extends AbstractMailer
         $context = $this->getContext();
 
         if (($str = fgets($context->socket)) === false) {
-            throw new TransmitException(['receive data failed: :uri', 'uri' => $this->uri]);
+            throw new TransmitException(['receive data failed: {uri}', 'uri' => $this->uri]);
         }
 
         file_put_contents($context->file, str_replace("\r\n", PHP_EOL, $str), FILE_APPEND);
@@ -209,7 +210,7 @@ class Smtp extends AbstractMailer
         foreach ($attachments as $attachment) {
             $file = $this->alias->resolve($attachment['file']);
             if (!is_file($file)) {
-                throw new InvalidValueException(['`:file` attachment file is not exists', 'file' => $file]);
+                throw new InvalidValueException(['`{file}` attachment file is not exists', 'file' => $file]);
             }
 
             $this->writeLine()
@@ -229,7 +230,7 @@ class Smtp extends AbstractMailer
     {
         foreach ($embeddedFiles as $embeddedFile) {
             if (!is_file($file = $this->alias->resolve($embeddedFile['file']))) {
-                throw new InvalidValueException(['`:file` inline file is not exists', 'file' => $file]);
+                throw new InvalidValueException(['`{file}` inline file is not exists', 'file' => $file]);
             }
             $this->writeLine()
                 ->writeLine("--$boundary")
@@ -278,11 +279,11 @@ class Smtp extends AbstractMailer
 
             list($code, $msg) = $this->transmit(base64_encode($this->username));
             if ($code !== 334) {
-                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->uri, $code, $msg]);
+                throw new AuthenticationException(['authenticate with `{1}` failed: {2} {3}', $this->uri, $code, $msg]);
             }
             list($code, $msg) = $this->transmit(base64_encode($this->password));
             if ($code !== 235) {
-                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->uri, $code, $msg]);
+                throw new AuthenticationException(['authenticate with `{1}` failed: {2} {3}', $this->uri, $code, $msg]);
             }
         }
 

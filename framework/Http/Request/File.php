@@ -61,19 +61,19 @@ class File implements FileInterface, JsonSerializable
         if ($allowedExtensions !== '*') {
             $extension = pathinfo($dst, PATHINFO_EXTENSION);
             if (!$extension || preg_match("#\b$extension\b#", $allowedExtensions) !== 1) {
-                throw new FileException(['`:extension` file type is not allowed upload', 'extension' => $extension]);
+                throw new FileException(['`{extension}` file type is not allowed upload', 'extension' => $extension]);
             }
         }
 
         if (($error = $this->file['error']) !== UPLOAD_ERR_OK) {
-            throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: :error', 'error' => $error]);
+            throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: {error}', 'error' => $error]);
         }
 
         if (LocalFS::fileExists($dst)) {
             if ($overwrite) {
                 LocalFS::fileDelete($dst);
             } else {
-                throw new FileException(['`:file` file already exists', 'file' => $dst]);
+                throw new FileException(['`{file}` file already exists', 'file' => $dst]);
             }
         }
 
@@ -84,13 +84,13 @@ class File implements FileInterface, JsonSerializable
         } else {
             if (!move_uploaded_file($this->file['tmp_name'], $this->alias->resolve($dst))) {
                 $error = error_get_last()['message'] ?? '';
-                throw new FileException(['move_uploaded_file to `%s` failed: %s', $dst, $error]);
+                throw new FileException(['move_uploaded_file to `{1}` failed: {2}', $dst, $error]);
             }
         }
 
         if (!chmod($this->alias->resolve($dst), 0644)) {
             $error = error_get_last()['message'] ?? '';
-            throw new FileException(['chmod `%s` destination failed: %s', $dst, $error]);
+            throw new FileException(['chmod `{1}` destination failed: {2}', $dst, $error]);
         }
     }
 

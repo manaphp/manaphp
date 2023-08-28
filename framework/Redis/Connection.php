@@ -73,16 +73,16 @@ class Connection
         $persistent_id = md5($uri);
         if ($persistent) {
             if (!@$redis->pconnect($host, (int)$port, $timeout, $persistent_id)) {
-                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $uri]);
+                throw new ConnectionException(['connect to `{uri}` failed', 'uri' => $uri]);
             }
         } else {
             if (!@$redis->connect($host, (int)$port, $timeout)) {
-                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $uri]);
+                throw new ConnectionException(['connect to `{uri}` failed', 'uri' => $uri]);
             }
         }
 
         if (($auth = $query['auth'] ?? '') !== '' && !$redis->auth($auth)) {
-            throw new AuthException(['`:auth` auth is wrong.', 'auth' => $auth]);
+            throw new AuthException(['`{auth}` auth is wrong.', 'auth' => $auth]);
         }
 
         return $redis;
@@ -123,7 +123,7 @@ class Connection
             }
 
             if ($db !== 0 && !$redis->select($db)) {
-                throw new RuntimeException(['select `:db` db failed', 'db' => $db]);
+                throw new RuntimeException(['select `{db}` db failed', 'db' => $db]);
             }
 
             if (($read_timeout = $query['read_timeout'] ?? null) !== null) {

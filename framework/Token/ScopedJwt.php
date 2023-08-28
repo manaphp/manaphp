@@ -44,7 +44,7 @@ class ScopedJwt implements ScopedJwtInterface
         }
 
         if ($claims['scope'] !== $scope) {
-            throw new ScopeException(['`%s` is not equal `%s`', $claims['scope'], $scope]);
+            throw new ScopeException(['`{1}` is not equal `{2}`', $claims['scope'], $scope]);
         }
 
         if ($verify) {

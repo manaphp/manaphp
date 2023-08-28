@@ -77,7 +77,7 @@ class ControllerManager implements ControllerManagerInterface
                 return "/$controller/$action";
             }
         } else {
-            throw new MisuseException(['invalid controller `:controller`', 'controller' => $controllerPath]);
+            throw new MisuseException(['invalid controller `{controller}`', 'controller' => $controllerPath]);
         }
     }
 }

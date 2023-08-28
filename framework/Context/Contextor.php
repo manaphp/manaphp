@@ -37,7 +37,7 @@ class Contextor implements ContextorInterface
     public function makeContext(object $object)
     {
         if (($context = $this->findContext($object)) === null) {
-            throw new Exception(['`%s` context class is not exists', $object::class . 'Context']);
+            throw new Exception(['`{1}` context class is not exists', $object::class . 'Context']);
         }
 
         return new $context();

@@ -174,7 +174,7 @@ class Authorization implements AuthorizationInterface
             $authorize = $attribute->newInstance();
 
             if ($authorize->role !== null && str_starts_with($authorize->role, '@')) {
-                throw new MisuseException(['Too many indirect refer: %sAction', $action]);
+                throw new MisuseException(['Too many indirect refer: {1}Action', $action]);
             }
         }
 
@@ -192,7 +192,7 @@ class Authorization implements AuthorizationInterface
         if (str_contains($permission, '/')) {
             if (!str_starts_with($permission, '/')) {
                 if (($area = $this->dispatcher->getArea()) === null) {
-                    throw new MisuseException(['permission is not start with /: %s', $permission]);
+                    throw new MisuseException(['permission is not start with /: {1}', $permission]);
                 } else {
                     $permission = Str::snakelize($area) . "/$permission";
                 }

@@ -116,7 +116,7 @@ class Dispatcher implements DispatcherInterface
         $method = $action . 'Action';
 
         if (!method_exists($controller, $method)) {
-            throw new NotFoundActionException(['`%s::%s` method does not exist', $controller::class, $method]);
+            throw new NotFoundActionException(['`{1}::{2}` method does not exist', $controller::class, $method]);
         }
 
         $this->eventDispatcher->dispatch(new RequestAuthorizing($this, $controller, $action));
@@ -181,7 +181,7 @@ class Dispatcher implements DispatcherInterface
         }
 
         if (!class_exists($controllerClassName)) {
-            throw new NotFoundControllerException(['`%s` class cannot be loaded', $controllerClassName]);
+            throw new NotFoundControllerException(['`{1}` class cannot be loaded', $controllerClassName]);
         }
 
         $controllerInstance = $this->container->get($controllerClassName);

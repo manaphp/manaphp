@@ -116,7 +116,7 @@ class Query extends AbstractQuery
             $this->conditions[] = $normalizedField . $operator . ':' . $bind_key;
             $this->bind[$bind_key] = $value;
         } else {
-            throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
+            throw new MisuseException(['unknown `{operator}` operator', 'operator' => $operator]);
         }
 
         return $this;

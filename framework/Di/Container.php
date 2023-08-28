@@ -31,7 +31,7 @@ class Container implements ContainerInterface
     public function set(string $id, mixed $definition): static
     {
         if (isset($this->instances[$id])) {
-            throw new MisuseException(['it\'s too late to set(): `%s` instance has been created', $id]);
+            throw new MisuseException(['it\'s too late to set(): `{1}` instance has been created', $id]);
         }
 
         $this->definitions[$id] = $definition;
@@ -159,7 +159,7 @@ class Container implements ContainerInterface
         }
 
         if (preg_match('#^[\w\\\\]+$#', $name) !== 1) {
-            throw new NotFoundException(["%s not found", $name]);
+            throw new NotFoundException(["{1} not found", $name]);
         }
 
         $exists = false;
@@ -175,7 +175,7 @@ class Container implements ContainerInterface
         }
 
         if (!$exists) {
-            throw new NotFoundException(['`%s` is not exists', $name]);
+            throw new NotFoundException(['`{1}` is not exists', $name]);
         }
 
         if (method_exists($name, '__invoke')) {

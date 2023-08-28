@@ -277,7 +277,8 @@ class View implements ViewInterface
     public function getWidgetClassName(string $widget): ?string
     {
         if (str_contains($widget, '/')) {
-            throw new MisuseException(['it is not allowed to access other area `:widget` widget', 'widget' => $widget]);
+            throw new MisuseException(['it is not allowed to access other area `{widget}` widget', 'widget' => $widget]
+            );
         }
 
         $area = $this->dispatcher->getArea();
@@ -295,7 +296,7 @@ class View implements ViewInterface
         }
 
         if (!$widgetClassName = $this->getWidgetClassName($widget)) {
-            throw new InvalidValueException(['`%s` class is not exists', $widgetClassName]);
+            throw new InvalidValueException(['`{1}` class is not exists', $widgetClassName]);
         }
 
         if (str_contains($widgetClassName, '\\Areas\\')) {

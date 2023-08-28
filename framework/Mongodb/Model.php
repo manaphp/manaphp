@@ -63,7 +63,7 @@ class Model extends AbstractModel
         } elseif ($type === 'array') {
             return (array)$value;
         } else {
-            throw new MisuseException(['`%s` model is not supported `%s` type', static::class, $type]);
+            throw new MisuseException(['`{1}` model is not supported `{2}` type', static::class, $type]);
         }
     }
 

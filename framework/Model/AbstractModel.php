@@ -422,7 +422,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         }
 
         if (isset($rules[0])) {
-            throw new MisuseException(['`%s` rules must be an associative array', static::class]);
+            throw new MisuseException(['`{1}` rules must be an associative array', static::class]);
         }
 
         $validator = Container::get(ValidatorInterface::class);
@@ -766,7 +766,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         } elseif (($relationManager = Container::get(RelationManagerInterface::class))->has(static::class, $name)) {
             return $this->$name = $relationManager->lazyLoad($this, $name)->fetch();
         } else {
-            throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, $name]);
+            throw new UnknownPropertyException(['`{1}` does not contain `{2}` field.`', static::class, $name]);
         }
     }
 
@@ -789,10 +789,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             if ($relationManager->has(static::class, $relation)) {
                 return $relationManager->lazyLoad($this, $relation);
             } else {
-                throw new NotSupportedException(['`%s` model does not define `%s` relation', static::class, $relation]);
+                throw new NotSupportedException(['`{1}` model does not define `{2}` relation', static::class, $relation]
+                );
             }
         }
-        throw new NotSupportedException(['`%s` does not contain `%s` method', static::class, $name]);
+        throw new NotSupportedException(['`{1}` does not contain `{2}` method', static::class, $name]);
     }
 
     /**

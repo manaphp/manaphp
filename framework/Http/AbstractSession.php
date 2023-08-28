@@ -200,7 +200,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         } elseif ($serializer === 'igbinary') {
             return igbinary_serialize($data);
         } else {
-            throw new NotSupportedException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
+            throw new NotSupportedException(['`{serializer}` serializer is not support', 'serializer' => $serializer]);
         }
     }
 
@@ -244,7 +244,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         } elseif ($serializer === 'igbinary') {
             return igbinary_unserialize($data);
         } else {
-            throw new NotSupportedException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
+            throw new NotSupportedException(['`{serializer}` serializer is not support', 'serializer' => $serializer]);
         }
     }
 

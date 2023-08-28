@@ -240,7 +240,7 @@ class Mysql extends AbstractConnection
     public function bulkInsert(string $table, array $records): int
     {
         if (!$records) {
-            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
+            throw new InvalidArgumentException(['Unable to insert into {table} table without data', 'table' => $table]);
         }
 
         $fields = array_keys($records[0]);

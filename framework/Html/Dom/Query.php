@@ -37,7 +37,7 @@ class Query
 
         $r = @$this->xpath->query($expression, $context);
         if ($r === false) {
-            throw new MisuseException(['`:xpath` xpath is invalid expression', 'xpath' => $expression]);
+            throw new MisuseException(['`{xpath}` xpath is invalid expression', 'xpath' => $expression]);
         }
 
         return $r;

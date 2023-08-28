@@ -379,7 +379,7 @@ class Response implements ResponseInterface
         }
 
         if (!LocalFS::fileExists($file)) {
-            throw new FileNotFoundException(['Sent file is not exists: `:file`', 'file' => $file]);
+            throw new FileNotFoundException(['Sent file is not exists: `{file}`', 'file' => $file]);
         }
         $this->setHeader('Content-Length', (string)LocalFS::fileSize($file));
 

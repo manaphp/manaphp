@@ -163,7 +163,7 @@ if (!function_exists('seconds')) {
         } elseif (($r = strtotime($str, 0)) !== false) {
             return $r;
         } else {
-            throw new InvalidValueException(['`:str` string is not a valid seconds expression', 'str' => $str]);
+            throw new InvalidValueException(['`{str}` string is not a valid seconds expression', 'str' => $str]);
         }
     }
 }

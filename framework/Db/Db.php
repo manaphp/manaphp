@@ -250,7 +250,7 @@ class Db implements DbInterface
         $table = $this->completeTable($table);
 
         if (!$record) {
-            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
+            throw new InvalidArgumentException(['Unable to insert into {table} table without data', 'table' => $table]);
         }
         $fields = array_keys($record);
         $insertedValues = ':' . implode(',:', $fields);
@@ -302,7 +302,7 @@ class Db implements DbInterface
         $table = $this->completeTable($table);
 
         if (!$fieldValues) {
-            throw new InvalidArgumentException(['Unable to update :table table without data', 'table' => $table]);
+            throw new InvalidArgumentException(['Unable to update {table} table without data', 'table' => $table]);
         }
 
         if (!$conditions) {
@@ -314,7 +314,7 @@ class Db implements DbInterface
         foreach ((array)$conditions as $k => $v) {
             if (is_int($k)) {
                 if (!is_string($v) || $v === '' || preg_match('#^\w+$#', $v) === 1) {
-                    throw new NotSupportedException(['update with `%s` condition is danger!', json_stringify($v)]);
+                    throw new NotSupportedException(['update with `{1}` condition is danger!', json_stringify($v)]);
                 }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {
@@ -398,7 +398,7 @@ class Db implements DbInterface
         foreach ((array)$conditions as $k => $v) {
             if (is_int($k)) {
                 if (!is_string($v) || $v === '' || ($v !== 'FALSE' && preg_match('#^\w+$#', $v) === 1)) {
-                    throw new NotSupportedException(['delete with `%s` condition is danger!', json_stringify($v)]);
+                    throw new NotSupportedException(['delete with `{1}` condition is danger!', json_stringify($v)]);
                 }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {

@@ -26,18 +26,18 @@ class Cookie extends AbstractSession
         $parts = explode('.', $data, 2);
 
         if (count($parts) !== 2) {
-            throw new CookieException(['format invalid: `:cookie`', 'cookie' => $data]);
+            throw new CookieException(['format invalid: `{cookie}`', 'cookie' => $data]);
         }
 
         $key = $this->key ?? $this->crypt->getDerivedKey($this->salt);
 
         if (md5($parts[0] . $key) !== $parts[1]) {
-            throw new CookieException(['hash invalid: `:cookie`', 'cookie' => $data]);
+            throw new CookieException(['hash invalid: `{cookie}`', 'cookie' => $data]);
         }
 
         $payload = json_parse($parts[0]);
         if (!is_array($payload)) {
-            throw new CookieException(['payload invalid: `:cookie`', 'cookie' => $data]);
+            throw new CookieException(['payload invalid: `{cookie}`', 'cookie' => $data]);
         }
 
         if (time() > $payload['exp']) {

@@ -111,7 +111,7 @@ class RelationManager implements RelationManagerInterface
                 }
             }
 
-            throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
+            throw new RuntimeException(['infer `{relation}` relation failed', 'relation' => $name]);
         } elseif ($thatModel = $this->inferClassName($selfModel, $name)) {
             $selfReferencedKey = $this->modelManager->getReferencedKey($selfModel);
             $thatReferencedKey = $this->modelManager->getReferencedKey($thatModel);
@@ -169,7 +169,7 @@ class RelationManager implements RelationManagerInterface
         } elseif (is_callable($data)) {
             $data($query);
         } else {
-            throw new InvalidValueException(['`:with` with is invalid', 'with' => $name]);
+            throw new InvalidValueException(['`{with}` with is invalid', 'with' => $name]);
         }
 
         return $query;
@@ -187,7 +187,7 @@ class RelationManager implements RelationManagerInterface
             }
 
             if (($relation = $this->get($model, $name)) === null) {
-                throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
+                throw new InvalidValueException(['unknown `{relation}` relation', 'relation' => $name]);
             }
 
             $query = $v instanceof QueryInterface

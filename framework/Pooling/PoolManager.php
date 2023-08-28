@@ -39,7 +39,7 @@ class PoolManager implements PoolManagerInterface
     public function create(object $owner, int $capacity, string $type = 'default'): static
     {
         if (isset($this->pool[$owner][$type])) {
-            throw new MisuseException(['`%s` pool of `%s` is exists', $type, $owner::class]);
+            throw new MisuseException(['`{1}` pool of `{2}` is exists', $type, $owner::class]);
         }
 
         $this->pool[$owner] ??= [];
@@ -77,7 +77,7 @@ class PoolManager implements PoolManagerInterface
     public function push(object $owner, object $instance, string $type = 'default'): static
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
+            throw new MisuseException(['`{1}` pool of `{2}` is not exists', $type, $owner::class]);
         }
 
         $queue->push($instance);
@@ -90,7 +90,7 @@ class PoolManager implements PoolManagerInterface
     public function pop(object $owner, ?float $timeout = null, string $type = 'default'): object
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
+            throw new MisuseException(['`{1}` pool of `{2}` is not exists', $type, $owner::class]);
         }
 
         $this->eventDispatcher->dispatch(new PoolPopping($this, $owner, $type));
@@ -98,7 +98,7 @@ class PoolManager implements PoolManagerInterface
         if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
             $this->eventDispatcher->dispatch(new PoolPopped($this, $owner, $instance, $type));
             $capacity = $queue->capacity();
-            throw new BusyException(['`%s` pool of `%s` is busy: capacity[%d]', $type, $owner::class, $capacity]);
+            throw new BusyException(['`{1}` pool of `{2}` is busy: capacity[{3}]', $type, $owner::class, $capacity]);
         }
 
         $this->eventDispatcher->dispatch(new PoolPopped($this, $owner, $instance, $type));
@@ -123,7 +123,7 @@ class PoolManager implements PoolManagerInterface
     public function isEmpty(object $owner, string $type = 'default'): bool
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
+            throw new MisuseException(['`{1}` pool of `{2}` is not exists', $type, $owner::class]);
         }
 
         return $queue->isEmpty();
@@ -137,7 +137,7 @@ class PoolManager implements PoolManagerInterface
     public function size(object $owner, string $type = 'default'): int
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
+            throw new MisuseException(['`{1} pool of `{2}` is not exists', $type, $owner::class]);
         }
 
         return $queue->capacity();

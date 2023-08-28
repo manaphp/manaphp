@@ -97,12 +97,12 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         $shards = $this->getShards();
 
         if (count($shards) !== 1) {
-            throw new ShardingTooManyException(['too many dbs: `:dbs`', 'dbs' => array_keys($shards)]);
+            throw new ShardingTooManyException(['too many dbs: `{dbs}`', 'dbs' => array_keys($shards)]);
         }
 
         $tables = current($shards);
         if (count($tables) !== 1) {
-            throw new ShardingTooManyException(['too many tables: `:tables`', 'tables' => $tables]);
+            throw new ShardingTooManyException(['too many tables: `{tables}`', 'tables' => $tables]);
         }
 
         return [key($shards), $tables[0]];
@@ -173,7 +173,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                     $field = substr($filter, 0, -strlen($operator));
                     if ($operator === '~=') {
                         if (count($value) !== 2) {
-                            throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                            throw new MisuseException(['value of `{filter}` filter is invalid', 'filter' => $filter]);
                         }
                         $this->whereBetween($field, $value[0], $value[1]);
                     } elseif ($operator === '@=') {
@@ -187,12 +187,12 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                     } elseif ($operator === '%=') {
                         $this->whereMod($field, $value[0], $value[1]);
                     } else {
-                        throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
+                        throw new MisuseException(['unknown `{operator}` operator', 'operator' => $operator]);
                     }
                 } elseif (!$value || isset($value[0])) {
                     $this->whereIn($filter, $value);
                 } else {
-                    throw new MisuseException(['unknown `:filter` filter', 'operator' => $filter]);
+                    throw new MisuseException(['unknown `{filter}` filter', 'operator' => $filter]);
                 }
             } elseif (preg_match('#^([\w.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
                 list(, $field, $operator) = $matches;
@@ -226,12 +226,12 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                 } elseif ($operator === '@y=') {
                     $this->whereYear($field, $value);
                 } else {
-                    throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
+                    throw new MisuseException(['unknown `{operator}` operator', 'operator' => $operator]);
                 }
             } elseif (str_contains($filter, ',') && preg_match('#^[\w,.]+$#', $filter)) {
                 $this->where1v1($filter, $value);
             } else {
-                throw new MisuseException(['unknown `:filter` filter', 'filter' => $filter]);
+                throw new MisuseException(['unknown `{filter}` filter', 'filter' => $filter]);
             }
         }
 
@@ -312,7 +312,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                 } elseif ($v === 'DESC' || $v === 'desc') {
                     $this->order[$k] = SORT_DESC;
                 } else {
-                    throw new MisuseException(['unknown sort order: `:order`', 'order' => $v]);
+                    throw new MisuseException(['unknown sort order: `{order}`', 'order' => $v]);
                 }
             }
         }

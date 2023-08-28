@@ -50,7 +50,7 @@ class CollectionGateway implements CollectionGatewayInterface
         $primaryKey = $this->modelManager->getPrimaryKey($model);
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
-                throw new MisuseException(['bulkUpdate `%s` model must set primary value', static::class]);
+                throw new MisuseException(['bulkUpdate `{1}` model must set primary value', static::class]);
             }
             $documents[$i] = $that->normalizeDocument($document);
         }

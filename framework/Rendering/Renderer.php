@@ -91,7 +91,7 @@ class Renderer implements RendererInterface
 
             if (!$file) {
                 $extensions = implode(', or ', array_keys($this->engines));
-                throw new FileNotFoundException(['`%s` with `%s` extension was not found', $template, $extensions]);
+                throw new FileNotFoundException(['`{1}` with `{2}` extension was not found', $template, $extensions]);
             }
 
             $this->files[$template] = [$file, $extension];

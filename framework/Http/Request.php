@@ -53,7 +53,7 @@ class Request implements RequestInterface, JsonSerializable
             $value = $source[$name];
 
             if (is_array($value) && is_scalar($default)) {
-                throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
+                throw new InvalidValueException(['the value of `{name}` name is not scalar', 'name' => $name]);
             }
 
             return $default === null ? $value : $this->normalizeValue($name, $value, $default);
@@ -247,7 +247,7 @@ class Request implements RequestInterface, JsonSerializable
                     return $file;
                 }
             }
-            throw new FileException(['can not found uploaded `:key` file', 'key' => $key]);
+            throw new FileException(['can not found uploaded `{key}` file', 'key' => $key]);
         }
     }
 

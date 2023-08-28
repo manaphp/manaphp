@@ -57,7 +57,7 @@ class Str
             }
             return $str;
         } else {
-            throw new NotSupportedException(['base(%d) is not supported', $base]);
+            throw new NotSupportedException(['base({1}) is not supported', $base]);
         }
     }
 

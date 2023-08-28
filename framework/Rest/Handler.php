@@ -45,7 +45,7 @@ class Handler implements HandlerInterface
 
             if (!$this->router->match()) {
                 throw new NotFoundRouteException(
-                    ['router does not have matched route for `%s`', $this->router->getRewriteUri()]
+                    ['router does not have matched route for `{1}`', $this->router->getRewriteUri()]
                 );
             }
 

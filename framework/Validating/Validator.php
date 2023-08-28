@@ -131,7 +131,7 @@ class Validator implements ValidatorInterface
                     $value = $this->$method($field, $value, $parameter);
                 }
             } else {
-                throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $validate]);
+                throw new NotSupportedException(['unsupported `{validate}` validate method', 'validate' => $validate]);
             }
 
             if ($value === null) {
@@ -181,7 +181,7 @@ class Validator implements ValidatorInterface
                     } elseif (isset($rules['default'])) {
                         $validate = is_string($rules['default']) ? 'length' : 'range';
                     } else {
-                        throw new InvalidArgumentException(['infer validate name failed: :value', 'value' => $v]);
+                        throw new InvalidArgumentException(['infer validate name failed: {value}', 'value' => $v]);
                     }
                 } else {
                     $validate = $v;
@@ -199,7 +199,7 @@ class Validator implements ValidatorInterface
                     $value = $this->$method($field, $value, $parameter);
                 }
             } else {
-                throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $validate]);
+                throw new NotSupportedException(['unsupported `{validate}` validate method', 'validate' => $validate]);
             }
 
             if ($value === null) {
@@ -342,7 +342,7 @@ class Validator implements ValidatorInterface
         } elseif (is_numeric($parameter)) {
             return $len === (int)$parameter ? $value : null;
         } else {
-            throw new InvalidValueException(['length validator `%s` parameter is not {min}-{max} format', $parameter]);
+            throw new InvalidValueException(['length validator `{1}` parameter is not {min}-{max} format', $parameter]);
         }
     }
 
@@ -361,7 +361,7 @@ class Validator implements ValidatorInterface
     protected function validate_range(string $field, mixed $value, string $parameter): int|null|float
     {
         if (!preg_match('#^(-?[.\d]+)-(-?[\d.]+)$#', $parameter, $match)) {
-            throw new InvalidValueException(['range validator `%s` parameter is not {min}-{max} format', $parameter]);
+            throw new InvalidValueException(['range validator `{1}` parameter is not {min}-{max} format', $parameter]);
         }
 
         $number = $this->normalizeNumber($field, $value, $parameter);
@@ -563,11 +563,11 @@ class Validator implements ValidatorInterface
                 $className = 'App\\Models\\' . Str::pascalize($match[1]);
             }
         } else {
-            throw new InvalidValueException(['validate `%s` failed: related model class is not provided', $field]);
+            throw new InvalidValueException(['validate `{1}` failed: related model class is not provided', $field]);
         }
 
         if (!class_exists($className)) {
-            throw new InvalidValueException(['validate `:1` failed: `:2` class is not exists.', $field, $className]);
+            throw new InvalidValueException(['validate `{1}` failed: `{2}` class is not exists.', $field, $className]);
         }
 
         return $className::exists([$this->modelManager->getPrimaryKey($className) => $value]) ? $value : null;
@@ -597,7 +597,7 @@ class Validator implements ValidatorInterface
         }
 
         if (!$constants) {
-            throw new MisuseException(['starts with `:1` constants is not exists in `:2` model', $name, $model]);
+            throw new MisuseException(['starts with `{1}` constants is not exists in `{2}` model', $name, $model]);
         }
 
         return $constants;

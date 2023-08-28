@@ -48,7 +48,7 @@ class Request implements RequestInterface
 
             if ($o[1] === '-') {
                 if (strlen($o) < 3) {
-                    throw new RequestException(['long `:option` option is too short', 'option' => $o]);
+                    throw new RequestException(['long `{option}` option is too short', 'option' => $o]);
                 }
 
                 if ($arguments === []) {
@@ -94,7 +94,7 @@ class Request implements RequestInterface
         }
 
         if (str_contains($name, '-')) {
-            throw new RequestException(['please remove `-` characters for `:argument` argument', 'argument' => $name]);
+            throw new RequestException(['please remove `-` characters for `{argument}` argument', 'argument' => $name]);
         }
 
         foreach (preg_split('#[|,:]+#', $name) as $o) {

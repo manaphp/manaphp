@@ -153,7 +153,7 @@ class Client implements ClientInterface
             throw new RedirectionException($response->url, $response);
         } elseif ($http_code_class === 400) {
             if ($http_code === 400) {
-                throw new BadRequestException(['%s => `%s`', $response->url, $response_text], $response);
+                throw new BadRequestException(['{1} => `{2}`', $response->url, $response_text], $response);
             } elseif ($http_code === 401) {
                 throw new UnauthorizedException($response->url, $response);
             } elseif ($http_code === 403) {
@@ -218,7 +218,7 @@ class Client implements ClientInterface
 
         if (is_string($response->body)) {
             $content_type = $response->content_type;
-            throw new ContentTypeException(['content-type is not application/json: %s', $content_type], $response);
+            throw new ContentTypeException(['content-type is not application/json: {1}', $content_type], $response);
         }
 
         return $response;

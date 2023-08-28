@@ -63,15 +63,15 @@ class Jwt implements JwtInterface
 
         if ($decoded_header['alg'] !== $this->alg) {
             $decoded_alg = $decoded_header['alg'];
-            throw new MalformedException(['The JWT alg `%s` is not same as %s', $decoded_alg, $this->alg]);
+            throw new MalformedException(['The JWT alg `{1}` is not same as {2}', $decoded_alg, $this->alg]);
         }
 
         if (!$decoded_header['typ']) {
-            throw new MalformedException(['The JWT typ field is missing: `:token`', 'token' => $token]);
+            throw new MalformedException(['The JWT typ field is missing: `{token}`', 'token' => $token]);
         }
 
         if ($decoded_header['typ'] !== 'JWT') {
-            throw new MalformedException(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
+            throw new MalformedException(['The JWT typ `{typ}` is not JWT', 'typ' => $decoded_header['typ']]);
         }
 
         if (isset($claims['exp']) && time() > $claims['exp']) {

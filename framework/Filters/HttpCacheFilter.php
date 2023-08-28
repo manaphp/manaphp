@@ -75,7 +75,7 @@ class HttpCacheFilter
             } elseif ($k === 'Cache-Control' || $k === 'cache-control') {
                 $this->response->setCacheControl($v);
             } else {
-                throw new MisuseException(['not support `:key`', 'key' => $k]);
+                throw new MisuseException(['not support `{key}`', 'key' => $k]);
             }
         }
     }
