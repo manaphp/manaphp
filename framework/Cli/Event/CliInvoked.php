@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli\Event;
 
-use ManaPHP\Cli\HandlerInterface;
+use ManaPHP\Cli\DispatcherInterface;
 
 class CliInvoked
 {
     public function __construct(
-        public HandlerInterface $handler,
+        public DispatcherInterface $dispatcher,
         public object $command,
         public string $method,
         public string $action,

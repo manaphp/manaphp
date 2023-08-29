@@ -16,12 +16,12 @@ class Server implements ServerInterface
 {
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected ErrorHandlerInterface $errorHandler;
-    #[Inject] protected HandlerInterface $cliHandler;
-
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Inject] protected RequestInterface $request;
     protected int $exit_code;
 
     /**
-     * @noinspection PhpRedundantCatchClauseInspection
      * @noinspection PhpUnusedLocalVariableInspection
      */
     public function handle(): void
@@ -30,7 +30,15 @@ class Server implements ServerInterface
         $this->logger->info('command line: {0}', [basename($GLOBALS['argv'][0]) . ' ' . $args]);
 
         try {
-            $this->exit_code = $this->cliHandler->handle();
+            $this->router->route($GLOBALS['argv']);
+
+            $command = $this->router->getCommand();
+            $action = $this->router->getAction();
+            $params = $this->router->getParams();
+
+            $this->request->parse($params);
+
+            $this->exit_code = $this->dispatcher->dispatch($command, $action, $params);
         } catch (AbortException $exception) {
             $this->exit_code = 0;
         } catch (\ManaPHP\Cli\Request\Exception $exception) {

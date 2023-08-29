@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-interface HandlerInterface
+interface RouterInterface
 {
-    public function handle(?array $args = null): int;
+    public function route(array $args): void;
 
-    public function getArgs(): array;
+    public function getEntrypoint(): string;
 
     public function getCommand(): string;
 
