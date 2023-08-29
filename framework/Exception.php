@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
-use JsonSerializable;
 use Stringable;
 
 class Exception extends \Exception
@@ -22,16 +21,8 @@ class Exception extends \Exception
                         null;
                     } elseif ($val instanceof Stringable) {
                         $val = (string)$val;
-                    } elseif (is_scalar($val)) {
-                        $val = json_stringify($val);
-                    } elseif ($val instanceof JsonSerializable) {
-                        $val = json_stringify($val);
-                    } elseif (is_array($val)) {
-                        $val = json_stringify($val);
-                    } elseif (is_object($val)) {
-                        $val = json_stringify((array)$val);
                     } else {
-                        continue;
+                        $val = json_stringify($val);
                     }
 
                     $replaces['{' . $key . '}'] = $val;
