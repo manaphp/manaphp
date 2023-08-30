@@ -18,8 +18,9 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
+use Stringable;
 
-abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable
+abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable, Stringable
 {
     protected ?array $_snapshot = [];
 
