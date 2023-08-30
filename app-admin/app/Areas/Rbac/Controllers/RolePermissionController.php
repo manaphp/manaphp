@@ -7,18 +7,15 @@ use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
 use App\Controllers\Controller;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
-/**
- * Class RolePermission
- *
- * @package App\Areas\Rbac\Models
- *
- * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
- */
 #[Authorize('@index')]
 class RolePermissionController extends Controller
 {
+    #[Inject] protected AuthorizationInterface $authorization;
+
     public function indexAction()
     {
         return RolePermission::select(['id', 'permission_id', 'creator_name', 'created_time'])

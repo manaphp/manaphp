@@ -5,7 +5,7 @@ namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Group;
 use App\Controllers\Controller;
-use ManaPHP\Data\QueryInterface;
+use ManaPHP\Query\QueryInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
 #[Authorize('user')]

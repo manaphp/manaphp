@@ -8,17 +8,19 @@ use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\AdminLoginLog;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
-/**
- * @property-read \ManaPHP\ConfigInterface       $config
- * @property-read \ManaPHP\Http\CaptchaInterface $captcha
- */
 #[Authorize('*')]
 class SessionController extends Controller
 {
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected CaptchaInterface $captcha;
+
     public function captchaAction()
     {
         return $this->captcha->generate();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
-use ManaPHP\Data\QueryInterface;
+use ManaPHP\Query\QueryInterface;
 
 /**
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity

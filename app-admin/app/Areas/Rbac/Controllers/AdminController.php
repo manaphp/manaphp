@@ -7,7 +7,7 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
-use ManaPHP\Data\QueryInterface;
+use ManaPHP\Query\QueryInterface;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 

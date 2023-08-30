@@ -6,22 +6,29 @@ namespace App\Listeners;
 use App\Models\AdminActionLog;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Http\CookiesInterface;
+use ManaPHP\Http\DispatcherInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Identifying\IdentityInterface;
 
-/**
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\CookiesInterface         $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
- */
 class AdminActionLogListener
 {
     use ContextTrait;
 
+    #[Inject] protected IdentityInterface $identity;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected CookiesInterface $cookies;
+    #[Inject] protected DispatcherInterface $dispatcher;
+
     public function onDbExecuting(#[Event] DbExecuting $event): void
     {
-        if (!$this->context->logged && $this->dispatcher->isInvoking()) {
+        /** @var AdminActionLogListenerContext $context */
+        $context = $this->getContext();
+
+        if (!$context->logged && $this->dispatcher->isInvoking()) {
             $this->onAppLogAction(new AdminActionLog());
         }
     }
