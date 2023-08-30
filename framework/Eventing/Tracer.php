@@ -23,6 +23,7 @@ class Tracer implements TracerInterface
     #[Inject] protected ListenerProviderInterface $listenerProvider;
     #[Inject] protected LoggerInterface $logger;
 
+    #[Value] protected array $ignores = [];
     #[Value] protected array $events = [];
     #[Value] protected ?bool $enabled;
     #[Value] protected bool $verbose = true;
@@ -59,6 +60,12 @@ class Tracer implements TracerInterface
     public function onEvent(object $event): void
     {
         $name = $event::class;
+
+        foreach ($this->ignores as $ignore) {
+            if (str_starts_with($name, $ignore)) {
+                return;
+            }
+        }
 
         if (($listener = $this->listeners[$name] ?? null) !== null) {
             $this->$listener($event);
@@ -155,5 +162,4 @@ class Tracer implements TracerInterface
             $this->logger->info($event, ['category' => 'mongodb.command.' . $command_name]);
         }
     }
-
 }
