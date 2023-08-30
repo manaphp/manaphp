@@ -6,7 +6,6 @@ namespace ManaPHP;
 use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Exception\InvalidKeyException;
 
 class Config implements ConfigInterface, JsonSerializable
 {
@@ -26,13 +25,7 @@ class Config implements ConfigInterface, JsonSerializable
 
     public function get(string $key, mixed $default = null): mixed
     {
-        $value = $this->config[$key] ?? $default;
-
-        if ($value === null) {
-            throw new InvalidKeyException("invalid key `$key`");
-        } else {
-            return $value;
-        }
+        return $this->config[$key] ?? $default;
     }
 
     public function set(string $key, mixed $value): static
