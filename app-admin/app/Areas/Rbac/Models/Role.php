@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
-use ManaPHP\Data\Model\Attribute\Table;
+use ManaPHP\Model\Attribute\Table;
 
 #[Table('rbac_role')]
 class Role extends Model

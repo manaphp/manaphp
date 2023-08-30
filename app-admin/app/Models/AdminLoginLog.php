@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use ManaPHP\Data\Model\Attribute\PrimaryKey;
+use ManaPHP\Model\Attribute\PrimaryKey;
 
 #[PrimaryKey('login_id')]
 class AdminLoginLog extends Model

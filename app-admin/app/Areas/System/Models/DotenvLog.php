@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Areas\System\Models;
 
 use App\Models\Model;
-use ManaPHP\Data\Model\Attribute\PrimaryKey;
+use ManaPHP\Model\Attribute\PrimaryKey;
 
 #[PrimaryKey('id')]
 class DotenvLog extends Model
