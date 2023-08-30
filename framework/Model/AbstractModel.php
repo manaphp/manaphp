@@ -875,10 +875,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return $this instanceof SerializeNormalizable ? $this->serializeNormalize($data) : $data;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return json_stringify($this->toArray());
     }
