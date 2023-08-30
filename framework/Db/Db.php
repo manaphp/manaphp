@@ -152,7 +152,7 @@ class Db implements DbInterface
         $context = $this->getContext();
 
         $this->eventDispatcher->dispatch(new DbExecuting($this, $type, $sql, $bind));
-        $event && $this->eventDispatcher->dispatch(new $event[0]($type, $sql, $bind));
+        $event && $this->eventDispatcher->dispatch(new $event[0]($this, $type, $sql, $bind));
 
         if ($context->connection) {
             $connection = $context->connection;
