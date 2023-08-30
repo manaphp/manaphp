@@ -23,7 +23,7 @@ return [
             ]
         ],
     ],
-    'ManaPHP\Data\DbInterface'     => [
-        'default' => ['class' => 'ManaPHP\Data\Db', env('DB_URL')],
+    'ManaPHP\Db\DbInterface'     => [
+        'default' => ['class' => 'ManaPHP\Db\Db','uri'=> env('DB_URL')],
     ]
 ];
