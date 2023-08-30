@@ -12,6 +12,6 @@ class TestCommand extends Command
      */
     public function defaultAction($name = 'manaphp')
     {
-        $this->console->debug(sprintf('hello %s!', $name));
+        $this->console->debug('hello {name}!', ['name' => $name]);
     }
 }

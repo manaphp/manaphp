@@ -15,6 +15,7 @@ class ComposerStaticInit41575a431cef816f77191f515844ed73
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
+            'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
         ),
         'M' => 
@@ -35,6 +36,10 @@ class ComposerStaticInit41575a431cef816f77191f515844ed73
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
+        ),
+        'Psr\\EventDispatcher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/event-dispatcher/src',
         ),
         'Psr\\Container\\' => 
         array (
