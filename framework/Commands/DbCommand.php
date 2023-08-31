@@ -123,6 +123,25 @@ class DbCommand extends Command
         return implode(PHP_EOL, $lines);
     }
 
+    protected function dbTypeToPhpType(string $type)
+    {
+        if (preg_match('#^(TINYINT|SMALLINT|MEDIUMINT|INT|BIGINT)#i', $type)) {
+            return 'int';
+        } elseif (preg_match('#^(CHAR|VARCHAR|BINARY|VARBINARY|BLOB|TEXT|ENUM|SET)#i', $type)) {
+            return 'string';
+        } elseif (preg_match('#^(TINYBLOB|BLOB|MEDIUMBLOB|LONGBLOB)#i', $type)) {
+            return 'string';
+        } elseif (preg_match('#^(TINYTEXT|TEXT|MEDIUMTEXT|LONGTEXT)#i', $type)) {
+            return 'string';
+        } elseif (preg_match('#^(DECIMAL|NUMERIC|DOUBLE)#i', $type)) {
+            return 'string';
+        } elseif (preg_match('#^(DATE|DATETIME)#i', $type)) {
+            return 'string';
+        } else {
+            return 'mixed';
+        }
+    }
+
     /**
      * @param string $connection
      * @param string $class
@@ -200,9 +219,10 @@ class DbCommand extends Command
         }
 
         $str .= PHP_EOL;
-        foreach ($fields as $field) {
+        foreach ($fields as $field => $type) {
             $field = $camelized ? Str::camelize($field) : $field;
-            $str .= '    public $' . $field . ';' . PHP_EOL;
+            $php_type = $this->dbTypeToPhpType($type);
+            $str .= "    public $php_type $$field;" . PHP_EOL;
         }
 
         if ($connection !== 'default') {

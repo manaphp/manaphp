@@ -35,14 +35,15 @@ class Sqlite extends AbstractConnection
 
         foreach ($fields as $field) {
             $fieldName = $field['name'];
+            $type = $field['type'];
 
-            $attributes[] = $fieldName;
+            $attributes[$fieldName] = $type;
 
             if ($field['pk'] === '1') {
                 $primaryKeys[] = $fieldName;
             }
 
-            if ($field['pk'] === '1' && $field['type'] === 'INTEGER') {
+            if ($field['pk'] === '1' && $type === 'INTEGER') {
                 $autoIncrementAttribute = $fieldName;
             }
         }

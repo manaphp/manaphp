@@ -79,10 +79,11 @@ class Mssql extends AbstractConnection
 
         foreach ($fields as $field) {
             $fieldName = $field['COLUMN_NAME'];
+            $type = $field['TYPE_NAME'];
 
-            $attributes[] = $fieldName;
+            $attributes[$fieldName] = $type;
 
-            if ($field['TYPE_NAME'] === 'int identity') {
+            if ($type === 'int identity') {
                 $autoIncrementAttribute = $fieldName;
             }
         }

@@ -107,8 +107,9 @@ class Mysql extends AbstractConnection
 
         foreach ($fields as $field) {
             $fieldName = $field[0];
+            $type = $field[1];
 
-            $attributes[] = $fieldName;
+            $attributes[$fieldName] = $type;
 
             if ($field[3] === 'PRI') {
                 $primaryKeys[] = $fieldName;
@@ -118,7 +119,6 @@ class Mysql extends AbstractConnection
                 $autoIncrementAttribute = $fieldName;
             }
 
-            $type = $field[1];
             if (str_contains($type, 'int')) {
                 $intTypes[] = $fieldName;
             }
