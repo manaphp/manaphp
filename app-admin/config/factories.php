@@ -9,7 +9,8 @@ return [
             'settings' => [
                 'worker_num'            => 4,
                 'max_request'           => 1000000,
-                'enable_static_handler' => env('APP_DEBUG', true)
+                'enable_static_handler' => env('APP_DEBUG', true),
+                'http_compression'      => false,
             ],
         ],
         'fpm'    => [
@@ -23,7 +24,7 @@ return [
             ]
         ],
     ],
-    'ManaPHP\Db\DbInterface'     => [
-        'default' => ['class' => 'ManaPHP\Db\Db','uri'=> env('DB_URL')],
+    'ManaPHP\Db\DbInterface'       => [
+        'default' => ['class' => 'ManaPHP\Db\Db', 'uri' => env('DB_URL')],
     ]
 ];

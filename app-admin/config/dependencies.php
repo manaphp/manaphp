@@ -8,7 +8,7 @@ return [
                                                 'level' => env('LOGGER_LEVEL', 'info')],
     'ManaPHP\Http\SessionInterface'         => ['class'  => 'ManaPHP\Http\Session\Adapter\Redis',
                                                 'ttl'    => seconds('1d'),
-                                                'params' => ['path' => '/abc']],
+                                                'params' => ['path' => '/']],
     'ManaPHP\Bos\ClientInterface'           => ['endpoint' => env('BOS_UPLOADER_ENDPOINT')],
     'ManaPHP\Http\RouterInterface'          => 'App\Router',
     'ManaPHP\Identifying\IdentityInterface' => 'ManaPHP\Identifying\Identity\Adapter\Session',
