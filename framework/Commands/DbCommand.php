@@ -135,7 +135,7 @@ class DbCommand extends Command
             return 'string';
         } elseif (preg_match('#^(DECIMAL|NUMERIC|DOUBLE)#i', $type)) {
             return 'string';
-        } elseif (preg_match('#^(DATE|DATETIME)#i', $type)) {
+        } elseif (preg_match('#^(DATE|TIME|DATETIME|TIMESTAMP)#i', $type)) {
             return 'string';
         } else {
             return 'mixed';
