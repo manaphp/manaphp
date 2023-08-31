@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
@@ -18,6 +19,8 @@ class ArgumentsResolver implements ArgumentsResolverInterface
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ModelManagerInterface $modelManager;
 
+    #[Value] protected array $resolvers = [];
+
     /**
      * @var ScalarValueResolverInterface[]
      */
@@ -28,14 +31,14 @@ class ArgumentsResolver implements ArgumentsResolverInterface
      */
     protected array $objectValueResolvers = [];
 
-    public function __construct(ContainerInterface $container, array $resolvers = [])
+    public function __construct()
     {
-        foreach ($resolvers as $resolver) {
+        foreach ($this->resolvers as $resolver) {
             if (!str_contains($resolver, '\\')) {
                 $resolver = __NAMESPACE__ . '\\ValueResolver\\' . ucfirst($resolver);
             }
 
-            $instance = $container->get($resolver);
+            $instance = $this->container->get($resolver);
 
             if ($instance instanceof ScalarValueResolverInterface) {
                 $this->scalarValueResolvers[] = $instance;
