@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Cli\Command\ArgumentsResolverInterface;
+use ManaPHP\Cli\Action\ArgumentsResolverInterface;
 use ManaPHP\Cli\Event\CliInvoked;
 use ManaPHP\Cli\Event\CliInvoking;
 use ManaPHP\Di\Attribute\Inject;
