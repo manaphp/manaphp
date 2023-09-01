@@ -480,13 +480,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
         $data = [];
         foreach ($modelManager->getFields(static::class) as $field) {
-            if ($this->$field !== null) {
+            if (isset($this->$field)) {
                 continue;
             }
 
             $needle = ",$field,";
             if (str_contains(',created_time,createdTime,created_at,createdAt,', $needle)) {
-                $data[$field] = date($dateFormat, $current_time);
+                $data[$field] = $dateFormat === 'U' ? time() : date($dateFormat, $current_time);
             } elseif (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
                 $data[$field] = date($dateFormat, $current_time);
             } elseif (str_contains(',creator_id,creatorId,created_id,createdId,', $needle)) {
@@ -523,7 +523,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         foreach ($modelManager->getFields(static::class) as $field) {
             $needle = ",$field,";
             if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = date($dateFormat, $current_time);
+                $data[$field] = $dateFormat === 'U' ? time() : date($dateFormat, $current_time);
             } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
                 $data[$field] = $user_id;
             } elseif (str_contains(',updator_name,updatorName,updated_name,updatedName,', $needle)) {

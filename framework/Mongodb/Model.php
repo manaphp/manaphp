@@ -79,7 +79,7 @@ class Model extends AbstractModel
     {
         $fields = Container::get(ModelManagerInterface::class)->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
-            if ($this->$field === null) {
+            if (!isset($this->$field)) {
                 $this->$field = $value;
             }
         }
@@ -138,7 +138,7 @@ class Model extends AbstractModel
 
         $primaryKey = $modelManager->getPrimaryKey(static::class);
 
-        if ($this->$primaryKey === null) {
+        if (!isset($this->$primaryKey)) {
             throw new MisuseException('missing primary key value');
         }
 
@@ -155,7 +155,7 @@ class Model extends AbstractModel
         $fields = $modelManager->getFields(static::class);
 
         foreach ($fields as $field) {
-            if ($this->$field === null) {
+            if (!isset($this->$field)) {
                 null;
             } elseif (!isset($snapshot[$field])) {
                 if (is_scalar($this->$field)) {
@@ -185,7 +185,7 @@ class Model extends AbstractModel
 
         $fieldValues = [];
         foreach ($fields as $field) {
-            if ($this->$field === null) {
+            if (!isset($this->$field)) {
                 if (isset($snapshot[$field])) {
                     $fieldValues[$field] = null;
                 }
@@ -209,7 +209,7 @@ class Model extends AbstractModel
     {
         $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
 
-        if ($this->$primaryKey === null) {
+        if (!isset($this->$primaryKey)) {
             throw new MisuseException('missing primary key value');
         }
 
