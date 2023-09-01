@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace App\Areas\Bos\Controllers;
 
 use App\Controllers\Controller;
+use ManaPHP\Bos\ClientInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Bos\ClientInterface $bosClient
- */
 #[Authorize('@index')]
 class ObjectController extends Controller
 {
+    #[Inject] protected ClientInterface $bosClient;
+
     public function bucketsAction()
     {
         return $this->bosClient->listBuckets();

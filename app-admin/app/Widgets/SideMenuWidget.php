@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Query\QueryInterface;
 
-/**
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\AuthorizationInterface   $authorization
- */
 class SideMenuWidget extends Widget
 {
+    #[Inject] protected AuthorizationInterface $authorization;
+
     public function run($vars = [])
     {
         $groups = Group::select(['group_id', 'group_name', 'icon'])
