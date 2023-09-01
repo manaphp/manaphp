@@ -9,15 +9,15 @@ use ManaPHP\Model\Attribute\Table;
 #[Table('rbac_role')]
 class Role extends Model
 {
-    public $role_id;
-    public $role_name;
-    public $display_name;
-    public $enabled;
-    public $permissions;
-    public $creator_name;
-    public $updator_name;
-    public $created_time;
-    public $updated_time;
+    public int $role_id;
+    public string $role_name;
+    public string $display_name;
+    public int $enabled;
+    public string $permissions;
+    public string $creator_name;
+    public string $updator_name;
+    public int $created_time;
+    public int $updated_time;
 
     public function rules(): array
     {

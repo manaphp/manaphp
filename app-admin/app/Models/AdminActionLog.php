@@ -5,15 +5,15 @@ namespace App\Models;
 
 class AdminActionLog extends Model
 {
-    public $id;
-    public $admin_id;
-    public $admin_name;
-    public $method;
-    public $path;
-    public $tag;
-    public $url;
-    public $data;
-    public $client_ip;
-    public $client_udid;
-    public $created_time;
+    public int $id;
+    public int $admin_id;
+    public string $admin_name;
+    public string $method;
+    public string $path;
+    public int $tag;
+    public string $url;
+    public string $data;
+    public string $client_ip;
+    public string $client_udid;
+    public int $created_time;
 }

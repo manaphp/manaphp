@@ -9,14 +9,14 @@ use ManaPHP\Model\Attribute\Table;
 #[Table('menu_group')]
 class Group extends Model
 {
-    public $group_id;
-    public $group_name;
-    public $display_order;
-    public $icon;
-    public $creator_name;
-    public $updator_name;
-    public $created_time;
-    public $updated_time;
+    public int $group_id;
+    public string $group_name;
+    public string $icon;
+    public int $display_order;
+    public string $creator_name;
+    public string $updator_name;
+    public int $created_time;
+    public int $updated_time;
 
     public function rules(): array
     {

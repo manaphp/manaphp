@@ -11,9 +11,9 @@ use ManaPHP\Model\Attribute\Table;
 #[Fillable([])]
 class RolePermission extends Model
 {
-    public $id;
-    public $role_id;
-    public $permission_id;
-    public $creator_name;
-    public $created_time;
+    public int $id;
+    public int $role_id;
+    public int $permission_id;
+    public string $creator_name;
+    public int $created_time;
 }

@@ -9,16 +9,16 @@ use ManaPHP\Model\Attribute\Table;
 #[Table('menu_item')]
 class Item extends Model
 {
-    public $item_id;
-    public $item_name;
-    public $group_id;
-    public $display_order;
-    public $url;
-    public $icon;
-    public $creator_name;
-    public $updator_name;
-    public $created_time;
-    public $updated_time;
+    public int $item_id;
+    public string $item_name;
+    public int $group_id;
+    public int $display_order;
+    public string $url;
+    public string $icon;
+    public string $creator_name;
+    public string $updator_name;
+    public int $created_time;
+    public int $updated_time;
 
     public function rules(): array
     {

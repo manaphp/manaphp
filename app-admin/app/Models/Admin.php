@@ -15,20 +15,22 @@ class Admin extends Model
 
     const PASSWORD_LENGTH = '1-30';
 
-    public $admin_id;
-    public $admin_name;
-    public $email;
-    public $status;
-    public $salt;
-    public $password;
-    public $white_ip;
-    public $login_ip;
-    public $login_time;
-    public $session_id;
-    public $creator_name;
-    public $updator_name;
-    public $created_time;
-    public $updated_time;
+    public int $admin_id;
+    public string $admin_name;
+    public int $status;
+    public int $type;
+    public int $tag;
+    public string $email;
+    public string $salt;
+    public string $password;
+    public string $white_ip;
+    public string $login_ip;
+    public int $login_time;
+    public string $session_id;
+    public string $creator_name;
+    public string $updator_name;
+    public int $created_time;
+    public int $updated_time;
 
     public function rules(): array
     {

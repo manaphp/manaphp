@@ -9,9 +9,9 @@ use ManaPHP\Model\Attribute\PrimaryKey;
 #[PrimaryKey('id')]
 class DotenvLog extends Model
 {
-    public $id;
-    public $app_id;
-    public $env;
-    public $created_date;
-    public $created_time;
+    public int $id;
+    public string $app_id;
+    public string $env;
+    public int $created_date;
+    public int $created_time;
 }

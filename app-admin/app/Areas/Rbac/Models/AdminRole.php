@@ -11,13 +11,13 @@ use ManaPHP\Model\Attribute\Table;
 #[Fillable([])]
 class AdminRole extends Model
 {
-    public $id;
-    public $admin_id;
-    public $admin_name;
-    public $role_id;
-    public $role_name;
-    public $creator_name;
-    public $created_time;
+    public int $id;
+    public int $admin_id;
+    public string $admin_name;
+    public int $role_id;
+    public string $role_name;
+    public string $creator_name;
+    public int $created_time;
 
     public function rules(): array
     {
