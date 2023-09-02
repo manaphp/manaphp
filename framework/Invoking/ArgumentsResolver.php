@@ -11,6 +11,7 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
+use ReflectionParameter;
 
 class ArgumentsResolver implements ArgumentsResolverInterface
 {
@@ -50,10 +51,10 @@ class ArgumentsResolver implements ArgumentsResolverInterface
         }
     }
 
-    protected function resolveObjectValue(?string $type, string $name): mixed
+    protected function resolveObjectValue(ReflectionParameter $parameter, ?string $type, string $name): mixed
     {
         foreach ($this->objectValueResolvers as $resolver) {
-            if (($value = $resolver->resolve($type, $name)) !== null) {
+            if (($value = $resolver->resolve($parameter, $type, $name)) !== null) {
                 return $value;
             }
         }
@@ -61,10 +62,10 @@ class ArgumentsResolver implements ArgumentsResolverInterface
         return null;
     }
 
-    protected function resolveScalarValue(?string $type, string $name): mixed
+    protected function resolveScalarValue(ReflectionParameter $parameter, ?string $type, string $name): mixed
     {
         foreach ($this->scalarValueResolvers as $resolver) {
-            if (($value = $resolver->resolve($type, $name)) !== null) {
+            if (($value = $resolver->resolve($parameter, $type, $name)) !== null) {
                 return $value;
             }
         }
@@ -93,8 +94,8 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             }
 
             if ($type !== null && str_contains($type, '\\')) {
-                $value = $this->resolveObjectValue($type, $name) ?? $container->get($type);
-            } elseif (($value = $this->resolveScalarValue($type, $name)) !== null) {
+                $value = $this->resolveObjectValue($rParameter, $type, $name) ?? $container->get($type);
+            } elseif (($value = $this->resolveScalarValue($rParameter, $type, $name)) !== null) {
                 null;
             } elseif ($rParameter->isDefaultValueAvailable()) {
                 $value = $rParameter->getDefaultValue();

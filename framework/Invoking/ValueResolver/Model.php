@@ -9,13 +9,14 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelManagerInterface;
+use ReflectionParameter;
 
 class Model implements ObjectValueResolverInterface
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ModelManagerInterface $modelManager;
 
-    public function resolve(?string $type, string $name): mixed
+    public function resolve(ReflectionParameter $parameter, ?string $type, string $name): mixed
     {
         if (!is_subclass_of($type, ModelInterface::class)) {
             return null;
