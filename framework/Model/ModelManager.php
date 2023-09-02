@@ -184,10 +184,10 @@ class ModelManager implements ModelManagerInterface
     {
         if (($attribute = $this->getClassAttribute($model, Fillable::class)) !== null) {
             /** @var Fillable $attribute */
-            $fillable = $attribute->get();
+            $fillable = $attribute->fields;
         } elseif (($attribute = $this->getClassAttribute($model, Guarded::class)) !== null) {
             /** @var Guarded $attribute */
-            $guarded = $attribute->get();
+            $guarded = $attribute->fields;
             $fillable = [];
             foreach ($this->getFields($model) as $field) {
                 if (!in_array($field, $guarded, true)) {
