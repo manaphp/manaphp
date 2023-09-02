@@ -7,9 +7,9 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
-use ManaPHP\Query\QueryInterface;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Query\QueryInterface;
 
 #[Authorize('@index')]
 class AdminController extends Controller
@@ -72,7 +72,8 @@ class AdminController extends Controller
 
     public function editAction(Admin $admin, $role_ids = [])
     {
-        $admin->load(['email', 'white_ip']);
+        $admin->assign($this->request->all(), ['email', 'white_ip']);
+
         if ($password = input('password', '')) {
             $admin->password = $password;
         }
