@@ -123,7 +123,7 @@ class DbCommand extends Command
         return implode(PHP_EOL, $lines);
     }
 
-    protected function dbTypeToPhpType(string $type)
+    protected function dbTypeToPhpType(string $type): string
     {
         if (preg_match('#^(TINYINT|SMALLINT|MEDIUMINT|INT|BIGINT)#i', $type)) {
             return 'int';
