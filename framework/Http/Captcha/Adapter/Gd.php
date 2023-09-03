@@ -11,41 +11,32 @@ class Gd extends AbstractCaptcha
     {
         $image = imagecreatetruecolor($width, $height);
 
-        $parts = explode(',', $this->bgRGB);
+        $parts = explode(',', $this->bg_rgb);
         $bgColor = imagecolorallocate($image, (int)$parts[0], (int)$parts[1], (int)$parts[2]);
 
         imagefilledrectangle($image, 0, 0, $width, $height, $bgColor);
 
         $fontFile = $this->alias->resolve($this->fonts[random_int(0, count($this->fonts) - 1)]);
 
-        $referenceFontSize = min($height, $width / $this->length);
-
         $x = 0;
-        $points[2] = random_int((int)($referenceFontSize * 0.1), (int)($referenceFontSize * 0.3));
         $length = strlen($code);
         for ($i = 0; $i < $length; $i++) {
-            $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
+            $font_size = $this->size + random_int(-$this->size_noise, $this->size_noise);
             $angle = random_int(-$this->angle_noise, $this->angle_noise);
-            $x += ($points[2] - $x) - round(random_int((int)($fontSize * 0.1), (int)($fontSize * 0.2)));
-            $y = $height - (($height - $referenceFontSize) * random_int(0, 1000) / 1000);
-            $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
-
-            $points = imagettftext($image, $fontSize, $angle, (int)$x, (int)$y, $fgColor, $fontFile, $code[$i]);
+            $fg_color = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
+            $y = $height + random_int(-$this->y_noise, $this->y_noise) - 3;
+            $points = imagettftext($image, $font_size, $angle, (int)$x, $y, $fg_color, $fontFile, $code[$i]);
+            $x += $points[3] + random_int(-$this->x_noise, $this->x_noise) - 3;
         }
 
-        for ($k = 0; $k < $this->noiseCharCount; $k++) {
+        for ($k = 0; $k < $this->char_noise; $k++) {
+            $y = random_int((int)($height * 0.3), (int)($height * 0.7));
+            $x = random_int(0, $width) - $this->size;
             $letter = $this->charset[random_int(0, strlen($this->charset) - 1)];
-            $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
-
+            $fg_color = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
+            $font_size = (int)($this->size / 2 + random_int(-$this->size_noise, $this->size_noise));
             $angle = random_int(-$this->angle_noise, $this->angle_noise);
-            imagettftext(
-                $image,
-                $fontSize * 0.4 * $this->rand_amplitude(0.1),
-                $angle,
-                (int)round($x + random_int((int)(-$fontSize * 1.5), (int)$fontSize)),
-                $height / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5)),
-                $fgColor, $fontFile, $letter
-            );
+            imagettftext($image, $font_size, $angle, $x, $y, $fg_color, $fontFile, $letter);
         }
 
         ob_start();

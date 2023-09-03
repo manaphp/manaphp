@@ -22,11 +22,15 @@ abstract class AbstractCaptcha implements CaptchaInterface
             '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
         ];
     #[Value] protected string $sessionVar = 'captcha';
-    #[Value] protected int $angle_noise = 15;
-    #[Value] protected int $noiseCharCount = 1;
-    #[Value] protected string $bgRGB = '255,255,255';
+    #[Value] protected int $angle_noise = 10;
+    #[Value] protected int $x_noise = 3;
+    #[Value] protected int $y_noise = 3;
+    #[Value] protected int $size = 16;
+    #[Value] protected int $size_noise = 3;
+    #[Value] protected int $char_noise = 2;
+    #[Value] protected string $bg_rgb = '255,255,255';
     #[Value] protected int $length = 4;
-    protected int $minInterval = 1;
+    #[Value] protected int $min_interval = 1;
 
     protected function rand_amplitude(float $a): float
     {
@@ -71,7 +75,7 @@ abstract class AbstractCaptcha implements CaptchaInterface
             $this->session->remove($this->sessionVar);
         }
 
-        if (time() - $sessionVar['created_time'] < $this->minInterval) {
+        if (time() - $sessionVar['created_time'] < $this->min_interval) {
             throw new InvalidCaptchaException('captcha verification is too frequency');
         }
 

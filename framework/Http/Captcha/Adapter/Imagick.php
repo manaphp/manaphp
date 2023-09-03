@@ -13,7 +13,7 @@ class Imagick extends AbstractCaptcha
     {
         $image = new \Imagick();
         $draw = new ImagickDraw();
-        $image->newImage($width, $height, new ImagickPixel('rgb(' . $this->bgRGB . ')'));
+        $image->newImage($width, $height, new ImagickPixel('rgb(' . $this->bg_rgb . ')'));
         $draw->setFont($this->alias->resolve($this->fonts[random_int(0, count($this->fonts) - 1)]));
         $draw->setGravity(\Imagick::GRAVITY_NORTHWEST);
 
@@ -33,7 +33,7 @@ class Imagick extends AbstractCaptcha
             $x += $fontSize * random_int(600, 800) / 1000;
         }
 
-        for ($k = 0; $k < $this->noiseCharCount; $k++) {
+        for ($k = 0; $k < $this->char_noise; $k++) {
             $letter = $this->charset[random_int(0, strlen($this->charset) - 1)];
             $red = random_int(0, 240);
             $green = random_int(0, 240);
