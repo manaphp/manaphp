@@ -23,14 +23,14 @@ class Imagick extends AbstractCaptcha
         $length = strlen($code);
         $fgPixel = new ImagickPixel();
         for ($i = 0; $i < $length; $i++) {
-            $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
-            $draw->setFontSize($fontSize);
+            $font_size = $referenceFontSize * random_int(800, 1000) / 1000;
+            $draw->setFontSize($font_size);
             $fgPixel->setColor('rgb(' . random_int(0, 240) . ',' . random_int(0, 240) . ',' . random_int(0, 240) . ')');
             $draw->setFillColor($fgPixel);
             $angle = random_int(-$this->angle_noise, $this->angle_noise);
             $y = ($height - $referenceFontSize) * random_int(-1000, 1000) / 1000;
             $image->annotateImage($draw, $x, $y, $angle, $code[$i]);
-            $x += $fontSize * random_int(600, 800) / 1000;
+            $x += $font_size * random_int(600, 800) / 1000;
         }
 
         for ($k = 0; $k < $this->char_noise; $k++) {
@@ -40,10 +40,10 @@ class Imagick extends AbstractCaptcha
             $blue = random_int(0, 240);
             $fgPixel->setColor("rgb($red,$green,$blue)");
             $draw->setFillColor($fgPixel);
-            $draw->setFontSize($fontSize * 0.4 * $this->rand_amplitude(0.1));
+            $draw->setFontSize($font_size * 0.4 * $this->rand_amplitude(0.1));
             $angle = random_int(-$this->angle_noise, $this->angle_noise);
-            $noise_x = $x + random_int(-700, 700) / 1000 * $fontSize;
-            $noise_y = $fontSize / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5));
+            $noise_x = $x + random_int(-700, 700) / 1000 * $font_size;
+            $noise_y = $font_size / 2 + random_int((int)(-$font_size * 0.5), (int)($font_size * 0.5));
             $image->annotateImage($draw, $noise_x, $noise_y, $angle, $letter);
         }
 

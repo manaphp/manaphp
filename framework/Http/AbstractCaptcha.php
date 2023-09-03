@@ -19,13 +19,13 @@ abstract class AbstractCaptcha implements CaptchaInterface
         = [
             '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
             '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
-            '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
+            '@manaphp/Http/Captcha/Fonts/Vera.ttf'
         ];
     #[Value] protected string $sessionVar = 'captcha';
     #[Value] protected int $angle_noise = 10;
     #[Value] protected int $x_noise = 3;
     #[Value] protected int $y_noise = 3;
-    #[Value] protected int $size = 16;
+    #[Value] protected int $size = 24;
     #[Value] protected int $size_noise = 3;
     #[Value] protected int $char_noise = 2;
     #[Value] protected string $bg_rgb = '255,255,255';
