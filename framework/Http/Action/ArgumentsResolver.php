@@ -7,5 +7,5 @@ use ManaPHP\Di\Attribute\Value;
 
 class ArgumentsResolver extends \ManaPHP\Invoking\ArgumentsResolver implements ArgumentsResolverInterface
 {
-    #[Value] protected array $resolvers = ['model', 'identity', 'session', 'request'];
+    #[Value] protected array $resolvers = ['model', 'request'];
 }
