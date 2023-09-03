@@ -6,38 +6,18 @@ namespace ManaPHP\Http;
 use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
-use ManaPHP\Validating\ValidatorInterface;
 
 class Request implements RequestInterface, JsonSerializable
 {
     #[Inject] protected MakerInterface $maker;
     #[Inject] protected GlobalsInterface $globals;
-    #[Inject] protected ValidatorInterface $validator;
 
     public function getRawBody(): string
     {
         return $this->globals->getRawBody();
-    }
-
-    protected function normalizeValue(string $field, mixed $value, mixed $default): mixed
-    {
-        $type = gettype($default);
-
-        if ($type === 'string') {
-            return (string)$value;
-        } elseif ($type === 'integer') {
-            return $this->validator->validateValue($field, $value, 'int');
-        } elseif ($type === 'double') {
-            return $this->validator->validateValue($field, $value, 'float');
-        } elseif ($type === 'boolean') {
-            return (bool)$this->validator->validateValue($field, $value, 'bool');
-        } else {
-            return $value;
-        }
     }
 
     public function all(): array
@@ -47,21 +27,7 @@ class Request implements RequestInterface, JsonSerializable
 
     public function get(string $name, mixed $default = null): mixed
     {
-        $source = $this->globals->getRequest();
-
-        if (isset($source[$name]) && $source[$name] !== '') {
-            $value = $source[$name];
-
-            if (is_array($value) && is_scalar($default)) {
-                throw new InvalidValueException(['the value of `{name}` name is not scalar', 'name' => $name]);
-            }
-
-            return $default === null ? $value : $this->normalizeValue($name, $value, $default);
-        } elseif ($default === null) {
-            return $this->validator->validateValue($name, null, ['required']);
-        } else {
-            return $default;
-        }
+        return $this->globals->getRequest()[$name] ?? $default;
     }
 
     public function set(string $name, mixed $value): static
