@@ -31,19 +31,19 @@ class Gd extends AbstractCaptcha
             $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
 
             $points = imagettftext($image, $fontSize, $angle, (int)$x, (int)$y, $fgColor, $fontFile, $code[$i]);
+        }
 
-            for ($k = 0; $k < $this->noiseCharCount; $k++) {
-                $letter = $this->charset[random_int(0, strlen($this->charset) - 1)];
-                $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
-                imagettftext(
-                    $image,
-                    $fontSize * 0.4 * $this->rand_amplitude(0.1),
-                    random_int(-40, 40),
-                    (int)round($x + random_int((int)(-$fontSize * 1.5), (int)$fontSize)),
-                    $height / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5)),
-                    $fgColor, $fontFile, $letter
-                );
-            }
+        for ($k = 0; $k < $this->noiseCharCount; $k++) {
+            $letter = $this->charset[random_int(0, strlen($this->charset) - 1)];
+            $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
+            imagettftext(
+                $image,
+                $fontSize * 0.4 * $this->rand_amplitude(0.1),
+                random_int(-40, 40),
+                (int)round($x + random_int((int)(-$fontSize * 1.5), (int)$fontSize)),
+                $height / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5)),
+                $fgColor, $fontFile, $letter
+            );
         }
 
         ob_start();
