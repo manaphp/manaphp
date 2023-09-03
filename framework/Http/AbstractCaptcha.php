@@ -11,7 +11,6 @@ use ManaPHP\Http\Captcha\InvalidCaptchaException;
 abstract class AbstractCaptcha implements CaptchaInterface
 {
     #[Inject] protected AliasInterface $alias;
-    #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected SessionInterface $session;
 
@@ -52,12 +51,8 @@ abstract class AbstractCaptcha implements CaptchaInterface
         return $this->response;
     }
 
-    public function verify(?string $code = null, bool $isTry = false): void
+    public function verify(string $code, bool $isTry = false): void
     {
-        if ($code === null) {
-            $code = $this->request->get('code');
-        }
-
         if (!$this->session->has($this->sessionVar)) {
             throw new InvalidCaptchaException('captcha is not exist in server');
         }

@@ -33,14 +33,14 @@ class SessionController extends Controller
         return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
     }
 
-    public function loginAction()
+    public function loginAction(string $code)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
         }
 
         if ($this->config->get('env') === 'prod') {
-            $this->captcha->verify();
+            $this->captcha->verify($code);
         } else {
             $this->session->remove('captcha');
         }
