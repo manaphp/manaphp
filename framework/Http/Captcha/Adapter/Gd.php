@@ -25,7 +25,7 @@ class Gd extends AbstractCaptcha
         $length = strlen($code);
         for ($i = 0; $i < $length; $i++) {
             $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
-            $angle = random_int(-$this->angleAmplitude, $this->angleAmplitude);
+            $angle = random_int(-$this->angle_noise, $this->angle_noise);
             $x += ($points[2] - $x) - round(random_int((int)($fontSize * 0.1), (int)($fontSize * 0.2)));
             $y = $height - (($height - $referenceFontSize) * random_int(0, 1000) / 1000);
             $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
@@ -36,10 +36,12 @@ class Gd extends AbstractCaptcha
         for ($k = 0; $k < $this->noiseCharCount; $k++) {
             $letter = $this->charset[random_int(0, strlen($this->charset) - 1)];
             $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
+
+            $angle = random_int(-$this->angle_noise, $this->angle_noise);
             imagettftext(
                 $image,
                 $fontSize * 0.4 * $this->rand_amplitude(0.1),
-                random_int(-40, 40),
+                $angle,
                 (int)round($x + random_int((int)(-$fontSize * 1.5), (int)$fontSize)),
                 $height / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5)),
                 $fgColor, $fontFile, $letter

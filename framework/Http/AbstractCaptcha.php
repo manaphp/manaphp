@@ -22,7 +22,7 @@ abstract class AbstractCaptcha implements CaptchaInterface
             '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
         ];
     #[Value] protected string $sessionVar = 'captcha';
-    protected int $angleAmplitude = 30;
+    #[Value] protected int $angle_noise = 15;
     #[Value] protected int $noiseCharCount = 1;
     #[Value] protected string $bgRGB = '255,255,255';
     #[Value] protected int $length = 4;
