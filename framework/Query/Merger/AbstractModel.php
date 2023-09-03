@@ -22,7 +22,7 @@ abstract class AbstractModel extends \ManaPHP\Model\AbstractModel
         return $queries->setModel($this->getModel())->select($modelManager->getFields(static::class));
     }
 
-    public function create(): static
+    public function create(array $kv = []): static
     {
         throw new NotSupportedException(__METHOD__);
     }
@@ -33,7 +33,7 @@ abstract class AbstractModel extends \ManaPHP\Model\AbstractModel
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function update(): static
+    public function update(array $kv = []): static
     {
         throw new NotSupportedException(__METHOD__);
     }

@@ -33,22 +33,22 @@ class RoleController extends Controller
             $permissions = '';
         }
 
-        return (new Role)->save(['role_name', 'display_name', 'enabled', 'permissions' => $permissions]);
+        return Role::fillCreate($this->request->all(), ['permissions' => $permissions]);
     }
 
     public function editAction(Role $role)
     {
-        return $role->update();
+        return $role->fillUpdate($this->request->all());
     }
 
-    public function disableAction(int $role_id)
+    public function disableAction(Role $role)
     {
-        return Role::get($role_id)->save(['enabled' => 0]);
+        return $role->update(['enabled' => 0]);
     }
 
-    public function enableAction(int $role_id)
+    public function enableAction(Role $role)
     {
-        return Role::get($role_id)->save(['enabled' => 1]);
+        return $role->update(['enabled' => 1]);
     }
 
     public function deleteAction(Role $role)

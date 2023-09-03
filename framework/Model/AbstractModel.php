@@ -10,7 +10,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
@@ -150,11 +149,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     /**
      * @param array $filters =model_var(new static)
-     * @param array $fields  =model_fields(new static)
+     * @param array $data    =model_var(new static)
      *
      * @return static
      */
-    public static function firstOrNew(array $filters, array $fields = []): static
+    public static function firstOrNew(array $filters, array $data = []): static
     {
         if (($instance = static::first($filters)) === null) {
             $instance = new static();
@@ -163,18 +162,18 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             }
         }
 
-        return $instance->load($fields);
+        return $instance->fill($data);
     }
 
     /**
      * @param array $filters =model_var(new static)
-     * @param array $fields  =model_fields(new static)
+     * @param array $data    =model_var(new static)
      *
      * @return static
      */
-    public static function firstOrCreate(array $filters, array $fields = []): static
+    public static function firstOrCreate(array $filters, array $data = []): static
     {
-        return static::firstOrNew($filters, $fields)->save();
+        return static::firstOrNew($filters, $data)->save();
     }
 
     /**
@@ -376,38 +375,19 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return $this;
     }
 
-    /**
-     * @param ?array $fields =model_fields(new static)
-     *
-     * @return static
-     */
-    public function load(?array $fields = null): static
-    {
-        $fields = $fields ?? Container::get(ModelManagerInterface::class)->getFillable(static::class);
-
-        $request = Container::get(RequestInterface::class);
-
-        $data = $request->all();
-
-        foreach ($fields as $k => $v) {
-            if (is_string($k)) {
-                $field = $k;
-                $value = $v;
-            } elseif (isset($data[$field = $v])) {
-                $value = $data[$field];
-            } else {
-                continue;
-            }
-
-            $this->$field = is_string($value) ? trim($value) : $value;
-        }
-
-        return $this;
-    }
-
     public function fill(array $kv): static
     {
         return $this->assign($kv, Container::get(ModelManagerInterface::class)->getFillable(static::class));
+    }
+
+    public static function fillCreate(array $data, array $kv = []): static
+    {
+        return (new static())->fill($data)->create($kv);
+    }
+
+    public function fillUpdate(array $data, array $kv = []): static
+    {
+        return $this->fill($data)->update($kv);
     }
 
     /**
@@ -542,21 +522,17 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     * @param ?array $fields =model_fields(new static)
+     * @param array $kv =model_var(new static)
      *
      * @return static
      */
-    public function save(?array $fields = null): static
+    public function save(array $kv = []): static
     {
-        if ($fields) {
-            $this->load($fields);
-        }
-
         $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
         if ($this->_snapshot || $this->$primaryKey) {
-            return $this->update();
+            return $this->update($kv);
         } else {
-            return $this->create();
+            return $this->create($kv);
         }
     }
 

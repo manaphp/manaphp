@@ -17,14 +17,14 @@ class ItemController extends Controller
             ->all();
     }
 
-    public function createAction(Item $item)
+    public function createAction()
     {
-        return $item->create();
+        return Item::fillCreate($this->request->all());
     }
 
     public function editAction(Item $item)
     {
-        return $item->update();
+        return $item->fillUpdate($this->request->all());
     }
 
     public function deleteAction(Item $item)

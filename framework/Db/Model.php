@@ -27,8 +27,17 @@ class Model extends AbstractModel implements ModelInterface
         return Container::make('ManaPHP\Db\Query')->setModel(static::class);
     }
 
-    public function create(): static
+    /**
+     * @param array $kv =model_var(new static)
+     *
+     * @return static
+     */
+    public function create(array $kv = []): static
     {
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
         $modelManager = Container::get(ModelManagerInterface::class);
 
         $fields = $modelManager->getFields(static::class);
@@ -88,8 +97,17 @@ class Model extends AbstractModel implements ModelInterface
         return $this;
     }
 
-    public function update(): static
+    /**
+     * @param array $kv =model_var(new static)
+     *
+     * @return static
+     */
+    public function update(array $kv = []): static
     {
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
         $modelManager = Container::get(ModelManagerInterface::class);
 
         $primaryKey = $modelManager->getPrimaryKey(static::class);

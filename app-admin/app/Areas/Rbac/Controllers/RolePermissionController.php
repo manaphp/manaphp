@@ -24,25 +24,23 @@ class RolePermissionController extends Controller
             ->all();
     }
 
-    public function saveAction()
+    public function saveAction(Role $role)
     {
-        $role_id = input('role_id');
         $permission_ids = input('permission_ids', []);
 
-        $old_permissions = RolePermission::values('permission_id', ['role_id' => $role_id]);
+        $old_permissions = RolePermission::values('permission_id', ['role_id' => $role->role_id]);
 
         RolePermission::deleteAll(
-            ['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permission_ids))]
+            ['role_id'       => $role->role_id,
+             'permission_id' => array_values(array_diff($old_permissions, $permission_ids))]
         );
 
         foreach (array_diff($permission_ids, $old_permissions) as $permission_id) {
             $rolePermission = new RolePermission();
-            $rolePermission->role_id = $role_id;
+            $rolePermission->role_id = $role->role_id;
             $rolePermission->permission_id = $permission_id;
             $rolePermission->create();
         }
-
-        $role = Role::get($role_id);
 
         $explicit_permissions = Permission::values('path', ['permission_id' => $permission_ids]);
         $paths = $this->authorization->buildAllowed($role->role_name, $explicit_permissions);
@@ -52,8 +50,8 @@ class RolePermissionController extends Controller
         $role->update();
     }
 
-    public function editAction()
+    public function editAction(Role $role)
     {
-        $this->saveAction();
+        $this->saveAction($role);
     }
 }

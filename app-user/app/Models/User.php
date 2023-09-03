@@ -53,8 +53,12 @@ class User extends Model
         return parent::create();
     }
 
-    public function update(): static
+    public function update(array $kv = []): static
     {
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
         if ($this->hasChanged(['password'])) {
             $this->salt = bin2hex(random_bytes(8));
             $this->password = $this->hashPassword($this->password);

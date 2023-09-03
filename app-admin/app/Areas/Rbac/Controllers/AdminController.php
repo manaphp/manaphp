@@ -39,18 +39,18 @@ class AdminController extends Controller
         return Admin::kvalues('admin_name');
     }
 
-    public function lockAction(int $admin_id)
+    public function lockAction(Admin $admin)
     {
-        if ($this->identity->getId() == input('admin_id')) {
+        if ($this->identity->getId() === $admin->admin_id) {
             return '不能锁定自己';
         }
 
-        return Admin::get($admin_id)->save(['status' => Admin::STATUS_LOCKED]);
+        return $admin->update(['status' => Admin::STATUS_LOCKED]);
     }
 
-    public function activeAction(int $admin_id)
+    public function activeAction(Admin $admin)
     {
-        return Admin::get($admin_id)->save(['status' => Admin::STATUS_ACTIVE]);
+        return $admin->update(['status' => Admin::STATUS_ACTIVE]);
     }
 
     public function createAction(Admin $admin, $role_id)

@@ -72,7 +72,7 @@ class PermissionController extends Controller
 
     public function editAction(Permission $permission)
     {
-        return $permission->update();
+        return $permission->fillUpdate($this->request->all());
     }
 
     public function deleteAction(Permission $permission)

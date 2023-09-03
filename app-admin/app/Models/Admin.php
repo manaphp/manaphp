@@ -57,8 +57,12 @@ class Admin extends Model
         return $this->hashPassword($password) === $this->password;
     }
 
-    public function create(): static
+    public function create(array $kv = []): static
     {
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
         $this->salt = bin2hex(random_bytes(8));
 
         $this->password = $this->hashPassword(input('password', ['string', self::PASSWORD_LENGTH]));
@@ -66,8 +70,12 @@ class Admin extends Model
         return parent::create();
     }
 
-    public function update(): static
+    public function update(array $kv = []): static
     {
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
         if ($this->hasChanged(['password'])) {
             $this->salt = bin2hex(random_bytes(8));
             $this->password = $this->hashPassword($this->password);

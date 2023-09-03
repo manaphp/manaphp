@@ -24,7 +24,7 @@ interface ModelInterface
 
     public static function firstOrFail(array $filters, ?array $fields = null): static;
 
-    public static function firstOrNew(array $filters, array $fields = []): static;
+    public static function firstOrNew(array $filters, array $data = []): static;
 
     public static function firstOrCreate(array $filters, array $fields = []): static;
 
@@ -52,19 +52,21 @@ interface ModelInterface
 
     public static function avg(string $field, array $filters = []): ?float;
 
-    public function load(?array $fields = null): static;
-
     public function assign(array|object $data, array $fields): static;
 
     public function fill(array $kv): static;
 
+    public static function fillCreate(array $data, array $kv): static;
+
+    public function fillUpdate(array $data, array $kv): static;
+
     public function validate(?array $fields = null): void;
 
-    public function save(?array $fields = null): static;
+    public function save(array $kv = []): static;
 
-    public function create(): static;
+    public function create(array $kv = []): static;
 
-    public function update(): static;
+    public function update(array $kv = []): static;
 
     public static function updateAll(array $fieldValues, array $filters): int;
 

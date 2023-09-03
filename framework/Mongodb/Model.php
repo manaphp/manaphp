@@ -75,8 +75,17 @@ class Model extends AbstractModel
         return Container::make('ManaPHP\Mongodb\Query')->setModel(static::class);
     }
 
-    public function create(): static
+    /**
+     * @param array $kv =model_var(new static)
+     *
+     * @return static
+     */
+    public function create(array $kv = []): static
     {
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
         $fields = Container::get(ModelManagerInterface::class)->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if (!isset($this->$field)) {
@@ -132,8 +141,17 @@ class Model extends AbstractModel
         return $this;
     }
 
-    public function update(): static
+    /**
+     * @param array $kv =model_var(new static)
+     *
+     * @return static
+     */
+    public function update(array $kv = []): static
     {
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
         $modelManager = Container::get(ModelManagerInterface::class);
 
         $primaryKey = $modelManager->getPrimaryKey(static::class);

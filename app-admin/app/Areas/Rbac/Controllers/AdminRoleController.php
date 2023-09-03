@@ -26,10 +26,9 @@ class AdminRoleController extends Controller
         return AdminRole::all(['admin_id' => input('admin_id')]);
     }
 
-    public function editAction()
+    public function editAction(Admin $admin)
     {
         $new_roles = input('role_ids');
-        $admin = Admin::get(input('admin_id'));
 
         $old_roles = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
         AdminRole::deleteAll(['role_id' => array_values(array_diff($old_roles, $new_roles))]);

@@ -20,6 +20,6 @@ class AccountController extends Controller
     public function registerAction()
     {
         $this->captcha->verify();
-        return (new User)->save(['user_name', 'email', 'password', 'status' => User::STATUS_ACTIVE]);
+        return User::fillCreate($this->request->all(), ['status' => User::STATUS_ACTIVE]);
     }
 }
