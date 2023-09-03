@@ -24,10 +24,8 @@ class RolePermissionController extends Controller
             ->all();
     }
 
-    public function saveAction(Role $role)
+    public function saveAction(Role $role, array $permission_ids = [])
     {
-        $permission_ids = input('permission_ids', []);
-
         $old_permissions = RolePermission::values('permission_id', ['role_id' => $role->role_id]);
 
         RolePermission::deleteAll(
@@ -50,8 +48,8 @@ class RolePermissionController extends Controller
         $role->update();
     }
 
-    public function editAction(Role $role)
+    public function editAction(Role $role, array $permission_ids)
     {
-        $this->saveAction($role);
+        $this->saveAction($role, $permission_ids);
     }
 }

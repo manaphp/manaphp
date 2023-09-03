@@ -11,10 +11,10 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 #[Authorize('@index')]
 class RoleController extends Controller
 {
-    public function indexAction()
+    public function indexAction(string $keyword = '')
     {
         return Role::select()
-            ->whereContains('role_name', input('keyword', ''))
+            ->whereContains('role_name', $keyword)
             ->whereNotIn('role_name', ['guest', 'user', 'admin'])
             ->orderBy(['role_id' => SORT_DESC])
             ->paginate();
@@ -25,13 +25,9 @@ class RoleController extends Controller
         return Role::lists(['display_name', 'role_name']);
     }
 
-    public function createAction()
+    public function createAction(string $role_name)
     {
-        if ($role_name = input('role_name', '')) {
-            $permissions = ',' . implode(',', $this->authorization->buildAllowed($role_name)) . ',';
-        } else {
-            $permissions = '';
-        }
+        $permissions = ',' . implode(',', $this->authorization->buildAllowed($role_name)) . ',';
 
         return Role::fillCreate($this->request->all(), ['permissions' => $permissions]);
     }

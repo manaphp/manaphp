@@ -16,10 +16,8 @@ class DotenvController extends Controller
 
     const REDIS_KEY = '.env';
 
-    public function indexAction()
+    public function indexAction(string $app_id = '')
     {
-        $app_id = input('app_id', '');
-
         if ($app_id === '') {
             return [];
         } else {
@@ -38,11 +36,8 @@ class DotenvController extends Controller
         return $apps;
     }
 
-    public function createAction()
+    public function createAction(string $app_id, string $env)
     {
-        $app_id = input('app_id');
-        $env = input('env');
-
         if ($this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
             return "{$app_id}已存在";
         }
@@ -57,11 +52,8 @@ class DotenvController extends Controller
         $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
 
-    public function editAction()
+    public function editAction(string $app_id, string $env)
     {
-        $app_id = input('app_id');
-        $env = input('env');
-
         if (!$this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
             return "{$app_id}不存在";
         }
@@ -80,8 +72,8 @@ class DotenvController extends Controller
         $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
 
-    public function deleteAction()
+    public function deleteAction(string $app_id)
     {
-        $this->redisDb->hDel(self::REDIS_KEY, input('app_id'));
+        $this->redisDb->hDel(self::REDIS_KEY, $app_id);
     }
 }

@@ -33,7 +33,7 @@ class SessionController extends Controller
         return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
     }
 
-    public function loginAction(string $code)
+    public function loginAction(string $code, string $admin_name, string $password)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
@@ -45,8 +45,8 @@ class SessionController extends Controller
             $this->session->remove('captcha');
         }
 
-        $admin = Admin::first(['admin_name' => input('admin_name')]);
-        if (!$admin || !$admin->verifyPassword(input('password'))) {
+        $admin = Admin::first(['admin_name' => $admin_name]);
+        if (!$admin || !$admin->verifyPassword($password)) {
             return '账号或密码不正确';
         }
 

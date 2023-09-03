@@ -19,14 +19,15 @@ class ObjectController extends Controller
         return $this->bosClient->listBuckets();
     }
 
-    public function indexAction($bucket_name = '')
-    {
+    public function indexAction($bucket_name = '', string $prefix = '', string $extension = '', int $page = 1,
+        int $size = 10
+    ) {
         $filters = [];
 
-        $filters['prefix'] = input('prefix', '');
-        $filters['extension'] = input('extension', '');
-        $filters['page'] = input('page', 1);
-        $filters['size'] = input('size', 10);
+        $filters['prefix'] = $prefix;
+        $filters['extension'] = $extension;
+        $filters['page'] = $page;
+        $filters['size'] = $size;
 
         try {
             return $this->bosClient->listObjects($bucket_name, $filters);
