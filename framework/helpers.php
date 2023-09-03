@@ -135,14 +135,18 @@ if (!function_exists('input')) {
     {
         $request = Container::get(RequestInterface::class);
 
-        if ($defaultOrRules && is_array($defaultOrRules)) {
+        if ($defaultOrRules === null) {
+            $value = $request->get($name);
+        } elseif (is_array($defaultOrRules)) {
             $value = $request->get($name, $defaultOrRules['default'] ?? null);
-
-            return Container::get(ValidatorInterface::class)->validateValue(
-                $name, $value, $defaultOrRules
-            );
         } else {
             return $request->get($name, $defaultOrRules);
+        }
+
+        if ($value === null) {
+            Container::get(ValidatorInterface::class)->validateValue($name, null, 'required');
+        } else {
+            return $value;
         }
     }
 }
