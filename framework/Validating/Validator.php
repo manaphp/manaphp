@@ -238,9 +238,22 @@ class Validator implements ValidatorInterface
         }
     }
 
-    protected function validate_boolean(string $field, mixed $value): ?bool
+    /** @noinspection PhpUnusedParameterInspection */
+    protected function validate_model_bool(string $field, ModelInterface $model): ?int
     {
-        return $this->validate_bool($field, $value);
+        $value = $model->$field;
+
+        if (is_bool($value)) {
+            return (int)$value;
+        }
+
+        if (str_contains(',1,true,on,yes,', ",$value,")) {
+            return 1;
+        } elseif (str_contains(',0,false,off,no,', ",$value,")) {
+            return 0;
+        } else {
+            return null;
+        }
     }
 
     /** @noinspection PhpUnusedParameterInspection */
@@ -251,11 +264,6 @@ class Validator implements ValidatorInterface
         }
 
         return preg_match('#^[+\-]?\d+$#', $value) ? (int)$value : null;
-    }
-
-    protected function validate_integer(string $field, mixed $value): ?int
-    {
-        return $this->validate_int($field, $value);
     }
 
     /** @noinspection PhpUnusedParameterInspection */
@@ -283,11 +291,6 @@ class Validator implements ValidatorInterface
         list(, $d) = explode(',', $parameter);
 
         return sprintf("%.{$d}f", $value);
-    }
-
-    protected function validate_double(string $field, mixed $value): ?float
-    {
-        return $this->validate_float($field, $value);
     }
 
     /** @noinspection PhpUnusedParameterInspection */
