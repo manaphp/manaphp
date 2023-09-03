@@ -334,26 +334,26 @@ class Validator implements ValidatorInterface
     }
 
     /** @noinspection PhpUnusedParameterInspection */
-    protected function validate_length(string $field, string $value, string $parameter): ?string
+    protected function validate_length(string $field, string $value, int|string $parameter): ?string
     {
         $len = mb_strlen($value);
-        if (preg_match('#^(\d+)-(\d+)$#', $parameter, $match)) {
-            return $len >= $match[1] && $len <= $match[2] ? $value : null;
-        } elseif (is_numeric($parameter)) {
+        if (is_numeric($parameter)) {
             return $len === (int)$parameter ? $value : null;
+        } elseif (preg_match('#^(\d+)-(\d+)$#', $parameter, $match)) {
+            return $len >= $match[1] && $len <= $match[2] ? $value : null;
         } else {
             throw new InvalidValueException(['length validator `{1}` parameter is not {min}-{max} format', $parameter]);
         }
     }
 
     /** @noinspection PhpUnusedParameterInspection */
-    protected function validate_minLength(string $field, string $value, int $parameter): ?string
+    protected function validate_minLength(string $field, string $value, int|string $parameter): ?string
     {
         return mb_strlen($value) >= $parameter ? $value : null;
     }
 
     /** @noinspection PhpUnusedParameterInspection */
-    protected function validate_maxLength(string $field, string $value, string $parameter): ?string
+    protected function validate_maxLength(string $field, string $value, int|string $parameter): ?string
     {
         return mb_strlen($value) <= $parameter ? $value : null;
     }
