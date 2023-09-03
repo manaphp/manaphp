@@ -377,7 +377,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function fill(array $kv): static
     {
-        return $this->assign($kv, Container::get(ModelManagerInterface::class)->getFillable(static::class));
+        foreach (Container::get(ModelManagerInterface::class)->getFillable(static::class) as $field) {
+            if (($val = $kv[$field] ?? null) !== null) {
+                $this->$field = is_string($val) ? trim($val) : $val;
+            }
+        }
+
+        return $this;
     }
 
     public static function fillCreate(array $data, array $kv = []): static
@@ -468,7 +474,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             if (str_contains(',created_time,createdTime,created_at,createdAt,', $needle)) {
                 $data[$field] = $dateFormat === 'U' ? time() : date($dateFormat, $current_time);
             } elseif (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = date($dateFormat, $current_time);
+                $data[$field] = $dateFormat === 'U' ? time() : date($dateFormat, $current_time);
             } elseif (str_contains(',creator_id,creatorId,created_id,createdId,', $needle)) {
                 $data[$field] = $user_id;
             } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
