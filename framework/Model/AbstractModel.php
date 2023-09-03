@@ -379,6 +379,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     {
         foreach (Container::get(ModelManagerInterface::class)->getFillable(static::class) as $field) {
             if (($val = $kv[$field] ?? null) !== null) {
+                if (is_bool($val)) {
+                    $val = (int)$val;
+                } elseif (is_float($val)) {
+                    $val = (string)$val;
+                }
                 $this->$field = is_string($val) ? trim($val) : $val;
             }
         }
