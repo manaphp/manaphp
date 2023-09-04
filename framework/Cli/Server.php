@@ -41,7 +41,7 @@ class Server implements ServerInterface
             $this->exit_code = $this->dispatcher->dispatch($command, $action, $params);
         } catch (AbortException $exception) {
             $this->exit_code = 0;
-        } catch (\ManaPHP\Cli\Request\Exception $exception) {
+        } catch (OptionsException $exception) {
             $this->exit_code = 254;
             $this->errorHandler->handle($exception);
         } catch (Throwable $throwable) {

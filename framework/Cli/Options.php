@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Cli\Request\Exception as RequestException;
 use ReflectionMethod;
 
 class Options implements OptionsInterface
@@ -47,7 +46,7 @@ class Options implements OptionsInterface
 
             if ($o[1] === '-') {
                 if (strlen($o) < 3) {
-                    throw new RequestException(['long `{option}` option is too short', 'option' => $o]);
+                    throw new OptionsException(['long `{option}` option is too short', 'option' => $o]);
                 }
 
                 if ($arguments === []) {
@@ -93,7 +92,7 @@ class Options implements OptionsInterface
         }
 
         if (str_contains($name, '-')) {
-            throw new RequestException(['please remove `-` characters for `{argument}` argument', 'argument' => $name]);
+            throw new OptionsException(['please remove `-` characters for `{argument}` argument', 'argument' => $name]);
         }
 
         foreach (preg_split('#[|,:]+#', $name) as $o) {
@@ -113,7 +112,7 @@ class Options implements OptionsInterface
                 $options[] = (strlen($opt) === 1 ? '-' : '--') . $opt;
             }
 
-            throw new RequestException('missing required options `' . implode('` or `', $options) . '` option');
+            throw new OptionsException('missing required options `' . implode('` or `', $options) . '` option');
         }
 
         return $default;
