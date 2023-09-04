@@ -25,6 +25,33 @@ class Request implements RequestInterface, JsonSerializable
         return $this->globals->getRequest();
     }
 
+    public function only(array $names): array
+    {
+        $data = [];
+        $request = $this->globals->getRequest();
+
+        foreach ($names as $name) {
+            if (($val = $request[$name] ?? null) !== null) {
+                $data[$name] = $val;
+            }
+        }
+
+        return $data;
+    }
+
+    public function except(array $names): array
+    {
+        $data = [];
+
+        foreach ($this->globals->getRequest() as $name => $val) {
+            if (!in_array($name, $names, true)) {
+                $data[$name] = $val;
+            }
+        }
+
+        return $data;
+    }
+
     public function get(string $name, mixed $default = null): mixed
     {
         return $this->globals->getRequest()[$name] ?? $default;
