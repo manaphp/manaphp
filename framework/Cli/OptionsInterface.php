@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-interface RequestInterface
+interface OptionsInterface
 {
     public function parse(?array $arguments = null): static;
 
@@ -14,14 +14,6 @@ interface RequestInterface
     public function getValue(int $position, mixed $default = null): mixed;
 
     public function getValues(): array;
-
-    public function getServer(?string $name = null, mixed $default = ''): mixed;
-
-    public function hasServer(string $name): bool;
-
-    public function getRequestId(): string;
-
-    public function setRequestId(?string $request_id = null): void;
 
     public function completeShortNames(object $instance, string $action): void;
 }

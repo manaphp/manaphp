@@ -18,7 +18,7 @@ class Dispatcher implements DispatcherInterface
     #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
     #[Inject] protected ConsoleInterface $console;
     #[Inject] protected ContainerInterface $container;
-    #[Inject] protected RequestInterface $request;
+    #[Inject] protected OptionsInterface $options;
 
     #[Value] protected array $commands = ['App\Commands\*Command', 'ManaPHP\Commands\*Command'];
 
@@ -73,7 +73,7 @@ class Dispatcher implements DispatcherInterface
             return $this->console->error("`$cmd` action is not exists");
         }
 
-        $this->request->completeShortNames($instance, $method);
+        $this->options->completeShortNames($instance, $method);
         $this->eventDispatcher->dispatch(new CliInvoking($this, $instance, $method, $action));
         $arguments = $this->argumentsResolver->resolve($instance, $method);
         $return = $instance->$method(...$arguments);

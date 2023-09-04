@@ -6,14 +6,14 @@ namespace ManaPHP\Commands;
 use DateTime;
 use DateTimeZone;
 use ManaPHP\Cli\Command;
-use ManaPHP\Cli\RequestInterface;
+use ManaPHP\Cli\OptionsInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\ClientInterface;
 
 class DateCommand extends Command
 {
     #[Inject] protected ClientInterface $httpClient;
-    #[Inject] protected RequestInterface $request;
+    #[Inject] protected OptionsInterface $options;
 
     /**
      * @param string $url
@@ -114,7 +114,7 @@ class DateCommand extends Command
      */
     public function setAction(string $date = '', string $time = ''): int
     {
-        $arguments = $this->request->getValues();
+        $arguments = $this->options->getValues();
         if (count($arguments) === 1) {
             $argument = $arguments[0];
             if ($argument[0] === 't') {

@@ -6,13 +6,12 @@ namespace ManaPHP\Cli;
 use ManaPHP\Cli\Request\Exception as RequestException;
 use ReflectionMethod;
 
-class Request implements RequestInterface
+class Options implements OptionsInterface
 {
     protected array $options = [];
     protected array $values = [];
     protected string $prefix;
     protected int $count = 0;
-    protected string $request_id;
 
     public function __construct()
     {
@@ -144,34 +143,6 @@ class Request implements RequestInterface
     public function getValues(): array
     {
         return $this->values;
-    }
-
-    public function getServer(?string $name = null, mixed $default = ''): mixed
-    {
-        if ($name === null) {
-            return $_SERVER;
-        } else {
-            return $_SERVER[$name] ?? $default;
-        }
-    }
-
-    public function hasServer(string $name): bool
-    {
-        return isset($_SERVER[$name]);
-    }
-
-    public function getRequestId(): string
-    {
-        return $this->request_id;
-    }
-
-    public function setRequestId(?string $request_id = null): void
-    {
-        if ($request_id) {
-            $this->request_id = $request_id;
-        } else {
-            $this->request_id = $this->prefix . sprintf('%08x', $this->count++);
-        }
     }
 
     public function completeShortNames(object $instance, string $action): void

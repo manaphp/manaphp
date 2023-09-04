@@ -5,7 +5,7 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
-use ManaPHP\Cli\RequestInterface;
+use ManaPHP\Cli\OptionsInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
@@ -13,7 +13,7 @@ use ManaPHP\Helper\Str;
 class AreaCommand extends Command
 {
     #[Inject] protected AliasInterface $alias;
-    #[Inject] protected RequestInterface $request;
+    #[Inject] protected OptionsInterface $options;
 
     /**
      * create area directory tree
@@ -24,7 +24,7 @@ class AreaCommand extends Command
      */
     public function createAction(string $area = ''): int
     {
-        if ($area === '' && !$area = $this->request->getValue(0)) {
+        if ($area === '' && !$area = $this->options->getValue(0)) {
             return $this->console->error('area name is not provided');
         }
 

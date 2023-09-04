@@ -18,7 +18,7 @@ class Server implements ServerInterface
     #[Inject] protected ErrorHandlerInterface $errorHandler;
     #[Inject] protected RouterInterface $router;
     #[Inject] protected DispatcherInterface $dispatcher;
-    #[Inject] protected RequestInterface $request;
+    #[Inject] protected OptionsInterface $options;
     protected int $exit_code;
 
     /**
@@ -36,7 +36,7 @@ class Server implements ServerInterface
             $action = $this->router->getAction();
             $params = $this->router->getParams();
 
-            $this->request->parse($params);
+            $this->options->parse($params);
 
             $this->exit_code = $this->dispatcher->dispatch($command, $action, $params);
         } catch (AbortException $exception) {
