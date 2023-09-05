@@ -49,7 +49,6 @@ class Options implements OptionsInterface, JsonSerializable, Stringable
             }
         }
 
-        echo PHP_EOL, json_stringify($this->options), PHP_EOL;
         return $this->options;
     }
 
