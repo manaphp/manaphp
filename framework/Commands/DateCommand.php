@@ -114,7 +114,7 @@ class DateCommand extends Command
      */
     public function setAction(string $date = '', string $time = ''): int
     {
-        $arguments = $this->options->getValues();
+        $arguments = explode(' ', $this->options->get(''));
         if (count($arguments) === 1) {
             $argument = $arguments[0];
             if ($argument[0] === 't') {

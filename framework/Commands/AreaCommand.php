@@ -24,7 +24,7 @@ class AreaCommand extends Command
      */
     public function createAction(string $area = ''): int
     {
-        if ($area === '' && !$area = $this->options->getValue(0)) {
+        if ($area === '' && ($area = $this->options->get('') !== null)) {
             return $this->console->error('area name is not provided');
         }
 

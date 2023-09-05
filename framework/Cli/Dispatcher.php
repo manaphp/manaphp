@@ -73,7 +73,6 @@ class Dispatcher implements DispatcherInterface
             return $this->console->error("`$cmd` action is not exists");
         }
 
-        $this->options->completeShortNames($instance, $method);
         $this->eventDispatcher->dispatch(new CliInvoking($this, $instance, $method, $action));
         $arguments = $this->argumentsResolver->resolve($instance, $method);
         $return = $instance->$method(...$arguments);

@@ -5,6 +5,7 @@ namespace ManaPHP\Invoking\ValueResolver;
 
 use ManaPHP\Cli\OptionsInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Helper\Str;
 use ManaPHP\Invoking\ScalarValueResolverInterface;
 use ReflectionParameter;
 
@@ -14,8 +15,13 @@ class Options implements ScalarValueResolverInterface
 
     public function resolve(ReflectionParameter $parameter, ?string $type, string $name): mixed
     {
-        if ($this->options->has($name)) {
-            return $this->options->get($name, $type === 'array' ? [] : '');
+        $option = $name . '|' . $name[0];
+        if (($value = $this->options->get($option)) === null) {
+            $value = $this->options->get(Str::snakelize($name));
+        }
+
+        if ($value !== null) {
+            return $type === 'bool' ? !in_array($value, ['0', 'false', 'FALSE'], true) : $value;
         } else {
             return null;
         }

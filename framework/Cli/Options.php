@@ -3,116 +3,72 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-use ReflectionMethod;
+use JsonSerializable;
+use Stringable;
 
-class Options implements OptionsInterface
+class Options implements OptionsInterface, JsonSerializable, Stringable
 {
+    protected array $argv;
     protected array $options = [];
-    protected array $values = [];
-    protected string $prefix;
-    protected int $count = 0;
 
-    public function __construct()
+    public function parse(array $argv): array
     {
-        $this->prefix = bin2hex(random_bytes(4));
-    }
-
-    public function parse(?array $arguments = null): static
-    {
-        $this->values = [];
+        $this->argv = $argv;
         $this->options = [];
 
-        if (in_array(end($arguments), ['', '-', '--'], true)) {
-            array_pop($arguments);
-        }
-
-        while ($arguments) {
-            $o = array_shift($arguments);
-            if ($o[0] !== '-') {
-                $this->values[] = $o;
-                continue;
+        while ($argv !== []) {
+            if (!str_starts_with($argv[0], '-')) {
+                $this->options[''] = implode(' ', $argv);
+                break;
             }
 
-            if (str_contains($o, '=')) {
-                $parts = explode('=', $o, 2);
+            $option = array_shift($argv);
+
+            if (str_contains($option, '=')) {
+                $parts = explode('=', $option, 2);
                 $this->options[ltrim($parts[0], '-')] = $parts[1];
                 continue;
             }
 
-            if (preg_match('#^-((\w)|-([\w\-]+))=(.*)$#', $o, $match)) {
-                $this->options[$match[2]] = $match[4];
-                continue;
-            }
-
-            if ($o[1] === '-') {
-                if (strlen($o) < 3) {
-                    throw new OptionsException(['long `{option}` option is too short', 'option' => $o]);
-                }
-
-                if ($arguments === []) {
-                    $value = 1;
-                } elseif ($arguments[0] === '') {
-                    $value = array_shift($arguments);
-                } elseif ($arguments[0][0] === '-') {
-                    $value = 1;
+            if ($option === '--') {
+                $this->options[''] = implode(' ', $argv);
+                break;
+            } elseif (str_starts_with($option, '--') || strlen($option) === 2) {
+                if ($argv === []) {
+                    $value = '';
+                } elseif ($argv[0] !== '-' && str_starts_with($argv[0], '-')) {
+                    $value = '';
                 } else {
-                    $value = array_shift($arguments);
+                    $value = array_shift($argv);
                 }
-                $this->options[substr($o, 2)] = $value;
-            } elseif (strlen($o) > 2) {
-                if (!$arguments || $arguments[0][0] === '-') {
-                    foreach (str_split(substr($o, 1)) as $c) {
-                        $this->options[$c] = 1;
-                    }
-                } else {
-                    $this->options[substr($o, 1)] = array_shift($arguments);
-                }
+                $this->options[ltrim($option, '-')] = $value;
             } else {
-                if ($arguments === []) {
-                    $value = 1;
-                } elseif ($arguments[0] === '') {
-                    $value = array_shift($arguments);
-                } elseif ($arguments[0][0] === '-') {
-                    $value = 1;
-                } else {
-                    $value = array_shift($arguments);
+                foreach (str_split(substr($option, 1)) as $c) {
+                    $this->options[$c] = '';
                 }
-
-                $this->options[substr($o, 1)] = $value;
             }
         }
 
-        return $this;
+        echo PHP_EOL, json_stringify($this->options), PHP_EOL;
+        return $this->options;
     }
 
-    public function get(null|string|int $name = null, mixed $default = null): mixed
+    public function all(): array
     {
-        if ($name === null) {
-            return $this->options;
-        }
+        return $this->options;
+    }
 
-        if (str_contains($name, '-')) {
-            throw new OptionsException(['please remove `-` characters for `{argument}` argument', 'argument' => $name]);
-        }
-
-        foreach (preg_split('#[|,:]+#', $name) as $o) {
-            if (isset($this->options[$o])) {
-                return $this->options[$o];
-            } elseif (str_contains($o, '_')) {
-                $o = strtr($o, '_', '-');
-                if (isset($this->options[$o])) {
-                    return $this->options[$o];
+    public function get(string $name, mixed $default = null): ?string
+    {
+        foreach (explode('|', $name) as $option) {
+            if (isset($this->options[$option])) {
+                return $this->options[$option];
+            } elseif (str_contains($option, '_')) {
+                $option = strtr($option, '_', '-');
+                if (isset($this->options[$option])) {
+                    return $this->options[$option];
                 }
             }
-        }
-
-        if ($default === null) {
-            $options = [];
-            foreach (preg_split('#[|,:]+#', $name) as $opt) {
-                $options[] = (strlen($opt) === 1 ? '-' : '--') . $opt;
-            }
-
-            throw new OptionsException('missing required options `' . implode('` or `', $options) . '` option');
         }
 
         return $default;
@@ -120,56 +76,16 @@ class Options implements OptionsInterface
 
     public function has(string $name): bool
     {
-        foreach (preg_split('#[|,:]+#', $name) as $p) {
-            if (isset($this->options[$p])) {
-                return true;
-            } elseif (str_contains($p, '_')) {
-                $p = strtr($p, '_', '-');
-                if (isset($this->options[$p])) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $this->get($name) !== null;
     }
 
-    public function getValue(int $position, mixed $default = null): mixed
+    public function jsonSerialize(): mixed
     {
-        return $this->values[$position] ?? $default;
+        return $this->options;
     }
 
-    public function getValues(): array
+    public function __toString(): string
     {
-        return $this->values;
-    }
-
-    public function completeShortNames(object $instance, string $action): void
-    {
-        $shorts = [];
-        $rMethod = new ReflectionMethod($instance, $action);
-        foreach ($rMethod->getParameters() as $rParameter) {
-            $name = $rParameter->getName();
-
-            if (($rType = $rParameter->getType()) !== null && !preg_match('#^[a-z]+$#', $rType->getName())) {
-                continue;
-            }
-
-            $short = $name[0];
-            if (isset($names[$short])) {
-                $shorts[$short] = false;
-            } else {
-                $shorts[$short] = $name;
-            }
-        }
-        $shorts = array_filter($shorts);
-
-        foreach ($this->options as $k => $v) {
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (is_string($k) && strlen($k) === 1 && isset($shorts[$k])) {
-                $verbose = $shorts[$k];
-                $this->options[$verbose] ??= $v;
-            }
-        }
+        return json_stringify($this->jsonSerialize());
     }
 }
