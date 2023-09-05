@@ -12,7 +12,7 @@ use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class Dispatcher implements DispatcherInterface
+class Handler implements HandlerInterface
 {
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
@@ -56,7 +56,7 @@ class Dispatcher implements DispatcherInterface
         return null;
     }
 
-    public function dispatch(string $command, string $action, array $params): int
+    public function handle(string $command, string $action, array $params): int
     {
         $command = Str::pascalize($command);
         $action = Str::camelize($action);
