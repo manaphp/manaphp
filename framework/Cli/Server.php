@@ -16,9 +16,8 @@ class Server implements ServerInterface
 {
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected ErrorHandlerInterface $errorHandler;
-    #[Inject] protected RouterInterface $router;
     #[Inject] protected HandlerInterface $handler;
-    #[Inject] protected OptionsInterface $options;
+
     protected int $exit_code;
 
     /**
@@ -30,15 +29,7 @@ class Server implements ServerInterface
         $this->logger->info('command line: {0}', [basename($GLOBALS['argv'][0]) . ' ' . $args]);
 
         try {
-            $this->router->route($GLOBALS['argv']);
-
-            $command = $this->router->getCommand();
-            $action = $this->router->getAction();
-            $params = $this->router->getParams();
-
-            $this->options->parse($params);
-
-            $this->exit_code = $this->handler->handle($command, $action, $params);
+            $this->exit_code = $this->handler->handle($GLOBALS['argv']);
         } catch (AbortException $exception) {
             $this->exit_code = 0;
         } catch (OptionsException $exception) {

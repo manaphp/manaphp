@@ -5,5 +5,13 @@ namespace ManaPHP\Cli;
 
 interface HandlerInterface
 {
-    public function handle(string $command, string $action, array $params): int;
+    public function handle(array $args): int;
+
+    public function getEntrypoint(): string;
+
+    public function getCommand(): string;
+
+    public function getAction(): string;
+
+    public function getParams(): array;
 }

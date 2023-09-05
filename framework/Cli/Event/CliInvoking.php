@@ -9,9 +9,9 @@ class CliInvoking
 {
     public function __construct(
         public HandlerInterface $handler,
-        public object           $command,
-        public string           $method,
-        public string           $action,
+        public object $command,
+        public string $method,
+        public string $action,
     ) {
 
     }

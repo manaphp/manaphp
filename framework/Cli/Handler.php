@@ -22,7 +22,49 @@ class Handler implements HandlerInterface
 
     #[Value] protected array $commands = ['App\Commands\*Command', 'ManaPHP\Commands\*Command'];
 
-    protected function getCommand(string $command): ?string
+    protected string $entrypoint;
+    protected ?string $command;
+    protected ?string $action;
+    protected array $params;
+
+    protected function route(array $args): void
+    {
+        $this->entrypoint = array_shift($args);
+
+        if ($args === [] || $args === ['--help'] || $args === ['-h']) {
+            $this->command = 'help';
+            $this->action = 'commands';
+            $this->params = [];
+        } else {
+            $cmd = array_shift($args);
+            if (str_contains($cmd, ':')) {
+                list($command, $action) = explode(':', $cmd, 2);
+            } elseif (str_contains($cmd, '/')) {
+                list($command, $action) = explode('/', $cmd, 2);
+            } else {
+                $command = $cmd;
+                $action = null;
+            }
+
+            if ($args === ['--help'] || $args === ['-h']) {
+                $args = ['--command', $command];
+
+                if ($action !== null) {
+                    $args[] = '--action';
+                    $args[] = $action;
+                }
+
+                $command = 'help';
+                $action = 'command';
+            }
+
+            $this->command = $command;
+            $this->action = $action ?? 'default';
+            $this->params = $args;
+        }
+    }
+
+    protected function getCommandClassName(string $command): ?string
     {
         foreach ($this->commands as $name) {
             if (class_exists($class = str_replace('*', $command, $name))) {
@@ -56,14 +98,18 @@ class Handler implements HandlerInterface
         return null;
     }
 
-    public function handle(string $command, string $action, array $params): int
+    public function handle(array $args): int
     {
-        $command = Str::pascalize($command);
-        $action = Str::camelize($action);
+        $this->route($args);
+
+        $this->options->parse($this->params);
+
+        $command = Str::pascalize($this->command);
+        $action = Str::camelize($this->action);
 
         $cmd = lcfirst($command) . ':' . $action;
 
-        if (($class = $this->getCommand($command)) === null) {
+        if (($class = $this->getCommandClassName($command)) === null) {
             return $this->console->error("`$cmd` command is not exists");
         }
 
@@ -84,5 +130,25 @@ class Handler implements HandlerInterface
         } else {
             return $this->console->error($return);
         }
+    }
+
+    public function getEntrypoint(): string
+    {
+        return $this->entrypoint;
+    }
+
+    public function getCommand(): string
+    {
+        return $this->command;
+    }
+
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 }

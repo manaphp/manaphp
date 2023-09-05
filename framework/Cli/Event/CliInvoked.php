@@ -9,10 +9,10 @@ class CliInvoked
 {
     public function __construct(
         public HandlerInterface $handler,
-        public object           $command,
-        public string           $method,
-        public string           $action,
-        public mixed            $return,
+        public object $command,
+        public string $method,
+        public string $action,
+        public mixed $return,
     ) {
 
     }
