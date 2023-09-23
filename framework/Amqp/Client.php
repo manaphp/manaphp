@@ -129,6 +129,7 @@ class Client implements ClientInterface
         string $tag = ''
     ): string {
         if ($this->engine === null) {
+            /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
             $this->engine = $this->poolManager->pop($this, $this->timeout);
         }
 
