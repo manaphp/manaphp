@@ -17,11 +17,6 @@ class Kernel
 
     #[Value] protected string $rootDir;
 
-    public function __construct()
-    {
-        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container;
-    }
-
     public function registerDefaultDependencies(): void
     {
         $this->container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
@@ -102,6 +97,8 @@ class Kernel
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define('MANAPHP_COROUTINE_ENABLED', $this->detectCoroutineCanEnabled());
         }
+
+        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container;
 
         $this->registerDefaultDependencies();
         $this->registerDefaultAliases();

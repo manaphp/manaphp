@@ -27,17 +27,11 @@ class Container
 
     public static function make(string $class, array $parameters = []): mixed
     {
-        /** @var ContainerInterface $container */
-        $container = $GLOBALS['Psr\Container\ContainerInterface'];
-
-        return $container->get(MakerInterface::class)->make($class, $parameters);
+        return self::get(MakerInterface::class)->make($class, $parameters);
     }
 
     public static function call(callable $callable, array $parameters = []): mixed
     {
-        /** @var ContainerInterface $container */
-        $container = $GLOBALS['Psr\Container\ContainerInterface'];
-
-        return $container->get(InvokerInterface::class)->call($callable, $parameters);
+        return self::get(InvokerInterface::class)->call($callable, $parameters);
     }
 }
