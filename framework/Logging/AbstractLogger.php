@@ -9,7 +9,6 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Http\RequestInterface;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\Logger\Log;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -23,7 +22,6 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected AliasInterface $alias;
-    #[Inject] protected RequestInterface $request;
 
     #[Value] protected string $level = LogLevel::DEBUG;
     #[Value] protected ?string $hostname;

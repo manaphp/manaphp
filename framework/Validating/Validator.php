@@ -18,7 +18,6 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\I18n\LocaleInterface;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelManagerInterface;
-use ManaPHP\Model\ThoseInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
@@ -26,7 +25,6 @@ class Validator implements ValidatorInterface
 {
     #[Inject] protected LocaleInterface $locale;
     #[Inject] protected RequestInterface $request;
-    #[Inject] protected ThoseInterface $those;
     #[Inject] protected PurifierInterface $htmlPurifier;
     #[Inject] protected ModelManagerInterface $modelManager;
 
