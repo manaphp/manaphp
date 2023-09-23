@@ -25,7 +25,6 @@ class Tracer implements TracerInterface
 
     #[Value] protected array $ignores = [];
     #[Value] protected array $events = [];
-    #[Value] protected ?bool $enabled;
     #[Value] protected bool $verbose = true;
 
     protected array $listeners = [];
@@ -93,10 +92,6 @@ class Tracer implements TracerInterface
 
     public function start(): void
     {
-        if ($this->enabled !== true && $this->config->get('env') !== 'dev') {
-            return;
-        }
-
         $this->listeners = $this->getListeners();
 
         $this->listenerProvider->on('*', [$this, 'onEvent']);
