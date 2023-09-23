@@ -210,7 +210,7 @@ class Swoole extends AbstractServer
         if ($this->response->getStatusCode() === 304) {
             $response->end('');
         } elseif ($this->request->isHead()) {
-            $response->header('Content-Length', strlen($content), false);
+            $response->header('Content-Length', (string)strlen($content), false);
             $response->end('');
         } elseif ($file = $this->response->getFile()) {
             $response->sendfile($this->alias->resolve($file));
