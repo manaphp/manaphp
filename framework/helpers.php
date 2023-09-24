@@ -144,7 +144,7 @@ if (!function_exists('input')) {
         }
 
         if ($value === null) {
-            Container::get(ValidatorInterface::class)->validateValue($name, null, 'required');
+            return Container::get(ValidatorInterface::class)->validateValue($name, null, 'required');
         } else {
             return $value;
         }
