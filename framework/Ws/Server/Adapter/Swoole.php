@@ -271,7 +271,7 @@ class Swoole implements ServerInterface
 
     public function disconnect(int $fd): bool
     {
-        return $this->swoole->disconnect($fd, 1000, '');
+        return $this->swoole->disconnect($fd, 1000);
     }
 
     public function exists(int $fd): bool

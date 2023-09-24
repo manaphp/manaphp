@@ -35,7 +35,7 @@ class DaemonCommand extends Command
 
         /** @noinspection PhpUnusedLocalVariableInspection */
         foreach ($this->commands as $command) {
-            Process::wait(true);
+            Process::wait();
         }
     }
 }

@@ -500,12 +500,14 @@ class Validator implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_in(string $field, mixed $value, string $parameter): mixed
     {
+        /** @noinspection PhpRedundantOptionalArgumentInspection */
         return in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_not_in(string $field, mixed $value, string $parameter): mixed
     {
+        /** @noinspection PhpRedundantOptionalArgumentInspection */
         return !in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
