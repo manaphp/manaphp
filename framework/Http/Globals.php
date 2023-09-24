@@ -135,8 +135,8 @@ class Globals implements GlobalsInterface, JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
-        return $this->get();
+        return (array)$this->get();
     }
 }

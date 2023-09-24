@@ -132,7 +132,7 @@ class Env implements EnvInterface, JsonSerializable
         }
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->all();
     }

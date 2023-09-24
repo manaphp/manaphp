@@ -47,7 +47,7 @@ class Cookies implements CookiesInterface, JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->all();
     }

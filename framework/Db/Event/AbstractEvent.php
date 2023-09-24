@@ -8,7 +8,7 @@ use Stringable;
 
 class AbstractEvent implements JsonSerializable, Stringable
 {
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         $vars = get_object_vars($this);
         unset($vars['db'], $vars['pdo']);

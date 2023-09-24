@@ -78,7 +78,7 @@ class Options implements OptionsInterface, JsonSerializable, Stringable
         return $this->get($name) !== null;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->options;
     }

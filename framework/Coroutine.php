@@ -20,7 +20,7 @@ class Coroutine
         return $traces;
     }
 
-    public static function create(callable $func, ...$params): mixed
+    public static function create(callable $func, ...$params): int|bool
     {
         return \Swoole\Coroutine::create($func, ...$params);
     }

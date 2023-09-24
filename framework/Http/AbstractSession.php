@@ -406,7 +406,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->all();
     }

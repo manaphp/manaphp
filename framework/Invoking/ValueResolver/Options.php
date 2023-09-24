@@ -13,7 +13,7 @@ class Options implements ScalarValueResolverInterface
 {
     #[Inject] protected OptionsInterface $options;
 
-    public function resolve(ReflectionParameter $parameter, ?string $type, string $name): mixed
+    public function resolve(ReflectionParameter $parameter, ?string $type, string $name): string|bool|null
     {
         $option = $name . '|' . $name[0];
         if (($value = $this->options->get($option)) === null) {

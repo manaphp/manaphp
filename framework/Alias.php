@@ -94,7 +94,7 @@ class Alias implements AliasInterface, JsonSerializable
         return $this->aliases[$alias] . substr($path, $pos);
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->all();
     }

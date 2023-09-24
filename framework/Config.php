@@ -40,7 +40,7 @@ class Config implements ConfigInterface, JsonSerializable
         return isset($this->config[$key]);
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->all();
     }

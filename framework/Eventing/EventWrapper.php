@@ -15,7 +15,7 @@ class EventWrapper implements JsonSerializable, Stringable
 
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         $data = [];
 

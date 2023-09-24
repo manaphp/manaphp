@@ -19,7 +19,7 @@ class Model implements ObjectValueResolverInterface
     #[Inject] protected ModelManagerInterface $modelManager;
     #[Inject] protected ValidatorInterface $validator;
 
-    public function resolve(ReflectionParameter $parameter, ?string $type, string $name): mixed
+    public function resolve(ReflectionParameter $parameter, ?string $type, string $name): ?ModelInterface
     {
         if (!is_subclass_of($type, ModelInterface::class)) {
             return null;
