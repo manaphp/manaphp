@@ -91,7 +91,6 @@ class Kernel
         return PHP_SAPI === 'cli' && extension_loaded('swoole');
     }
 
-    /** @noinspection PhpNoReturnAttributeCanBeAddedInspection */
     public function start(string $server): void
     {
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
