@@ -26,7 +26,7 @@ interface ModelInterface
 
     public static function firstOrNew(array $filters, array $data = []): static;
 
-    public static function firstOrCreate(array $filters, array $fields = []): static;
+    public static function firstOrCreate(array $filters, array $data = []): static;
 
     public static function last(array $filters, ?array $fields = null): ?static;
 
