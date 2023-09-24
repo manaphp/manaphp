@@ -188,7 +188,7 @@ class Swoole implements ServerInterface
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
         foreach ($old_context as $k => $v) {
-            $current_context[$k] = $v;
+            $current_context->$k = $v;
         }
 
         try {
