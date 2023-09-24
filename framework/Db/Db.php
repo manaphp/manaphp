@@ -53,6 +53,7 @@ class Db implements DbInterface
     protected float $timeout = 3.0;
     protected string $pool_size = '4';
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         if (str_contains($this->uri, 'timeout=') && preg_match('#timeout=([\d.]+)#', $this->uri, $matches) === 1) {

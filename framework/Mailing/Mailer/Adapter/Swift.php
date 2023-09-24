@@ -23,6 +23,7 @@ class Swift extends AbstractMailer
     protected string $username;
     protected string $password;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $parts = parse_url($this->uri);

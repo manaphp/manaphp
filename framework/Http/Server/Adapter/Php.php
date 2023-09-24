@@ -20,6 +20,7 @@ class Php extends AbstractServer
 
     #[Value] protected array $settings = [];
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $argv = $GLOBALS['argv'] ?? [];

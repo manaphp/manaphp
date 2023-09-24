@@ -63,6 +63,7 @@ class Debugger implements DebuggerInterface
     #[Value] protected bool $broadcast = true;
     #[Value] protected bool $tail = true;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(int $ttl = 3600, ?string $prefix = null)
     {
         $this->ttl = class_exists('Redis') ? $ttl : 0;

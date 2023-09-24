@@ -14,6 +14,7 @@ class Sqlite extends AbstractConnection
 {
     #[Inject] protected AliasInterface $alias;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $file = $this->uri;

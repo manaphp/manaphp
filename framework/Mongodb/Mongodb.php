@@ -39,6 +39,7 @@ class Mongodb implements MongodbInterface
     protected string $prefix;
     protected string $db;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         if (preg_match('#[?&]prefix=(\w+)#', $this->uri, $matches)) {

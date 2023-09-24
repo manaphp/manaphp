@@ -32,6 +32,7 @@ class Syslog extends AbstractLogger
 
     protected mixed $socket;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $parts = parse_url($this->uri);

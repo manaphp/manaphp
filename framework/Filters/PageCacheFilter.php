@@ -30,6 +30,7 @@ class PageCacheFilter
 
     protected array $pageCaches = [];
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(?string $prefix = null)
     {
         $this->prefix = $prefix ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));

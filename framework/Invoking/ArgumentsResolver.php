@@ -32,6 +32,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
      */
     protected array $objectValueResolvers = [];
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         foreach ($this->resolvers as $resolver) {

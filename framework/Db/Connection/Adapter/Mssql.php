@@ -13,6 +13,7 @@ use PDO;
 
 class Mssql extends AbstractConnection
 {
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $parts = parse_url($this->uri);

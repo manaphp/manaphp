@@ -31,6 +31,7 @@ class Smtp extends AbstractMailer
     protected string $password;
     protected int $timeout = 3;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $parts = parse_url($this->uri);

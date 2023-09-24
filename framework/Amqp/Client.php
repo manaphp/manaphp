@@ -23,6 +23,7 @@ class Client implements ClientInterface
     protected int $timeout = 3;
     protected ?EngineInterface $engine = null;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         if (preg_match('#pool_size=(\d+)#', $this->uri, $match)) {

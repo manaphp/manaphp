@@ -15,6 +15,7 @@ class Mysql extends AbstractConnection
 {
     protected string $charset = 'UTF8';
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $parts = parse_url($this->uri);

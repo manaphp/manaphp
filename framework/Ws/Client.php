@@ -27,6 +27,7 @@ class Client implements ClientInterface
     protected int $pool_size = 4;
     protected EmitterInterface $emitter;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(
         string $endpoint, ?string $proxy = null, float $timeout = 3.0, ?string $protocol = null,
         bool $masking = true, ?string $origin = null, string $user_agent = 'manaphp/client', int $pool_size = 4

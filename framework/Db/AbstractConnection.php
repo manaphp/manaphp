@@ -24,6 +24,7 @@ abstract class AbstractConnection implements ConnectionInterface
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri;
+
     protected string $dsn;
     protected string $username;
     protected string $password;

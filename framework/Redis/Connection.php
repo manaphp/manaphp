@@ -30,6 +30,7 @@ class Connection
 
     protected int $heartbeat;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         if (preg_match('#heartbeat=(\d+)#', $this->uri, $match) === 1) {

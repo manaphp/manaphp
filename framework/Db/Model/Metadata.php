@@ -18,6 +18,7 @@ class Metadata implements MetadataInterface
 
     #[Value] protected int $ttl = 3600;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         /** @noinspection NotOptimalIfConditionsInspection */

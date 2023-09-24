@@ -15,6 +15,7 @@ class Redis implements RedisInterface
     #[Value] protected int $pool_timeout = 1;
     #[Value] protected int $pool_size = 4;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         if (preg_match('#pool_timeout=(\d+)#', $this->uri, $matches) === 1) {

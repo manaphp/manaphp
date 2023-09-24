@@ -21,6 +21,7 @@ class Gd extends AbstractImage
     protected int $width;
     protected int $height;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(string $file)
     {
         if (!extension_loaded('gd')) {
