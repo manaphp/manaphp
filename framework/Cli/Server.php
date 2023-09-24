@@ -22,6 +22,7 @@ class Server implements ServerInterface
 
     /**
      * @noinspection PhpUnusedLocalVariableInspection
+     * @noinspection PhpRedundantCatchClauseInspection
      */
     public function handle(): void
     {
