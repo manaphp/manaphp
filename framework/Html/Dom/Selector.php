@@ -159,6 +159,7 @@ class Selector
     public function text_first(string $css): ?string
     {
         $nodes = $this->document->getQuery()->css($css, $this->node);
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
         return $nodes?->item(0)->textContent;
     }
 
@@ -198,6 +199,7 @@ class Selector
     {
         $nodes = $this->document->getQuery()->css($css);
 
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
         if ($nodes) {
             return (new static($this->document, $nodes->item(0)))->extract($rules);
         } else {

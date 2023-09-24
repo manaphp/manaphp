@@ -440,6 +440,7 @@ class Db implements DbInterface
                 $message = 'beginTransaction failed: ' . $exception->getMessage();
                 throw new DbException($message, $exception->getCode(), $exception);
             } finally {
+                /** @noinspection PhpConditionAlreadyCheckedInspection */
                 if ($context->connection !== null) {
                     $this->poolManager->push($this, $connection);
                 }

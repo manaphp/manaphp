@@ -681,6 +681,7 @@ class Markdown implements EngineInterface
             return $Block;
         }
 
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
         if (!isset($Block['interrupted'])) {
             $Block['element']['handler']['argument'] [] = $Line['text'];
 
