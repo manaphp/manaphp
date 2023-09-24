@@ -1192,11 +1192,14 @@ class Markdown implements EngineInterface
 
     protected function inlineEmphasis($Excerpt)
     {
+        /** @noinspection PhpRegExpRedundantModifierInspection */
         $EmRegex = [
             '*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
             '_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
         ];
 
+        /** @noinspection PhpRegExpRedundantModifierInspection */
+        /** @noinspection PhpRegExpRedundantModifierInspection */
         $StrongRegex = [
             '*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*+[*])+?)[*]{2}(?![*])/s',
             '_' => '/^__((?:\\\\_|[^_]|_[^_]*+_)+?)__(?!_)/us',
@@ -1356,6 +1359,7 @@ class Markdown implements EngineInterface
             ];
         }
 
+        /** @noinspection PhpRegExpRedundantModifierInspection */
         if ($Excerpt['text'][1] === '!' && preg_match('/^<!---?[^>-](?:-?+[^-])*-->/s', $Excerpt['text'], $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
