@@ -18,7 +18,6 @@ class Transient
         $this->type = $type;
     }
 
-    /** @noinspection PhpMissingReturnTypeInspection */
     public function __destruct()
     {
         $this->manager->push($this->owner, $this->instance, $this->type);

@@ -100,7 +100,6 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             } elseif ($rParameter->isDefaultValueAvailable()) {
                 $value = $rParameter->getDefaultValue();
             } elseif ($type === 'NULL') {
-                /** @noinspection PhpConditionAlreadyCheckedInspection */
                 $value = null;
             }
 

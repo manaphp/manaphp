@@ -199,7 +199,6 @@ class Selector
         $nodes = $this->document->getQuery()->css($css);
 
         if ($nodes) {
-            /** @noinspection PhpParamsInspection */
             return (new static($this->document, $nodes->item(0)))->extract($rules);
         } else {
             return [];
