@@ -33,7 +33,7 @@ class Query extends AbstractQuery
     }
 
     /**
-     * @param string[]|\ManaPHP\Model\ModelInterface[]|\ManaPHP\Query\QueryInterface[] $queries
+     * @param string[]|ModelInterface[]|QueryInterface[] $queries
      *
      * @return static
      */
@@ -57,7 +57,7 @@ class Query extends AbstractQuery
     }
 
     /**
-     * @return \ManaPHP\Query\QueryInterface[]
+     * @return QueryInterface[]
      */
     public function getQueries(): array
     {

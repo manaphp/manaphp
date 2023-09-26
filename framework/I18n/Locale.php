@@ -15,7 +15,7 @@ class Locale implements LocaleInterface, ContextCreatorInterface
 
     public function createContext(): LocaleContext
     {
-        /** @var \ManaPHP\I18n\LocaleContext $context */
+        /** @var LocaleContext $context */
         $context = $this->contextor->makeContext($this);
 
         $context->locale = $this->default;

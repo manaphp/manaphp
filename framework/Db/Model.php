@@ -20,7 +20,7 @@ use ManaPHP\Model\ShardingInterface;
 class Model extends AbstractModel implements ModelInterface
 {
     /**
-     * @return \ManaPHP\Db\Query <static>
+     * @return Query <static>
      */
     public function newQuery(): Query
     {

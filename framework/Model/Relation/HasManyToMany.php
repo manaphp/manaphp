@@ -33,7 +33,7 @@ class HasManyToMany extends AbstractRelation
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        /** @var \ManaPHP\Model\ModelInterface $pivotModel */
+        /** @var ModelInterface $pivotModel */
         $pivotModel = $this->pivotModel;
         $selfPivot = $this->selfPivot;
         $thatPivot = $this->thatPivot;
@@ -63,8 +63,8 @@ class HasManyToMany extends AbstractRelation
 
     public function lazyLoad(ModelInterface $instance): QueryInterface
     {
-        /** @var \ManaPHP\Model\ModelInterface $pivotModel */
-        /** @var \ManaPHP\Model\ModelInterface $thatModel */
+        /** @var ModelInterface $pivotModel */
+        /** @var ModelInterface $thatModel */
         $thatModel = $this->thatModel;
         $selfField = $this->selfField;
         $pivotModel = $this->pivotModel;

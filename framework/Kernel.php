@@ -75,7 +75,7 @@ class Kernel
     public function bootBootstrappers(array $bootstrappers): void
     {
         foreach ($bootstrappers as $key => $value) {
-            /** @var \ManaPHP\BootstrapperInterface $bootstrapper */
+            /** @var BootstrapperInterface $bootstrapper */
             if (is_int($key)) {
                 $bootstrapper = $this->container->get($value);
             } else {

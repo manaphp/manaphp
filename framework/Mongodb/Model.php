@@ -68,7 +68,7 @@ class Model extends AbstractModel
     }
 
     /**
-     * @return \ManaPHP\Mongodb\Query <static>
+     * @return Query <static>
      */
     public function newQuery(): Query
     {

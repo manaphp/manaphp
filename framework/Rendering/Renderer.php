@@ -24,7 +24,7 @@ class Renderer implements RendererInterface
     #[Inject] protected ContainerInterface $container;
 
     /**
-     * @var \ManaPHP\Rendering\EngineInterface[]
+     * @var EngineInterface[]
      */
     protected array $resolved = [];
 

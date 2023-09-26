@@ -15,7 +15,7 @@ class Identity implements IdentityInterface, ContextCreatorInterface
 
     public function createContext(): IdentityContext
     {
-        /** @var \ManaPHP\Identifying\IdentityContext $context */
+        /** @var IdentityContext $context */
         $context = $this->contextor->makeContext($this);
         $context->claims = $this->authenticate();
 

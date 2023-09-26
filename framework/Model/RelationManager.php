@@ -73,8 +73,8 @@ class RelationManager implements RelationManagerInterface
             return $thatModel ? new BelongsTo($selfModel, $thatModel) : null;
         }
 
-        /** @var \ManaPHP\Model\ModelInterface $thatInstance */
-        /** @var \ManaPHP\Model\ModelInterface $thatModel */
+        /** @var ModelInterface $thatInstance */
+        /** @var ModelInterface $thatModel */
 
         if ($singular = $this->pluralToSingular($name)) {
             if (!$thatModel = $this->inferClassName($selfModel, $singular)) {

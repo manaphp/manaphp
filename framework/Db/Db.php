@@ -429,7 +429,7 @@ class Db implements DbInterface
         if ($context->transaction_level === 0) {
             $this->eventDispatcher->dispatch(new DbBegin($this));
 
-            /** @var \ManaPHP\Db\ConnectionInterface $connection */
+            /** @var ConnectionInterface $connection */
             $connection = $this->poolManager->pop($this, $this->timeout);
 
             try {

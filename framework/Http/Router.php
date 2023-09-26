@@ -27,17 +27,17 @@ class Router implements RouterInterface
     protected array $areas = [];
 
     /**
-     * @var \ManaPHP\Http\Router\RouteInterface[]
+     * @var RouteInterface[]
      */
     protected array $defaults = [];
 
     /**
-     * @var \ManaPHP\Http\Router\RouteInterface[][]
+     * @var RouteInterface[][]
      */
     protected array $simples = [];
 
     /**
-     * @var \ManaPHP\Http\Router\RouteInterface[]
+     * @var RouteInterface[]
      */
     protected array $regexes = [];
 

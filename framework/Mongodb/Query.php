@@ -32,7 +32,7 @@ class Query extends AbstractQuery
     public function setModel(string $model): static
     {
         $this->model = $model;
-        /** @var \ManaPHP\Mongodb\Model $instance */
+        /** @var Model $instance */
         $instance = $this->those->get($model);
         $this->setTypes($instance->fieldTypes());
 

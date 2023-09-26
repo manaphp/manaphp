@@ -22,6 +22,6 @@ class Coroutine
 
     public static function create(callable $func, ...$params): int|bool
     {
-        return \Swoole\Coroutine::create($func, ...$params);
+        return SwooleCoroutine::create($func, ...$params);
     }
 }

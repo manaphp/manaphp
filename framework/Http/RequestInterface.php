@@ -60,7 +60,7 @@ interface RequestInterface
      *
      * @param bool $onlySuccessful
      *
-     * @return \ManaPHP\Http\Request\FileInterface[]
+     * @return FileInterface[]
      */
     public function getFiles(bool $onlySuccessful = true): array;
 

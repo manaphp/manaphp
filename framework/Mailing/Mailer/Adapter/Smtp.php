@@ -265,10 +265,10 @@ class Smtp extends AbstractMailer
     }
 
     /**
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException
+     * @throws BadResponseException
+     * @throws TransmitException
+     * @throws ConnectionException
+     * @throws AuthenticationException
      */
     protected function sendInternal(Message $message, ?array &$failedRecipients = null): int
     {

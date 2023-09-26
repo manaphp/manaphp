@@ -12,7 +12,7 @@ abstract class AbstractRelation implements RelationInterface
 
     public function getThatQuery(): QueryInterface
     {
-        /** @var \ManaPHP\Model\ModelInterface $referenceModel */
+        /** @var ModelInterface $referenceModel */
         $referenceModel = $this->thatModel;
 
         return $referenceModel::select();

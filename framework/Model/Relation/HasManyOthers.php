@@ -54,7 +54,7 @@ class HasManyOthers extends AbstractRelation
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        /** @var \ManaPHP\Model\ModelInterface $selfModel */
+        /** @var ModelInterface $selfModel */
         $selfModel = $this->selfModel;
         $selfFilter = $this->selfFilter;
         $thatField = $this->thatField;
@@ -84,8 +84,8 @@ class HasManyOthers extends AbstractRelation
 
     public function lazyLoad(ModelInterface $instance): QueryInterface
     {
-        /** @var \ManaPHP\Model\ModelInterface $thatModel */
-        /** @var \ManaPHP\Model\ModelInterface $selfModel */
+        /** @var ModelInterface $thatModel */
+        /** @var ModelInterface $selfModel */
         $thatModel = $this->thatModel;
         $selfModel = $this->selfModel;
         $selfFilter = $this->selfFilter;

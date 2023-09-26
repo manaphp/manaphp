@@ -31,7 +31,7 @@ class Selector
     public function xpath(string|array $query): SelectorList
     {
         $nodes = [];
-        /** @var \DOMNode $node */
+        /** @var DOMNode $node */
         foreach ($this->document->getQuery()->xpath($query, $this->node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
@@ -41,7 +41,7 @@ class Selector
     public function css(string|array $css): SelectorList
     {
         $nodes = [];
-        /** @var \DOMNode $node */
+        /** @var DOMNode $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
@@ -60,7 +60,7 @@ class Selector
 
     public function remove(string $css): static
     {
-        /** @var \DOMNode $node */
+        /** @var DOMNode $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             $node->parentNode->removeChild($node);
         }
@@ -74,7 +74,7 @@ class Selector
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             foreach ($node->attributes as $attribute) {
                 if (!$attr || in_array($attribute->name, $attr, true)) {
@@ -92,7 +92,7 @@ class Selector
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             foreach ($node->attributes as $attribute) {
                 if (!in_array($attribute->name, $attr, true)) {
@@ -106,7 +106,7 @@ class Selector
 
     public function strip(string $css): static
     {
-        /** @var \DOMNode $node */
+        /** @var DOMNode $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             $node->parentNode->replaceChild(new DOMText($node->textContent), $node);
         }
@@ -122,7 +122,7 @@ class Selector
     public function attr_first(string $css, string $attr): ?string
     {
         if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
-            /** @var \DOMElement $node */
+            /** @var DOMElement $node */
             $node = $nodes->item(0);
             return $node->getAttribute($attr);
         } else {
@@ -138,7 +138,7 @@ class Selector
     public function url_first(string $css, string $attr): ?string
     {
         if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
-            /** @var \DOMElement $node */
+            /** @var DOMElement $node */
             $node = $nodes->item(0);
             return $this->document->absolutizeUrl($node->getAttribute($attr));
         } else {
@@ -165,7 +165,7 @@ class Selector
 
     public function extract(array $rules): array
     {
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         $node = $this->node;
 
         $data = [];
@@ -183,7 +183,7 @@ class Selector
                 $data[$name] = $nodes->length ? $nodes->item(0)->textContent : null;
             } else {
                 if ($nodes = $this->document->getQuery()->css(substr($rule, 0, $pos), $node)) {
-                    /** @var \DOMElement $node_temp */
+                    /** @var DOMElement $node_temp */
                     $node_temp = $nodes->item(0);
                     $data[$name] = $node_temp->getAttribute(substr($rule, $pos + 1));
                 } else {
@@ -220,7 +220,7 @@ class Selector
     public function html_first(string $css): ?string
     {
         if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
-            /** @var \DOMElement $node */
+            /** @var DOMElement $node */
             $node = $nodes->item(0);
             return $node->ownerDocument->saveHTML($node);
         } else {
@@ -230,7 +230,7 @@ class Selector
 
     public function links(?string $regex = null): array
     {
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         $data = [];
         foreach ($this->document->getQuery()->xpath('descendant::a[@href]', $this->node) as $node) {
             $href = $this->document->absolutizeUrl($node->getAttribute('href'));
@@ -247,7 +247,7 @@ class Selector
 
     public function images(?string $regex = null, string $attr = 'src'): array
     {
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         $document = $this->document;
         $data = [];
         foreach ($document->getQuery()->xpath("descendant::img[@$attr]", $this->node) as $node) {

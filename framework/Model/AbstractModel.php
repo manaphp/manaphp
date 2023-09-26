@@ -61,7 +61,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * @param array  $filters =model_var(new static)
      * @param ?array $fields  =model_fields(new static)
      *
-     * @return  \ManaPHP\Query\Paginator
+     * @return  Paginator
      */
     public static function paginate(array $filters = [], ?array $fields = null): Paginator
     {
@@ -110,7 +110,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * @param ?array  $fields =model_fields(new static)
      * @param ?string $alias
      *
-     * @return \ManaPHP\Query\QueryInterface <static>
+     * @return QueryInterface <static>
      */
     public static function select(?array $fields = null, ?string $alias = null): QueryInterface
     {
@@ -709,7 +709,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * @param ?string $alias
      *
-     * @return \ManaPHP\Query\QueryInterface <static>
+     * @return QueryInterface <static>
      */
     public static function query(?string $alias = null): QueryInterface
     {
@@ -721,7 +721,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * @param array $filters =model_var(new static)
      *
-     * @return \ManaPHP\Query\QueryInterface <static>
+     * @return QueryInterface <static>
      */
     public static function where(array $filters): QueryInterface
     {
@@ -731,7 +731,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * @param array $filters =model_var(new static)
      *
-     * @return \ManaPHP\Query\QueryInterface <static>
+     * @return QueryInterface <static>
      */
     public static function search(array $filters): QueryInterface
     {
@@ -741,8 +741,8 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * @param string $name
      *
-     * @return \ManaPHP\Model\ModelInterface|\ManaPHP\Model\ModelInterface[]|mixed
-     * @throws \ManaPHP\Exception\UnknownPropertyException
+     * @return ModelInterface|ModelInterface[]|mixed
+     * @throws UnknownPropertyException
      */
     public function __get(mixed $name): mixed
     {

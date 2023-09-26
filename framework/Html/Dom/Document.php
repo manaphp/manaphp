@@ -118,7 +118,7 @@ class Document
     protected function getBase(): ?string
     {
         foreach ($this->dom->getElementsByTagName('base') as $node) {
-            /** @var \DOMElement $node */
+            /** @var DOMElement $node */
             if (!$node->hasAttribute('href')) {
                 continue;
             }
@@ -176,7 +176,7 @@ class Document
 
     public function absolutizeAHref(?string $selector = null, ?DomDocument $context = null): static
     {
-        /** @var \DOMElement $item */
+        /** @var DOMElement $item */
         if ($selector) {
             foreach ($this->query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {
@@ -197,7 +197,7 @@ class Document
 
     public function absolutizeImgSrc(?string $selector = null, ?DOMElement $context = null, string $attr = 'src'
     ): static {
-        /** @var \DOMElement $item */
+        /** @var DOMElement $item */
         if ($selector) {
             foreach ($this->query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {

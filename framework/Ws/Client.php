@@ -82,7 +82,7 @@ class Client implements ClientInterface
 
         $engines = [];
         for ($i = 0; $i < $size; $i++) {
-            /** @var \ManaPHP\Ws\Client\EngineInterface $engine */
+            /** @var EngineInterface $engine */
             $engine = $this->poolManager->pop($this);
             $engine->setEndpoint($endpoint);
             $engines[] = $engine;

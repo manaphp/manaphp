@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \Exception $exception
+ * @var Exception $exception
  */
 
 ?>

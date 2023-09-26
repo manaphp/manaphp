@@ -61,7 +61,7 @@ class HasMany extends AbstractRelation
 
     public function lazyLoad(ModelInterface $instance): QueryInterface
     {
-        /** @var \ManaPHP\Model\ModelInterface $thatModel */
+        /** @var ModelInterface $thatModel */
         $thatModel = $this->thatModel;
         $selfField = $this->selfField;
 

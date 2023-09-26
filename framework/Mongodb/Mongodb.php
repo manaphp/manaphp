@@ -82,7 +82,7 @@ class Mongodb implements MongodbInterface
 
         $this->eventDispatcher->dispatch(new MongodbInserting($this, $namespace));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $count = $connection->insert($namespace, $document);
@@ -101,7 +101,7 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbBulkWriting($this, $namespace, $documents));
         $this->eventDispatcher->dispatch(new MongodbBulkInserting($this, $namespace, $documents));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $count = $connection->bulkInsert($namespace, $documents);
@@ -121,7 +121,7 @@ class Mongodb implements MongodbInterface
 
         $this->eventDispatcher->dispatch(new MongodbUpdating($this, $namespace, $document, $filter));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $count = $connection->update($namespace, $document, $filter);
@@ -140,7 +140,7 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbBulkWriting($this, $namespace, $documents));
         $this->eventDispatcher->dispatch(new MongodbBulkUpdating($this, $namespace, $documents));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $count = $connection->bulkUpdate($namespace, $documents, $primaryKey);
@@ -160,7 +160,7 @@ class Mongodb implements MongodbInterface
 
         $this->eventDispatcher->dispatch(new MongodbBulkUpserting($this, $namespace, [$document]));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $count = $connection->upsert($namespace, $document, $primaryKey);
@@ -180,7 +180,7 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbBulkWriting($this, $namespace, $documents));
         $this->eventDispatcher->dispatch(new MongodbBulkUpserting($this, $namespace, $documents));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $count = $connection->bulkUpsert($namespace, $documents, $primaryKey);
@@ -199,7 +199,7 @@ class Mongodb implements MongodbInterface
 
         $this->eventDispatcher->dispatch(new MongodbDeleting($this, $namespace, $filter));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $count = $connection->delete($namespace, $filter);
@@ -217,7 +217,7 @@ class Mongodb implements MongodbInterface
 
         $this->eventDispatcher->dispatch(new MongodbQuerying($this, $namespace, $filter, $options));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $start_time = microtime(true);
@@ -240,7 +240,7 @@ class Mongodb implements MongodbInterface
 
         $this->eventDispatcher->dispatch(new MongodbCommanding($this, $db, $command));
 
-        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        /** @var ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
             $start_time = microtime(true);

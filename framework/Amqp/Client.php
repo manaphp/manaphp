@@ -35,7 +35,7 @@ class Client implements ClientInterface
 
     public function exchangeDeclare(Exchange $exchange): void
     {
-        /** @var \ManaPHP\Amqp\EngineInterface $engine */
+        /** @var EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
@@ -47,7 +47,7 @@ class Client implements ClientInterface
 
     public function exchangeDelete(string $exchange, bool $if_unused = false, bool $nowait = false): void
     {
-        /** @var \ManaPHP\Amqp\EngineInterface $engine */
+        /** @var EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
@@ -59,7 +59,7 @@ class Client implements ClientInterface
 
     public function queueDeclare(Queue $queue): void
     {
-        /** @var \ManaPHP\Amqp\EngineInterface $engine */
+        /** @var EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
@@ -71,7 +71,7 @@ class Client implements ClientInterface
 
     public function queueDelete(string $queue, bool $if_unused = false, bool $if_empty = false, bool $nowait = false
     ): void {
-        /** @var \ManaPHP\Amqp\EngineInterface $engine */
+        /** @var EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
@@ -83,7 +83,7 @@ class Client implements ClientInterface
 
     public function queueBind(Binding $binding): void
     {
-        /** @var \ManaPHP\Amqp\EngineInterface $engine */
+        /** @var EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
@@ -95,7 +95,7 @@ class Client implements ClientInterface
 
     public function queueUnbind(Binding $binding): void
     {
-        /** @var \ManaPHP\Amqp\EngineInterface $engine */
+        /** @var EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
