@@ -24,8 +24,12 @@ class AreaCommand extends Command
      */
     public function createAction(string $area = ''): int
     {
-        if ($area === '' && ($area = $this->options->get('') !== null)) {
-            return $this->console->error('area name is not provided');
+        if ($area === '') {
+            if (($v = $this->options->get('')) === null) {
+                return $this->console->error('area name is not provided');
+            } else {
+                $area = (string)$v;
+            }
         }
 
         $area = Str::pascalize($area);
