@@ -14,7 +14,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Session\Event\SessionCreate;
-use ManaPHP\Http\Session\Event\SessionDestory;
+use ManaPHP\Http\Session\Event\SessionDestroy;
 use ManaPHP\Http\Session\Event\SessionEnd;
 use ManaPHP\Http\Session\Event\SessionStart;
 use ManaPHP\Http\Session\Event\SessionUpdate;
@@ -146,7 +146,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
     public function destroy(?string $session_id = null): static
     {
         if ($session_id) {
-            $this->eventDispatcher->dispatch(new SessionDestory($this, null, $session_id));
+            $this->eventDispatcher->dispatch(new SessionDestroy($this, null, $session_id));
             $this->do_destroy($session_id);
         } else {
             /** @var AbstractSessionContext $context */
@@ -157,7 +157,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
             }
 
             $session_id = $context->session_id;
-            $this->eventDispatcher->dispatch(new SessionDestory($this, $context, $session_id));
+            $this->eventDispatcher->dispatch(new SessionDestroy($this, $context, $session_id));
 
             $context->started = false;
             $context->is_dirty = false;

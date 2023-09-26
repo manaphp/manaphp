@@ -6,7 +6,7 @@ namespace ManaPHP\Http\Session\Event;
 use ManaPHP\Http\AbstractSessionContext;
 use ManaPHP\Http\SessionInterface;
 
-class SessionDestory
+class SessionDestroy
 {
     public function __construct(
         public SessionInterface $session,
