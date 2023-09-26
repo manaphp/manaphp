@@ -5,6 +5,7 @@ namespace ManaPHP\Dumping;
 
 use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ReflectionClass;
 
 class Dumper implements DumperInterface
 {
@@ -13,7 +14,7 @@ class Dumper implements DumperInterface
     public function dump(object $object): array
     {
         $data = [];
-        $rf = new \ReflectionClass($object);
+        $rf = new ReflectionClass($object);
         foreach ($rf->getProperties() as $property) {
             if ($property->isStatic() || $property->getAttributes(Inject::class) !== []) {
                 continue;

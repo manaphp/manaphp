@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Query;
 
+use ManaPHP\Model\ModelInterface;
+
 /**
  * @template Model
  */
@@ -278,7 +280,7 @@ interface QueryInterface
     public function setFetchType(bool $multiple): static;
 
     /**
-     * @return \ManaPHP\Model\ModelInterface[]|\ManaPHP\Model\ModelInterface|array|null
+     * @return ModelInterface[]|ModelInterface|array|null
      */
     public function fetch(): mixed;
 

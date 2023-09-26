@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 use ReflectionMethod;
@@ -16,7 +17,7 @@ class RpcCommand extends Command
      * @param string $output
      *
      * @return void
-     * @throws \ManaPHP\Exception\RuntimeException
+     * @throws RuntimeException
      */
     public function servicesAction(string $output = '@runtime/rpc_services'): void
     {

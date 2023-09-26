@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Caching;
 
+use DateInterval;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Redis\RedisCacheInterface;
@@ -23,7 +24,7 @@ class SimpleCache implements CacheInterface
         }
     }
 
-    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
     {
         return $this->redisCache->set($this->prefix . $key, json_stringify($value), $ttl);
     }
@@ -67,7 +68,7 @@ class SimpleCache implements CacheInterface
         return $values;
     }
 
-    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
+    public function setMultiple(iterable $values, null|int|DateInterval $ttl = null): bool
     {
         $redis = $this->redisCache->pipeline();
 

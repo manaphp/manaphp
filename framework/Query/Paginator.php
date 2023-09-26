@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Query;
 
+use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
@@ -118,7 +119,7 @@ class Paginator implements PaginatorInterface, JsonSerializable
     {
         try {
             return $this->renderAsHtml();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return '';
         }
     }

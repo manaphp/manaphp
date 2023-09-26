@@ -11,6 +11,7 @@ use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ClientErrorException;
 use ManaPHP\Http\Client\ContentTypeException;
+use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\ForbiddenException;
 use ManaPHP\Http\Client\GatewayTimeoutException;
 use ManaPHP\Http\Client\HttpClientComplete;
@@ -88,7 +89,7 @@ class Client implements ClientInterface
                 $this->poolManager->add($this, [$this->engine], $this->pool_size, $engine_id);
             }
 
-            /** @var \ManaPHP\Http\Client\EngineInterface $engine */
+            /** @var EngineInterface $engine */
             $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
 
             try {

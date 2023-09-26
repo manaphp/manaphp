@@ -8,6 +8,7 @@ use ManaPHP\Cli\CommandManagerInterface;
 use ManaPHP\Cli\Console;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Exception\JsonException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Version;
 use Psr\Container\ContainerInterface;
@@ -157,7 +158,7 @@ class HelpCommand extends Command
      * @param ReflectionMethod $rMethod
      * @param string           $method
      *
-     * @throws \ManaPHP\Exception\JsonException
+     * @throws JsonException
      */
     protected function commandHelps(ReflectionMethod $rMethod, string $method): void
     {

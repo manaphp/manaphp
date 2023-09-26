@@ -11,6 +11,7 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 use ManaPHP\Identifying\IdentityInterface;
+use ManaPHP\Model\ModelInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -123,7 +124,7 @@ class Authorization implements AuthorizationInterface
         $context = $this->getContext();
 
         if (!isset($context->role_permissions[$role])) {
-            /** @var \ManaPHP\Model\ModelInterface $roleModel */
+            /** @var ModelInterface $roleModel */
             $roleModel = null;
             if (class_exists('App\Areas\Rbac\Models\Role')) {
                 $roleModel = 'App\Areas\Rbac\Models\Role';

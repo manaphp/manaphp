@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Html;
 
 use DOMDocument;
+use DOMElement;
+use DOMNode;
+use Exception;
 use ManaPHP\Di\Attribute\Value;
 
 class Purifier implements PurifierInterface
@@ -19,7 +22,7 @@ class Purifier implements PurifierInterface
     {
         $types = [XML_ELEMENT_NODE, XML_ATTRIBUTE_NODE, XML_DOCUMENT_NODE, XML_TEXT_NODE, XML_DOCUMENT_TYPE_NODE];
 
-        /** @var \DOMNode|\DOMDocument|\DOMElement $node */
+        /** @var DOMNode|DOMDocument|DOMElement $node */
         foreach ($nodes as $node) {
             if ($node->nodeType === XML_TEXT_NODE) {
                 continue;
@@ -88,7 +91,7 @@ class Purifier implements PurifierInterface
         $doc = new DOMDocument();
         try {
             @$doc->loadHTML($html);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return '';
         }
 

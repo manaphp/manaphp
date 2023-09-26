@@ -6,6 +6,8 @@ namespace ManaPHP\Html\Dom;
 use ArrayAccess;
 use ArrayIterator;
 use Countable;
+use DOMElement;
+use DOMNode;
 use DOMText;
 use IteratorAggregate;
 use Traversable;
@@ -13,7 +15,7 @@ use Traversable;
 class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 {
     /**
-     * @var \DOMElement[]
+     * @var DOMElement[]
      */
     protected array $nodes;
     protected Document $document;
@@ -33,7 +35,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
         $nodes = [];
         foreach ($this->nodes as $node) {
-            /** @var \DOMNode $node2 */
+            /** @var DOMNode $node2 */
             foreach ($query->xpath($path, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
@@ -51,7 +53,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         $query = $this->document->getQuery();
         $nodes = [];
         foreach ($this->nodes as $node) {
-            /** @var \DOMNode $node2 */
+            /** @var DOMNode $node2 */
             foreach ($query->css($css, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
@@ -197,7 +199,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         foreach ($this->nodes as $node) {
             $cur_xpath = $node->getNodePath();
             foreach ($query->css('parent::' . ($css ?: '*'), $node) as $node2) {
-                /** @var \DOMNode $node2 */
+                /** @var DOMNode $node2 */
                 if ($node2->getNodePath() !== $cur_xpath) {
                     $nodes[$node2->getNodePath()] = $node2;
                 }
@@ -215,7 +217,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function remove(string $css): static
     {
-        /** @var \DOMNode $node */
+        /** @var DOMNode $node */
         $query = $this->document->getQuery();
         foreach ($this->nodes as $node) {
             foreach ($query->css($css, $node) as $node2) {
@@ -232,7 +234,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         $query = $this->document->getQuery();
         foreach ($this->nodes as $node_0) {
             foreach ($query->css($css, $node_0) as $node) {
@@ -253,7 +255,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         $query = $this->document->getQuery();
         foreach ($this->nodes as $node_0) {
             foreach ($query->css($css, $node_0) as $node) {
@@ -270,7 +272,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function strip(string $css): static
     {
-        /** @var \DOMNode $node */
+        /** @var DOMNode $node */
         $query = $this->document->getQuery();
         foreach ($this->nodes as $node) {
             foreach ($query->css($css, $node) as $node2) {
@@ -361,8 +363,8 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function links(?string $regex = null): array
     {
-        /** @var \DOMElement $node */
-        /** @var \DOMElement $node2 */
+        /** @var DOMElement $node */
+        /** @var DOMElement $node2 */
         $query = $this->document->getQuery();
         $document = $this->document;
 
@@ -394,8 +396,8 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function images(?string $regex = null, string $attr = 'src'): array
     {
-        /** @var \DOMElement $node */
-        /** @var \DOMElement $node2 */
+        /** @var DOMElement $node */
+        /** @var DOMElement $node2 */
         $query = $this->document->getQuery();
         $document = $this->document;
 

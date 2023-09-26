@@ -14,6 +14,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Http\RequestInterface;
+use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Model\RelationManagerInterface;
 use ManaPHP\Model\ShardingInterface;
@@ -398,7 +399,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     }
 
     /**
-     * @return \ManaPHP\Model\ModelInterface[]|\ManaPHP\Model\ModelInterface|null|array
+     * @return ModelInterface[]|ModelInterface|null|array
      */
     public function fetch(): mixed
     {
