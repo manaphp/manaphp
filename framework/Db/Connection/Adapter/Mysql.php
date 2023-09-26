@@ -82,7 +82,7 @@ class Mysql extends AbstractConnection
             }
         }
 
-        $this->options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->charset}'";
+        $this->options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '$this->charset'";
 
         $dsn_parts = [];
         foreach ($dsn as $k => $v) {

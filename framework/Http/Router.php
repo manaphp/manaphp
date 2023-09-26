@@ -408,9 +408,9 @@ class Router implements RouterInterface
         $controller = $context->controller;
         if ($path === '') {
             $action = $context->action;
-            $ca = $area ? "{$area}/{$controller}/$action" : "{$controller}/$action";
+            $ca = $area ? "$area/$controller/$action" : "$controller/$action";
         } elseif (!str_contains($path, '/')) {
-            $ca = $area ? "{$area}/{$controller}/$path" : "{$controller}/$path";
+            $ca = $area ? "$area/$controller/$path" : "$controller/$path";
         } elseif ($path === '/') {
             $ca = '';
         } elseif ($path[0] === '/') {

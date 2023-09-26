@@ -65,7 +65,7 @@ class Workerman extends AbstractServer
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
         /** @noinspection HttpUrlsUsage */
-        $this->worker = $worker = new Worker("http://{$this->host}:{$this->port}");
+        $this->worker = $worker = new Worker("http://$this->host:$this->port");
 
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);

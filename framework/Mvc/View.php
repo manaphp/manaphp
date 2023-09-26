@@ -233,7 +233,7 @@ class View implements ViewInterface
 
         $context->content = preg_replace_callback(
             '#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#',
-            static fn($match) => "$match[1]=$match[2]{$prefix}/",
+            static fn($match) => "$match[1]=$match[2]$prefix/",
             $context->content
         );
     }

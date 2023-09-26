@@ -304,12 +304,12 @@ class Compiler
 
     protected function compile_yield(string $expression): string
     {
-        return "<?= \$renderer->getSection{$expression}; ?>";
+        return "<?= \$renderer->getSection$expression; ?>";
     }
 
     protected function compile_section(string $expression): string
     {
-        return "<?php \$renderer->startSection{$expression}; ?>";
+        return "<?php \$renderer->startSection$expression; ?>";
     }
 
     protected function compile_append(): string
@@ -334,12 +334,12 @@ class Compiler
 
     protected function compile_for(string $expression): string
     {
-        return "<?php for{$expression}: ?>";
+        return "<?php for$expression: ?>";
     }
 
     protected function compile_foreach(string $expression): string
     {
-        return "<?php \$index = -1; foreach{$expression}: \$index++; ?>";
+        return "<?php \$index = -1; foreach$expression: \$index++; ?>";
     }
 
     protected function compile_foreachElse(): string
@@ -350,7 +350,7 @@ class Compiler
 
     protected function compile_can(string $expression): string
     {
-        return "<?php if (container('ManaPHP\Http\AuthorizationInterface')->isAllowed{$expression}): ?>";
+        return "<?php if (container('ManaPHP\Http\AuthorizationInterface')->isAllowed$expression): ?>";
     }
 
     protected function compile_allow(string $expression): string
@@ -362,22 +362,22 @@ class Compiler
 
     protected function compile_cannot(string $expression): string
     {
-        return "<?php if (!container('ManaPHP\Http\AuthorizationInterface')->isAllowed{$expression}): ?>";
+        return "<?php if (!container('ManaPHP\Http\AuthorizationInterface')->isAllowed$expression): ?>";
     }
 
     protected function compile_if(string $expression): string
     {
-        return "<?php if{$expression}: ?>";
+        return "<?php if$expression: ?>";
     }
 
     protected function compile_elseif(string $expression): string
     {
-        return "<?php elseif{$expression}: ?>";
+        return "<?php elseif$expression: ?>";
     }
 
     protected function compile_while(string $expression): string
     {
-        return "<?php while{$expression}: ?>";
+        return "<?php while$expression: ?>";
     }
 
     protected function compile_endWhile(): string
@@ -414,32 +414,32 @@ class Compiler
 
     protected function compile_include(string $expression): string
     {
-        return "<?php \$renderer->partial{$expression} ?>";
+        return "<?php \$renderer->partial$expression ?>";
     }
 
     protected function compile_partial(string $expression): string
     {
-        return "<?php \$renderer->partial{$expression} ?>";
+        return "<?php \$renderer->partial$expression ?>";
     }
 
     protected function compile_block(string $expression): string
     {
-        return "<?php container('ManaPHP\Mvc\ViewInterface')->block{$expression} ?>";
+        return "<?php container('ManaPHP\Mvc\ViewInterface')->block$expression ?>";
     }
 
     protected function compile_break(string $expression): string
     {
-        return $expression ? "<?php if{$expression} break; ?>" : '<?php break; ?>';
+        return $expression ? "<?php if$expression break; ?>" : '<?php break; ?>';
     }
 
     protected function compile_continue(string $expression): string
     {
-        return $expression ? "<?php if{$expression} continue; ?>" : '<?php continue; ?>';
+        return $expression ? "<?php if$expression continue; ?>" : '<?php continue; ?>';
     }
 
     protected function compile_maxAge(string $expression): string
     {
-        return "<?php container('ManaPHP\Mvc\ViewInterface')->setMaxAge{$expression}; ?>";
+        return "<?php container('ManaPHP\Mvc\ViewInterface')->setMaxAge$expression; ?>";
     }
 
     protected function compile_layout(string $expression): string
@@ -447,7 +447,7 @@ class Compiler
         if (str_contains($expression, '(false)')) {
             return "<?php container('ManaPHP\Mvc\ViewInterface')->disableLayout(); ?>";
         } else {
-            return "<?php container('ManaPHP\Mvc\ViewInterface')->setLayout{$expression}; ?>";
+            return "<?php container('ManaPHP\Mvc\ViewInterface')->setLayout$expression; ?>";
         }
     }
 
@@ -462,7 +462,7 @@ class Compiler
             $expression = substr($expression, 1, -1);
         }
 
-        return $expression ? "<?php {$expression}; ?>" : '<?php ';
+        return $expression ? "<?php $expression; ?>" : '<?php ';
     }
 
     protected function compile_endPhp(): string
@@ -472,7 +472,7 @@ class Compiler
 
     protected function compile_widget(string $expression): string
     {
-        return "<?php container('ManaPHP\Mvc\ViewInterface')->widget{$expression}; ?>";
+        return "<?php container('ManaPHP\Mvc\ViewInterface')->widget$expression; ?>";
     }
 
     protected function compile_url(string $expression): string
@@ -481,7 +481,7 @@ class Compiler
             $expression = '(\'' . trim($expression, '()') . '\')';
         }
 
-        return "<?= url{$expression}; ?>";
+        return "<?= url$expression; ?>";
     }
 
     protected function compile_asset(string $expression): string
@@ -502,7 +502,7 @@ class Compiler
     protected function compile_json(string $expression): string
     {
         $expression = substr($expression, 1, -1);
-        return "<?= json_stringify({$expression}) ;?>";
+        return "<?= json_stringify($expression) ;?>";
     }
 
     protected function compile_debugger(): string
@@ -527,7 +527,7 @@ class Compiler
         if (preg_match('#^\\(([\'"]?)([/_a-z\d]+)\1\\)$#i', $expression, $match)) {
             return action($match[2]);
         } else {
-            return "<?= action{$expression} ?>";
+            return "<?= action$expression ?>";
         }
     }
 
@@ -538,7 +538,7 @@ class Compiler
 
     protected function compile_html(string $expression): string
     {
-        return "<?= html{$expression}; ?>";
+        return "<?= html$expression; ?>";
     }
 
     protected function compile_css(): string

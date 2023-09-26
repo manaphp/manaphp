@@ -297,7 +297,7 @@ HTML;
                 continue;
             }
             $plain = basename($model_file, '.php');
-            $view_file = "@runtime/view/Views/{$plain}.sword";
+            $view_file = "@runtime/view/Views/$plain.sword";
             $model = "App\Models\\$plain";
             LocalFS::filePut($view_file, $this->render($model));
             $this->console->writeLn("view of `$model` saved to `$view_file`");
@@ -310,7 +310,7 @@ HTML;
             preg_match('#Areas/(\w+)/Models/(\w+).php$#', $model_file, $match);
             list(, $area, $plain) = $match;
 
-            $view_file = "@runtime/view/Areas/$area/Views/{$plain}.sword";
+            $view_file = "@runtime/view/Areas/$area/Views/$plain.sword";
             $model = "App\\Areas\\$area\\Models\\$plain";
             LocalFS::filePut($view_file, $this->render($model));
             $this->console->writeLn("view of `$model` saved to `$view_file`");

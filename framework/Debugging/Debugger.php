@@ -84,7 +84,7 @@ class Debugger implements DebuggerInterface
                 return null;
             }
         } else {
-            $file = "@runtime/debugger/{$key}.zip";
+            $file = "@runtime/debugger/$key.zip";
             $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : null;
         }
 
@@ -108,7 +108,7 @@ class Debugger implements DebuggerInterface
                 $redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
             }
         } else {
-            LocalFS::filePut("@runtime/debugger/{$key}.zip", $content);
+            LocalFS::filePut("@runtime/debugger/$key.zip", $content);
         }
     }
 
@@ -146,7 +146,7 @@ class Debugger implements DebuggerInterface
         }
 
         if ($context->enabled) {
-            $url = $this->router->createUrl("/?__debugger={$context->key}.html", true);
+            $url = $this->router->createUrl("/?__debugger=$context->key.html", true);
             $this->response->setHeader('X-Debugger-Link', $url);
             $this->logger->info($url, ['category' => 'debugger.link']);
         }

@@ -199,7 +199,7 @@ class Query extends AbstractQuery
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
-                    $key = "{$id}_in_{$k}";
+                    $key = "{$id}_in_$k";
                     $bindKeys[] = ":$key";
                     $this->bind[$key] = $value;
                 }
@@ -235,7 +235,7 @@ class Query extends AbstractQuery
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
-                    $key = "{$id}_not_in_{$k}";
+                    $key = "{$id}_not_in_$k";
                     $bindKeys[] = ':' . $key;
                     $this->bind[$key] = $value;
                 }
