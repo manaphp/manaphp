@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use JetBrains\PhpStorm\NoReturn;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use Psr\Container\ContainerInterface;
@@ -91,6 +92,7 @@ class Kernel
         return PHP_SAPI === 'cli' && extension_loaded('swoole');
     }
 
+    #[NoReturn]
     public function start(string $server): void
     {
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
