@@ -5,16 +5,18 @@ namespace App\Areas\User\Controllers;
 use App\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserLoginLog;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
-/**
- * @property-read \ManaPHP\ConfigInterface       $config
- * @property-read \ManaPHP\Http\CaptchaInterface $captcha
- */
 #[Authorize('*')]
 class SessionController extends Controller
 {
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected CaptchaInterface $captcha;
+
     public function captchaAction()
     {
         return $this->captcha->generate();

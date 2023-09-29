@@ -4,16 +4,19 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\User;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Mailing\MailerInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface         $config
- * @property-read \ManaPHP\Http\CaptchaInterface   $captcha
- * @property-read \ManaPHP\Mailing\MailerInterface $mailer
- */
 #[Authorize('*')]
 class PasswordController extends Controller
 {
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected CaptchaInterface $captcha;
+    #[Autowired] protected MailerInterface $mailer;
+
     public function captchaAction()
     {
         return $this->captcha->generate();

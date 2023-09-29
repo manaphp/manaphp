@@ -2,17 +2,19 @@
 
 namespace App\Commands;
 
-/**
- * @property-read \ManaPHP\Ws\Pushing\ClientInterface $wspClient
- */
+use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Ws\Pushing\ClientInterface;
+
 class PushCommand extends Command
 {
+    #[Autowired] protected ClientInterface $wspClient;
+
     /**
      * @param string $name
      * @param string $message
      * @param string $endpoint
      */
-    public function nameAction($name = 'admin', $message = 'name_msg', $endpoint = null)
+    public function nameAction(string $name = 'admin', string $message = 'name_msg', $endpoint = null)
     {
         $this->wspClient->pushToName($name, $message, $endpoint);
     }
@@ -22,7 +24,7 @@ class PushCommand extends Command
      * @param string $message
      * @param string $endpoint
      */
-    public function roomAction($room = 'meeting', $message = 'room_msg', $endpoint = null)
+    public function roomAction(string $room = 'meeting', string $message = 'room_msg', $endpoint = null)
     {
         $this->wspClient->pushToRoom($room, $message, $endpoint);
     }
@@ -32,7 +34,7 @@ class PushCommand extends Command
      * @param string $message
      * @param string $endpoint
      */
-    public function roleAction($role = 'admin', $message = 'role_msg', $endpoint = null)
+    public function roleAction(string $role = 'admin', string $message = 'role_msg', $endpoint = null)
     {
         $this->wspClient->pushToRole($role, $message, $endpoint);
     }
@@ -42,7 +44,7 @@ class PushCommand extends Command
      * @param string $message
      * @param string $endpoint
      */
-    public function idAction($id = '1', $message = 'id_msg', $endpoint = null)
+    public function idAction(string $id = '1', string $message = 'id_msg', $endpoint = null)
     {
         $this->wspClient->pushToId($id, $message, $endpoint);
     }
@@ -56,7 +58,7 @@ class PushCommand extends Command
      * @param string $message
      * @param string $endpoint
      */
-    public function broadcastAction($message = 'broadcast_msg', $endpoint = null)
+    public function broadcastAction(string $message = 'broadcast_msg', $endpoint = null)
     {
         $this->wspClient->broadcast($message, $endpoint);
     }

@@ -7,18 +7,22 @@ use App\Events\UserActionLog;
 use App\Models\AdminActionLog;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Http\CookiesInterface;
+use ManaPHP\Http\DispatcherInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Identifying\IdentityInterface;
 
-/**
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\CookiesInterface         $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
- */
 class AdminActionLogListener
 {
     use ContextTrait;
+
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected CookiesInterface $cookies;
+    #[Autowired] protected DispatcherInterface $dispatcher;
 
     protected function getTag(): int
     {

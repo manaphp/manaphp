@@ -8,17 +8,19 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Http\CookiesInterface;
+use ManaPHP\Http\DispatcherInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Identifying\IdentityInterface;
 
-/**
- * @property-read \ManaPHP\Identifying\IdentityInterface      $identity
- * @property-read \ManaPHP\Http\RequestInterface              $request
- * @property-read \ManaPHP\Http\CookiesInterface              $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface           $dispatcher
- * @property-read \App\Listeners\UserActionLogListenerContext $context
- */
 class UserActionLogListener
 {
     use ContextTrait;
+
+    protected IdentityInterface $identity;
+    protected RequestInterface $request;
+    protected CookiesInterface $cookies;
+    protected DispatcherInterface $dispatcher;
 
     protected function getTag(): int
     {

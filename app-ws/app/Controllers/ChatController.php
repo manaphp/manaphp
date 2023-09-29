@@ -2,11 +2,13 @@
 
 namespace App\Controllers;
 
-/**
- * @property-read \ManaPHP\Ws\Chatting\ServerInterface $chatServer
- */
+use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Ws\Chatting\ServerInterface;
+
 class ChatController extends Controller
 {
+    #[Autowired] protected ServerInterface $chatServer;
+
     public function startAction()
     {
         $this->chatServer->start();

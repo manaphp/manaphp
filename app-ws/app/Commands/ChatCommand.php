@@ -2,11 +2,13 @@
 
 namespace App\Commands;
 
-/**
- * @property-read \ManaPHP\Ws\Chatting\ClientInterface $chatClient
- */
+use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Ws\Chatting\ClientInterface;
+
 class ChatCommand extends Command
 {
+    #[Autowired] protected ClientInterface $chatClient;
+
     public function roomAction($room = 'meeting', $message = 'room_msg')
     {
         $this->chatClient->pushToRoom($room, $message);

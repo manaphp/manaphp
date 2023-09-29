@@ -3,20 +3,25 @@ declare(strict_types=1);
 
 namespace App\Filters;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\ForbiddenException;
+use ManaPHP\Http\AuthorizationInterface;
+use ManaPHP\Http\DispatcherInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestAuthorizing;
 use ManaPHP\Identifying\Identity\NoCredentialException;
+use ManaPHP\Identifying\IdentityInterface;
 
-/**
- * @property-read \ManaPHP\Http\AuthorizationInterface   $authorization
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\ResponseInterface        $response
- * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
- */
 class AuthorizationFilter
 {
+    #[Autowired] protected AuthorizationInterface $authorization;
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected DispatcherInterface $dispatcher;
+
     public function onAuthorizing(#[Event] RequestAuthorizing $event): void
     {
         if ($this->authorization->isAllowed($this->dispatcher->getAction())) {
