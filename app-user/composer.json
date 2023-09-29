@@ -9,25 +9,33 @@
   "homepage": "https://github.com/manaphp/app-user",
   "authors": [
     {
-      "name": "ManaPHP Mark",
-      "email": "manaphp@qq.com"
+      "name" : "ManaPHP Mark",
+      "email" : "manaphp@qq.com"
     }
   ],
-  "autoload": {
-    "psr-4": {
-      "ManaPHP\\": "../framework/",
-      "App\\": "app/"
+  "keywords" : [
+    "manaphp",
+    "phalcon",
+    "laravel",
+    "yii2",
+    "api"
+  ],
+  "autoload" : {
+    "psr-4" : {
+      "ManaPHP\\" : "../framework/",
+      "App\\" : "app/"
     },
-    "files": [
+    "files" : [
       "../framework/helpers.php"
     ]
   },
-  "minimum-stability": "dev",
-  "require": {
-    "php": ">=8.0.2",
-    "ext-json": "*",
-    "psr/container": "2.0.2",
-    "psr/log": "2.0.0",
-    "psr/simple-cache": "^3.0"
+  "minimum-stability" : "dev",
+  "require" : {
+    "php" : ">=8.0.2",
+    "ext-json" : "*",
+    "psr/container" : "2.0.2",
+    "psr/log" : "2.0.0",
+    "psr/simple-cache" : "^3.0",
+    "psr/event-dispatcher" : "1.0.*"
   }
 }
