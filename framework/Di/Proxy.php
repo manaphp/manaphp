@@ -40,7 +40,7 @@ class Proxy
     {
         $proxy = false;
         $id = null;
-        foreach ($this->property->getType()->getTypes() as $rType) {
+        foreach ($this->property->getType()?->getTypes() as $rType) {
             $type = $rType->getName();
             if ($type === static::class) {
                 $proxy = true;

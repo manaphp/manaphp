@@ -64,6 +64,7 @@ class Contextor implements ContextorInterface
                     }
 
                     $parent_ao = Coroutine::getContext($parent_cid);
+                    /** @noinspection NullPointerExceptionInspection */
                     if (($context = $parent_ao[$object_id] ?? null) !== null) {
                         if ($context instanceof ContextInseparable) {
                             return $ao[$object_id] = $this->createContext($object);
@@ -73,6 +74,7 @@ class Contextor implements ContextorInterface
                     } else {
                         $context = $ao[$object_id] = $this->createContext($object);
                         if (!$context instanceof ContextInseparable) {
+                            /** @noinspection NullPointerExceptionInspection */
                             $parent_ao[$object_id] = $context;
                         }
                     }
