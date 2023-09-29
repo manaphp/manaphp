@@ -11,7 +11,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Identifying\IdentityInterface;
-use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
@@ -53,19 +52,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public static function all(array $filters = [], ?array $fields = null): array
     {
         return static::select($fields)->where($filters)->fetch();
-    }
-
-    /**
-     * Allows to query a set of records that match the specified conditions
-     *
-     * @param array  $filters =model_var(new static)
-     * @param ?array $fields  =model_fields(new static)
-     *
-     * @return  Paginator
-     */
-    public static function paginate(array $filters = [], ?array $fields = null): Paginator
-    {
-        return static::select($fields)->search($filters)->paginate();
     }
 
     /**
@@ -729,13 +715,14 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
+     * @param array $data
      * @param array $filters =model_var(new static)
      *
      * @return QueryInterface <static>
      */
-    public static function search(array $filters): QueryInterface
+    public static function whereCriteria(array $data, array $filters): QueryInterface
     {
-        return static::select()->search($filters);
+        return static::select()->whereCriteria($data, $filters);
     }
 
     /**

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Model;
 
-use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
 
 interface ModelInterface
@@ -13,8 +12,6 @@ interface ModelInterface
     public static function query(?string $alias = null): QueryInterface;
 
     public static function all(array $filters = [], ?array $fields = null): array;
-
-    public static function paginate(array $filters = [], ?array $fields = null): Paginator;
 
     public static function lists(string|array $fields, array $filters = []): array;
 
@@ -92,7 +89,7 @@ interface ModelInterface
 
     public static function where(array $filters): QueryInterface;
 
-    public static function search(array $filters): QueryInterface;
+    public static function whereCriteria(array $data, array $filters): QueryInterface;
 
     public function newQuery(): QueryInterface;
 }

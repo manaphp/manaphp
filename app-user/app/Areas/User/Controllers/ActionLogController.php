@@ -25,7 +25,7 @@ class ActionLogController extends Controller
     {
         return UserActionLog::select()
             ->where(['user_id' => $this->identity->getId()])
-            ->search(['path', 'client_ip', 'created_time@=', 'tag'])
+            ->whereCriteria($this->request->all(), ['path', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
             ->paginate();
     }

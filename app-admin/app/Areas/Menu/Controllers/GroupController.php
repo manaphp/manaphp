@@ -12,7 +12,7 @@ class GroupController extends Controller
 {
     public function indexAction()
     {
-        return Group::search(['group_id'])
+        return Group::whereCriteria($this->request->all(), ['group_id'])
             ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
             ->all();
     }

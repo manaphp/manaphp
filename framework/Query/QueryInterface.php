@@ -65,11 +65,12 @@ interface QueryInterface
     public function whereExpr(string $expr, ?array $bind = null): static;
 
     /**
+     * @param array $data
      * @param array $filters =model_var(new Model)
      *
      * @return static
      */
-    public function search(array $filters): static;
+    public function whereCriteria(array $data, array $filters): static;
 
     /**
      * Appends a BETWEEN condition to the current conditions

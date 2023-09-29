@@ -14,7 +14,7 @@ class LoginLogController extends Controller
     public function latestAction()
     {
         return UserLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
-            ->search(['created_time@='])
+            ->whereCriteria($this->request->all(), ['created_time@='])
             ->orderBy(['login_id' => SORT_DESC])
             ->where(['user_id' => $this->identity->getId()])
             ->paginate();

@@ -17,7 +17,7 @@ class LoginLogController extends Controller
             ['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time']
         )
             ->orderBy(['login_id' => SORT_DESC])
-            ->search(['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@='])
+            ->whereCriteria($this->request->all(), ['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@='])
             ->paginate();
     }
 
@@ -26,7 +26,7 @@ class LoginLogController extends Controller
     public function latestAction()
     {
         return AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
-            ->search(['created_time@='])
+            ->whereCriteria($this->request->all(), ['created_time@='])
             ->orderBy(['login_id' => SORT_DESC])
             ->where(['admin_id' => $this->identity->getId()])
             ->paginate();

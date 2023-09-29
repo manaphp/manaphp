@@ -20,7 +20,7 @@ class RolePermissionController extends Controller
     {
         return RolePermission::select(['id', 'permission_id', 'creator_name', 'created_time'])
             ->with(['permission' => 'permission_id, display_name, path', 'roles' => 'role_id, role_name, display_name'])
-            ->search(['role_id'])
+            ->whereCriteria($this->request->all(), ['role_id'])
             ->all();
     }
 
