@@ -8,13 +8,14 @@ use App\Models\Admin;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\ResponseInterface;
 
 #[Authorize('admin')]
 class AccountController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
 
-    public function captchaAction()
+    public function captchaAction(): ResponseInterface
     {
         return $this->captcha->generate();
     }

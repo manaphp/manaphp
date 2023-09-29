@@ -14,7 +14,7 @@ class DotenvController extends Controller
 {
     #[Autowired] protected RedisDbInterface $redisDb;
 
-    const REDIS_KEY = '.env';
+    public const REDIS_KEY = '.env';
 
     public function indexAction(string $app_id = '')
     {

@@ -9,11 +9,11 @@ use ManaPHP\Model\Relation\HasManyToMany;
 
 class Admin extends Model
 {
-    const STATUS_INIT = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_LOCKED = 2;
+    public const STATUS_INIT = 0;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_LOCKED = 2;
 
-    const PASSWORD_LENGTH = '1-30';
+    public const PASSWORD_LENGTH = '1-30';
 
     public int $admin_id;
     public string $admin_name;

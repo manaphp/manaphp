@@ -10,7 +10,7 @@ class TestCommand extends Command
      *
      * @param string $name
      */
-    public function defaultAction($name = 'manaphp')
+    public function defaultAction(string $name = 'manaphp')
     {
         $this->console->writeLn(sprintf('Hello %s!', $name));
     }

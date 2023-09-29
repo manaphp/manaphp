@@ -5,6 +5,7 @@ namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\Admin;
+use Exception;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
@@ -56,7 +57,7 @@ class PasswordController extends Controller
     {
         try {
             $claims = jwt_decode($token, 'admin.password.forget');
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return $this->view->setVars(['expired' => true, 'token' => $token]);
         }
 
@@ -73,7 +74,7 @@ class PasswordController extends Controller
     {
         try {
             $claims = jwt_decode($token, 'admin.password.forget');
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return '重置失败：Token已过期';
         }
 
