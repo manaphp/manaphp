@@ -9,16 +9,23 @@
   "homepage": "https://github.com/manaphp/app-admin",
   "authors": [
     {
-      "name": "ManaPHP Mark",
-      "email": "manaphp@qq.com"
+      "name" : "ManaPHP Mark",
+      "email" : "manaphp@qq.com"
     }
   ],
-  "autoload": {
-    "psr-4": {
-      "ManaPHP\\": "../framework/",
-      "App\\": "app/"
+  "keywords" : [
+    "manaphp",
+    "phalcon",
+    "laravel",
+    "yii2",
+    "api"
+  ],
+  "autoload" : {
+    "psr-4" : {
+      "ManaPHP\\" : "../framework/",
+      "App\\" : "app/"
     },
-    "files": [
+    "files" : [
       "../framework/helpers.php"
     ]
   },

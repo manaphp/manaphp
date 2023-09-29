@@ -1,20 +1,20 @@
 <?php return array(
     'root' => array(
-        'name' => 'manaphp/app-admin',
+        'name' => 'manaphp/app-api',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => 'eed95cf600465ff69107195a93b1ad500bc95dd3',
-        'type' => 'library',
+        'reference' => '5cc5438e4e156ca6052fba6f90ae8198f20e7c12',
+        'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'manaphp/app-admin' => array(
+        'manaphp/app-api' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => 'eed95cf600465ff69107195a93b1ad500bc95dd3',
-            'type' => 'library',
+            'reference' => '5cc5438e4e156ca6052fba6f90ae8198f20e7c12',
+            'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
