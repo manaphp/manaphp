@@ -10,6 +10,7 @@ use ManaPHP\Amqp\EngineInterface;
 use ManaPHP\Amqp\Exchange;
 use ManaPHP\Amqp\MessageInterface;
 use ManaPHP\Amqp\Queue;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
