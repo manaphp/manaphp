@@ -22,6 +22,8 @@ class Imagick extends AbstractCaptcha
         $x = random_int((int)($referenceFontSize * 0.1), (int)($referenceFontSize * 0.3));
         $length = strlen($code);
         $fgPixel = new ImagickPixel();
+        $font_size = $referenceFontSize;
+
         for ($i = 0; $i < $length; $i++) {
             $font_size = $referenceFontSize * random_int(800, 1000) / 1000;
             $draw->setFontSize($font_size);
