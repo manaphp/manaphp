@@ -3,16 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use Swoole\Coroutine;
 
 class CoroutineManager implements CoroutineManagerInterface
 {
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected MakerInterface $maker;
 
-    #[Value] protected array $option = [];
+    #[Autowired] protected array $option = [];
 
     public function __construct()
     {

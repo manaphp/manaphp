@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Client\Engine;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
@@ -13,7 +13,7 @@ use ManaPHP\Http\Client\Response;
 
 class Fopen implements EngineInterface
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
     public function request(Request $request, ?string $body): Response
     {

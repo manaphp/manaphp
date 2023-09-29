@@ -5,18 +5,17 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Log;
 
 class File extends AbstractLogger
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected string $file = '@runtime/logger/{id}.log';
-    #[Value] protected string $line_format = '[:time][:level][:category][:location] :message';
+    #[Autowired] protected string $file = '@runtime/logger/{id}.log';
+    #[Autowired] protected string $line_format = '[:time][:level][:category][:location] :message';
 
     protected function format(Log $log): string
     {

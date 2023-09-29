@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Context;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 
 trait ContextTrait
 {
-    #[Inject] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextorInterface $contextor;
 
     protected function getContext(): object
     {

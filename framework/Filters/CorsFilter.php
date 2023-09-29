@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\RequestInterface;
@@ -14,13 +13,13 @@ use ManaPHP\Http\Server\Event\RequestBegin;
 
 class CorsFilter
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
 
-    #[Value] protected int $max_age = 86400;
-    #[Value] protected ?string $origin;
-    #[Value] protected bool $credentials = true;
+    #[Autowired] protected int $max_age = 86400;
+    #[Autowired] protected ?string $origin;
+    #[Autowired] protected bool $credentials = true;
 
     public function onBegin(#[Event] RequestBegin $event): void
     {

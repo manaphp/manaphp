@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
@@ -15,12 +14,12 @@ use ReflectionParameter;
 
 class ArgumentsResolver implements ArgumentsResolverInterface
 {
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected ValidatorInterface $validator;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected ValidatorInterface $validator;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
-    #[Value] protected array $resolvers = [];
+    #[Autowired] protected array $resolvers = [];
 
     /**
      * @var ScalarValueResolverInterface[]

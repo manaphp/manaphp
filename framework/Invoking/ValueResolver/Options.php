@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking\ValueResolver;
 
 use ManaPHP\Cli\OptionsInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
 use ManaPHP\Invoking\ScalarValueResolverInterface;
 use ReflectionParameter;
 
 class Options implements ScalarValueResolverInterface
 {
-    #[Inject] protected OptionsInterface $options;
+    #[Autowired] protected OptionsInterface $options;
 
     public function resolve(ReflectionParameter $parameter, ?string $type, string $name): string|bool|null
     {

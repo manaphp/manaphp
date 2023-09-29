@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mongodb;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Mongodb\Event\MongodbConnect;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\BulkWrite;
@@ -18,9 +17,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Connection implements ConnectionInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
 
-    #[Value] protected string $uri;
+    #[Autowired] protected string $uri;
     protected ?Manager $manager = null;
     protected ?WriteConcern $writeConcern = null;
     protected int $heartbeat = 60;

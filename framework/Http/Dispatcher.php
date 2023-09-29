@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Action\InvokerInterface;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
@@ -23,10 +23,10 @@ class Dispatcher implements DispatcherInterface
 {
     use ContextTrait;
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected GlobalsInterface $globals;
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected InvokerInterface $invoker;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected GlobalsInterface $globals;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected InvokerInterface $invoker;
 
     public function getArea(): ?string
     {

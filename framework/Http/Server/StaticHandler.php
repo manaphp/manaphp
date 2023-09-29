@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RouterInterface;
 
 class StaticHandler implements StaticHandlerInterface
 {
-    #[Inject] protected RouterInterface $router;
+    #[Autowired] protected RouterInterface $router;
 
     protected string $root;
     protected array $locations;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
-use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Message;
@@ -16,7 +15,7 @@ use Swift_SmtpTransport;
 
 class Swift extends AbstractMailer
 {
-    #[Value] protected string $uri;
+    #[Autowired] protected string $uri;
     protected string $encryption;
     protected string $host;
     protected int $port;

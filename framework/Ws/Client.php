@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Emitter;
 use ManaPHP\Eventing\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
@@ -14,7 +14,7 @@ use Throwable;
 
 class Client implements ClientInterface
 {
-    #[Inject] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolManagerInterface $poolManager;
 
     protected string $endpoint;
     protected ?string $proxy;

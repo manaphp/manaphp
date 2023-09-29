@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Db\DbInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
@@ -23,11 +22,11 @@ use ManaPHP\Identifying\IdentityInterface;
  */
 class Db extends AbstractSession
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected DbInterface $db;
-    #[Inject] protected IdentityInterface $identity;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected DbInterface $db;
+    #[Autowired] protected IdentityInterface $identity;
 
-    #[Value] protected string $table = 'manaphp_session';
+    #[Autowired] protected string $table = 'manaphp_session';
 
     public function do_read(string $session_id): string
     {

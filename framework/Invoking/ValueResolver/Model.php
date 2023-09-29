@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking\ValueResolver;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\BadRequestException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
@@ -15,9 +15,9 @@ use ReflectionParameter;
 
 class Model implements ObjectValueResolverInterface
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ModelManagerInterface $modelManager;
-    #[Inject] protected ValidatorInterface $validator;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ValidatorInterface $validator;
 
     public function resolve(ReflectionParameter $parameter, ?string $type, string $name): ?ModelInterface
     {

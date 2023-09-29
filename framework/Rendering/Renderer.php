@@ -6,8 +6,7 @@ namespace ManaPHP\Rendering;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine\Mutex;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
@@ -19,16 +18,16 @@ class Renderer implements RendererInterface
 {
     use ContextTrait;
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected ContainerInterface $container;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected ContainerInterface $container;
 
     /**
      * @var EngineInterface[]
      */
     protected array $resolved = [];
 
-    #[Value] protected array $engines
+    #[Autowired] protected array $engines
         = ['.phtml' => 'ManaPHP\Rendering\Engine\Php',
            '.sword' => 'ManaPHP\Rendering\Engine\Sword'];
 

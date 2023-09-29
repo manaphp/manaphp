@@ -5,14 +5,14 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Rendering\Engine\Sword\Compiler;
 
 class SwordCommand extends Command
 {
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected Compiler $swordCompiler;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected Compiler $swordCompiler;
 
     /**
      * precompile sword template

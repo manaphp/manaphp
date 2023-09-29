@@ -3,18 +3,17 @@ declare(strict_types=1);
 
 namespace ManaPHP\Token;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Encoding\Base64UrlInterface;
 use ManaPHP\Security\CryptInterface;
 
 class Jwt implements JwtInterface
 {
-    #[Inject] protected CryptInterface $crypt;
-    #[Inject] protected Base64UrlInterface $base64Url;
+    #[Autowired] protected CryptInterface $crypt;
+    #[Autowired] protected Base64UrlInterface $base64Url;
 
-    #[Value] protected string $alg = 'HS256';
-    #[Value] protected ?string $key;
+    #[Autowired] protected string $alg = 'HS256';
+    #[Autowired] protected ?string $key;
 
     public function encode(array $claims, int $ttl, ?string $key = null): string
     {

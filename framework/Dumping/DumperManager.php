@@ -3,15 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Dumping;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use Psr\Container\ContainerInterface;
 
 class DumperManager implements DumperManagerInterface
 {
-    #[Inject] protected ContainerInterface $container;
+    #[Autowired] protected ContainerInterface $container;
 
-    #[Value] protected array $dumpers = [];
+    #[Autowired] protected array $dumpers = [];
 
     protected array $instances = [];
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rest;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception;
 use ManaPHP\Http\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -11,8 +11,8 @@ use Throwable;
 
 class ErrorHandler implements ErrorHandlerInterface
 {
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected ResponseInterface $response;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected ResponseInterface $response;
 
     public function handle(Throwable $throwable): void
     {

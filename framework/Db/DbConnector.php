@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Db;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use Psr\Container\ContainerInterface;
 
 class DbConnector implements DbConnectorInterface
 {
-    #[Inject] protected ContainerInterface $container;
+    #[Autowired] protected ContainerInterface $container;
 
     public function get($name = 'default'): DbInterface
     {

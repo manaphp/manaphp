@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\RouterInterface;
@@ -18,9 +18,9 @@ use ManaPHP\Ws\Pushing\ServerInterface as PushingServerInterface;
  */
 class Controller extends \ManaPHP\Http\Controller
 {
-    #[Inject] protected ServerInterface $wsServer;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected RouterInterface $router;
-    #[Inject] protected PushingServerInterface $wspServer;
+    #[Autowired] protected ServerInterface $wsServer;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected RouterInterface $router;
+    #[Autowired] protected PushingServerInterface $wspServer;
 }

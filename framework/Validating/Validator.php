@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace ManaPHP\Validating;
 
 use Closure;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
@@ -23,12 +22,12 @@ use ReflectionClass;
 
 class Validator implements ValidatorInterface
 {
-    #[Inject] protected LocaleInterface $locale;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected PurifierInterface $htmlPurifier;
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected LocaleInterface $locale;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected PurifierInterface $htmlPurifier;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
-    #[Value] protected string $dir = '@manaphp/Validating/Validator/Templates';
+    #[Autowired] protected string $dir = '@manaphp/Validating/Validator/Templates';
 
     protected array $files;
     protected array $templates;

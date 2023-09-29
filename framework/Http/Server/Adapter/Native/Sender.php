@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server\Adapter\Native;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
@@ -17,11 +17,11 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class Sender implements SenderInterface
 {
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected RouterInterface $router;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected RouterInterface $router;
 
     public function send(): void
     {

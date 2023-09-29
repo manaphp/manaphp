@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Pushing;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Messaging\PubSubInterface;
 use ManaPHP\Ws\Pushing\Client\Event\PushClientPush;
@@ -12,11 +11,11 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected PubSubInterface $pubSub;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected PubSubInterface $pubSub;
 
-    #[Value] protected string $endpoint;
-    #[Value] protected string $prefix = 'ws_pushing:';
+    #[Autowired] protected string $endpoint;
+    #[Autowired] protected string $prefix = 'ws_pushing:';
 
     protected function push(string $type, int|string|array $receivers, string|array $message, ?string $endpoint): void
     {

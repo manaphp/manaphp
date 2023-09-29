@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 
 class Command
 {
-    #[Inject] protected ConsoleInterface $console;
+    #[Autowired] protected ConsoleInterface $console;
 }

@@ -4,20 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Identifying\Identity\Adapter;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\Identity;
 use ManaPHP\Token\ScopedJwtInterface;
 
 class Jwt extends Identity
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ScopedJwtInterface $scopedJwt;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ScopedJwtInterface $scopedJwt;
 
-    #[Value] protected ?string $scope;
-    #[Value] protected int $ttl = 86400;
+    #[Autowired] protected ?string $scope;
+    #[Autowired] protected int $ttl = 86400;
 
     public function authenticate(): array
     {

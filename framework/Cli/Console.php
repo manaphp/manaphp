@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use JsonSerializable;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use ReflectionClass;
@@ -14,7 +14,7 @@ use function getenv;
 
 class Console implements ConsoleInterface
 {
-    #[Inject] protected LoggerInterface $logger;
+    #[Autowired] protected LoggerInterface $logger;
 
     protected int $width = 80;
 

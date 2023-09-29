@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Debugging;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
@@ -13,13 +12,13 @@ use ManaPHP\Http\Server\Event\RequestEnd;
 
 class XdebugTracer implements XdebugTracerInterface
 {
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected int $params = 3;
-    #[Value] protected int $return = 0;
-    #[Value] protected int $max_depth = 2;
-    #[Value] protected int $mem_delta = 1;
+    #[Autowired] protected int $params = 3;
+    #[Autowired] protected int $return = 0;
+    #[Autowired] protected int $max_depth = 2;
+    #[Autowired] protected int $mem_delta = 1;
 
     public function start(): void
     {

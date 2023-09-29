@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use JetBrains\PhpStorm\NoReturn;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
 use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
@@ -14,9 +14,9 @@ use Throwable;
 
 class Server implements ServerInterface
 {
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected ErrorHandlerInterface $errorHandler;
-    #[Inject] protected HandlerInterface $handler;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected ErrorHandlerInterface $errorHandler;
+    #[Autowired] protected HandlerInterface $handler;
 
     protected int $exit_code;
 

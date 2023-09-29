@@ -3,17 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Token;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Security\CryptInterface;
 
 class ScopedJwt implements ScopedJwtInterface
 {
-    #[Inject] protected JwtInterface $jwt;
-    #[Inject] protected CryptInterface $crypt;
+    #[Autowired] protected JwtInterface $jwt;
+    #[Autowired] protected CryptInterface $crypt;
 
-    #[Value] protected array $keys = [];
+    #[Autowired] protected array $keys = [];
 
     public function getKey(string $scope): string
     {

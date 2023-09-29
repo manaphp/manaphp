@@ -5,15 +5,15 @@ namespace ManaPHP\Rendering\Engine;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Rendering\Engine\Sword\Compiler;
 use ManaPHP\Rendering\EngineInterface;
 
 class Sword implements EngineInterface
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected Compiler $swordCompiler;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected Compiler $swordCompiler;
 
     protected string $doc_root;
 

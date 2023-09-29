@@ -5,14 +5,14 @@ namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use Psr\Container\ContainerInterface;
 
 class FilterBootstrapper implements BootstrapperInterface
 {
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
-    #[Inject] protected ConfigInterface $config;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected ConfigInterface $config;
 
     public function bootstrap(ContainerInterface $container): void
     {

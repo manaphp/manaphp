@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc\View;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 
 class Asset implements AssetInterface
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
     protected array $urls = [];
 

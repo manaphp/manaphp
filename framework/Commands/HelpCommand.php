@@ -7,7 +7,7 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Cli\CommandManagerInterface;
 use ManaPHP\Cli\Console;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\JsonException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Version;
@@ -17,9 +17,9 @@ use ReflectionMethod;
 
 class HelpCommand extends Command
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected CommandManagerInterface $commandManager;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected CommandManagerInterface $commandManager;
 
     /**
      * list all commands

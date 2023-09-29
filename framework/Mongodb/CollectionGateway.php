@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mongodb;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Model\ShardingInterface;
@@ -11,10 +11,10 @@ use ManaPHP\Model\ThoseInterface;
 
 class CollectionGateway implements CollectionGatewayInterface
 {
-    #[Inject] protected ThoseInterface $those;
-    #[Inject] protected MongodbConnectorInterface $connector;
-    #[Inject] protected ShardingInterface $sharding;
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ThoseInterface $those;
+    #[Autowired] protected MongodbConnectorInterface $connector;
+    #[Autowired] protected ShardingInterface $sharding;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
     protected function getThat(string $model): Model
     {

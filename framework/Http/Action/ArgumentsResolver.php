@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Action;
 
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 
 class ArgumentsResolver extends \ManaPHP\Invoking\ArgumentsResolver implements ArgumentsResolverInterface
 {
-    #[Value] protected array $resolvers = ['model', 'request'];
+    #[Autowired] protected array $resolvers = ['model', 'request'];
 }

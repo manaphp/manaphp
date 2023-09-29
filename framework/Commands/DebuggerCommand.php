@@ -5,13 +5,13 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Redis\RedisCacheInterface;
 
 class DebuggerCommand extends Command
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RedisCacheInterface $redisCache;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RedisCacheInterface $redisCache;
 
     /**
      * monitor generated urls

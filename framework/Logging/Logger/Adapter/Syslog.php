@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Log;
@@ -20,11 +19,11 @@ use ManaPHP\Logging\Logger\Log;
 
 class Syslog extends AbstractLogger
 {
-    #[Inject] protected ConfigInterface $config;
+    #[Autowired] protected ConfigInterface $config;
 
-    #[Value] protected string $uri;
-    #[Value] protected int $facility = 1;
-    #[Value] protected string $line_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
+    #[Autowired] protected string $uri;
+    #[Autowired] protected int $facility = 1;
+    #[Autowired] protected string $line_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     protected string $scheme;
     protected string $host;

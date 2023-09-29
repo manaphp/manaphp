@@ -20,8 +20,7 @@ use ManaPHP\Db\Event\DbRollback;
 use ManaPHP\Db\Event\DbUpdated;
 use ManaPHP\Db\Event\DbUpdating;
 use ManaPHP\Db\Exception as DbException;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
@@ -37,16 +36,16 @@ class Db implements DbInterface
 {
     use ContextTrait;
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected PoolManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected MakerInterface $maker;
 
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;
     public const METADATA_AUTO_INCREMENT_KEY = 3;
     public const METADATA_INT_TYPE_ATTRIBUTES = 5;
 
-    #[Value] protected string $uri;
+    #[Autowired] protected string $uri;
 
     protected string $prefix = '';
     protected bool $has_slave = false;

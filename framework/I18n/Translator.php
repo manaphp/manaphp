@@ -3,18 +3,17 @@ declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\RequestInterface;
 
 class Translator implements TranslatorInterface
 {
-    #[Inject] protected LocaleInterface $locale;
-    #[Inject] protected RequestInterface $request;
+    #[Autowired] protected LocaleInterface $locale;
+    #[Autowired] protected RequestInterface $request;
 
-    #[Value] protected string $dir = '@resources/Translator';
+    #[Autowired] protected string $dir = '@resources/Translator';
 
     protected array $files = [];
     protected array $templates = [];

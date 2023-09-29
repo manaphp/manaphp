@@ -5,8 +5,7 @@ namespace ManaPHP\Http;
 
 use Countable;
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\CurlMulti\Error;
@@ -16,12 +15,12 @@ use Psr\Log\LoggerInterface;
 
 class CurlMulti implements CurlMultiInterface, Countable
 {
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected MakerInterface $maker;
 
-    #[Value] protected ?string $proxy;
-    #[Value] protected int $timeout = 10;
+    #[Autowired] protected ?string $proxy;
+    #[Autowired] protected int $timeout = 10;
 
     protected mixed $template;
     protected mixed $mh;

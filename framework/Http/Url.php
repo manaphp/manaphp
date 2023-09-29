@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 
 class Url implements UrlInterface
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected RouterInterface $router;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected RouterInterface $router;
 
     public function get(string|array $args = [], bool|string $scheme = false): string
     {

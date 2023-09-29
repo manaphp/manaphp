@@ -6,7 +6,6 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
@@ -21,7 +20,7 @@ class Workerman extends AbstractServer
 {
     use ContextTrait;
 
-    #[Value] protected array $settings = [];
+    #[Autowired] protected array $settings = [];
     protected Worker $worker;
     protected array $_SERVER = [];
     protected int $max_request;

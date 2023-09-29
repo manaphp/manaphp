@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Message;
 
 class File extends AbstractMailer
 {
-    #[Value] protected ?string $file;
-    #[Value] protected bool $pretty = false;
+    #[Autowired] protected ?string $file;
+    #[Autowired] protected bool $pretty = false;
 
     protected function sendInternal(Message $message, ?array &$failedRecipients = null): int
     {

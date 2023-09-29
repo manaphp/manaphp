@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Messaging\PubSubInterface;
 use ManaPHP\Ws\Chatting\Client\Event\ChatClientPush;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -12,10 +11,10 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class Client implements ClientInterface
 {
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected PubSubInterface $pubSub;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected PubSubInterface $pubSub;
 
-    #[Value] protected string $prefix = 'ws_chatting:';
+    #[Autowired] protected string $prefix = 'ws_chatting:';
 
     protected function push(string $type, string $room, string|array $receivers, string|array $message): void
     {

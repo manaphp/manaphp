@@ -6,7 +6,7 @@ namespace App\Listeners;
 use App\Models\AdminActionLog;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Http\CookiesInterface;
@@ -18,10 +18,10 @@ class AdminActionLogListener
 {
     use ContextTrait;
 
-    #[Inject] protected IdentityInterface $identity;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected CookiesInterface $cookies;
-    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected CookiesInterface $cookies;
+    #[Autowired] protected DispatcherInterface $dispatcher;
 
     public function onDbExecuting(#[Event] DbExecuting $event): void
     {

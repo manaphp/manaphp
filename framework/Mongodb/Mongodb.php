@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mongodb;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Mongodb\Event\MongodbBulkInserted;
@@ -31,11 +30,11 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Mongodb implements MongodbInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected PoolManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected MakerInterface $maker;
 
-    #[Value] protected string $uri = 'mongodb://127.0.0.1:27017/';
+    #[Autowired] protected string $uri = 'mongodb://127.0.0.1:27017/';
     protected string $prefix;
     protected string $db;
 

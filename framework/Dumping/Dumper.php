@@ -4,19 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Dumping;
 
 use ManaPHP\Context\ContextorInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ReflectionClass;
 
 class Dumper implements DumperInterface
 {
-    #[Inject] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextorInterface $contextor;
 
     public function dump(object $object): array
     {
         $data = [];
         $rf = new ReflectionClass($object);
         foreach ($rf->getProperties() as $property) {
-            if ($property->isStatic() || $property->getAttributes(Inject::class) !== []) {
+            if ($property->isStatic() || $property->getAttributes(Autowired::class) !== []) {
                 continue;
             }
 

@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Redis;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use Psr\Container\ContainerInterface;
 
 class RedisConnector implements RedisConnectorInterface
 {
-    #[Inject] protected ContainerInterface $container;
+    #[Autowired] protected ContainerInterface $container;
 
     public function get(string $name = 'default'): Redis
     {

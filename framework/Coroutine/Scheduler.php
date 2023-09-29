@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
@@ -11,7 +11,7 @@ use Throwable;
 
 class Scheduler implements SchedulerInterface
 {
-    #[Inject] protected LoggerInterface $logger;
+    #[Autowired] protected LoggerInterface $logger;
 
     protected array $tasks = [];
 

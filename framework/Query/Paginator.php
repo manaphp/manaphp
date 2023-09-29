@@ -6,14 +6,14 @@ namespace ManaPHP\Query;
 use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Http\RequestInterface;
 
 class Paginator implements PaginatorInterface, JsonSerializable
 {
-    #[Inject] protected RequestInterface $request;
+    #[Autowired] protected RequestInterface $request;
 
     public int $count;
     public int $size;

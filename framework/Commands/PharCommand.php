@@ -6,13 +6,13 @@ namespace ManaPHP\Commands;
 use FilesystemIterator;
 use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use Phar;
 
 class PharCommand extends Command
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
     /**
      * create manacli.phar file

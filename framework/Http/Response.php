@@ -8,8 +8,7 @@ use DateTimeZone;
 use JsonSerializable;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
@@ -19,13 +18,13 @@ class Response implements ResponseInterface
 {
     use ContextTrait;
 
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected UrlInterface $url;
-    #[Inject] protected RouterInterface $router;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected UrlInterface $url;
+    #[Autowired] protected RouterInterface $router;
 
-    #[Value] protected int|string $ok_code = 0;
-    #[Value] protected int|string $error_code = 1;
+    #[Autowired] protected int|string $ok_code = 0;
+    #[Autowired] protected int|string $error_code = 1;
 
     public function setCookie(
         string $name,

@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Helper\LocalFS;
 use Psr\Container\ContainerInterface;
 
 class ListenerBootstrapper implements BootstrapperInterface
 {
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
 
     public function bootstrap(ContainerInterface $container): void
     {

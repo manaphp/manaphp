@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use JsonSerializable;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 
 class Cookies implements CookiesInterface, JsonSerializable
 {
-    #[Inject] protected GlobalsInterface $globals;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
+    #[Autowired] protected GlobalsInterface $globals;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
 
     public function all(): array
     {

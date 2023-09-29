@@ -6,8 +6,7 @@ namespace ManaPHP\Http;
 use ArrayAccess;
 use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\NotSupportedException;
@@ -25,18 +24,18 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
 {
     use ContextTrait;
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
 
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected CookiesInterface $cookies;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected RouterInterface $router;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected CookiesInterface $cookies;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected RouterInterface $router;
 
-    #[Value] protected int $ttl = 3600;
-    #[Value] protected int $lazy = 60;
-    #[Value] protected string $name = 'PHPSESSID';
-    #[Value] protected string $serializer = 'json';
+    #[Autowired] protected int $ttl = 3600;
+    #[Autowired] protected int $lazy = 60;
+    #[Autowired] protected string $name = 'PHPSESSID';
+    #[Autowired] protected string $serializer = 'json';
 
     protected array $params = ['expire' => 0, 'path' => '', 'domain' => '', 'secure' => false, 'httponly' => true];
 

@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Http\Controller\Attribute\RateLimit;
@@ -18,12 +17,12 @@ use ReflectionMethod;
 
 class RateLimitFilter
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected IdentityInterface $identity;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected RedisCacheInterface $redisCache;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected RedisCacheInterface $redisCache;
 
-    #[Value] protected ?string $prefix;
+    #[Autowired] protected ?string $prefix;
 
     protected array $rateLimits = [];
 

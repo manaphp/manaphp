@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\Mailer\Event\MailerSending;
@@ -15,12 +14,12 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 abstract class AbstractMailer implements MailerInterface
 {
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected MakerInterface $maker;
 
-    #[Value] protected ?string $log;
-    #[Value] protected ?string $from;
-    #[Value] protected ?string $to;
+    #[Autowired] protected ?string $log;
+    #[Autowired] protected ?string $from;
+    #[Autowired] protected ?string $to;
 
     public function compose(): Message
     {

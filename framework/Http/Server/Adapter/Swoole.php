@@ -6,8 +6,7 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\AliasInterface;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Event\RequestResponded;
@@ -28,11 +27,11 @@ class Swoole extends AbstractServer
 {
     use ContextTrait;
 
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected StaticHandlerInterface $staticHandler;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected StaticHandlerInterface $staticHandler;
 
-    #[Value] protected array $settings = [];
+    #[Autowired] protected array $settings = [];
     protected Server $swoole;
     protected array $_SERVER;
 

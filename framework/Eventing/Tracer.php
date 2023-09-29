@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Eventing;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
@@ -19,13 +18,13 @@ use Stringable;
 
 class Tracer implements TracerInterface
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
-    #[Inject] protected LoggerInterface $logger;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected LoggerInterface $logger;
 
-    #[Value] protected array $ignores = [];
-    #[Value] protected array $events = [];
-    #[Value] protected bool $verbose = true;
+    #[Autowired] protected array $ignores = [];
+    #[Autowired] protected array $events = [];
+    #[Autowired] protected bool $verbose = true;
 
     protected array $listeners = [];
 

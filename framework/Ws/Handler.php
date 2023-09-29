@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response;
@@ -22,14 +22,14 @@ use Throwable;
 
 class Handler implements HandlerInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected ServerInterface $wsServer;
-    #[Inject] protected IdentityInterface $identity;
-    #[Inject] protected RouterInterface $router;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected DispatcherInterface $dispatcher;
-    #[Inject] protected ErrorHandlerInterface $errorHandler;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected ServerInterface $wsServer;
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected RouterInterface $router;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected ErrorHandlerInterface $errorHandler;
 
     /**
      * @noinspection PhpRedundantCatchClauseInspection

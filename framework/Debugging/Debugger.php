@@ -13,8 +13,7 @@ use ManaPHP\Db\Event\DbQueried;
 use ManaPHP\Db\Event\DbQuerying;
 use ManaPHP\Db\Event\DbRollback;
 use ManaPHP\Db\PreparedEmulatorInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Dumping\DumperManagerInterface;
 use ManaPHP\Eventing\Attribute\Event;
@@ -46,22 +45,22 @@ class Debugger implements DebuggerInterface
 {
     use ContextTrait;
 
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected DispatcherInterface $dispatcher;
-    #[Inject] protected RouterInterface $router;
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected PreparedEmulatorInterface $preparedEmulator;
-    #[Inject] protected DumperManagerInterface $dumpManager;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected RouterInterface $router;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected PreparedEmulatorInterface $preparedEmulator;
+    #[Autowired] protected DumperManagerInterface $dumpManager;
 
     protected int $ttl;
     protected string $prefix;
-    #[Value] protected string $template = '@manaphp/Debugging/Debugger/Template.html';
-    #[Value] protected bool $broadcast = true;
-    #[Value] protected bool $tail = true;
+    #[Autowired] protected string $template = '@manaphp/Debugging/Debugger/Template.html';
+    #[Autowired] protected bool $broadcast = true;
+    #[Autowired] protected bool $tail = true;
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(int $ttl = 3600, ?string $prefix = null)

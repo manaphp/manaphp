@@ -5,12 +5,12 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Arr;
 
 class ConfigCommand extends Command
 {
-    #[Inject] protected ConfigInterface $config;
+    #[Autowired] protected ConfigInterface $config;
 
     /**
      * dump of the app.php

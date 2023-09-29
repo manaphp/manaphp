@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Query\QueryInterface;
 
 class SideMenuWidget extends Widget
 {
-    #[Inject] protected AuthorizationInterface $authorization;
+    #[Autowired] protected AuthorizationInterface $authorization;
 
     public function run($vars = [])
     {

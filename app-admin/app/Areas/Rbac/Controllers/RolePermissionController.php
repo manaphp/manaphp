@@ -7,14 +7,14 @@ use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
 use App\Controllers\Controller;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
 #[Authorize('@index')]
 class RolePermissionController extends Controller
 {
-    #[Inject] protected AuthorizationInterface $authorization;
+    #[Autowired] protected AuthorizationInterface $authorization;
 
     public function indexAction()
     {

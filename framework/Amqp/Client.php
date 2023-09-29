@@ -6,18 +6,17 @@ namespace ManaPHP\Amqp;
 use ManaPHP\Amqp\Client\Event\AmqpClientConsumed;
 use ManaPHP\Amqp\Client\Event\AmqpClientConsuming;
 use ManaPHP\Amqp\Client\Event\AmqpClientPublish;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\PoolManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected PoolManagerInterface $poolManager;
 
-    #[Value] protected string $uri;
+    #[Autowired] protected string $uri;
 
     protected int $pool_size = 4;
     protected int $timeout = 3;

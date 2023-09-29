@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
@@ -19,12 +19,12 @@ class Authorization implements AuthorizationInterface
 {
     use ContextTrait;
 
-    #[Inject] protected IdentityInterface $identity;
-    #[Inject] protected DispatcherInterface $dispatcher;
-    #[Inject] protected RouterInterface $router;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected ControllerManagerInterface $controllerManager;
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected RouterInterface $router;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected ControllerManagerInterface $controllerManager;
 
     public function getPermissions(string $controller): array
     {

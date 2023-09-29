@@ -4,17 +4,16 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 
 class Env implements EnvInterface, JsonSerializable
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected string $file = '@config/.env';
+    #[Autowired] protected string $file = '@config/.env';
 
     public function load(): static
     {

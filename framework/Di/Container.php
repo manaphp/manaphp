@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Di;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
 use ReflectionFunction;
@@ -46,7 +45,7 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    protected function processAttributeInject(ReflectionProperty $property, object $object, array $parameters): void
+    protected function processInjectObject(ReflectionProperty $property, object $object, array $parameters): void
     {
         $name = $property->getName();
 
@@ -76,7 +75,7 @@ class Container implements ContainerInterface
         $property->setValue($object, $value);
     }
 
-    protected function processAttributeValue(ReflectionProperty $property, object $object, array $parameters): void
+    protected function processInjectValue(ReflectionProperty $property, object $object, array $parameters): void
     {
         $name = $property->getName();
 
@@ -102,7 +101,7 @@ class Container implements ContainerInterface
         }
     }
 
-    protected function processAttributes(object $object, ReflectionClass $rClass, array $parameters): void
+    protected function processInjects(object $object, ReflectionClass $rClass, array $parameters): void
     {
         foreach ($rClass->getProperties() as $property) {
             if ($property->isStatic()) {
@@ -118,10 +117,21 @@ class Container implements ContainerInterface
                 continue;
             }
 
-            if (isset($attributes[Inject::class])) {
-                $this->processAttributeInject($property, $object, $parameters);
-            } elseif (isset($attributes[Value::class])) {
-                $this->processAttributeValue($property, $object, $parameters);
+            if (isset($attributes[Autowired::class])) {
+                if ($property->hasType()) {
+                    $rType = $property->getType();
+                    $type = $rType instanceof ReflectionNamedType ? $rType : $rType->getTypes()[0];
+
+                    if ($type->isBuiltin()) {
+                        $this->processInjectValue($property, $object, $parameters);
+                    } else {
+                        $this->processInjectObject($property, $object, $parameters);
+                    }
+                } else {
+                    throw new Exception(
+                        sprintf('The type of `%s::%s` is missing.', $object::class, $property->getName())
+                    );
+                }
             }
         }
     }
@@ -136,7 +146,7 @@ class Container implements ContainerInterface
                 $this->instances[$id] = $instance;
             }
 
-            $this->processAttributes($instance, $rClass, $parameters);
+            $this->processInjects($instance, $rClass, $parameters);
 
             $this->call([$instance, '__construct'], $parameters);
         } else {
@@ -146,7 +156,7 @@ class Container implements ContainerInterface
                 $this->instances[$id] = $instance;
             }
 
-            $this->processAttributes($instance, $rClass, $parameters);
+            $this->processInjects($instance, $rClass, $parameters);
         }
 
         return $instance;

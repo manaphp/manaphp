@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
@@ -14,11 +14,11 @@ use Throwable;
 
 class ErrorHandler implements ErrorHandlerInterface
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected RendererInterface $renderer;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected RendererInterface $renderer;
 
     public function handle(Throwable $throwable): void
     {

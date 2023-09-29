@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Action;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Mvc\Controller;
@@ -12,10 +12,10 @@ use Psr\Container\ContainerInterface;
 
 class Invoker implements InvokerInterface
 {
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected MakerInterface $maker;
-    #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
-    #[Inject] protected RequestInterface $request;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected MakerInterface $maker;
+    #[Autowired] protected ArgumentsResolverInterface $argumentsResolver;
+    #[Autowired] protected RequestInterface $request;
 
     protected function invokeMvc($object, string $action): mixed
     {

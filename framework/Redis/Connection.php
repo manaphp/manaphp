@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Redis;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
@@ -20,10 +19,10 @@ use RedisException;
 
 class Connection
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected MakerInterface $maker;
 
-    #[Value] protected string $uri;
+    #[Autowired] protected string $uri;
 
     protected ?Redis $redis = null;
     protected ?float $last_heartbeat = null;

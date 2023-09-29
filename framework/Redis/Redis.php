@@ -3,17 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Redis;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Pooling\PoolManagerInterface;
 
 class Redis implements RedisInterface
 {
-    #[Inject] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolManagerInterface $poolManager;
 
-    #[Value] protected string $uri; #redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
-    #[Value] protected int $pool_timeout = 1;
-    #[Value] protected int $pool_size = 4;
+    #[Autowired] protected string $uri; #redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
+    #[Autowired] protected int $pool_timeout = 1;
+    #[Autowired] protected int $pool_size = 4;
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()

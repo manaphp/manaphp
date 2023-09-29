@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Model\ModelManagerInterface;
 
 class ViewCommand extends Command
 {
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
     /**
      * @param string $model

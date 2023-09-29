@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Db\Model;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Model\ThoseInterface;
 
 class Inferrer implements InferrerInterface
 {
-    #[Inject] protected ThoseInterface $those;
-    #[Inject] protected MetadataInterface $metadata;
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ThoseInterface $those;
+    #[Autowired] protected MetadataInterface $metadata;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
     protected array $primaryKey = [];
     protected array $fields = [];

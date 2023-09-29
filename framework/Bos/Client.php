@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Bos;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
@@ -14,11 +13,11 @@ use ManaPHP\Rest\ClientInterface as RestClientInterface;
 
 class Client implements ClientInterface
 {
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected HttpClientInterface $httpClient;
-    #[Inject] protected RestClientInterface $restClient;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected HttpClientInterface $httpClient;
+    #[Autowired] protected RestClientInterface $restClient;
 
-    #[Value] protected string $endpoint;
+    #[Autowired] protected string $endpoint;
 
     public function createBucket(string $bucket, ?string $base_url = null): array
     {

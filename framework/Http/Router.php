@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Event\RouterRouted;
@@ -18,9 +18,9 @@ class Router implements RouterInterface
 {
     use ContextTrait;
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected RequestInterface $request;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected RequestInterface $request;
 
     protected bool $case_sensitive = true;
     protected string $prefix = '';

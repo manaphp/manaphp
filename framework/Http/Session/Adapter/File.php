@@ -4,18 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Http\AbstractSession;
 
 class File extends AbstractSession
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected string $dir = '@runtime/session';
-    #[Value] protected string $extension = '.session';
-    #[Value] protected int $level = 1;
+    #[Autowired] protected string $dir = '@runtime/session';
+    #[Autowired] protected string $extension = '.session';
+    #[Autowired] protected int $level = 1;
 
     protected function getFileName(string $sessionId): string
     {

@@ -6,21 +6,20 @@ namespace ManaPHP\Cli;
 use ManaPHP\Cli\Action\ArgumentsResolverInterface;
 use ManaPHP\Cli\Event\CliInvoked;
 use ManaPHP\Cli\Event\CliInvoking;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Handler implements HandlerInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
-    #[Inject] protected ConsoleInterface $console;
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected OptionsInterface $options;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected ArgumentsResolverInterface $argumentsResolver;
+    #[Autowired] protected ConsoleInterface $console;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected OptionsInterface $options;
 
-    #[Value] protected array $commands = ['App\Commands\*Command', 'ManaPHP\Commands\*Command'];
+    #[Autowired] protected array $commands = ['App\Commands\*Command', 'ManaPHP\Commands\*Command'];
 
     protected string $entrypoint;
     protected ?string $command;

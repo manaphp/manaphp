@@ -4,14 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 
 class Config implements ConfigInterface, JsonSerializable
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected array $config = [];
+    protected array $config = [];
 
     public function load(string $file = '@config/app.php'): array
     {

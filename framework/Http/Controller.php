@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Identifying\IdentityInterface;
 
 class Controller
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected CookiesInterface $cookies;
-    #[Inject] protected RouterInterface $router;
-    #[Inject] protected DispatcherInterface $dispatcher;
-    #[Inject] protected IdentityInterface $identity;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected CookiesInterface $cookies;
+    #[Autowired] protected RouterInterface $router;
+    #[Autowired] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected IdentityInterface $identity;
 }

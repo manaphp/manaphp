@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Eventing;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 
 class EventDispatcher implements EventDispatcherInterface
 {
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
 
     public function dispatch(object $event)
     {

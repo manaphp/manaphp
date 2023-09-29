@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Filters;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestAuthorized;
 
 class TraceRouteFilter
 {
-    #[Inject] protected ResponseInterface $response;
+    #[Autowired] protected ResponseInterface $response;
 
     public function onRequestAuthorized(#[Event] RequestAuthorized $event): void
     {

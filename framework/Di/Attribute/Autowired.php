@@ -6,7 +6,7 @@ namespace ManaPHP\Di\Attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Value
+class Autowired
 {
 
 }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Model;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
@@ -16,8 +16,8 @@ use ManaPHP\Query\QueryInterface;
 
 class RelationManager implements RelationManagerInterface
 {
-    #[Inject] protected ThoseInterface $those;
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ThoseInterface $those;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
     protected array $relations;
 

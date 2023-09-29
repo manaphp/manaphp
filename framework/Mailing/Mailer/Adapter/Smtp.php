@@ -5,8 +5,7 @@ namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
@@ -20,10 +19,10 @@ class Smtp extends AbstractMailer
 {
     use ContextTrait;
 
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected LoggerInterface $logger;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected LoggerInterface $logger;
 
-    #[Value] protected string $uri;
+    #[Autowired] protected string $uri;
     protected string $scheme;
     protected string $host;
     protected int $port;

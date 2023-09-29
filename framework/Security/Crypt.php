@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Security;
 
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Security\Crypt\Exception as CryptException;
 
 class Crypt implements CryptInterface
 {
-    #[Value] protected string $master_key;
-    #[Value] protected string $method = 'AES-128-CBC';
+    #[Autowired] protected string $master_key;
+    #[Autowired] protected string $method = 'AES-128-CBC';
 
     public function encrypt(string $text, string $key): string
     {

@@ -3,20 +3,20 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Client;
 
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Ws\ClientInterface;
 
 class Engine implements EngineInterface
 {
-    #[Value] protected string $endpoint;
-    #[Value] protected ?string $proxy;
-    #[Value] protected float $timeout = 3.0;
-    #[Value] protected ?string $protocol;
-    #[Value] protected bool $masking = false;
-    #[Value] protected ?string $origin;
-    #[Value] protected string $user_agent = 'manaphp/client';
-    #[Value] protected ?ClientInterface $owner;
+    #[Autowired] protected string $endpoint;
+    #[Autowired] protected ?string $proxy;
+    #[Autowired] protected float $timeout = 3.0;
+    #[Autowired] protected ?string $protocol;
+    #[Autowired] protected bool $masking = false;
+    #[Autowired] protected ?string $origin;
+    #[Autowired] protected string $user_agent = 'manaphp/client';
+    #[Autowired] protected ?ClientInterface $owner;
 
     protected mixed $socket;
 

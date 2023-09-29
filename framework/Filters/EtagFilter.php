@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
@@ -12,10 +11,10 @@ use ManaPHP\Http\Server\Event\RequestResponsing;
 
 class EtagFilter
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
 
-    #[Value] protected string $algo = 'md5';
+    #[Autowired] protected string $algo = 'md5';
 
     public function onResponding(#[Event] RequestResponsing $event): void
     {

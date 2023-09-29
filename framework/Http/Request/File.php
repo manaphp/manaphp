@@ -5,16 +5,15 @@ namespace ManaPHP\Http\Request;
 
 use JsonSerializable;
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
 class File implements FileInterface, JsonSerializable
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected array $file;
+    #[Autowired] protected array $file;
 
     public function getSize(): int
     {

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mongodb\Model;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\ModelManagerInterface;
@@ -15,10 +15,10 @@ use MongoDB\BSON\ObjectId;
 
 class Inferrer implements InferrerInterface
 {
-    #[Inject] protected ThoseInterface $those;
-    #[Inject] protected MongodbConnectorInterface $connector;
-    #[Inject] protected ShardingInterface $sharding;
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ThoseInterface $those;
+    #[Autowired] protected MongodbConnectorInterface $connector;
+    #[Autowired] protected ShardingInterface $sharding;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
     protected array $primaryKey = [];
     protected array $fields = [];

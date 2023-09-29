@@ -7,13 +7,13 @@ use DateTime;
 use DateTimeZone;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\OptionsInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\ClientInterface;
 
 class DateCommand extends Command
 {
-    #[Inject] protected ClientInterface $httpClient;
-    #[Inject] protected OptionsInterface $options;
+    #[Autowired] protected ClientInterface $httpClient;
+    #[Autowired] protected OptionsInterface $options;
 
     /**
      * @param string $url

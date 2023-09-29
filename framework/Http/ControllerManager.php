@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 class ControllerManager implements ControllerManagerInterface
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
     protected ?array $controllers = null;
 

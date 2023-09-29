@@ -4,17 +4,16 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Redis\RedisCacheInterface;
 
 class Redis extends AbstractSession
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RedisCacheInterface $redisCache;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RedisCacheInterface $redisCache;
 
-    #[Value] protected ?string $prefix;
+    #[Autowired] protected ?string $prefix;
 
     protected function getKey(string $session_id): string
     {

@@ -3,17 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Redis\RedisDbInterface;
 
 class Settings implements SettingsInterface
 {
-    #[Inject] protected RedisDbInterface $redisDb;
+    #[Autowired] protected RedisDbInterface $redisDb;
 
-    #[Value] protected string $key = 'settings';
-    #[Value] protected int $ttl = 1;
+    #[Autowired] protected string $key = 'settings';
+    #[Autowired] protected int $ttl = 1;
 
     public function getInternal(string $key, ?string $default = null): ?string
     {

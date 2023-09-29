@@ -5,7 +5,7 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Controller\Attribute\PageCache;
@@ -21,10 +21,10 @@ class PageCacheFilter
 {
     use ContextTrait;
 
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected RedisCacheInterface $redisCache;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected RedisCacheInterface $redisCache;
 
     protected string $prefix;
 

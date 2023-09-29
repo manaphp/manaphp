@@ -6,8 +6,7 @@ namespace ManaPHP\Ws\Server\Adapter;
 use ArrayObject;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Coroutine\Context\Stickyable;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\GlobalsInterface;
 use ManaPHP\Http\RequestInterface;
@@ -26,16 +25,16 @@ use Throwable;
 
 class Swoole implements ServerInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected GlobalsInterface $globals;
-    #[Inject] protected HandlerInterface $wsHandler;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected GlobalsInterface $globals;
+    #[Autowired] protected HandlerInterface $wsHandler;
 
-    #[Value] protected string $host = '0.0.0.0';
-    #[Value] protected int $port = 9501;
-    #[Value] protected array $settings = [];
+    #[Autowired] protected string $host = '0.0.0.0';
+    #[Autowired] protected int $port = 9501;
+    #[Autowired] protected array $settings = [];
 
     protected Server $swoole;
 

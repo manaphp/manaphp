@@ -9,8 +9,7 @@ use ManaPHP\Db\Event\DbClose;
 use ManaPHP\Db\Event\DbConnected;
 use ManaPHP\Db\Event\DbConnecting;
 use ManaPHP\Db\Exception as DbException;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
@@ -20,10 +19,10 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractConnection implements ConnectionInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected MakerInterface $maker;
 
-    #[Value] protected string $uri;
+    #[Autowired] protected string $uri;
 
     protected string $dsn;
     protected string $username;

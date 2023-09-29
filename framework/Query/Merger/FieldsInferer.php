@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Merger;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Model\ModelManagerInterface;
 
 class FieldsInferer implements FieldsInfererInterface
 {
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
     protected array $fields = [];
 

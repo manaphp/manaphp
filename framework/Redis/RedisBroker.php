@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Redis;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use Psr\Container\ContainerInterface;
 
 class RedisBroker
 {
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected MakerInterface $maker;
 
     public function __invoke(array $parameters, ?string $id): mixed
     {

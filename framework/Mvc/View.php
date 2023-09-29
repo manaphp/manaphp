@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
@@ -21,14 +20,14 @@ class View implements ViewInterface
 {
     use ContextTrait;
 
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected RouterInterface $router;
-    #[Inject] protected RendererInterface $renderer;
-    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected RouterInterface $router;
+    #[Autowired] protected RendererInterface $renderer;
+    #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Value] protected int $max_age = 0;
-    #[Value] protected bool $autofix_url = true;
+    #[Autowired] protected int $max_age = 0;
+    #[Autowired] protected bool $autofix_url = true;
 
     protected array $dirs = [];
     protected array $exists_cache;

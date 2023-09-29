@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
@@ -12,13 +11,13 @@ use Throwable;
 
 class Task implements TaskInterface
 {
-    #[Inject] protected LoggerInterface $logger;
+    #[Autowired] protected LoggerInterface $logger;
 
     /**
      * @var callable
      */
-    #[Value] protected $fn;
-    #[Value] protected int $count = 1;
+    #[Autowired] protected $fn;
+    #[Autowired] protected int $count = 1;
 
     protected Channel $channel;
 

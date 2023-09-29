@@ -7,15 +7,14 @@ use ArrayObject;
 use JsonSerializable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Coroutine;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use Throwable;
 
 class DataDump implements DataDumpInterface
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected string $format = '[:time][:location] :message';
+    #[Autowired] protected string $format = '[:time][:location] :message';
 
     protected function getLocation(array $traces): array
     {

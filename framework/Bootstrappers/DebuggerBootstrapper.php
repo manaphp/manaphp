@@ -6,8 +6,7 @@ namespace ManaPHP\Bootstrappers;
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Debugging\DebuggerInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Http\Server\Event\ServerStart;
@@ -15,11 +14,11 @@ use Psr\Container\ContainerInterface;
 
 class DebuggerBootstrapper implements BootstrapperInterface
 {
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected DebuggerInterface $debugger;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected DebuggerInterface $debugger;
 
-    #[Value] protected ?bool $enabled;
+    #[Autowired] protected ?bool $enabled;
 
     public function bootstrap(ContainerInterface $container): void
     {

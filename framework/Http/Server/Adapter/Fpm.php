@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
 use ManaPHP\Http\Server\Event\ServerStart;
 
 class Fpm extends AbstractServer
 {
-    #[Inject] protected SenderInterface $sender;
+    #[Autowired] protected SenderInterface $sender;
 
     protected function prepareGlobals(): void
     {

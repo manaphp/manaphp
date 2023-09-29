@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
@@ -15,14 +14,14 @@ use ManaPHP\Http\Server\Event\RequestEnd;
 
 class SlowlogFilter
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Value] protected float $threshold = 1.0;
-    #[Value] protected string $file = '@runtime/slowlogPlugin/{id}.log';
-    #[Value] protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
+    #[Autowired] protected float $threshold = 1.0;
+    #[Autowired] protected string $file = '@runtime/slowlogPlugin/{id}.log';
+    #[Autowired] protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     protected function write(float $elapsed, mixed $message): void
     {

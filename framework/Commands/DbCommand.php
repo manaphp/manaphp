@@ -10,7 +10,7 @@ use ManaPHP\ConfigInterface;
 use ManaPHP\Db\Db;
 use ManaPHP\Db\DbConnectorInterface;
 use ManaPHP\Db\DbInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Model\Attribute\ColumnMap;
@@ -19,9 +19,9 @@ use ManaPHP\Model\Attribute\PrimaryKey;
 
 class DbCommand extends Command
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected DbConnectorInterface $connector;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected DbConnectorInterface $connector;
 
     protected array $tableConstants = [];
 

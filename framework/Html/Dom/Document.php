@@ -5,7 +5,7 @@ namespace ManaPHP\Html\Dom;
 
 use DOMDocument;
 use DOMElement;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
@@ -13,8 +13,8 @@ use ManaPHP\Http\ClientInterface;
 
 class Document
 {
-    #[Inject] protected MakerInterface $maker;
-    #[Inject] protected ClientInterface $httpClient;
+    #[Autowired] protected MakerInterface $maker;
+    #[Autowired] protected ClientInterface $httpClient;
 
     protected string $url;
     protected string $base;

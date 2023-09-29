@@ -7,12 +7,12 @@ use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\AliasInterface;
 use ManaPHP\Db\AbstractConnection;
 use ManaPHP\Db\Db;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use PDO;
 
 class Sqlite extends AbstractConnection
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()

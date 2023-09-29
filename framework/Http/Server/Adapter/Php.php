@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
@@ -14,11 +13,11 @@ use ManaPHP\Http\Server\StaticHandlerInterface;
 
 class Php extends AbstractServer
 {
-    #[Inject] protected SenderInterface $sender;
-    #[Inject] protected StaticHandlerInterface $staticHandler;
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected SenderInterface $sender;
+    #[Autowired] protected StaticHandlerInterface $staticHandler;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected array $settings = [];
+    #[Autowired] protected array $settings = [];
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()

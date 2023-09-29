@@ -5,13 +5,13 @@ namespace App\Areas\Bos\Controllers;
 
 use App\Controllers\Controller;
 use ManaPHP\Bos\ClientInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
 #[Authorize('@index')]
 class BucketController extends Controller
 {
-    #[Inject] protected ClientInterface $bosClient;
+    #[Autowired] protected ClientInterface $bosClient;
 
     public function indexAction()
     {

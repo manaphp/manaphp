@@ -6,14 +6,14 @@ namespace ManaPHP\Commands;
 use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\OptionsInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 class AreaCommand extends Command
 {
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected OptionsInterface $options;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected OptionsInterface $options;
 
     /**
      * create area directory tree

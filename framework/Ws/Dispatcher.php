@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Ws\Server\Event\ServerStop;
 
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {
-    #[Inject] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
 
     protected array $controllers;
 

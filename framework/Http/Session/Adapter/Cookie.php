@@ -3,18 +3,17 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Http\Session\Adapter\Cookie\Exception as CookieException;
 use ManaPHP\Security\CryptInterface;
 
 class Cookie extends AbstractSession
 {
-    #[Inject] protected CryptInterface $crypt;
+    #[Autowired] protected CryptInterface $crypt;
 
-    #[Value] protected ?string $key;
-    #[Value] protected string $salt = 'cookie.session';
+    #[Autowired] protected ?string $key;
+    #[Autowired] protected string $salt = 'cookie.session';
 
     public function do_read(string $session_id): string
     {

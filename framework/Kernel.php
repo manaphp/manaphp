@@ -4,18 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JetBrains\PhpStorm\NoReturn;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use Psr\Container\ContainerInterface;
 
 class Kernel
 {
-    #[Inject] protected ContainerInterface $container;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected EnvInterface $env;
-    #[Inject] protected ConfigInterface $config;
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected EnvInterface $env;
+    #[Autowired] protected ConfigInterface $config;
 
-    #[Value] protected string $rootDir;
+    #[Autowired] protected string $rootDir;
 
     public function registerDefaultDependencies(): void
     {

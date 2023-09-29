@@ -5,14 +5,14 @@ namespace ManaPHP\Http;
 
 use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Globals\Proxy;
 
 class Globals implements GlobalsInterface, JsonSerializable
 {
     use ContextTrait;
 
-    #[Value] protected bool $proxy = false;
+    #[Autowired] protected bool $proxy = false;
 
     public function __construct()
     {

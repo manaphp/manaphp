@@ -6,7 +6,7 @@ namespace App\Areas\Admin\Controllers;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Mailing\MailerInterface;
@@ -15,10 +15,10 @@ use ManaPHP\Mvc\ViewInterface;
 #[Authorize('*')]
 class PasswordController extends Controller
 {
-    #[Inject] protected ViewInterface $view;
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected CaptchaInterface $captcha;
-    #[Inject] protected MailerInterface $mailer;
+    #[Autowired] protected ViewInterface $view;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected CaptchaInterface $captcha;
+    #[Autowired] protected MailerInterface $mailer;
 
     public function captchaAction()
     {

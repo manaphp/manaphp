@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Model;
 
 use ManaPHP\Db\Model\InferrerInterface;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
 use ManaPHP\Model\Attribute\ColumnMap;
 use ManaPHP\Model\Attribute\Connection;
@@ -19,8 +19,8 @@ use ReflectionClass;
 
 class ModelManager implements ModelManagerInterface
 {
-    #[Inject] protected ThoseInterface $those;
-    #[Inject] protected InferrerInterface $inferrer;
+    #[Autowired] protected ThoseInterface $those;
+    #[Autowired] protected InferrerInterface $inferrer;
 
     protected array $rClass = [];
     protected array $table = [];

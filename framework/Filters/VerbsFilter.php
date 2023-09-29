@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
@@ -14,8 +14,8 @@ use ReflectionMethod;
 
 class VerbsFilter
 {
-    #[Inject] protected ViewInterface $view;
-    #[Inject] protected RequestInterface $request;
+    #[Autowired] protected ViewInterface $view;
+    #[Autowired] protected RequestInterface $request;
 
     public function onValidating(#[Event] RequestValidating $event): void
     {

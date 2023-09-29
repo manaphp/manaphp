@@ -6,17 +6,16 @@ namespace ManaPHP\Db\Model;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Db\Db;
 use ManaPHP\Db\DbConnectorInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Model\ShardingInterface;
 
 class Metadata implements MetadataInterface
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected DbConnectorInterface $connector;
-    #[Inject] protected ShardingInterface $sharding;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected DbConnectorInterface $connector;
+    #[Autowired] protected ShardingInterface $sharding;
 
-    #[Value] protected int $ttl = 3600;
+    #[Autowired] protected int $ttl = 3600;
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()

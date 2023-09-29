@@ -5,12 +5,12 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 
 class FrameworkCommand extends Command
 {
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected AliasInterface $alias;
 
     /**
      * @param string $str

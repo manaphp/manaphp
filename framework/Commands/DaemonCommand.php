@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use Swoole\Process;
 
 class DaemonCommand extends Command
 {
-    #[Value] protected array $commands = [];
-    #[Value] protected ?string $entrypoint;
+    #[Autowired] protected array $commands = [];
+    #[Autowired] protected ?string $entrypoint;
 
     public function startAction()
     {

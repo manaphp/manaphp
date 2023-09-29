@@ -4,16 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Caching;
 
 use DateInterval;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Redis\RedisCacheInterface;
 use Psr\SimpleCache\CacheInterface;
 
 class SimpleCache implements CacheInterface
 {
-    #[Inject] protected RedisCacheInterface $redisCache;
+    #[Autowired] protected RedisCacheInterface $redisCache;
 
-    #[Value] protected string $prefix = 'cache:';
+    #[Autowired] protected string $prefix = 'cache:';
 
     public function get(string $key, mixed $default = null): mixed
     {

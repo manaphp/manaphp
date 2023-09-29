@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
@@ -34,17 +33,17 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected PoolManagerInterface $poolManager;
 
-    #[Value] protected string $engine = 'ManaPHP\Http\Client\Engine';
-    #[Value] protected ?string $proxy;
-    #[Value] protected ?string $cafile;
-    #[Value] protected int $timeout = 10;
-    #[Value] protected bool $verify_peer = true;
-    #[Value] protected string $user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
-    #[Value] protected int $pool_size = 4;
+    #[Autowired] protected string $engine = 'ManaPHP\Http\Client\Engine';
+    #[Autowired] protected ?string $proxy;
+    #[Autowired] protected ?string $cafile;
+    #[Autowired] protected int $timeout = 10;
+    #[Autowired] protected bool $verify_peer = true;
+    #[Autowired] protected string $user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+    #[Autowired] protected int $pool_size = 4;
 
     public function __clone()
     {

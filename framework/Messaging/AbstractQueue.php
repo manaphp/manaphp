@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Messaging\Queue\Event\QueueDelete;
 use ManaPHP\Messaging\Queue\Event\QueuePop;
 use ManaPHP\Messaging\Queue\Event\QueuePush;
@@ -11,7 +11,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractQueue implements QueueInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
 
     abstract public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void;
 

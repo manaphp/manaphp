@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli\Action;
 
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 
 class ArgumentsResolver extends \ManaPHP\Invoking\ArgumentsResolver implements ArgumentsResolverInterface
 {
-    #[Value] protected array $resolvers = ['options'];
+    #[Autowired] protected array $resolvers = ['options'];
 }

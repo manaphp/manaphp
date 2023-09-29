@@ -7,8 +7,7 @@ use JsonSerializable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\Logger\Log;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -20,12 +19,12 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 {
     use ContextTrait;
 
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected AliasInterface $alias;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected AliasInterface $alias;
 
-    #[Value] protected string $level = LogLevel::DEBUG;
-    #[Value] protected ?string $hostname;
-    #[Value] protected string $time_format = 'Y-m-d\TH:i:s.uP';
+    #[Autowired] protected string $level = LogLevel::DEBUG;
+    #[Autowired] protected ?string $hostname;
+    #[Autowired] protected string $time_format = 'Y-m-d\TH:i:s.uP';
 
     public const  MILLISECONDS = 'v';
     public const MICROSECONDS = 'u';

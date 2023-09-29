@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Pooling;
 
 use ManaPHP\Coroutine\Channel;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\Pool\Event\PoolPopped;
@@ -15,8 +15,8 @@ use WeakMap;
 
 class PoolManager implements PoolManagerInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected MakerInterface $maker;
 
     protected WeakMap $pool;
 

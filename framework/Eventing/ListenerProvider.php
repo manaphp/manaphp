@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Eventing;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
@@ -17,7 +17,7 @@ class ListenerProvider implements ListenerProviderInterface
 
     protected array $listeners = [];
 
-    #[Inject] protected ContainerInterface $container;
+    #[Autowired] protected ContainerInterface $container;
 
     public function getListenersForEvent(object $event): iterable
     {

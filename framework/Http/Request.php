@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use JsonSerializable;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\Request\File;
 use ManaPHP\Http\Request\File\Exception as FileException;
@@ -12,8 +12,8 @@ use ManaPHP\Http\Request\FileInterface;
 
 class Request implements RequestInterface, JsonSerializable
 {
-    #[Inject] protected MakerInterface $maker;
-    #[Inject] protected GlobalsInterface $globals;
+    #[Autowired] protected MakerInterface $maker;
+    #[Autowired] protected GlobalsInterface $globals;
 
     public function getRawBody(): string
     {

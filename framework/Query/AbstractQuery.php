@@ -7,7 +7,7 @@ use ArrayIterator;
 use IteratorAggregate;
 use JsonSerializable;
 use ManaPHP\Data\Query\NotFoundException;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -22,12 +22,12 @@ use ManaPHP\Model\ThoseInterface;
 
 abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonSerializable
 {
-    #[Inject] protected MakerInterface $maker;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected RelationManagerInterface $relationManager;
-    #[Inject] protected ThoseInterface $those;
-    #[Inject] protected ShardingInterface $sharding;
-    #[Inject] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected MakerInterface $maker;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected RelationManagerInterface $relationManager;
+    #[Autowired] protected ThoseInterface $those;
+    #[Autowired] protected ShardingInterface $sharding;
+    #[Autowired] protected ModelManagerInterface $modelManager;
 
     protected string $connection;
     protected string $table;

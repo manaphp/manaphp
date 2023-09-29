@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc\View;
 
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 
 class Flash implements FlashInterface
 {
     use ContextTrait;
 
-    #[Value] protected array $css
+    #[Autowired] protected array $css
         = [
             'error'   => 'flash-error',
             'notice'  => 'flash-notice',

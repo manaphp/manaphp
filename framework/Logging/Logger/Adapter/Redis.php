@@ -4,18 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Redis\RedisBrokerInterface;
 
 class Redis extends AbstractLogger
 {
-    #[Inject] protected ConfigInterface $config;
-    #[Inject] protected RedisBrokerInterface $redisBroker;
+    #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected RedisBrokerInterface $redisBroker;
 
-    #[Value] protected ?string $key;
+    #[Autowired] protected ?string $key;
 
     public function append(Log $log): void
     {

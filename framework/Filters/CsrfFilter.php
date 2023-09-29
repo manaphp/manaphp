@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Http\RequestInterface;
@@ -15,11 +14,11 @@ use ManaPHP\Rest\Controller as RestController;
 
 class CsrfFilter
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ViewInterface $view;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ViewInterface $view;
 
-    #[Value] protected bool $strict = true;
-    #[Value] protected array $domains = [];
+    #[Autowired] protected bool $strict = true;
+    #[Autowired] protected array $domains = [];
 
     protected function isOriginSafe(): bool
     {

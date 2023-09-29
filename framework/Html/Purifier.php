@@ -7,16 +7,16 @@ use DOMDocument;
 use DOMElement;
 use DOMNode;
 use Exception;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 
 class Purifier implements PurifierInterface
 {
-    #[Value] protected string $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
-    #[Value] protected string $allowedAttributes = ',title,src,href,width,height,alt,target,';
+    #[Autowired] protected string $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
+    #[Autowired] protected string $allowedAttributes = ',title,src,href,width,height,alt,target,';
     /**
      * @var callable
      */
-    #[Value] protected mixed $filter = null;
+    #[Autowired] protected mixed $filter = null;
 
     protected function purifyInternal(array $nodes, string $allowedTags, string $allowedAttributes): void
     {

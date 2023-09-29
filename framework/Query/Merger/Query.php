@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Merger;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -15,8 +15,8 @@ use ManaPHP\Query\QueryInterface;
 
 class Query extends AbstractQuery
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected MakerInterface $maker;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected MakerInterface $maker;
 
     protected array $queries;
 

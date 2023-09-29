@@ -4,33 +4,32 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
 abstract class AbstractCaptcha implements CaptchaInterface
 {
-    #[Inject] protected AliasInterface $alias;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected SessionInterface $session;
+    #[Autowired] protected AliasInterface $alias;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected SessionInterface $session;
 
-    #[Value] protected string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
-    #[Value] protected array $fonts
+    #[Autowired] protected string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
+    #[Autowired] protected array $fonts
         = [
             '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
             '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
             '@manaphp/Http/Captcha/Fonts/Vera.ttf'
         ];
-    #[Value] protected string $sessionVar = 'captcha';
-    #[Value] protected int $angle_noise = 10;
-    #[Value] protected int $x_noise = 3;
-    #[Value] protected int $y_noise = 3;
-    #[Value] protected int $size = 24;
-    #[Value] protected int $size_noise = 3;
-    #[Value] protected int $char_noise = 2;
-    #[Value] protected string $bg_rgb = '255,255,255';
-    #[Value] protected int $length = 4;
-    #[Value] protected int $min_interval = 1;
+    #[Autowired] protected string $sessionVar = 'captcha';
+    #[Autowired] protected int $angle_noise = 10;
+    #[Autowired] protected int $x_noise = 3;
+    #[Autowired] protected int $y_noise = 3;
+    #[Autowired] protected int $size = 24;
+    #[Autowired] protected int $size_noise = 3;
+    #[Autowired] protected int $char_noise = 2;
+    #[Autowired] protected string $bg_rgb = '255,255,255';
+    #[Autowired] protected int $length = 4;
+    #[Autowired] protected int $min_interval = 1;
 
     protected function rand_amplitude(float $a): float
     {

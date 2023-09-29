@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Controller\Attribute\HttpCache;
@@ -15,9 +15,9 @@ use ReflectionMethod;
 
 class HttpCacheFilter
 {
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected ResponseInterface $response;
-    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected ResponseInterface $response;
+    #[Autowired] protected DispatcherInterface $dispatcher;
 
     protected array $httpCaches = [];
 

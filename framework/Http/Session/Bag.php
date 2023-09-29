@@ -3,15 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session;
 
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\SessionInterface;
 
 class Bag implements BagInterface
 {
-    #[Inject] protected SessionInterface $session;
+    #[Autowired] protected SessionInterface $session;
 
-    #[Value] protected string $name;
+    #[Autowired] protected string $name;
 
     public function destroy(): void
     {

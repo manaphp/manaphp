@@ -5,14 +5,14 @@ namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\Admin;
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
 #[Authorize('admin')]
 class AccountController extends Controller
 {
-    #[Inject] protected CaptchaInterface $captcha;
+    #[Autowired] protected CaptchaInterface $captcha;
 
     public function captchaAction()
     {

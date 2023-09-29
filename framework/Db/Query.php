@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Db;
 
-use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
@@ -16,9 +16,9 @@ use Psr\Log\LoggerInterface;
 
 class Query extends AbstractQuery
 {
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected DbConnectorInterface $connector;
-    #[Inject] protected ShardingInterface $sharding;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected DbConnectorInterface $connector;
+    #[Autowired] protected ShardingInterface $sharding;
 
     protected array $joins = [];
     protected array $conditions = [];

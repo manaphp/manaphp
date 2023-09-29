@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Coroutine;
-use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Messaging\PubSubInterface;
@@ -19,15 +18,15 @@ use Psr\Log\LoggerInterface;
 
 class Server implements ServerInterface
 {
-    #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected RequestInterface $request;
-    #[Inject] protected IdentityInterface $identity;
-    #[Inject] protected WsServerInterface $wsServer;
-    #[Inject] protected PubSubInterface $pubSub;
+    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected LoggerInterface $logger;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected WsServerInterface $wsServer;
+    #[Autowired] protected PubSubInterface $pubSub;
 
-    #[Value] protected string $prefix = 'ws_chatting:';
-    #[Value] protected bool $dedicated = false;
+    #[Autowired] protected string $prefix = 'ws_chatting:';
+    #[Autowired] protected bool $dedicated = false;
 
     protected array $fds = [];
     protected array $ids;
