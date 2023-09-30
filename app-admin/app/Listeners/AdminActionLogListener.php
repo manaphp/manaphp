@@ -77,7 +77,7 @@ class AdminActionLogListener
         $adminActionLog->method = $this->request->getMethod();
         $adminActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
         $adminActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
-        $adminActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $adminActionLog->data = json_stringify($data);
         $adminActionLog->path = $this->dispatcher->getPath();
         $adminActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
         $adminActionLog->create();
