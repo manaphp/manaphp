@@ -18,9 +18,9 @@ class Session extends Identity
         return $this->session->get($this->name, []);
     }
 
-    public function setClaims(array $claims): static
+    public function set(array $claims): void
     {
         $this->session->set($this->name, $claims);
-        return parent::setClaims($claims);
+        parent::set($claims);
     }
 }

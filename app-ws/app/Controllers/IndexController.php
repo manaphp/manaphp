@@ -14,7 +14,7 @@ class IndexController extends Controller
 //        $token = jwt_encode($data, $ttl, 'pusher.admin');
 
         $token = $this->request->getToken();
-        $this->identity->setClaims(jwt_decode($token, 'pusher.admin'));
+        $this->identity->set(jwt_decode($token, 'pusher.admin'));
     }
 
     public function closeAction($fd)

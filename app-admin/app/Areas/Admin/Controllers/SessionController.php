@@ -70,7 +70,7 @@ class SessionController extends Controller
         }
 
         $claims = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
-        $this->identity->setClaims($claims);
+        $this->identity->set($claims);
 
         $session_id = $this->session->getId();
         if ($admin->session_id && $session_id !== $admin->session_id) {

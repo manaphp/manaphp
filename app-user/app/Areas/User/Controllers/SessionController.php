@@ -53,7 +53,7 @@ class SessionController extends Controller
         }
 
         $claims = ['user_id' => $user->user_id, 'user_name' => $user->user_name, 'role' => 'user'];
-        $this->identity->setClaims($claims);
+        $this->identity->set($claims);
 
         $session_id = $this->session->getId();
         if ($user->session_id && $session_id !== $user->session_id) {

@@ -13,19 +13,5 @@ interface IdentityInterface
 
     public function getRoles(): array;
 
-    public function isRole(string $name): bool;
-
-    public function setRole(string $role): static;
-
-    public function setClaim(string $name, mixed $value): static;
-
-    public function setClaims(array $claims): static;
-
-    public function getClaim(string $name, mixed $default = null): mixed;
-
-    public function getClaims(): array;
-
-    public function hasClaim(string $name): bool;
-
-    public function encode(array $claims): string;
+    public function set(array $claims): void;
 }

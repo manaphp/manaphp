@@ -119,85 +119,16 @@ class Identity implements IdentityInterface, ContextCreatorInterface
         return preg_split('#[\s,]+#', $this->getRole(''), -1, PREG_SPLIT_NO_EMPTY);
     }
 
-    public function isRole(string $name): bool
-    {
-        return in_array($name, $this->getRoles(), true);
-    }
-
-    public function setRole(string $role): static
-    {
-        /** @var IdentityContext $context */
-        $context = $this->getContext();
-
-        $context->claims['role'] = $role;
-
-        return $this;
-    }
-
-    public function setClaim(string $name, mixed $value): static
-    {
-        /** @var IdentityContext $context */
-        $context = $this->getContext();
-
-        $context->claims[$name] = $value;
-
-        return $this;
-    }
-
-    public function setClaims(array $claims): static
+    public function set(array $claims): void
     {
         /** @var IdentityContext $context */
         $context = $this->getContext();
 
         $context->claims = $claims;
-
-        return $this;
-    }
-
-    public function getClaim(string $name, mixed $default = null): mixed
-    {
-        /** @var IdentityContext $context */
-        $context = $this->getContext();
-
-        $claims = $context->claims;
-
-        if (!$claims) {
-            if ($default === null) {
-                throw new UnauthorizedException('Not Authenticated');
-            }
-            return $default;
-        }
-
-        if (isset($claims[$name])) {
-            return $claims[$name];
-        }
-
-        throw new MisuseException("missing $name in claims");
-    }
-
-    public function getClaims(): array
-    {
-        /** @var IdentityContext $context */
-        $context = $this->getContext();
-
-        return $context->claims;
-    }
-
-    public function hasClaim(string $name): bool
-    {
-        /** @var IdentityContext $context */
-        $context = $this->getContext();
-
-        return isset($context->claims[$name]);
     }
 
     public function authenticate(): array
     {
         return [];
-    }
-
-    public function encode(array $claims): string
-    {
-        throw new NotSupportedException(__METHOD__);
     }
 }
