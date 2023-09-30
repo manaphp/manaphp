@@ -32,10 +32,8 @@ class Server implements ServerInterface
     protected array $ids;
     protected array $names;
 
-    public function open(int $fd, ?string $room = null): void
+    public function open(int $fd, string $room): void
     {
-        $room = $room ?? $this->identity->getClaim('room_id');
-
         if (!$this->dedicated) {
             $this->fds[$fd] = true;
         }
@@ -51,10 +49,8 @@ class Server implements ServerInterface
         $this->eventDispatcher->dispatch(new UserCome($this, $fd, $id, $name, $room));
     }
 
-    public function close(int $fd, ?string $room = null): void
+    public function close(int $fd, string $room): void
     {
-        $room = $room ?? $this->identity->getClaim('room_id');
-
         if (!$this->dedicated) {
             unset($this->fds[$fd]);
         }
