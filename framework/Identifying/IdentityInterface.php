@@ -7,9 +7,9 @@ interface IdentityInterface
 {
     public function isGuest(): bool;
 
-    public function getId(?int $default = null): ?int;
+    public function getId(): int;
 
-    public function getName(?string $default = null): ?string;
+    public function getName(): string;
 
     public function getRoles(): array;
 

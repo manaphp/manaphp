@@ -71,8 +71,8 @@ class AdminActionLogListener
         unset($data['ajax']);
 
         $adminActionLog = new AdminActionLog();
-        $adminActionLog->admin_id = $this->identity->getId(0);
-        $adminActionLog->admin_name = $this->identity->getName('');
+        $adminActionLog->admin_id = $this->identity->isGuest() ? 0 : $this->identity->getId();
+        $adminActionLog->admin_name = $this->identity->isGuest() ? '' : $this->identity->getName();
         $adminActionLog->client_ip = $this->request->getClientIp();
         $adminActionLog->method = $this->request->getMethod();
         $adminActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);

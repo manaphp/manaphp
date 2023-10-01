@@ -55,7 +55,7 @@ class RateLimitFilter
             return;
         }
 
-        $uid = $this->identity->getName('') ?: $this->request->getClientIp();
+        $uid = $this->identity->isGuest() ? $this->request->getClientIp() : $this->identity->getName();
         $prefix = ($this->prefix ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id')))
             . $dispatcher->getPath() . ':' . $uid . ':';
 

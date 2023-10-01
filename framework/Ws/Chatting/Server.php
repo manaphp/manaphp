@@ -38,11 +38,11 @@ class Server implements ServerInterface
             $this->fds[$fd] = true;
         }
 
-        if (($id = $this->identity->getId(0)) !== 0) {
+        if (($id = $this->identity->isGuest() ? 0 : $this->identity->getId()) !== 0) {
             $this->ids[$room][$id][$fd] = true;
         }
 
-        if (($name = $this->identity->getName('')) !== '') {
+        if (($name = $this->identity->isGuest() ? '' : $this->identity->getName()) !== '') {
             $this->names[$room][$name][$fd] = true;
         }
 
@@ -55,14 +55,14 @@ class Server implements ServerInterface
             unset($this->fds[$fd]);
         }
 
-        if (($id = $this->identity->getId(0)) !== 0) {
+        if (($id = $this->identity->isGuest() ? 0 : $this->identity->getId()) !== 0) {
             unset($this->ids[$room][$id][$fd]);
             if (count($this->ids[$room][$id]) === 0) {
                 unset($this->ids[$room][$id]);
             }
         }
 
-        if (($name = $this->identity->getName('')) !== '') {
+        if (($name = $this->identity->isGuest() ? '' : $this->identity->getName()) !== '') {
             unset($this->names[$room][$name][$fd]);
             if (count($this->names[$room][$name]) === 0) {
                 unset($this->names[$room][$name]);

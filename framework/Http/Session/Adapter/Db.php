@@ -36,7 +36,7 @@ class Db extends AbstractSession
     public function do_write(string $session_id, string $data, int $ttl): bool
     {
         $field_values = [
-            'user_id'      => $this->identity->getId(0),
+            'user_id'      => $this->identity->isGuest() ? 0 : $this->identity->getId(),
             'client_ip'    => $this->request->getClientIp(),
             'data'         => $data,
             'updated_time' => time(),
@@ -56,7 +56,7 @@ class Db extends AbstractSession
     public function do_touch(string $session_id, int $ttl): bool
     {
         $field_values = [
-            'user_id'      => $this->identity->getId(0),
+            'user_id'      => $this->identity->isGuest() ? 0 : $this->identity->getId(),
             'client_ip'    => $this->request->getClientIp(),
             'updated_time' => time(),
             'expired_time' => $ttl + time()

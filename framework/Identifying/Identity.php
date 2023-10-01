@@ -6,7 +6,6 @@ namespace ManaPHP\Identifying;
 use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnauthorizedException;
 
 class Identity implements IdentityInterface, ContextCreatorInterface
@@ -30,7 +29,7 @@ class Identity implements IdentityInterface, ContextCreatorInterface
         return !$context->claims;
     }
 
-    public function getId(?int $default = null): ?int
+    public function getId(): int
     {
         /** @var IdentityContext $context */
         $context = $this->getContext();
@@ -38,10 +37,7 @@ class Identity implements IdentityInterface, ContextCreatorInterface
         $claims = $context->claims;
 
         if (!$claims) {
-            if ($default === null) {
-                throw new UnauthorizedException('Not Authenticated');
-            }
-            return $default;
+            throw new UnauthorizedException('Not Authenticated');
         }
 
         if (isset($claims['id'])) {
@@ -61,7 +57,7 @@ class Identity implements IdentityInterface, ContextCreatorInterface
         throw new MisuseException('missing id in claims');
     }
 
-    public function getName(string $default = null): string
+    public function getName(): string
     {
         /** @var IdentityContext $context */
         $context = $this->getContext();
@@ -69,10 +65,7 @@ class Identity implements IdentityInterface, ContextCreatorInterface
         $claims = $context->claims;
 
         if (!$claims) {
-            if ($default === null) {
-                throw new UnauthorizedException('Not Authenticated');
-            }
-            return $default;
+            throw new UnauthorizedException('Not Authenticated');
         }
 
         if (isset($claims['name'])) {

@@ -60,8 +60,8 @@ class UserActionLogListener
         unset($data['ajax']);
 
         $userActionLog = new UserActionLog();
-        $userActionLog->user_id = $this->identity->getId(0);
-        $userActionLog->user_name = $this->identity->getName('');
+        $userActionLog->user_id = $this->identity->isGuest() ? 0 : $this->identity->getId();
+        $userActionLog->user_name = $this->identity->isGuest() ? '' : $this->identity->getName();
         $userActionLog->client_ip = $this->request->getClientIp();
         $userActionLog->method = $this->request->getMethod();
         $userActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);

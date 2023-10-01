@@ -452,8 +452,8 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $dateFormat = $modelManager->getDateFormat(static::class);
 
         $identity = Container::get(IdentityInterface::class);
-        $user_id = $identity->getId(0);
-        $user_name = $identity->getName('');
+        $user_id = $identity->isGuest() ? 0 : $identity->getId();
+        $user_name = $identity->isGuest() ? '' : $identity->getName();
 
         $data = [];
         foreach ($modelManager->getFields(static::class) as $field) {
@@ -490,8 +490,8 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $current_time = time();
 
         $identity = Container::get(IdentityInterface::class);
-        $user_id = $identity->getId(0);
-        $user_name = $identity->getName('');
+        $user_id = $identity->isGuest() ? 0 : $identity->getId();
+        $user_name = $identity->isGuest() ? '' : $identity->getName();
         $modelManager = Container::get(ModelManagerInterface::class);
 
         $dateFormat = $modelManager->getDateFormat(static::class);

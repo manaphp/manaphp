@@ -30,7 +30,7 @@
             <div class="right">
                 <el-dropdown size="small">
                     <span class="el-dropdown-link">
-                    <i class="fa fa-user-circle"></i> {{container('ManaPHP\Identifying\IdentityInterface')->getName('')}}<i
+                    <i class="fa fa-user-circle"></i> {{container('ManaPHP\Identifying\IdentityInterface')->getName()}}<i
                                 class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown" trigger="click">
