@@ -66,7 +66,7 @@ class UserActionLogListener
         $userActionLog->method = $this->request->getMethod();
         $userActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
         $userActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
-        $userActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $userActionLog->data = json_stringify($data);
         $userActionLog->path = $this->dispatcher->getPath();
         $userActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
         $userActionLog->create();
