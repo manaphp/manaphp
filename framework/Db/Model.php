@@ -38,14 +38,11 @@ class Model extends AbstractModel implements ModelInterface
             $this->$key = $val;
         }
 
+        $this->autoFillCreated();
+
         $modelManager = Container::get(ModelManagerInterface::class);
 
         $fields = $modelManager->getFields(static::class);
-        foreach ($this->getAutoCreatedData() as $field => $value) {
-            if (!isset($this->$field)) {
-                $this->$field = $value;
-            }
-        }
 
         $this->validate($fields);
 
@@ -148,9 +145,7 @@ class Model extends AbstractModel implements ModelInterface
             return $this;
         }
 
-        foreach ($this->getAutoUpdatedData() as $field => $value) {
-            $this->$field = $value;
-        }
+        $this->autoFillCreated();
 
         list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 

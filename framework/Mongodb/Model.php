@@ -86,12 +86,9 @@ class Model extends AbstractModel
             $this->$key = $val;
         }
 
+        $this->autoFillCreated();
+
         $fields = Container::get(ModelManagerInterface::class)->getFields(static::class);
-        foreach ($this->getAutoCreatedData() as $field => $value) {
-            if (!isset($this->$field)) {
-                $this->$field = $value;
-            }
-        }
 
         $this->validate($fields);
 
@@ -192,9 +189,7 @@ class Model extends AbstractModel
             return $this;
         }
 
-        foreach ($this->getAutoUpdatedData() as $field => $value) {
-            $this->$field = $value;
-        }
+        $this->autoFillUpdated();
 
         list($connection, $collection) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 

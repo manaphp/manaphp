@@ -10,7 +10,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Query\QueryInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
@@ -445,75 +444,16 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $this->$field = $validator->validateModel($field, $this, $rules);
     }
 
-    public function getAutoCreatedData(): array
+    protected function autoFillCreated(): void
     {
-        $modelManager = Container::get(ModelManagerInterface::class);
-        $current_time = time();
-        $dateFormat = $modelManager->getDateFormat(static::class);
-
-        $identity = Container::get(IdentityInterface::class);
-        $user_id = $identity->isGuest() ? 0 : $identity->getId();
-        $user_name = $identity->isGuest() ? '' : $identity->getName();
-
-        $data = [];
-        foreach ($modelManager->getFields(static::class) as $field) {
-            if (isset($this->$field)) {
-                continue;
-            }
-
-            $needle = ",$field,";
-            if (str_contains(',created_time,createdTime,created_at,createdAt,', $needle)) {
-                $data[$field] = $dateFormat === 'U' ? time() : date($dateFormat, $current_time);
-            } elseif (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = $dateFormat === 'U' ? time() : date($dateFormat, $current_time);
-            } elseif (str_contains(',creator_id,creatorId,created_id,createdId,', $needle)) {
-                $data[$field] = $user_id;
-            } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
-                $data[$field] = $user_id;
-            } elseif (str_contains(',creator_name,creatorName,created_name,createdName,', $needle)) {
-                $data[$field] = $user_name;
-            } elseif (str_contains(',updator_name,updatorName,updated_name,updatedName,', $needle)) {
-                $data[$field] = $user_name;
-            } elseif (str_contains(',created_date,createdDate,updated_date,updatedDate,', $needle)) {
-                $data[$field] = (int)date('ymd', $current_time);
-            } elseif (str_contains(',created_by,createdBy,updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $modelManager->getIntFields(static::class), true) ? $user_id
-                    : $user_name;
-            }
-        }
-
-        return $data;
+        $autoFiller = Container::get(AutoFillerInterface::class);
+        $autoFiller->fillCreated($this);
     }
 
-    public function getAutoUpdatedData(): array
+    protected function autoFillUpdated(): void
     {
-        $current_time = time();
-
-        $identity = Container::get(IdentityInterface::class);
-        $user_id = $identity->isGuest() ? 0 : $identity->getId();
-        $user_name = $identity->isGuest() ? '' : $identity->getName();
-        $modelManager = Container::get(ModelManagerInterface::class);
-
-        $dateFormat = $modelManager->getDateFormat(static::class);
-
-        $data = [];
-        foreach ($modelManager->getFields(static::class) as $field) {
-            $needle = ",$field,";
-            if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = $dateFormat === 'U' ? time() : date($dateFormat, $current_time);
-            } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
-                $data[$field] = $user_id;
-            } elseif (str_contains(',updator_name,updatorName,updated_name,updatedName,', $needle)) {
-                $data[$field] = $user_name;
-            } elseif (str_contains(',updated_date,updatedDate,', $needle)) {
-                $data[$field] = (int)date('ymd', $current_time);
-            } elseif (str_contains(',updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $modelManager->getIntFields(static::class), true) ? $user_id
-                    : $user_name;
-            }
-        }
-
-        return $data;
+        $autoFiller = Container::get(AutoFillerInterface::class);
+        $autoFiller->fillUpdated($this);
     }
 
     /**
