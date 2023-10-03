@@ -562,17 +562,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param array $data
-     * @param array $filters =model_var(new static)
-     *
-     * @return QueryInterface <static>
-     */
-    public static function whereCriteria(array $data, array $filters): QueryInterface
-    {
-        return static::select()->whereCriteria($data, $filters);
-    }
-
-    /**
      * @param string $name
      *
      * @return ModelInterface|ModelInterface[]|mixed

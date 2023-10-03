@@ -20,7 +20,8 @@ class PermissionController extends Controller
 
     public function indexAction()
     {
-        return Permission::whereCriteria($this->request->all(), ['permission_id'])
+        return Permission::select()
+            ->whereCriteria($this->request->all(), ['permission_id'])
             ->with(['roles' => 'role_id, display_name'])
             ->orderBy(['permission_id' => SORT_DESC]);
     }

@@ -75,7 +75,5 @@ interface ModelInterface
 
     public static function where(array $filters): QueryInterface;
 
-    public static function whereCriteria(array $data, array $filters): QueryInterface;
-
     public function newQuery(): QueryInterface;
 }
