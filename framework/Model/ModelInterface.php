@@ -11,21 +11,21 @@ interface ModelInterface
 
     public static function query(?string $alias = null): QueryInterface;
 
-    public static function all(array $filters = [], ?array $fields = null): array;
+    public static function all(array $filters = [], array $fields = []): array;
 
-    public static function lists(string|array $fields, array $filters = []): array;
+    public static function lists(array $fields, array $filters = []): array;
 
-    public static function get(int|string $id, ?array $fields = null): static;
+    public static function get(int|string $id, array $fields = []): static;
 
-    public static function first(array $filters, ?array $fields = null): ?static;
+    public static function first(array $filters, array $fields = []): ?static;
 
-    public static function firstOrFail(array $filters, ?array $fields = null): static;
+    public static function firstOrFail(array $filters, array $fields = []): static;
 
     public static function firstOrNew(array $filters, array $data = []): static;
 
     public static function firstOrCreate(array $filters, array $data = []): static;
 
-    public static function last(array $filters, ?array $fields = null): ?static;
+    public static function last(array $filters, array $fields = []): ?static;
 
     public static function value(array $filters, string $field): mixed;
 
@@ -85,7 +85,7 @@ interface ModelInterface
 
     public function hasChanged(array $fields): bool;
 
-    public static function select(?array $fields = null, ?string $alias = null): QueryInterface;
+    public static function select(array $fields = [], ?string $alias = null): QueryInterface;
 
     public static function where(array $filters): QueryInterface;
 

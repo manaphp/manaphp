@@ -20,7 +20,7 @@ class Query extends AbstractQuery
 
     protected array $queries;
 
-    public function __construct(array $queries, null|string|array $fields = null)
+    public function __construct(array $queries, array $fields = [])
     {
         $this->setQueries($queries)->select($fields);
     }
@@ -95,7 +95,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    public function select(string|array $fields): static
+    public function select(array $fields): static
     {
         foreach ($this->queries as $query) {
             $query->select($fields);

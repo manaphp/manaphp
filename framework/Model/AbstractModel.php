@@ -43,28 +43,24 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array  $filters =model_var(new static)
-     * @param ?array $fields  =model_fields(new static)
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
      *
      * @return  static[]
      */
-    public static function all(array $filters = [], ?array $fields = null): array
+    public static function all(array $filters = [], array $fields = []): array
     {
         return static::select($fields)->where($filters)->fetch();
     }
 
     /**
-     * @param string|array $fields  =model_fields(new static) ?? model_field(new static)
-     * @param array        $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
+     * @param array $filters =model_var(new static)
      *
      * @return array
      */
-    public static function lists(string|array $fields, array $filters = []): array
+    public static function lists(array $fields, array $filters = []): array
     {
-        if (is_string($fields)) {
-            $fields = [$fields];
-        }
-
         $keyField = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
         if (!in_array($keyField, $fields, true)) {
             array_unshift($fields, $keyField);
@@ -92,37 +88,37 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param ?array  $fields =model_fields(new static)
+     * @param array   $fields =model_fields(new static)
      * @param ?string $alias
      *
      * @return QueryInterface <static>
      */
-    public static function select(?array $fields = null, ?string $alias = null): QueryInterface
+    public static function select(array $fields = [], ?string $alias = null): QueryInterface
     {
-        return static::query($alias)->select($fields ?? []);
+        return static::query($alias)->select($fields);
     }
 
     /**
      * Allows to query the first record that match the specified conditions
      *
-     * @param array  $filters =model_var(new static)
-     * @param ?array $fields  =model_fields(new static)
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
      *
      * @return static|null
      */
-    public static function first(array $filters, ?array $fields = null): ?static
+    public static function first(array $filters, array $fields = []): ?static
     {
-        $rs = static::select($fields ?? [])->where($filters)->limit(1)->fetch();
+        $rs = static::select($fields)->where($filters)->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
     /**
-     * @param array  $filters =model_var(new static)
-     * @param ?array $fields  =model_fields(new static)
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
      *
      * @return static
      */
-    public static function firstOrFail(array $filters, ?array $fields = null): static
+    public static function firstOrFail(array $filters, array $fields = []): static
     {
         $r = static::first($filters, $fields);
         if ($r === null) {
@@ -164,12 +160,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Allows to query the last record that match the specified conditions
      *
-     * @param array  $filters =model_var(new static)
-     * @param ?array $fields  =model_fields(new static)
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
      *
      * @return static|null
      */
-    public static function last(array $filters = [], ?array $fields = null): ?static
+    public static function last(array $filters = [], array $fields = []): ?static
     {
         $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
         $rs = static::select($fields)->where($filters)->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
