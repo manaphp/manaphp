@@ -11,7 +11,5 @@ class Controller
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected CookiesInterface $cookies;
-    #[Autowired] protected RouterInterface $router;
-    #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected IdentityInterface $identity;
 }
