@@ -57,7 +57,7 @@ interface ModelInterface
 
     public static function deleteAll(array $filters): int;
 
-    public function with(string|array $withs): static;
+    public function with(array $withs): static;
 
     public function toArray(): array;
 

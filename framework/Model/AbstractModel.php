@@ -400,7 +400,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return static::where($filters)->delete();
     }
 
-    public function with(string|array $withs): static
+    public function with(array $withs): static
     {
         $relationManager = Container::get(RelationManagerInterface::class);
 
