@@ -666,7 +666,7 @@ class Query extends AbstractQuery
                 $options['sort'] = $this->buildOrder($this->order);
             }
 
-            if ($this->offset !== null) {
+            if ($this->offset > 0) {
                 $options['skip'] = $this->offset;
             }
 
@@ -698,7 +698,7 @@ class Query extends AbstractQuery
                 $pipeline[] = ['$sort' => $this->buildOrder($this->order)];
             }
 
-            if ($this->offset !== null) {
+            if ($this->offset > 0) {
                 $pipeline[] = ['$skip' => $this->offset];
             }
 
@@ -727,7 +727,7 @@ class Query extends AbstractQuery
         $copy = clone $this;
 
         $copy->limit = null;
-        $copy->offset = null;
+        $copy->offset = 0;
         $copy->order = null;
         $copy->aggregate['count'] = ['$sum' => 1];
         $r = $copy->execute();

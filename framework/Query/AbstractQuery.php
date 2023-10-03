@@ -32,7 +32,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     protected ?string $alias = null;
     protected null|string|array $fields = null;
     protected ?int $limit = null;
-    protected ?int $offset = null;
+    protected int $offset = 0;
     protected bool $distinct = false;
     protected ?string $model = null;
     protected ?bool $multiple = null;
@@ -328,10 +328,10 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         return $this;
     }
 
-    public function limit(int $limit, ?int $offset = null): static
+    public function limit(int $limit, int $offset = 0): static
     {
-        $this->limit = $limit > 0 ? $limit : null;
-        $this->offset = $offset > 0 ? (int)$offset : null;
+        $this->limit = $limit;
+        $this->offset = $offset;
 
         return $this;
     }

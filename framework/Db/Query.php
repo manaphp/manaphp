@@ -585,11 +585,11 @@ class Query extends AbstractQuery
             $params['order'] = $this->buildOrder($this->order);
         }
 
-        if ($this->limit !== null) {
+        if ($this->limit > 0) {
             $params['limit'] = $this->limit;
         }
 
-        if ($this->offset !== null) {
+        if ($this->offset > 0) {
             $params['offset'] = $this->offset;
         }
 
@@ -726,14 +726,14 @@ class Query extends AbstractQuery
                     if ($r = $this->query($connection, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
                         if (count($result) >= $this->offset + $this->limit) {
-                            $result = array_slice($result, $this->offset ?? 0, $this->limit);
+                            $result = array_slice($result, $this->offset, $this->limit);
                             return $this->index ? Arr::indexby($result, $this->index) : $result;
                         }
                     }
                 }
             }
 
-            $result = $result ? array_slice($result, $this->offset ?? 0, $this->limit) : [];
+            $result = $result ? array_slice($result, $this->offset, $this->limit) : [];
         } else {
             foreach ($shards as $connection => $tables) {
                 foreach ($tables as $table) {
@@ -837,7 +837,7 @@ class Query extends AbstractQuery
 
         $copy->fields = "COUNT($field) as [row_count]";
         $copy->limit = null;
-        $copy->offset = null;
+        $copy->offset = 0;
         $copy->order = null;
         $copy->index = null;
 

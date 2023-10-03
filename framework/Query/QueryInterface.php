@@ -264,7 +264,7 @@ interface QueryInterface
 
     public function with(array $with): static;
 
-    public function limit(int $limit, ?int $offset = null): static;
+    public function limit(int $limit, int $offset = 0): static;
 
     public function forceUseMaster(bool $forceUseMaster = true): static;
 
