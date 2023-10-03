@@ -71,7 +71,7 @@ interface ModelInterface
 
     public function hasChanged(array $fields): bool;
 
-    public static function select(array $fields = [], ?string $alias = null): QueryInterface;
+    public static function select(array $fields = []): QueryInterface;
 
     public static function where(array $filters): QueryInterface;
 

@@ -88,14 +88,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param array   $fields =model_fields(new static)
-     * @param ?string $alias
+     * @param array $fields =model_fields(new static)
      *
      * @return QueryInterface <static>
      */
-    public static function select(array $fields = [], ?string $alias = null): QueryInterface
+    public static function select(array $fields = []): QueryInterface
     {
-        return static::query($alias)->select($fields);
+        return static::query()->select($fields);
     }
 
     /**
