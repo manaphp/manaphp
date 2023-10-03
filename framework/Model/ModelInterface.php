@@ -39,16 +39,6 @@ interface ModelInterface
 
     public static function exists(array $filters): bool;
 
-    public static function count(array $filters = [], string $field = '*'): int;
-
-    public static function sum(string $field, array $filters = []): mixed;
-
-    public static function max(string $field, array $filters = []): mixed;
-
-    public static function min(string $field, array $filters = []): mixed;
-
-    public static function avg(string $field, array $filters = []): ?float;
-
     public function assign(array|object $data, array $fields): static;
 
     public function fill(array $kv): static;
