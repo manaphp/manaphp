@@ -145,7 +145,7 @@ class Model extends AbstractModel implements ModelInterface
             return $this;
         }
 
-        $this->autoFillCreated();
+        $this->autoFillUpdated();
 
         list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
