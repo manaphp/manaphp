@@ -55,7 +55,7 @@ interface ModelInterface
 
     public static function fillCreate(array $data, array $kv): static;
 
-    public function fillUpdate(array $data, array $kv): static;
+    public function fillUpdate(array $data): static;
 
     public function validate(?array $fields = null): void;
 

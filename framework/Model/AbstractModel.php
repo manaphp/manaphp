@@ -387,15 +387,9 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return $model->create();
     }
 
-    public function fillUpdate(array $data, array $kv = []): static
+    public function fillUpdate(array $data): static
     {
-        $this->fill($data);
-
-        foreach ($kv as $key => $val) {
-            $this->$key = $val;
-        }
-
-        return $this->update();
+        return $this->fill($data)->update();
     }
 
     /**
