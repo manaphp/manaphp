@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Http\RequestInterface;
-use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
@@ -16,8 +14,6 @@ class ArgumentsResolver implements ArgumentsResolverInterface
 {
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected ValidatorInterface $validator;
-    #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected ModelManagerInterface $modelManager;
 
     #[Autowired] protected array $resolvers = [];
 
@@ -78,8 +74,6 @@ class ArgumentsResolver implements ArgumentsResolverInterface
         $args = [];
         $missing = [];
 
-        $container = $this->container;
-
         $rMethod = new ReflectionMethod($controller, $method);
         $rParameters = $rMethod->getParameters();
         foreach ($rParameters as $rParameter) {
@@ -94,7 +88,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             }
 
             if ($type !== null && str_contains($type, '\\')) {
-                $value = $this->resolveObjectValue($rParameter, $type, $name) ?? $container->get($type);
+                $value = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);
             } elseif (($value = $this->resolveScalarValue($rParameter, $type, $name)) !== null) {
                 null;
             } elseif ($rParameter->isDefaultValueAvailable()) {
