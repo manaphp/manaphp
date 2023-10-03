@@ -266,15 +266,13 @@ interface QueryInterface
 
     public function limit(int $limit, ?int $offset = null): static;
 
-    public function page(?int $size = null, ?int $page = null): static;
-
     public function forceUseMaster(bool $forceUseMaster = true): static;
 
     public function execute(): array;
 
     public function aggregate(array $expr): array;
 
-    public function paginate(?int $size = null, ?int $page = null): Paginator;
+    public function paginate(int $page, int $size = 10): Paginator;
 
     public function map(callable $map): static;
 

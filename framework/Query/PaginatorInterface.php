@@ -7,7 +7,7 @@ interface PaginatorInterface
 {
     public function setLinks(int $number): static;
 
-    public function paginate(int $count, ?int $size = null, ?int $page = null): static;
+    public function paginate(int $count, int $page, int $size): static;
 
     public function renderAsArray(): array;
 

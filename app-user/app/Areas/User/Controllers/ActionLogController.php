@@ -21,12 +21,12 @@ class ActionLogController extends Controller
     }
 
     #[AcceptVerbs(['GET'])]
-    public function latestAction()
+    public function latestAction(int $page = 1, int $size = 10)
     {
         return UserActionLog::select()
             ->where(['user_id' => $this->identity->getId()])
             ->whereCriteria($this->request->all(), ['path', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
-            ->paginate();
+            ->paginate($page, $size);
     }
 }

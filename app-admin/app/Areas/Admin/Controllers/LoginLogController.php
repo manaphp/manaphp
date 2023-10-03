@@ -11,24 +11,26 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 class LoginLogController extends Controller
 {
     #[Authorize]
-    public function indexAction()
+    public function indexAction(int $page = 1, int $size = 10)
     {
         return AdminLoginLog::select(
             ['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time']
         )
             ->orderBy(['login_id' => SORT_DESC])
-            ->whereCriteria($this->request->all(), ['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@='])
-            ->paginate();
+            ->whereCriteria(
+                $this->request->all(), ['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@=']
+            )
+            ->paginate($page, $size);
     }
 
     #[AcceptVerbs(['GET'])]
     #[Authorize('user')]
-    public function latestAction()
+    public function latestAction(int $page = 1, int $size = 10)
     {
         return AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
             ->whereCriteria($this->request->all(), ['created_time@='])
             ->orderBy(['login_id' => SORT_DESC])
             ->where(['admin_id' => $this->identity->getId()])
-            ->paginate();
+            ->paginate($page, $size);
     }
 }

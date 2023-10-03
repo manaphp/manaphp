@@ -14,7 +14,7 @@ use ManaPHP\Query\QueryInterface;
 #[Authorize('@index')]
 class AdminController extends Controller
 {
-    public function indexAction(string $keyword = '')
+    public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         return Admin::select(
             ['admin_id', 'admin_name', 'status', 'white_ip', 'login_ip', 'login_time', 'email', 'updator_name',
@@ -30,7 +30,7 @@ class AdminController extends Controller
                         $query->whereContains(['admin_name', 'email'], $keyword);
                     }
                 }
-            )->paginate();
+            )->paginate($page, $size);
     }
 
     public function listAction()

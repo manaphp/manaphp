@@ -13,7 +13,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
-use ManaPHP\Http\RequestInterface;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Model\RelationManagerInterface;
@@ -23,7 +22,6 @@ use ManaPHP\Model\ThoseInterface;
 abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonSerializable
 {
     #[Autowired] protected MakerInterface $maker;
-    #[Autowired] protected RequestInterface $request;
     #[Autowired] protected RelationManagerInterface $relationManager;
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected ShardingInterface $sharding;
@@ -367,21 +365,6 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         return $this;
     }
 
-    public function page(?int $size = null, ?int $page = null): static
-    {
-        if ($size === null) {
-            $size = (int)$this->request->get('size', 10);
-        }
-
-        if ($page === null) {
-            $page = (int)$this->request->get('page', 1);
-        }
-
-        $this->limit($size, $page ? ($page - 1) * $size : null);
-
-        return $this;
-    }
-
     public function map(callable $map): static
     {
         $this->map = $map;
@@ -426,15 +409,13 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         }
     }
 
-    public function paginate(?int $size = null, ?int $page = null): Paginator
+    public function paginate(int $page, int $size = 10): Paginator
     {
-        $this->page($size, $page);
+        $this->limit($size, ($page - 1) * $size);
 
         $items = $this->fetch();
 
-        if ($this->limit === null) {
-            $count = count($items);
-        } elseif (count($items) % $this->limit === 0) {
+        if (count($items) === $size) {
             $count = $this->count();
         } else {
             $count = $this->offset + count($items);
@@ -442,7 +423,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
         $paginator = $this->maker->make(PaginatorInterface::class);
         $paginator->items = $items;
-        return $paginator->paginate($count, $this->limit, (int)($this->offset / $this->limit) + 1);
+        return $paginator->paginate($count, $page, $size);
     }
 
     public function forceUseMaster(bool $forceUseMaster = true): static

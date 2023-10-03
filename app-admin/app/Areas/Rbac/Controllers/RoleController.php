@@ -11,13 +11,13 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 #[Authorize('@index')]
 class RoleController extends Controller
 {
-    public function indexAction(string $keyword = '')
+    public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         return Role::select()
             ->whereContains('role_name', $keyword)
             ->whereNotIn('role_name', ['guest', 'user', 'admin'])
             ->orderBy(['role_id' => SORT_DESC])
-            ->paginate();
+            ->paginate($page, $size);
     }
 
     public function listAction()

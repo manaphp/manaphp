@@ -11,12 +11,12 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 class ActionLogController extends Controller
 {
     #[Authorize]
-    public function indexAction()
+    public function indexAction(int $page = 1, int $size = 10)
     {
         return AdminActionLog::select()
             ->whereCriteria($this->request->all(), ['admin_name', 'path', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
-            ->paginate();
+            ->paginate($page, $size);
     }
 
     #[Authorize('user')]
@@ -31,12 +31,12 @@ class ActionLogController extends Controller
 
     #[AcceptVerbs(['GET'])]
     #[Authorize('user')]
-    public function latestAction()
+    public function latestAction(int $page = 1, int $size = 10)
     {
         return AdminActionLog::select()
             ->where(['admin_id' => $this->identity->getId()])
             ->whereCriteria($this->request->all(), ['path', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
-            ->paginate();
+            ->paginate($page, $size);
     }
 }

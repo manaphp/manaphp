@@ -31,11 +31,11 @@ class Paginator implements PaginatorInterface, JsonSerializable
         return $this;
     }
 
-    public function paginate(int $count, ?int $size = null, ?int $page = null): static
+    public function paginate(int $count, int $page, int $size): static
     {
         $this->count = $count;
-        $this->size = (int)($size ?: $this->request->get('size', 10));
-        $this->page = (int)($page ?: $this->request->get('page', 1));
+        $this->page = $page;
+        $this->size = $size;
         $this->pages = (int)ceil($this->count / $this->size);
         $this->prev = ($this->page <= $this->pages && $this->page > 1) ? $this->page - 1 : -1;
         $this->next = $this->page < $this->pages ? $this->page + 1 : -1;
