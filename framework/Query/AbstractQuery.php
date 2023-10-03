@@ -411,6 +411,9 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
     public function paginate(int $page, int $size = 10): Paginator
     {
+        $page = max(1, $page);
+        $size = max(1, $size);
+
         $this->limit($size, ($page - 1) * $size);
 
         $items = $this->fetch();
