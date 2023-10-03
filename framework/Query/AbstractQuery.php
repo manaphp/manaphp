@@ -155,12 +155,8 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         return $this;
     }
 
-    public function where(?array $filters): static
+    public function where(array $filters): static
     {
-        if ($filters === null) {
-            return $this;
-        }
-
         foreach ($filters as $filter => $value) {
             if (is_int($filter)) {
                 $this->whereExpr($value);
