@@ -39,12 +39,16 @@ class RoleController extends Controller
 
     public function disableAction(Role $role)
     {
-        return $role->update(['enabled' => 0]);
+        $role->enabled = 0;
+
+        return $role->update();
     }
 
     public function enableAction(Role $role)
     {
-        return $role->update(['enabled' => 1]);
+        $role->enabled = 1;
+
+        return $role->update();
     }
 
     public function deleteAction(Role $role)

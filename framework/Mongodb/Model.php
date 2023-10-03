@@ -76,16 +76,10 @@ class Model extends AbstractModel
     }
 
     /**
-     * @param array $kv =model_var(new static)
-     *
      * @return static
      */
-    public function create(array $kv = []): static
+    public function create(): static
     {
-        foreach ($kv as $key => $val) {
-            $this->$key = $val;
-        }
-
         $this->autoFillCreated();
 
         $fields = Container::get(ModelManagerInterface::class)->getFields(static::class);
@@ -139,16 +133,10 @@ class Model extends AbstractModel
     }
 
     /**
-     * @param array $kv =model_var(new static)
-     *
      * @return static
      */
-    public function update(array $kv = []): static
+    public function update(): static
     {
-        foreach ($kv as $key => $val) {
-            $this->$key = $val;
-        }
-
         $modelManager = Container::get(ModelManagerInterface::class);
 
         $primaryKey = $modelManager->getPrimaryKey(static::class);

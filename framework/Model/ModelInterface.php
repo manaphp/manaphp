@@ -59,11 +59,11 @@ interface ModelInterface
 
     public function validate(?array $fields = null): void;
 
-    public function save(array $kv = []): static;
+    public function save(): static;
 
-    public function create(array $kv = []): static;
+    public function create(): static;
 
-    public function update(array $kv = []): static;
+    public function update(): static;
 
     public static function updateAll(array $fieldValues, array $filters): int;
 

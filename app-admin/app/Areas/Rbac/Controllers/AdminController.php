@@ -44,12 +44,16 @@ class AdminController extends Controller
             return '不能锁定自己';
         }
 
-        return $admin->update(['status' => Admin::STATUS_LOCKED]);
+        $admin->status = Admin::STATUS_LOCKED;
+
+        return $admin->update();
     }
 
     public function activeAction(Admin $admin)
     {
-        return $admin->update(['status' => Admin::STATUS_ACTIVE]);
+        $admin->status = Admin::STATUS_ACTIVE;
+
+        return $admin->update();
     }
 
     public function createAction(Admin $admin, $role_id)

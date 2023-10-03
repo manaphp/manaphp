@@ -28,16 +28,10 @@ class Model extends AbstractModel implements ModelInterface
     }
 
     /**
-     * @param array $kv =model_var(new static)
-     *
      * @return static
      */
-    public function create(array $kv = []): static
+    public function create(): static
     {
-        foreach ($kv as $key => $val) {
-            $this->$key = $val;
-        }
-
         $this->autoFillCreated();
 
         $modelManager = Container::get(ModelManagerInterface::class);
@@ -95,16 +89,10 @@ class Model extends AbstractModel implements ModelInterface
     }
 
     /**
-     * @param array $kv =model_var(new static)
-     *
      * @return static
      */
-    public function update(array $kv = []): static
+    public function update(): static
     {
-        foreach ($kv as $key => $val) {
-            $this->$key = $val;
-        }
-
         $modelManager = Container::get(ModelManagerInterface::class);
 
         $primaryKey = $modelManager->getPrimaryKey(static::class);

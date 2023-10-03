@@ -378,12 +378,24 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public static function fillCreate(array $data, array $kv = []): static
     {
-        return (new static())->fill($data)->create($kv);
+        $model = (new static())->fill($data);
+
+        foreach ($kv as $key => $val) {
+            $model->$key = $val;
+        }
+
+        return $model->create();
     }
 
     public function fillUpdate(array $data, array $kv = []): static
     {
-        return $this->fill($data)->update($kv);
+        $this->fill($data);
+
+        foreach ($kv as $key => $val) {
+            $this->$key = $val;
+        }
+
+        return $this->update();
     }
 
     /**
@@ -459,17 +471,15 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     * @param array $kv =model_var(new static)
-     *
      * @return static
      */
-    public function save(array $kv = []): static
+    public function save(): static
     {
         $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
         if ($this->_snapshot || $this->$primaryKey) {
-            return $this->update($kv);
+            return $this->update();
         } else {
-            return $this->create($kv);
+            return $this->create();
         }
     }
 
