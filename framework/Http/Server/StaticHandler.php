@@ -3,21 +3,23 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RouterInterface;
 
 class StaticHandler implements StaticHandlerInterface
 {
     #[Autowired] protected RouterInterface $router;
+    #[Autowired] protected AliasInterface $alias;
 
-    protected string $root;
+    protected string $doc_root;
     protected array $locations;
     protected string $prefix;
     protected array $mime_types;
 
-    public function __construct(?string $root = null, ?array $locations = null, ?string $prefix = null)
+    public function __construct(?string $doc_root = null, ?array $locations = null, ?string $prefix = null)
     {
-        $this->root = $root ?? $_SERVER['DOCUMENT_ROOT'];
+        $this->doc_root = $doc_root ?? $this->alias->get('@public');
         $this->locations = $locations ?? $this->getLocations();
         $this->prefix = $prefix ?? $this->router->getPrefix();
         $this->mime_types = $this->getMimeTypes();
@@ -26,7 +28,7 @@ class StaticHandler implements StaticHandlerInterface
     protected function getLocations(): array
     {
         $locations = [];
-        foreach (glob($this->root . '/*') as $file) {
+        foreach (glob($this->doc_root . '/*') as $file) {
             $file = basename($file);
             if ($file[0] === '.' || pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 continue;
@@ -97,7 +99,7 @@ class StaticHandler implements StaticHandlerInterface
 
     public function getFile(string $uri): ?string
     {
-        $file = $this->root . $this->getFileInternal($uri);
+        $file = $this->doc_root . $this->getFileInternal($uri);
 
         if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
             return $file;
