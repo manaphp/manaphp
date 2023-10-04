@@ -12,7 +12,7 @@ class NotFoundException extends Exception
 
     public function __construct(string $model, mixed $filters)
     {
-        parent::__construct(['No record for `%s` model of `%s`', $model, json_stringify($filters)]);
+        parent::__construct(['No record for `{1}` model of `{2}`', $model, json_stringify($filters)]);
 
         $this->model = $model;
         $this->filters = $filters;

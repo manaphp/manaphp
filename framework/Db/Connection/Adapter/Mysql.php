@@ -22,7 +22,7 @@ class Mysql extends AbstractConnection
 
         if ($parts['scheme'] !== 'mysql') {
             throw new DsnFormatException(
-                ['`%s` is invalid, `%s` scheme is not recognized', $this->uri, $parts['scheme']]
+                ['`{1}` is invalid, `{2}` scheme is not recognized', $this->uri, $parts['scheme']]
             );
         }
 

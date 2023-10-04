@@ -56,7 +56,7 @@ class PoolManager implements PoolManagerInterface
         } else {
             if ($queue->length() + $size > $queue->capacity()) {
                 throw new FullException(
-                    ['`%s` pool of `%s` capacity(%d) is not big enough', $type, $owner::class, $queue->capacity()]
+                    ['`{1}` pool of `{2}` capacity({3}) is not big enough', $type, $owner::class, $queue->capacity()]
                 );
             }
         }

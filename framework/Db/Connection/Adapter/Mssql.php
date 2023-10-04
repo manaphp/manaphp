@@ -20,7 +20,7 @@ class Mssql extends AbstractConnection
 
         if ($parts['scheme'] !== 'mssql') {
             throw new DsnFormatException(
-                ['`%s` is invalid, `%s` scheme is not recognized', $this->uri, $parts['scheme']]
+                ['`{1}` is invalid, `{2}` scheme is not recognized', $this->uri, $parts['scheme']]
             );
         }
 
