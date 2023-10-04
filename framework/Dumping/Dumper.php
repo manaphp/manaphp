@@ -21,6 +21,7 @@ class Dumper implements DumperInterface
             }
 
             $name = $property->getName();
+            $property->setAccessible(true);
             if ($property->isInitialized($object)) {
                 $value = $property->getValue($object);
             } else {
