@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Client;
+namespace ManaPHP\Http\Client\Event;
 
+use ManaPHP\Http\Client\Request;
+use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\ClientInterface;
 
 class HttpClientSuccess

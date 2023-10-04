@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Client;
+namespace ManaPHP\Http\Client\Event;
 
 use JsonSerializable;
+use ManaPHP\Http\Client\Request;
+use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\ClientInterface;
 use Stringable;
 
