@@ -121,11 +121,13 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
         } else {
             if (($v = $context['exception'] ?? null) !== null && $v instanceof Throwable) {
                 $trace = $v->getTrace()[0];
-            } else {
+            } elseif (isset($traces[1])) {
                 $trace = $traces[1];
                 if (str_ends_with($trace['function'], '{closure}')) {
                     $trace = $traces[2];
                 }
+            } else {
+                $trace = $traces[0];
             }
             if (isset($trace['class'])) {
                 return str_replace('\\', '.', $trace['class']) . '.' . $trace['function'];
