@@ -8,15 +8,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Connection
 {
-    protected string $name;
-
-    public function __construct(string $name)
+    public function __construct(public string $name)
     {
-        $this->name = $name;
-    }
-
-    public function get(): string
-    {
-        return $this->name;
     }
 }

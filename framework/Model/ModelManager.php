@@ -59,7 +59,7 @@ class ModelManager implements ModelManagerInterface
     {
         if (($attribute = $this->getClassAttribute($model, Table::class)) !== null) {
             /** @var  Table $attribute */
-            return $attribute->get();
+            return $attribute->name;
         } else {
             return Str::snakelize(($pos = strrpos($model, '\\')) === false ? $model : substr($model, $pos + 1));
         }
@@ -78,7 +78,7 @@ class ModelManager implements ModelManagerInterface
     {
         if (($attribute = $this->getClassAttribute($model, Connection::class)) !== null) {
             /** @var Connection $attribute */
-            return $attribute->get();
+            return $attribute->name;
         } else {
             return 'default';
         }
@@ -97,7 +97,7 @@ class ModelManager implements ModelManagerInterface
     {
         if (($attribute = $this->getClassAttribute($model, PrimaryKey::class)) !== null) {
             /** @var PrimaryKey $attribute */
-            return $attribute->get();
+            return $attribute->name;
         } else {
             return $this->inferrer->primaryKey($model);
         }
@@ -116,7 +116,7 @@ class ModelManager implements ModelManagerInterface
     {
         if (($attribute = $this->getClassAttribute($model, ReferencedKey::class)) !== null) {
             /** @var ReferencedKey $attribute */
-            return $attribute->get();
+            return $attribute->name;
         } else {
             $primaryKey = $this->getPrimaryKey($model);
             if ($primaryKey !== 'id') {
