@@ -5,12 +5,15 @@ namespace ManaPHP\Identifying;
 
 use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\UnauthorizedException;
 
 class Identity implements IdentityInterface, ContextCreatorInterface
 {
     use ContextTrait;
+
+    #[Autowired] protected array $keys = [];
 
     public function createContext(): IdentityContext
     {
@@ -40,7 +43,9 @@ class Identity implements IdentityInterface, ContextCreatorInterface
             throw new UnauthorizedException('Not Authenticated');
         }
 
-        if (isset($claims['id'])) {
+        if (($key = $this->keys['id'] ?? null) !== null) {
+            return $claims[$key];
+        } elseif (isset($claims['id'])) {
             return $claims['id'];
         }
 
@@ -68,7 +73,9 @@ class Identity implements IdentityInterface, ContextCreatorInterface
             throw new UnauthorizedException('Not Authenticated');
         }
 
-        if (isset($claims['name'])) {
+        if (($key = $this->keys['name'] ?? null) !== null) {
+            return $claims[$key];
+        } elseif (isset($claims['name'])) {
             return $claims['name'];
         }
 
@@ -96,7 +103,9 @@ class Identity implements IdentityInterface, ContextCreatorInterface
             return $default;
         }
 
-        if (isset($claims['role'])) {
+        if (($key = $this->keys['role'] ?? null) !== null) {
+            return $claims[$key];
+        } elseif (isset($claims['role'])) {
             return $claims['role'];
         }
 
