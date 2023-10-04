@@ -76,11 +76,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     /**
      * @param int|string $id
-     * @param ?array     $fields =model_fields(new static)
+     * @param array      $fields =model_fields(new static)
      *
      * @return static
      */
-    public static function get(int|string $id, ?array $fields = null): static
+    public static function get(int|string $id, array $fields = []): static
     {
         $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
 
