@@ -128,6 +128,23 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
+     * @param array $filters =model_var(new static)
+     *
+     * @return static
+     */
+    public static function firstOrNew(array $filters): static
+    {
+        if (($instance = static::first($filters)) === null) {
+            $instance = new static();
+            foreach ($filters as $k => $v) {
+                $instance->$k = $v;
+            }
+        }
+
+        return $instance;
+    }
+
+    /**
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters =model_var(new static)
