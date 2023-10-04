@@ -154,22 +154,7 @@ class Model extends AbstractModel
             throw new MisuseException('updating model primary key value is not support');
         }
 
-        $fieldTypes = $this->fieldTypes();
         $fields = $modelManager->getFields(static::class);
-
-        foreach ($fields as $field) {
-            if (!isset($this->$field)) {
-                null;
-            } elseif (!isset($snapshot[$field])) {
-                if (is_scalar($this->$field)) {
-                    $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
-                }
-            } elseif ($snapshot[$field] !== $this->$field) {
-                if (is_scalar($this->$field)) {
-                    $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
-                }
-            }
-        }
 
         $this->validate();
 

@@ -112,21 +112,6 @@ class Model extends AbstractModel implements ModelInterface
 
         $fields = $modelManager->getFields(static::class);
 
-        foreach ($fields as $field) {
-            if (!isset($this->$field)) {
-                null;
-            } elseif (!isset($snapshot[$field])) {
-                null;
-            } elseif ($snapshot[$field] !== $this->$field) {
-                /** @noinspection PhpConditionCheckedByNextConditionInspection */
-                if ((is_string($this->$field) && !is_string($snapshot[$field]))
-                    && (string)$snapshot[$field] === $this->$field
-                ) {
-                    $this->$field = $snapshot[$field];
-                }
-            }
-        }
-
         $this->validate();
 
         if (!$this->hasChanged($fields)) {
