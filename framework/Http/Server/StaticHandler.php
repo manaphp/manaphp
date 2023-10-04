@@ -17,6 +17,7 @@ class StaticHandler implements StaticHandlerInterface
     protected string $prefix;
     protected array $mime_types;
 
+    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(?string $doc_root = null, ?array $locations = null, ?string $prefix = null)
     {
         $this->doc_root = $doc_root ?? $this->alias->get('@public');
