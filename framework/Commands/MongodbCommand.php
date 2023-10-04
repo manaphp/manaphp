@@ -189,7 +189,7 @@ class MongodbCommand extends Command
         $str .= 'class ' . substr(
                 $modelName,
                 strrpos($modelName, '\\') + 1
-            ) . ' extends \ManaPHP\Data\Mongodb\Model' . PHP_EOL;
+            ) . ' extends \ManaPHP\Mongodb\Model' . PHP_EOL;
         $str .= '{';
         if ($constants) {
             $str .= PHP_EOL . '    ' . $constants . PHP_EOL;

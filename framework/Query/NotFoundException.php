@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Query;
+namespace ManaPHP\Query;
 
 use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Exception;

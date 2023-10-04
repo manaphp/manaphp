@@ -22,7 +22,7 @@ class Model extends AbstractModel implements ModelInterface
     /**
      * @return Query <static>
      */
-    public function newQuery(): Query
+    public static function newQuery(): Query
     {
         return Container::make('ManaPHP\Db\Query')->setModel(static::class);
     }
@@ -72,7 +72,7 @@ class Model extends AbstractModel implements ModelInterface
         }
 
         if ($defaultValueFields) {
-            $query = $this->newQuery()->select($defaultValueFields)->where([$primaryKey => $this->$primaryKey]);
+            $query = static::newQuery()->select($defaultValueFields)->where([$primaryKey => $this->$primaryKey]);
             if ($r = $query->execute()) {
                 foreach ($r[0] as $field => $value) {
                     $this->$field = $value;

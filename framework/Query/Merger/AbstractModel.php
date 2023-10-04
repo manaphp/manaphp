@@ -1,25 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Merger;
+namespace ManaPHP\Query\Merger;
 
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Query\QueryInterface;
 
 abstract class AbstractModel extends \ManaPHP\Model\AbstractModel
 {
-    abstract public function getModel(): string;
-
-    abstract public function getQueries(): array;
-
-    public function newQuery(): QueryInterface
+    protected static function newQueryInternal(array $queries): QueryInterface
     {
-        $modelManager = Container::get(ModelManagerInterface::class);
-
-        $queries = Container::make('ManaPHP\Data\Merger\Query', [$this->getQueries()]);
-        return $queries->setModel($this->getModel())->select($modelManager->getFields(static::class));
+        $queries = Container::make('ManaPHP\Query\Merger\Query', [$queries]);
+        return $queries->setModel($queries[0]->getModel());
     }
 
     public function create(array $kv = []): static

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Merger;
+namespace ManaPHP\Query\Merger;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;

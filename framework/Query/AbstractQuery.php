@@ -6,7 +6,6 @@ namespace ManaPHP\Query;
 use ArrayIterator;
 use IteratorAggregate;
 use JsonSerializable;
-use ManaPHP\Data\Query\NotFoundException;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;

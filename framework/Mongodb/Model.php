@@ -70,7 +70,7 @@ class Model extends AbstractModel
     /**
      * @return Query <static>
      */
-    public function newQuery(): Query
+    public static function newQuery(): Query
     {
         return Container::make('ManaPHP\Mongodb\Query')->setModel(static::class);
     }

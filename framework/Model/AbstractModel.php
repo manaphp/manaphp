@@ -545,7 +545,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function query(?string $alias = null): QueryInterface
     {
-        $query = Container::get(ThoseInterface::class)->get(static::class)->newQuery();
+        $query = static::newQuery();
 
         return $alias ? $query->from(static::class, $alias) : $query;
     }
