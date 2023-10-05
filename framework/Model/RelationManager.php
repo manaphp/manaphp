@@ -153,19 +153,9 @@ class RelationManager implements RelationManagerInterface
         if ($data === null) {
             null;
         } elseif (is_string($data)) {
-            $query->select([$data]);
+            $query->select(preg_split('#[,\s]+#', $data, -1, PREG_SPLIT_NO_EMPTY));
         } elseif (is_array($data)) {
-            if ($data) {
-                if (isset($data[count($data) - 1])) {
-                    $query->select(count($data) > 1 ? $data : $data[0]);
-                } elseif (isset($data[0])) {
-                    $query->select($data[0]);
-                    unset($data[0]);
-                    $query->where($data);
-                } else {
-                    $query->where($data);
-                }
-            }
+            $query->select($data);
         } elseif (is_callable($data)) {
             $data($query);
         } else {
