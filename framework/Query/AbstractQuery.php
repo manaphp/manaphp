@@ -477,7 +477,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         return (float)$this->aggregate(['r' => "AVG($field)"])[0]['r'];
     }
 
-    public function when(callable $call): static
+    public function callable(callable $call): static
     {
         $call($this);
 

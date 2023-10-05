@@ -22,7 +22,7 @@ class AdminController extends Controller
         )
             ->orderBy(['admin_id' => SORT_DESC])
             ->with(['roles' => 'role_id, display_name'])
-            ->when(
+            ->callable(
                 static function (QueryInterface $query) use ($keyword) {
                     if (str_contains($keyword, '@')) {
                         $query->whereContains('email', $keyword);

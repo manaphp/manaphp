@@ -353,7 +353,7 @@ interface QueryInterface
      */
     public function update(array $fieldValues): int;
 
-    public function when(callable $call): static;
+    public function callable(callable $call): static;
 
     /**
      * @param string     $field =model_field(new Model)
