@@ -38,7 +38,7 @@ class Handler implements HandlerInterface
     public function handle(): void
     {
         try {
-            $this->eventDispatcher->dispatch(new RequestBegin());
+            $this->eventDispatcher->dispatch(new RequestBegin($this->request));
 
             $this->eventDispatcher->dispatch(new RequestAuthenticating());
             $this->eventDispatcher->dispatch(new RequestAuthenticated());

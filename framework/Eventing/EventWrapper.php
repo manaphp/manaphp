@@ -17,21 +17,26 @@ class EventWrapper implements JsonSerializable, Stringable
 
     public function jsonSerialize(): array
     {
-        $data = [];
+        $event = $this->event;
 
-        if ($this->fields !== null) {
-            $fields = preg_split('#[\s,]+#', $this->fields, -1, PREG_SPLIT_NO_EMPTY);
-            $event = $this->event;
-            foreach ($fields as $field) {
-                $data[$field] = $event->$field;
-            }
+        if ($event instanceof JsonSerializable) {
+            $data = $event->jsonSerialize();
         } else {
-            foreach (get_object_vars($this->event) as $key => $val) {
-                if (is_object($val)) {
-                    continue;
-                }
+            $data = [];
 
-                $data[$key] = $val;
+            if ($this->fields !== null) {
+                $fields = preg_split('#[\s,]+#', $this->fields, -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($fields as $field) {
+                    $data[$field] = $event->$field;
+                }
+            } else {
+                foreach (get_object_vars($event) as $key => $val) {
+                    if (is_object($val)) {
+                        continue;
+                    }
+
+                    $data[$key] = $val;
+                }
             }
         }
 

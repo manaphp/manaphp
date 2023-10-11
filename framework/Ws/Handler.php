@@ -40,7 +40,7 @@ class Handler implements HandlerInterface
         try {
             $throwable = null;
 
-            $this->eventDispatcher->dispatch(new RequestBegin());
+            $this->eventDispatcher->dispatch(new RequestBegin($this->request));
 
             if ($event === 'open') {
                 $this->eventDispatcher->dispatch(new RequestAuthenticating());
