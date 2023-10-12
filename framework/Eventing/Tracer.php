@@ -6,6 +6,7 @@ namespace ManaPHP\Eventing;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
 use ManaPHP\Redis\Event\RedisCalled;
@@ -22,9 +23,10 @@ class Tracer implements TracerInterface
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
     #[Autowired] protected LoggerInterface $logger;
 
-    #[Autowired] protected array $ignores = [];
     #[Autowired] protected array $events = [];
     #[Autowired] protected bool $verbose = true;
+    #[Autowired] protected int $verbosity = Verbosity::HIGH;
+    #[Autowired] protected array $verbosities = [];
 
     protected array $listeners = [];
 
@@ -59,10 +61,19 @@ class Tracer implements TracerInterface
     {
         $name = $event::class;
 
-        foreach ($this->ignores as $ignore) {
-            if (str_starts_with($name, $ignore)) {
-                return;
+        if (($verbosity = $this->verbosities[$name] ?? null) === null) {
+            $rClass = new ReflectionClass($name);
+            if (($attributes = $rClass->getAttributes(Verbosity::class)) !== []) {
+                /** @var Verbosity $attribute */
+                $attribute = $attributes[0]->newInstance();
+                $verbosity = $this->verbosities[$name] = $attribute->verbosity;
+            } else {
+                $verbosity = $this->verbosities[$name] = false;
             }
+        }
+
+        if ($verbosity !== false && $verbosity > $this->verbosity) {
+            return;
         }
 
         if (($listener = $this->listeners[$name] ?? null) !== null) {

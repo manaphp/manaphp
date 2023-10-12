@@ -13,8 +13,5 @@ return [
     'ManaPHP\Bos\ClientInterface'           => ['endpoint' => env('BOS_UPLOADER_ENDPOINT')],
     'ManaPHP\Http\RouterInterface'          => 'App\Router',
     'ManaPHP\Identifying\IdentityInterface' => 'ManaPHP\Identifying\Identity\Adapter\Session',
-    'ManaPHP\Eventing\TracerInterface'      => ['ignores' =>
-                                                    ['ManaPHP\\Pooling']
-    ],
     "ManaPHP\Mailing\MailerInterface"       => "ManaPHP\Mailing\Mailer\Adapter\File",
 ];
