@@ -306,6 +306,11 @@ class Request implements RequestInterface, JsonSerializable
         return strip_tags($this->getServer('REQUEST_URI'));
     }
 
+    public function getQueryString(): string
+    {
+        return $this->getServer('QUERY_STRING');
+    }
+
     public function getToken(string $name = 'token'): string
     {
         if ($token = $this->get($name, '')) {
