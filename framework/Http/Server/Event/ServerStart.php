@@ -3,15 +3,32 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Event;
 
+use JsonSerializable;
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Http\ServerInterface;
 use Swoole\Http\Server;
 
-class ServerStart
+#[Verbosity(Verbosity::LOW)]
+class ServerStart implements JsonSerializable
 {
     public function __construct(
         public ServerInterface $server,
         public ?Server $swoole = null,
     ) {
 
+    }
+
+    public function jsonSerialize(): array
+    {
+        if (($swoole = $this->swoole) !== null) {
+            return [
+                'host'     => $swoole->host,
+                'port'     => $swoole->port,
+                'mode'     => $swoole->mode,
+                'settings' => $swoole->setting,
+            ];
+        } else {
+            return [];
+        }
     }
 }

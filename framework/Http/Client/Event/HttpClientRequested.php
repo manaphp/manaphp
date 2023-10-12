@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Client\Event;
 
 use JsonSerializable;
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\ClientInterface;
 use Stringable;
 
+#[Verbosity(Verbosity::HIGH)]
 class HttpClientRequested implements JsonSerializable, Stringable
 {
     public function __construct(

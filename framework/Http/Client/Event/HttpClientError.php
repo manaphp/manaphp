@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Event;
 
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\ClientInterface;
 
+#[Verbosity(Verbosity::LOW)]
 class HttpClientError
 {
     public function __construct(

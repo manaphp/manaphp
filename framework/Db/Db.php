@@ -201,8 +201,6 @@ class Db implements DbInterface
         /** @var DbContext $context */
         $context = $this->getContext();
 
-        $this->eventDispatcher->dispatch(new DbQuerying($this, $sql, $bind));
-
         if ($context->connection) {
             $type = null;
             $connection = $context->connection;
@@ -217,6 +215,9 @@ class Db implements DbInterface
         }
 
         $sql = $connection->replaceQuoteCharacters($sql);
+
+        $this->eventDispatcher->dispatch(new DbQuerying($this, $sql, $bind));
+
         try {
             $start_time = microtime(true);
             $result = $connection->query($sql, $bind, $mode);
