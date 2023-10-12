@@ -100,7 +100,7 @@ class Model extends AbstractModel
                 continue;
             }
 
-            if ($this->$field !== null) {
+            if (isset($this->$field)) {
                 if (is_scalar($this->$field)) {
                     $this->$field = $this->normalizeValue($type, $this->$field);
                 }
@@ -240,7 +240,7 @@ class Model extends AbstractModel
     public function __debugInfo()
     {
         $data = parent::__debugInfo();
-        if ($data['_id'] === null) {
+        if (!isset($data['_id'])) {
             unset($data['_id']);
         } elseif (is_object($data['_id'])) {
             $data['_id'] = (string)$data['_id'];

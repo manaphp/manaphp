@@ -389,7 +389,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public function save(): static
     {
         $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
-        if ($this->_snapshot || $this->$primaryKey) {
+        if ($this->_snapshot || isset($this->$primaryKey)) {
             return $this->update();
         } else {
             return $this->create();
@@ -516,7 +516,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 if ($this->{$field} !== $snapshot[$field]) {
                     $changed[] = $field;
                 }
-            } elseif ($this->$field !== null) {
+            } elseif (isset($this->$field)) {
                 $changed[] = $field;
             }
         }
