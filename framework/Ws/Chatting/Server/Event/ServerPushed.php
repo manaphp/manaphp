@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting\Server;
 
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Ws\Chatting\ServerInterface;
 
+#[Verbosity(Verbosity::HIGH)]
 class ServerPushed
 {
     public function __construct(

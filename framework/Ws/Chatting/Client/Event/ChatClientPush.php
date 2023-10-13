@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting\Client\Event;
 
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Ws\Chatting\ClientInterface;
 
+#[Verbosity(Verbosity::MEDIUM)]
 class ChatClientPush
 {
     public function __construct(

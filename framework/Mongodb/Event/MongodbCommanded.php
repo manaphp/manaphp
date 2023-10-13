@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mongodb\Event;
 
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Mongodb\MongodbInterface;
 
+#[Verbosity(Verbosity::HIGH)]
 class MongodbCommanded extends AbstractEvent
 {
     public function __construct(

@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Router\Event;
 
 use JsonSerializable;
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Http\RouterInterface;
 
+#[Verbosity(Verbosity::LOW)]
 class RouterRouted implements JsonSerializable
 {
     public function __construct(

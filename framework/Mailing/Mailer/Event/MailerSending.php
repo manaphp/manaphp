@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Mailing\Mailer\Event;
 
 use JsonSerializable;
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Mailing\Mailer\Message;
 use ManaPHP\Mailing\MailerInterface;
 use Stringable;
 
+#[Verbosity(Verbosity::LOW)]
 class MailerSending implements JsonSerializable, Stringable
 {
     public function __construct(

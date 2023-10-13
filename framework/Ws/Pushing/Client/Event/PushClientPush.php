@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Pushing\Client\Event;
 
 
+use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Ws\Pushing\ClientInterface;
 
+#[Verbosity(Verbosity::LOW)]
 class PushClientPush
 {
     public function __construct(
