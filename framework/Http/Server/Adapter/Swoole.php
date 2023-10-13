@@ -101,14 +101,14 @@ class Swoole extends AbstractServer
 
     public function onManagerStart(): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
+        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get('id')));
 
         $this->eventDispatcher->dispatch(new ServerManagerStart($this, $this->swoole));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get('id'), $worker_id));
 
         $this->eventDispatcher->dispatch(new ServerWorkerStart($this, $server, $worker_id));
     }

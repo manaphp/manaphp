@@ -109,19 +109,19 @@ class Swoole implements ServerInterface
     /** @noinspection PhpUnusedParameterInspection */
     public function onStart(Server $server): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get("id")));
+        @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get('id')));
     }
 
     public function onManagerStart(): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
+        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get('id')));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
         $this->worker_id = $worker_id;
 
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get('id'), $worker_id));
 
         try {
             $this->eventDispatcher->dispatch(new ServerStart($this, $server, $worker_id));

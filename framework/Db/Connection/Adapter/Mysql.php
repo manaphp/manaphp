@@ -93,10 +93,10 @@ class Mysql extends AbstractConnection
         parent::__construct();
     }
 
-    #[ArrayShape([Db::METADATA_ATTRIBUTES          => "array",
-                  Db::METADATA_PRIMARY_KEY         => "array",
-                  Db::METADATA_AUTO_INCREMENT_KEY  => "mixed|null",
-                  Db::METADATA_INT_TYPE_ATTRIBUTES => "array"])]
+    #[ArrayShape([Db::METADATA_ATTRIBUTES          => 'array',
+                  Db::METADATA_PRIMARY_KEY         => 'array',
+                  Db::METADATA_AUTO_INCREMENT_KEY  => 'mixed|null',
+                  Db::METADATA_INT_TYPE_ATTRIBUTES => 'array'])]
     public function getMetadata(string $table): array
     {
         $fields = $this->query('DESCRIBE ' . $this->escapeIdentifier($table), [], PDO::FETCH_NUM);

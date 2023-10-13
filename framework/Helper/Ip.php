@@ -90,7 +90,7 @@ class Ip
                 }
                 return current($ips);
             }
-        } elseif (DIRECTORY_SEPARATOR === '\\' || PHP_OS === "Darwin") {
+        } elseif (DIRECTORY_SEPARATOR === '\\' || PHP_OS === 'Darwin') {
             return '127.0.0.1';
         } else {
             if (!$ips = @exec('hostname --all-ip-addresses')) {

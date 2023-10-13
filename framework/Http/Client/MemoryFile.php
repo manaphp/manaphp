@@ -39,7 +39,7 @@ class MemoryFile implements FileInterface, JsonSerializable
         return $this->content;
     }
 
-    #[ArrayShape(['mimeType' => "string", 'postName' => "string"])]
+    #[ArrayShape(['mimeType' => 'string', 'postName' => 'string'])]
     public function jsonSerialize(): array
     {
         return ['mimeType' => $this->mimeType, 'postName' => $this->postName];

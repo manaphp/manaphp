@@ -66,7 +66,7 @@ class Debugger implements DebuggerInterface
     public function __construct(int $ttl = 3600, ?string $prefix = null)
     {
         $this->ttl = class_exists('Redis') ? $ttl : 0;
-        $this->prefix = $prefix ?? sprintf("cache:%s:debugger:", $this->config->get('id'));
+        $this->prefix = $prefix ?? sprintf('cache:%s:debugger:', $this->config->get('id'));
     }
 
     public function start(): void

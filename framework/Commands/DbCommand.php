@@ -195,7 +195,7 @@ class DbCommand extends Command
 
         if ($camelized) {
             $uses[] = ColumnMap::class;
-            $attributes[] = "#[ColumnMap(ColumnMap::STRATEGY_SNAKE_CASE)]";
+            $attributes[] = '#[ColumnMap(ColumnMap::STRATEGY_SNAKE_CASE)]';
         }
 
         sort($uses);

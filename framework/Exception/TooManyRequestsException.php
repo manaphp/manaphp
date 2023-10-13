@@ -21,7 +21,7 @@ class TooManyRequestsException extends Exception
         return 429;
     }
 
-    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    #[ArrayShape(['code' => 'int', 'message' => 'string'])]
     public function getJson(): array
     {
         return ['code' => 429, 'message' => 'Too Many Request'];

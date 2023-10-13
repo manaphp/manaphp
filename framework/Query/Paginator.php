@@ -43,7 +43,7 @@ class Paginator implements PaginatorInterface, JsonSerializable
         return $this;
     }
 
-    #[ArrayShape(['page' => "int", 'size' => "int", 'count' => "int", 'pages' => "int", 'items' => "array"])]
+    #[ArrayShape(['page' => 'int', 'size' => 'int', 'count' => 'int', 'pages' => 'int', 'items' => 'array'])]
     public function renderAsArray(): array
     {
         return [
@@ -124,13 +124,13 @@ class Paginator implements PaginatorInterface, JsonSerializable
         }
     }
 
-    #[ArrayShape(['page' => "int", 'size' => "int", 'count' => "int", 'pages' => "int", 'items' => "array"])]
+    #[ArrayShape(['page' => 'int', 'size' => 'int', 'count' => 'int', 'pages' => 'int', 'items' => 'array'])]
     public function jsonSerialize(): array
     {
         return $this->renderAsArray();
     }
 
-    #[ArrayShape(['page' => "int", 'size' => "int", 'count' => "int", 'pages' => "int", 'items' => "array"])]
+    #[ArrayShape(['page' => 'int', 'size' => 'int', 'count' => 'int', 'pages' => 'int', 'items' => 'array'])]
     public function toArray(): array
     {
         return $this->renderAsArray();

@@ -170,7 +170,7 @@ class Container implements ContainerInterface
         }
 
         if (preg_match('#^[\w\\\\]+$#', $name) !== 1) {
-            throw new NotFoundException(["{1} not found", $name]);
+            throw new NotFoundException(['{1} not found', $name]);
         }
 
         $exists = false;
@@ -225,7 +225,7 @@ class Container implements ContainerInterface
         }
 
         if (($definition = $this->definitions[$id] ?? null) !== null) {
-            if (is_string($definition) && str_ends_with($id, 'Interface') && str_ends_with($definition, "Interface")) {
+            if (is_string($definition) && str_ends_with($id, 'Interface') && str_ends_with($definition, 'Interface')) {
                 return $this->instances[$id] = $this->get($definition);
             }
 

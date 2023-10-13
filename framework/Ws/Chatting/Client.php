@@ -38,12 +38,12 @@ class Client implements ClientInterface
 
     public function pushToId(string $room, int|array $id, string|array $message): void
     {
-        $this->push("message.id", $room, $id, $message);
+        $this->push('message.id', $room, $id, $message);
     }
 
     public function pushToName(string $room, string|array $name, string|array $message): void
     {
-        $this->push("message.name", $room, $name, $message);
+        $this->push('message.name', $room, $name, $message);
     }
 
     public function broadcast(string|array $message): void
@@ -58,7 +58,7 @@ class Client implements ClientInterface
 
     public function kickoutId(string $room, string|array $id, string|array $message): void
     {
-        $this->push("kickout.id", $room, $id, $message);
+        $this->push('kickout.id', $room, $id, $message);
     }
 
     public function kickoutName(string $room, string|array $name, string|array $message): void

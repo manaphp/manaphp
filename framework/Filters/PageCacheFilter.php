@@ -33,7 +33,7 @@ class PageCacheFilter
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(?string $prefix = null)
     {
-        $this->prefix = $prefix ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));
+        $this->prefix = $prefix ?? sprintf('cache:%s:pageCachePlugin:', $this->config->get('id'));
     }
 
     protected function getPageCache(object $controller, string $action): PageCache|false
@@ -57,7 +57,7 @@ class PageCacheFilter
         $controller = $event->controller;
         $action = $event->action;
 
-        $key = $controller::class . "::" . $action;
+        $key = $controller::class . '::' . $action;
         if (($pageCache = $this->pageCaches[$key] ?? null) === null) {
             $pageCache = $this->pageCaches[$key] = $this->getPageCache($controller, $action);
         }

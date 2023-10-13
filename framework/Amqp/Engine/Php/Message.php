@@ -64,13 +64,13 @@ class Message implements MessageInterface, JsonSerializable
         return $this->envelope->get('reply_to');
     }
 
-    #[ArrayShape(['queue'         => "string",
-                  'exchange'      => "mixed",
-                  'routingKey'    => "mixed",
-                  'deliveryTag'   => "mixed",
-                  'isRedelivered' => "mixed",
-                  'body'          => "mixed",
-                  'properties'    => "mixed"])]
+    #[ArrayShape(['queue'         => 'string',
+                  'exchange'      => 'mixed',
+                  'routingKey'    => 'mixed',
+                  'deliveryTag'   => 'mixed',
+                  'isRedelivered' => 'mixed',
+                  'body'          => 'mixed',
+                  'properties'    => 'mixed'])]
     public function jsonSerialize(): array
     {
         return [

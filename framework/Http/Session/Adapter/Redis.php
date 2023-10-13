@@ -17,7 +17,7 @@ class Redis extends AbstractSession
 
     protected function getKey(string $session_id): string
     {
-        return ($this->prefix ?? sprintf("cache:%s:session:", $this->config->get("id"))) . $session_id;
+        return ($this->prefix ?? sprintf('cache:%s:session:', $this->config->get('id'))) . $session_id;
     }
 
     public function do_read(string $session_id): string

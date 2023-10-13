@@ -19,11 +19,11 @@ class LocalFile implements FileInterface, JsonSerializable
         $fileName = $fileName[0] === '@' ? Container::get(AliasInterface::class)->resolve($fileName) : $fileName;
 
         if (!file_exists($fileName)) {
-            throw new Exception(["`{1}` is not exist", $fileName]);
+            throw new Exception(['`{1}` is not exist', $fileName]);
         }
 
         if (!is_readable($fileName)) {
-            throw new Exception(["`{1}` is not readable", $fileName]);
+            throw new Exception(['`{1}` is not readable', $fileName]);
         }
 
         $this->fileName = $fileName;
@@ -46,7 +46,7 @@ class LocalFile implements FileInterface, JsonSerializable
         return $this->postName ?? basename($this->fileName);
     }
 
-    #[ArrayShape(['fileName' => "mixed"])]
+    #[ArrayShape(['fileName' => 'mixed'])]
     public function jsonSerialize(): array
     {
         return ['fileName' => $this->fileName];

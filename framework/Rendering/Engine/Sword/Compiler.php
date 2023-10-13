@@ -186,7 +186,7 @@ class Compiler
         return $value;
     }
 
-    #[ArrayShape(['compileRawEchos' => "int", 'compileEscapedEchos' => "int"])]
+    #[ArrayShape(['compileRawEchos' => 'int', 'compileEscapedEchos' => 'int'])]
     protected function getEchoMethods(): array
     {
         $methods = [

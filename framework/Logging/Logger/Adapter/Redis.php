@@ -29,7 +29,7 @@ class Redis extends AbstractLogger
             'message'    => $log->message
         ];
         $this->redisBroker->rPush(
-            $this->key ?? sprintf("cache:%s:logger", $this->config->get("id")),
+            $this->key ?? sprintf('cache:%s:logger', $this->config->get('id')),
             json_stringify($data)
         );
     }

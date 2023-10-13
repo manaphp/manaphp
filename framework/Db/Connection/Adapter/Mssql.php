@@ -54,9 +54,9 @@ class Mssql extends AbstractConnection
         parent::__construct();
     }
 
-    #[ArrayShape([Db::METADATA_ATTRIBUTES         => "array",
-                  Db::METADATA_PRIMARY_KEY        => "array",
-                  Db::METADATA_AUTO_INCREMENT_KEY => "mixed|null"])]
+    #[ArrayShape([Db::METADATA_ATTRIBUTES         => 'array',
+                  Db::METADATA_PRIMARY_KEY        => 'array',
+                  Db::METADATA_AUTO_INCREMENT_KEY => 'mixed|null'])]
     public function getMetadata(string $table): array
     {
         $parts = explode('.', $table);

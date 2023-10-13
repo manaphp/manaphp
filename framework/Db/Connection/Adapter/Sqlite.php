@@ -23,9 +23,9 @@ class Sqlite extends AbstractConnection
         parent::__construct();
     }
 
-    #[ArrayShape([Db::METADATA_ATTRIBUTES         => "array",
-                  Db::METADATA_PRIMARY_KEY        => "array",
-                  Db::METADATA_AUTO_INCREMENT_KEY => "mixed|null"])]
+    #[ArrayShape([Db::METADATA_ATTRIBUTES         => 'array',
+                  Db::METADATA_PRIMARY_KEY        => 'array',
+                  Db::METADATA_AUTO_INCREMENT_KEY => 'mixed|null'])]
     public function getMetadata(string $table): array
     {
         $fields = $this->query('PRAGMA table_info(' . $this->escapeIdentifier($table) . ')');
@@ -84,7 +84,7 @@ class Sqlite extends AbstractConnection
 
         $sql
             = /** @lang text */
-            "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master"
+            'SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master'
             . " WHERE type='table' AND tbl_name='$parts[0]'";
 
         $r = $this->query($sql, [], PDO::FETCH_NUM);

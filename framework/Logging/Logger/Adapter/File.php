@@ -46,7 +46,7 @@ class File extends AbstractLogger
      */
     protected function write(string $str): void
     {
-        $file = $this->alias->resolve(strtr($this->file, ['{id}' => $this->config->get("id")]));
+        $file = $this->alias->resolve(strtr($this->file, ['{id}' => $this->config->get('id')]));
         if (!is_file($file)) {
             $dir = dirname($file);
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {

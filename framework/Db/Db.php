@@ -561,10 +561,10 @@ class Db implements DbInterface
         }
     }
 
-    #[ArrayShape([self::METADATA_ATTRIBUTES          => "array",
-                  self::METADATA_PRIMARY_KEY         => "array",
-                  self::METADATA_AUTO_INCREMENT_KEY  => "\mixed|null",
-                  self::METADATA_INT_TYPE_ATTRIBUTES => "array"])]
+    #[ArrayShape([self::METADATA_ATTRIBUTES          => 'array',
+                  self::METADATA_PRIMARY_KEY         => 'array',
+                  self::METADATA_AUTO_INCREMENT_KEY  => '\mixed|null',
+                  self::METADATA_INT_TYPE_ATTRIBUTES => 'array'])]
     public function getMetadata(string $table): array
     {
         /** @var DbContext $context */

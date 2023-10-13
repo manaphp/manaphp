@@ -13,7 +13,7 @@ class NotFoundException extends Exception
         return 404;
     }
 
-    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    #[ArrayShape(['code' => 'int', 'message' => 'string'])]
     public function getJson(): array
     {
         return ['code' => 404, 'message' => 'record is not exists'];
