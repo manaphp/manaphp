@@ -6,6 +6,7 @@ namespace ManaPHP\Dumping;
 use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ReflectionClass;
+use ReflectionNamedType;
 
 class Dumper implements DumperInterface
 {
@@ -16,8 +17,17 @@ class Dumper implements DumperInterface
         $data = [];
         $rf = new ReflectionClass($object);
         foreach ($rf->getProperties() as $property) {
-            if ($property->isStatic() || $property->getAttributes(Autowired::class) !== []) {
+            if ($property->isStatic()) {
                 continue;
+            }
+
+            if ($property->getAttributes(Autowired::class) !== []) {
+                if (($rType = $property->getType()) !== null) {
+                    $type = $rType instanceof ReflectionNamedType ? $rType : $rType->getTypes()[0];
+                    if (!$type->isBuiltin()) {
+                        continue;
+                    }
+                }
             }
 
             $name = $property->getName();
