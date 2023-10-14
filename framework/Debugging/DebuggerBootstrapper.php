@@ -5,7 +5,6 @@ namespace ManaPHP\Debugging;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Debugging\DebuggerInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;

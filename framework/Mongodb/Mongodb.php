@@ -275,7 +275,8 @@ class Mongodb implements MongodbInterface
             return $this->command($command, $db);
         } catch (RuntimeException $e) {
             throw new MongodbException(
-                ['`{1}` aggregate for `{2}` collection failed: {3}', json_stringify($pipeline), $source, $e->getMessage()]
+                ['`{1}` aggregate for `{2}` collection failed: {3}', json_stringify($pipeline), $source,
+                 $e->getMessage()]
             );
         }
     }
