@@ -5,7 +5,8 @@ use ManaPHP\Di\Pool;
 
 return [
     'ManaPHP\Http\ServerInterface' => new Pool([
-        'default' => \ManaPHP\Http\Server\Detector::detect(),
+        'default' => '#auto',
+        'auto'    => \ManaPHP\Http\Server\Detector::detect(),
         'swoole'  => [
             'class'    => 'ManaPHP\Http\Server\Adapter\Swoole',
             'port'     => 9501,
