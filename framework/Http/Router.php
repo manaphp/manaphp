@@ -228,9 +228,9 @@ class Router implements RouterInterface
 
         $context->matched = false;
 
-        if ($this->prefix !== '') {
-            if (str_starts_with($uri, $this->prefix)) {
-                $handledUri = substr($uri, strlen($this->prefix)) ?: '/';
+        if (($prefix = $this->getPrefix()) !== '') {
+            if (str_starts_with($uri, $prefix)) {
+                $handledUri = substr($uri, strlen($prefix)) ?: '/';
             } else {
                 $handledUri = false;
             }
@@ -425,7 +425,7 @@ class Router implements RouterInterface
             $ca = substr($ca, 0, $pos);
         }
 
-        $url = $this->prefix . '/' . lcfirst($ca);
+        $url = $this->getPrefix() . '/' . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }
