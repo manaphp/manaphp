@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 
 return [
-    'ManaPHP\Http\ServerInterface'          => '#auto',
     'ManaPHP\Redis\RedisInterface'          => ['uri' => env('REDIS_URL')],
     'Psr\Log\LoggerInterface'               => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
                                                 'level' => env('LOGGER_LEVEL', 'info')],

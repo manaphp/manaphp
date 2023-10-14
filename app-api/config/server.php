@@ -1,9 +1,12 @@
 <?php
+declare(strict_types=1);
+
+use ManaPHP\Di\Pool;
 
 return [
-    'ManaPHP\Http\ServerInterface' => [
-        'auto'   => \ManaPHP\Http\Server\Detector::detect(),
-        'swoole' => [
+    'ManaPHP\Http\ServerInterface' => new Pool([
+        'default' => \ManaPHP\Http\Server\Detector::detect(),
+        'swoole'  => [
             'class'    => 'ManaPHP\Http\Server\Adapter\Swoole',
             'port'     => 9501,
             'settings' => [
@@ -12,18 +15,15 @@ return [
                 'enable_static_handler' => false
             ],
         ],
-        'fpm'    => [
+        'fpm'     => [
             'class' => 'ManaPHP\Http\Server\Adapter\Fpm',
         ],
-        'php'    => [
+        'php'     => [
             'class'    => 'ManaPHP\Http\Server\Adapter\Php',
             'port'     => 9501,
             'settings' => [
                 'worker_num' => 4,
             ]
         ],
-    ],
-    'ManaPHP\Db\DbInterface'       => [
-        'default' => ['class' => 'ManaPHP\Db\Db', 'uri' => env('DB_URL')],
-    ]
+    ])
 ];

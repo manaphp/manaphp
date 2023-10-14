@@ -1,5 +1,9 @@
 <?php
+declare(strict_types=1);
 
 return [
-    ManaPHP\Filters\AuthorizationFilter::class
+    ManaPHP\Bootstrappers\FilterBootstrapper::class => [
+        'filters' => [
+            ManaPHP\Filters\AuthorizationFilter::class,
+        ]],
 ];

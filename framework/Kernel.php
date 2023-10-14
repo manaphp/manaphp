@@ -5,6 +5,9 @@ namespace ManaPHP;
 
 use JetBrains\PhpStorm\NoReturn;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Proxy;
+use ManaPHP\Kernel\BootstrapperLoaderInterface;
+use ManaPHP\Kernel\ConfigLoaderInterface;
 use Psr\Container\ContainerInterface;
 
 class Kernel
@@ -13,6 +16,8 @@ class Kernel
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected EnvInterface $env;
     #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected ConfigLoaderInterface $configLoader;
+    #[Autowired] protected BootstrapperLoaderInterface|Proxy $bootstrapperLoader;
 
     #[Autowired] protected string $rootDir;
 
@@ -40,52 +45,6 @@ class Kernel
         $this->alias->set('@config', "$root/config");
     }
 
-    public function registerAppAliases(array $aliases): void
-    {
-        foreach ($aliases as $k => $v) {
-            $this->alias->set($k, $v);
-        }
-    }
-
-    public function registerAppFactories(array $factories): void
-    {
-        foreach ($factories as $interface => $definitions) {
-            foreach ($definitions as $name => $definition) {
-                if (is_string($definition) && $definition[0] === '#') {
-                    $definition = "$interface$definition";
-                }
-
-                $this->container->set("$interface#$name", $definition);
-
-                if ($name === 'default') {
-                    $this->container->set($interface, "#$name");
-                }
-            }
-        }
-    }
-
-    public function registerAppDependencies(array $dependencies): void
-    {
-        foreach ($dependencies as $id => $definition) {
-            $this->container->set($id, $definition);
-        }
-    }
-
-    public function bootBootstrappers(array $bootstrappers): void
-    {
-        foreach ($bootstrappers as $key => $value) {
-            /** @var BootstrapperInterface $bootstrapper */
-            if (is_int($key)) {
-                $bootstrapper = $this->container->get($value);
-            } else {
-                $this->container->set($key, $value);
-                $bootstrapper = $this->container->get($key);
-            }
-
-            $bootstrapper->bootstrap($this->container);
-        }
-    }
-
     public function detectCoroutineCanEnabled(): bool
     {
         return PHP_SAPI === 'cli' && extension_loaded('swoole');
@@ -105,16 +64,23 @@ class Kernel
 
         $this->env->load();
 
-        $this->config->load();
+        $this->configLoader->load();
 
         if (($timezone = $this->config->get('timezone')) !== null) {
             date_default_timezone_set($timezone);
         }
 
-        $this->registerAppAliases($this->config->get('aliases', []));
-        $this->registerAppFactories($this->config->get('factories', []));
-        $this->registerAppDependencies($this->config->get('dependencies', []));
-        $this->bootBootstrappers($this->config->get('bootstrappers', []));
+        foreach ($this->config->get('aliases', []) as $aliases) {
+            foreach ($aliases as $k => $v) {
+                $this->alias->set($k, $v);
+            }
+        }
+
+        foreach ($this->config->get('dependencies', []) as $id => $definition) {
+            $this->container->set($id, $definition);
+        }
+
+        $this->bootstrapperLoader->load();
 
         /** @var string|ServerInterface $server */
         $server = $this->container->get($server);

@@ -14,11 +14,11 @@ class FilterBootstrapper implements BootstrapperInterface
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
     #[Autowired] protected ConfigInterface $config;
 
+    #[Autowired] protected array $filters = [];
+
     public function bootstrap(ContainerInterface $container): void
     {
-        $filters = $this->config->get('filters', []);
-
-        foreach ($filters as $filter) {
+        foreach ($this->filters as $filter) {
             $this->listenerProvider->add($container->get($filter));
         }
     }

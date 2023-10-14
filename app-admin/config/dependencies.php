@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 
 return [
-    'ManaPHP\Http\ServerInterface'          => '#auto',
     'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
     'ManaPHP\Security\CryptInterface'       => ['master_key' => env('MASTER_KEY', 'dev')],
     'ManaPHP\Redis\RedisInterface'          => ['uri' => env('REDIS_URL')],

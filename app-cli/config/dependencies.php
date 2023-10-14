@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 return [
     'ManaPHP\Db\DbInterface'       => ['class' => 'ManaPHP\Data\Db', 'uri' => env('DB_URL')],
