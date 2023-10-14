@@ -173,6 +173,10 @@ class Debugger implements DebuggerInterface
 
     public function onEvent(#[Event] object $event): void
     {
+        if ($event instanceof LoggerLog) {
+            return;
+        }
+
         $data['event'] = $event::class;
         $data['source'] = array_keys(get_object_vars($event));
 
