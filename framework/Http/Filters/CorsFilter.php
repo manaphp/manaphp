@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Filters;
+namespace ManaPHP\Http\Filters;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;

@@ -1,11 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Bootstrappers;
+namespace ManaPHP\Eventing;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Eventing\TracerInterface;
 use Psr\Container\ContainerInterface;
 
 class TracerBootstrapper implements BootstrapperInterface

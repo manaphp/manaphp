@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Bootstrappers;
+namespace ManaPHP\Http;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\ConfigInterface;

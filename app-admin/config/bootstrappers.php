@@ -4,10 +4,10 @@ declare(strict_types=1);
 return [
     \ManaPHP\Kernel\BootstrapperLoaderInterface::class => [
         'bootstrappers' => [
-            ManaPHP\Bootstrappers\ListenerBootstrapper::class,
-            ManaPHP\Bootstrappers\DebuggerBootstrapper::class,
-            ManaPHP\Bootstrappers\FilterBootstrapper::class,
-            ManaPHP\Bootstrappers\TracerBootstrapper::class,
+            ManaPHP\Eventing\ListenerBootstrapper::class,
+            ManaPHP\Debugging\DebuggerBootstrapper::class,
+            ManaPHP\Http\FilterBootstrapper::class,
+            ManaPHP\Eventing\TracerBootstrapper::class,
         ],
     ]
 ];

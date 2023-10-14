@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 return [
-    ManaPHP\Bootstrappers\FilterBootstrapper::class => [
+    ManaPHP\Http\FilterBootstrapper::class => [
         'filters' => [
-            ManaPHP\Filters\EtagFilter::class,
-            ManaPHP\Filters\VerbsFilter::class,
+            ManaPHP\Http\Filters\EtagFilter::class,
+            ManaPHP\Http\Filters\VerbsFilter::class,
         ]]
 ];

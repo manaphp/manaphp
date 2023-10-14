@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Filters;
+namespace ManaPHP\Http\Filters;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
+use ManaPHP\Http\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\Controller as MvcController;
