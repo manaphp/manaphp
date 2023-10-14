@@ -22,9 +22,9 @@ class Router implements RouterInterface
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected RequestInterface $request;
 
-    protected bool $case_sensitive = true;
-    protected string $prefix = '';
-    protected array $areas = [];
+    #[Autowired] protected bool $case_sensitive = true;
+    #[Autowired] protected string $prefix = '';
+    #[Autowired] protected array $areas = [];
 
     /**
      * @var RouteInterface[]
