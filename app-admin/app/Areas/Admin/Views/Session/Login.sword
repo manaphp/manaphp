@@ -25,6 +25,10 @@
             left: 0;
             z-index: -1000;
         }
+
+        .password-forget{
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body id="particles-js">
@@ -58,9 +62,9 @@
     <el-button @click="login" style="width:100%" type="primary"
                :disabled="request.admin_name===''||request.password===''">登录
     </el-button>
-    <div>
+    <div class="password-forget">
         <a href="/admin/password/forget">
-            <span style="font-size: 0.8em; margin-left: 218px; color: gray;">找回密码</span>
+            <span style="font-size: 1em; margin-left: 190px; color: gray;">找回密码</span>
         </a>
     </div>
 </div>
