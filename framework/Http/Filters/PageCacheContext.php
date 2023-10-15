@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Filters;
 
-class PageCacheFilterContext
+class PageCacheContext
 {
     public ?int $ttl = null;
     public string $key;

@@ -6,14 +6,14 @@ namespace ManaPHP\Http\Filters;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Http\Controller\Attribute\HttpCache;
+use ManaPHP\Http\Controller\Attribute\HttpCache as HttpCacheAttribute;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ReflectionMethod;
 
-class HttpCacheFilter
+class HttpCache
 {
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
@@ -21,11 +21,11 @@ class HttpCacheFilter
 
     protected array $httpCaches = [];
 
-    protected function getHttpCache(object $controller, string $action): HttpCache|false
+    protected function getHttpCache(object $controller, string $action): HttpCacheAttribute|false
     {
         $rMethod = new ReflectionMethod($controller, $action . 'Action');
 
-        if (($attributes = $rMethod->getAttributes(HttpCache::class)) !== []) {
+        if (($attributes = $rMethod->getAttributes(HttpCacheAttribute::class)) !== []) {
             return $attributes[0]->newInstance();
         } else {
             return false;

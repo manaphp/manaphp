@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Filters\CsrfFilter;
+namespace ManaPHP\Http\Filters\Csrf;
 
 use ManaPHP\Exception;
 

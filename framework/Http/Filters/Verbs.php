@@ -12,7 +12,7 @@ use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\ViewInterface;
 use ReflectionMethod;
 
-class VerbsFilter
+class Verbs
 {
     #[Autowired] protected ViewInterface $view;
     #[Autowired] protected RequestInterface $request;

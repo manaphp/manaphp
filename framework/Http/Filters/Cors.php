@@ -11,7 +11,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
 
-class CorsFilter
+class Cors
 {
     #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RequestInterface $request;

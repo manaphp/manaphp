@@ -8,7 +8,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Http\Controller\Attribute\PageCache;
+use ManaPHP\Http\Controller\Attribute\PageCache as PageCacheAttribute;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestReady;
@@ -17,7 +17,7 @@ use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionMethod;
 
-class PageCacheFilter
+class PageCache
 {
     use ContextTrait;
 
@@ -36,11 +36,11 @@ class PageCacheFilter
         $this->prefix = $prefix ?? sprintf('cache:%s:pageCachePlugin:', $this->config->get('id'));
     }
 
-    protected function getPageCache(object $controller, string $action): PageCache|false
+    protected function getPageCache(object $controller, string $action): PageCacheAttribute|false
     {
         $rMethod = new ReflectionMethod($controller, $action . 'Action');
 
-        if (($attributes = $rMethod->getAttributes(PageCache::class)) !== []) {
+        if (($attributes = $rMethod->getAttributes(PageCacheAttribute::class)) !== []) {
             return $attributes[0]->newInstance();
         } else {
             return false;
@@ -66,7 +66,7 @@ class PageCacheFilter
             return;
         }
 
-        /** @var PageCacheFilterContext $context */
+        /** @var PageCacheContext $context */
         $context = $this->getContext();
 
         $context->ttl = $pageCache->ttl;
@@ -152,7 +152,7 @@ class PageCacheFilter
 
     public function onResponding(#[Event] RequestResponsing $event): void
     {
-        /** @var PageCacheFilterContext $context */
+        /** @var PageCacheContext $context */
         $context = $this->getContext();
 
         if ($context->cache_used === true || $context->ttl === null || $context->ttl <= 0) {

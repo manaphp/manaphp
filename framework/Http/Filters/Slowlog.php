@@ -12,7 +12,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 
-class SlowlogFilter
+class Slowlog
 {
     #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RequestInterface $request;

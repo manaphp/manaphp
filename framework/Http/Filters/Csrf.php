@@ -5,14 +5,14 @@ namespace ManaPHP\Http\Filters;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Http\Filters\CsrfFilter\AttackDetectedException;
+use ManaPHP\Http\Filters\Csrf\AttackDetectedException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Mvc\ViewInterface;
 use ManaPHP\Rest\Controller as RestController;
 
-class CsrfFilter
+class Csrf
 {
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ViewInterface $view;

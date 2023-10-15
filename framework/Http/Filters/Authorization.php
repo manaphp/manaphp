@@ -8,7 +8,7 @@ use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Server\Event\RequestAuthorizing;
 
-class AuthorizationFilter
+class Authorization
 {
     #[Autowired] protected AuthorizationInterface $authorization;
 

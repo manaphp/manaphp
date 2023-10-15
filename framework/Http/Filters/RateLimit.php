@@ -7,7 +7,7 @@ use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\TooManyRequestsException;
-use ManaPHP\Http\Controller\Attribute\RateLimit;
+use ManaPHP\Http\Controller\Attribute\RateLimit as RateLimitAttribute;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Identifying\IdentityInterface;
@@ -15,7 +15,7 @@ use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
-class RateLimitFilter
+class RateLimit
 {
     #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected IdentityInterface $identity;
@@ -26,15 +26,15 @@ class RateLimitFilter
 
     protected array $rateLimits = [];
 
-    protected function getRateLimit($controller, $action): RateLimit|false
+    protected function getRateLimit($controller, $action): RateLimitAttribute|false
     {
         $rMethod = new ReflectionMethod($controller, $action . 'Action');
-        if (($attributes = $rMethod->getAttributes(RateLimit::class)) !== []) {
+        if (($attributes = $rMethod->getAttributes(RateLimitAttribute::class)) !== []) {
             return $attributes[0]->newInstance();
         }
 
         $rClass = new ReflectionClass($controller);
-        if (($attributes = $rClass->getAttributes(RateLimit::class)) !== []) {
+        if (($attributes = $rClass->getAttributes(RateLimitAttribute::class)) !== []) {
             return $attributes[0]->newInstance();
         }
 
