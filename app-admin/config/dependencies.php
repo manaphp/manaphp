@@ -12,7 +12,7 @@ return [
                                                 'params' => ['path' => '/']],
     'ManaPHP\Bos\ClientInterface'           => ['endpoint' => env('BOS_UPLOADER_ENDPOINT')],
     'ManaPHP\Http\RouterInterface'          => ['class'  => 'App\Router',
-                                                'prefix' => '/',
+                                                'prefix' => '',
     ],
     'ManaPHP\Identifying\IdentityInterface' => 'ManaPHP\Identifying\Identity\Adapter\Session',
     'ManaPHP\Mailing\MailerInterface'       => 'ManaPHP\Mailing\Mailer\Adapter\File',
