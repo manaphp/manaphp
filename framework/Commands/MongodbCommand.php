@@ -8,6 +8,7 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Pool;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Mongodb\MongodbConnectorInterface;
@@ -27,7 +28,9 @@ class MongodbCommand extends Command
     protected function getConnections(): array
     {
         $connections = [];
-        foreach ($this->config->get('factories', [])[MongodbInterface::class] ?? [] as $connection => $config) {
+        /** @var Pool $mongodb */
+        $mongodb = $this->config->get('dependencies', [])[MongodbInterface::class] ?? null;
+        foreach ($mongodb->pool ?? [] as $connection => $config) {
             $config = json_stringify($config);
             if (str_contains($config, 'mongodb://')) {
                 $connections[] = $connection;

@@ -11,6 +11,7 @@ use ManaPHP\Db\DbConnectorInterface;
 use ManaPHP\Db\DbInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Pool;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Model\Attribute\ColumnMap;
@@ -30,7 +31,9 @@ class DbCommand extends Command
      */
     protected function getConnections(): array
     {
-        return array_keys($this->config->get('factories', [])[DbInterface::class] ?? []);
+        /** @var Pool $db */
+        $db = $this->config->get('dependencies', [])[DbInterface::class] ?? null;
+        return array_keys($db->pool ?? []);
     }
 
     /**
