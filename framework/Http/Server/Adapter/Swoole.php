@@ -9,6 +9,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Server\Event\ResponseStringify;
@@ -124,8 +125,10 @@ class Swoole extends AbstractServer
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
         $this->eventDispatcher->dispatch(new ServerStart($this, $this->swoole));
+        $prefix = $this->config->get('dependencies', [])[RouterInterface::class]['prefix'] ?? '';
+        $prefix = ltrim($prefix, '?');
         /** @noinspection HttpUrlsUsage */
-        console_log('info', sprintf('http://%s:%s%s', $this->host, $this->port, $this->router->getPrefix()));
+        console_log('info', sprintf('http://%s:%s%s', $this->host, $this->port, $prefix));
         $this->swoole->start();
         console_log('info', 'shutdown');
     }

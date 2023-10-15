@@ -64,7 +64,18 @@ class Router implements RouterInterface
 
     public function getPrefix(): string
     {
-        return $this->prefix;
+        $prefix = $this->prefix;
+        if (str_starts_with($prefix, '?')) {
+            $uri = $this->request->getUri();
+            $pattern = '#^/[\w-]+' . substr($prefix, 1) . '#';
+            if (preg_match($pattern, $uri, $match)) {
+                return $match[0];
+            } else {
+                return substr($prefix, 1);
+            }
+        } else {
+            return $prefix;
+        }
     }
 
     public function setAreas(?array $areas = null): static
