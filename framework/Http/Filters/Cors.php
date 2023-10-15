@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Filters;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\RequestInterface;
@@ -13,13 +13,14 @@ use ManaPHP\Http\Server\Event\RequestBegin;
 
 class Cors
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
 
     #[Autowired] protected int $max_age = 86400;
     #[Autowired] protected ?string $origin;
     #[Autowired] protected bool $credentials = true;
+
+    #[Config] protected string $env_app;
 
     public function onBegin(#[Event] RequestBegin $event): void
     {
@@ -29,7 +30,7 @@ class Cors
         if ($origin !== '' && $origin !== $host) {
             if ($this->origin) {
                 $allow_origin = $this->origin;
-            } elseif ($this->config->get('env') === 'prod') {
+            } elseif ($this->env_app === 'prod') {
                 $origin_pos = strpos($origin, '.');
                 $host_pos = strpos($host, '.');
 

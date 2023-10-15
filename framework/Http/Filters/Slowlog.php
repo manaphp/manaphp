@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Filters;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
@@ -14,7 +14,6 @@ use ManaPHP\Http\Server\Event\RequestEnd;
 
 class Slowlog
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected DispatcherInterface $dispatcher;
@@ -22,6 +21,8 @@ class Slowlog
     #[Autowired] protected float $threshold = 1.0;
     #[Autowired] protected string $file = '@runtime/slowlogPlugin/{id}.log';
     #[Autowired] protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
+
+    #[Config] protected string $app_id;
 
     protected function write(float $elapsed, mixed $message): void
     {
@@ -39,7 +40,7 @@ class Slowlog
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = $message . PHP_EOL;
 
-        LocalFS::fileAppend(strtr($this->file, ['{id}' => $this->config->get('id')]), strtr($this->format, $replaced));
+        LocalFS::fileAppend(strtr($this->file, ['{id}' => $this->app_id]), strtr($this->format, $replaced));
     }
 
     public function onEnd(#[Event] RequestEnd $event): void

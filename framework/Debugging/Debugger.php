@@ -13,7 +13,7 @@ use ManaPHP\Db\Event\DbQuerying;
 use ManaPHP\Db\Event\DbRollback;
 use ManaPHP\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Dumping\DumperManagerInterface;
 use ManaPHP\Eventing\Attribute\Event;
@@ -46,7 +46,6 @@ class Debugger implements DebuggerInterface
     use ContextTrait;
 
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected LoggerInterface $logger;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
@@ -62,11 +61,13 @@ class Debugger implements DebuggerInterface
     #[Autowired] protected bool $broadcast = true;
     #[Autowired] protected bool $tail = true;
 
+    #[Config] protected string $app_id;
+
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(int $ttl = 3600, ?string $prefix = null)
     {
         $this->ttl = class_exists('Redis') ? $ttl : 0;
-        $this->prefix = $prefix ?? sprintf('cache:%s:debugger:', $this->config->get('id'));
+        $this->prefix = $prefix ?? sprintf('cache:%s:debugger:', $this->app_id);
     }
 
     public function start(): void
@@ -101,7 +102,7 @@ class Debugger implements DebuggerInterface
             if ($this->broadcast) {
                 $key = implode(
                     ':',
-                    ['__debugger', $this->config->get('id'), $this->request->getClientIp(),
+                    ['__debugger', $this->app_id, $this->request->getClientIp(),
                      $this->dispatcher->getPath()]
                 );
                 $redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));

@@ -5,7 +5,7 @@ namespace ManaPHP\Http\Filters;
 
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Controller\Attribute\PageCache as PageCacheAttribute;
@@ -21,10 +21,11 @@ class PageCache
 {
     use ContextTrait;
 
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected RedisCacheInterface $redisCache;
+
+    #[Config] protected string $app_id;
 
     protected string $prefix;
 
@@ -33,7 +34,7 @@ class PageCache
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(?string $prefix = null)
     {
-        $this->prefix = $prefix ?? sprintf('cache:%s:pageCachePlugin:', $this->config->get('id'));
+        $this->prefix = $prefix ?? sprintf('cache:%s:pageCachePlugin:', $this->app_id);
     }
 
     protected function getPageCache(object $controller, string $action): PageCacheAttribute|false

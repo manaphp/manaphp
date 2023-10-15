@@ -5,13 +5,14 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Redis\RedisCacheInterface;
 
 class DebuggerCommand extends Command
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RedisCacheInterface $redisCache;
+
+    #[Config] protected string $app_id;
 
     /**
      * monitor generated urls
@@ -24,7 +25,7 @@ class DebuggerCommand extends Command
      */
     public function watchAction(?string $id = null, string $path = '', string $ip = ''): void
     {
-        $id = $id ?? $this->config->get('id');
+        $id = $id ?? $this->app_id;
         $key = "__debuggerPlugin:$id:*";
         $this->console->writeLn('subscribe to ' . $key);
 

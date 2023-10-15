@@ -8,8 +8,8 @@ use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\AdminLoginLog;
-use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\CaptchaInterface;
@@ -18,8 +18,9 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 #[Authorize('*')]
 class SessionController extends Controller
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected CaptchaInterface $captcha;
+
+    #[Config] protected string $app_env;
 
     public function captchaAction()
     {
@@ -39,7 +40,7 @@ class SessionController extends Controller
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
         }
 
-        if ($this->config->get('env') === 'prod') {
+        if ($this->app_env === 'prod') {
             $this->captcha->verify($code);
         } else {
             $this->session->remove('captcha');

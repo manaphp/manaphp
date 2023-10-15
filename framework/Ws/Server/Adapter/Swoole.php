@@ -6,7 +6,7 @@ namespace ManaPHP\Ws\Server\Adapter;
 use ArrayObject;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\GlobalsInterface;
 use ManaPHP\Http\RequestInterface;
@@ -26,7 +26,6 @@ use Throwable;
 class Swoole implements ServerInterface
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected LoggerInterface $logger;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected GlobalsInterface $globals;
@@ -35,6 +34,8 @@ class Swoole implements ServerInterface
     #[Autowired] protected string $host = '0.0.0.0';
     #[Autowired] protected int $port = 9501;
     #[Autowired] protected array $settings = [];
+
+    #[Config] protected string $app_id;
 
     protected Server $swoole;
 
@@ -109,19 +110,19 @@ class Swoole implements ServerInterface
     /** @noinspection PhpUnusedParameterInspection */
     public function onStart(Server $server): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get('id')));
+        @cli_set_process_title(sprintf('manaphp %s: master', $this->app_id));
     }
 
     public function onManagerStart(): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get('id')));
+        @cli_set_process_title(sprintf('manaphp %s: manager', $this->app_id));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
         $this->worker_id = $worker_id;
 
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get('id'), $worker_id));
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->app_id, $worker_id));
 
         try {
             $this->eventDispatcher->dispatch(new ServerStart($this, $server, $worker_id));

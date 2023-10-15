@@ -4,17 +4,18 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Redis\RedisBrokerInterface;
 
 class Redis extends AbstractLogger
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RedisBrokerInterface $redisBroker;
 
     #[Autowired] protected ?string $key;
+
+    #[Config] protected string $app_id;
 
     public function append(Log $log): void
     {
@@ -29,7 +30,7 @@ class Redis extends AbstractLogger
             'message'    => $log->message
         ];
         $this->redisBroker->rPush(
-            $this->key ?? sprintf('cache:%s:logger', $this->config->get('id')),
+            $this->key ?? sprintf('cache:%s:logger', $this->app_id),
             json_stringify($data)
         );
     }

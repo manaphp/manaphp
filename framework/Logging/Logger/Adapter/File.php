@@ -5,17 +5,18 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Log;
 
 class File extends AbstractLogger
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected AliasInterface $alias;
 
     #[Autowired] protected string $file = '@runtime/logger/{id}.log';
     #[Autowired] protected string $line_format = '[:time][:level][:category][:location] :message';
+
+    #[Config] protected string $app_id;
 
     protected function format(Log $log): string
     {
@@ -46,7 +47,7 @@ class File extends AbstractLogger
      */
     protected function write(string $str): void
     {
-        $file = $this->alias->resolve(strtr($this->file, ['{id}' => $this->config->get('id')]));
+        $file = $this->alias->resolve(strtr($this->file, ['{id}' => $this->app_id]));
         if (!is_file($file)) {
             $dir = dirname($file);
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {

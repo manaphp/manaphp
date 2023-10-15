@@ -6,22 +6,22 @@ namespace ManaPHP\Db\Model;
 use ManaPHP\Db\Db;
 use ManaPHP\Db\DbConnectorInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Model\ShardingInterface;
 
 class Metadata implements MetadataInterface
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected DbConnectorInterface $connector;
     #[Autowired] protected ShardingInterface $sharding;
 
     #[Autowired] protected int $ttl = 3600;
 
+    #[Config] protected bool $app_debug;
+
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
-        /** @noinspection NotOptimalIfConditionsInspection */
-        if ($this->config->get('debug') || !function_exists('apcu_fetch')) {
+        if ($this->app_debug || !function_exists('apcu_fetch')) {
             $this->ttl = 0;
         }
     }

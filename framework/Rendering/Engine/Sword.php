@@ -5,15 +5,16 @@ namespace ManaPHP\Rendering\Engine;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Rendering\Engine\Sword\Compiler;
 use ManaPHP\Rendering\EngineInterface;
 
 class Sword implements EngineInterface
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected Compiler $swordCompiler;
+
+    #[Config] protected bool $app_debug;
 
     protected string $doc_root;
 
@@ -39,7 +40,7 @@ class Sword implements EngineInterface
 
         $compiled = $this->alias->resolve($compiled);
 
-        if ($this->config->get('debug') || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
+        if ($this->app_debug || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
             $this->swordCompiler->compileFile($source, $compiled);
         }
 

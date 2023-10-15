@@ -6,7 +6,7 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Response\AppenderInterface;
@@ -31,11 +31,13 @@ class Swoole extends AbstractServer
     use ContextTrait;
 
     #[Autowired] protected ContainerInterface $container;
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected StaticHandlerInterface $staticHandler;
 
     #[Autowired] protected array $settings = [];
+
+    #[Config] protected string $app_id;
+    #[Config] protected array $dependencies;
 
     protected Server $swoole;
     protected array $_SERVER;
@@ -99,21 +101,21 @@ class Swoole extends AbstractServer
 
     public function onMasterStart(Server $server): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get('id')));
+        @cli_set_process_title(sprintf('manaphp %s: master', $this->app_id));
 
         $this->eventDispatcher->dispatch(new ServerMasterStart($this, $server));
     }
 
     public function onManagerStart(): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get('id')));
+        @cli_set_process_title(sprintf('manaphp %s: manager', $this->app_id));
 
         $this->eventDispatcher->dispatch(new ServerManagerStart($this, $this->swoole));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get('id'), $worker_id));
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->app_id, $worker_id));
 
         $this->eventDispatcher->dispatch(new ServerWorkerStart($this, $server, $worker_id));
     }
@@ -129,7 +131,7 @@ class Swoole extends AbstractServer
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
         $this->eventDispatcher->dispatch(new ServerStart($this, $this->swoole));
-        $prefix = $this->config->get('dependencies', [])[RouterInterface::class]['prefix'] ?? '';
+        $prefix = $this->dependencies[RouterInterface::class]['prefix'] ?? '';
         $prefix = ltrim($prefix, '?');
         /** @noinspection HttpUrlsUsage */
         console_log('info', sprintf('http://%s:%s%s', $this->host, $this->port, $prefix));

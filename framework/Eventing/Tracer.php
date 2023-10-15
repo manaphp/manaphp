@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Eventing;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
@@ -19,7 +19,6 @@ use Stringable;
 
 class Tracer implements TracerInterface
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
     #[Autowired] protected LoggerInterface $logger;
 
@@ -27,6 +26,8 @@ class Tracer implements TracerInterface
     #[Autowired] protected bool $verbose = true;
     #[Autowired] protected int $verbosity = Verbosity::HIGH;
     #[Autowired] protected array $verbosities = [];
+
+    #[Config] protected bool $app_debug;
 
     protected array $listeners = [];
 
@@ -142,8 +143,7 @@ class Tracer implements TracerInterface
             $this->logger->debug("\$redis->$method({0}) => {1}", [$args, $ret, 'category' => 'redis.' . $method]);
         } else {
             $key = $arguments[0] ?? false;
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!$this->config->get('debug') && is_string($key) && str_starts_with($key, 'cache:')) {
+            if (!$this->app_debug && is_string($key) && str_starts_with($key, 'cache:')) {
                 return;
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);

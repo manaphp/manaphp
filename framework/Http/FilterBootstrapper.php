@@ -5,14 +5,12 @@ namespace ManaPHP\Http;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use Psr\Container\ContainerInterface;
 
 class FilterBootstrapper implements BootstrapperInterface
 {
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
-    #[Autowired] protected ConfigInterface $config;
 
     #[Autowired] protected array $filters = [];
 

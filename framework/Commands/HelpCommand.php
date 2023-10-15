@@ -7,7 +7,7 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Cli\CommandManagerInterface;
 use ManaPHP\Cli\Console;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\JsonException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Version;
@@ -17,9 +17,12 @@ use ReflectionMethod;
 
 class HelpCommand extends Command
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected CommandManagerInterface $commandManager;
+
+    #[Config] protected string $app_id;
+    #[Config] protected string $app_env;
+    #[Config] protected bool $app_debug;
 
     /**
      * list all commands
@@ -44,10 +47,10 @@ class HelpCommand extends Command
             sprintf(
                 'ManaPHP %s (id: %s, env: %s, debug: %s)',
                 $this->console->colorize(Version::get(), Console::FC_GREEN | Console::AT_BOLD),
-                $this->console->colorize($this->config->get('id'), Console::FC_YELLOW | Console::AT_BOLD),
-                $this->console->colorize($this->config->get('env'), Console::FC_YELLOW | Console::AT_BOLD),
+                $this->console->colorize($this->app_id, Console::FC_YELLOW | Console::AT_BOLD),
+                $this->console->colorize($this->app_env, Console::FC_YELLOW | Console::AT_BOLD),
                 $this->console->colorize(
-                    $this->config->get('debug') ? 'true' : 'false', Console::FC_YELLOW | Console::AT_BOLD
+                    $this->app_debug ? 'true' : 'false', Console::FC_YELLOW | Console::AT_BOLD
                 )
             )
         );

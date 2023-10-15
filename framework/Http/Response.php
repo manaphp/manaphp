@@ -8,7 +8,7 @@ use DateTimeZone;
 use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
@@ -21,7 +21,6 @@ class Response implements ResponseInterface
 {
     use ContextTrait;
 
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected UrlInterface $url;
     #[Autowired] protected RouterInterface $router;
@@ -34,6 +33,8 @@ class Response implements ResponseInterface
         ];
     #[Autowired] protected int|string $ok_code = 0;
     #[Autowired] protected int|string $error_code = 1;
+
+    #[Config] protected bool $app_debug;
 
     public function setCookie(
         string $name,
@@ -333,7 +334,7 @@ class Response implements ResponseInterface
             $json = ['code' => $code, 'message' => 'Internal Server Error'];
         }
 
-        if ($this->config->get('debug')) {
+        if ($this->app_debug) {
             $json['message'] = $throwable::class . ': ' . $throwable->getMessage();
             $json['exception'] = explode("\n", (string)$throwable);
         }

@@ -6,8 +6,8 @@ namespace App\Areas\Admin\Controllers;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use Exception;
-use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Mailing\MailerInterface;
@@ -17,9 +17,10 @@ use ManaPHP\Mvc\ViewInterface;
 class PasswordController extends Controller
 {
     #[Autowired] protected ViewInterface $view;
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected CaptchaInterface $captcha;
     #[Autowired] protected MailerInterface $mailer;
+
+    #[Config] protected string $app_name;
 
     public function captchaAction()
     {
@@ -43,7 +44,7 @@ class PasswordController extends Controller
         $token = jwt_encode(['admin_name' => $admin_name], 600, 'admin.password.forget');
 
         $this->mailer->compose()
-            ->setSubject($this->config->get('name') . '-重置密码邮件')
+            ->setSubject($this->app_name . '-重置密码邮件')
             ->setTo($email)
             ->setHtmlBody(
                 ['@app/Areas/Admin/Views/Mail/ResetPassword', 'email' => $email, 'admin_name' => $admin_name,

@@ -4,20 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Redis\RedisCacheInterface;
 
 class Redis extends AbstractSession
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected RedisCacheInterface $redisCache;
 
     #[Autowired] protected ?string $prefix;
 
+    #[Config] protected string $app_id;
+
     protected function getKey(string $session_id): string
     {
-        return ($this->prefix ?? sprintf('cache:%s:session:', $this->config->get('id'))) . $session_id;
+        return ($this->prefix ?? sprintf('cache:%s:session:', $this->app_id)) . $session_id;
     }
 
     public function do_read(string $session_id): string

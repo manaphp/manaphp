@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 return [
-    'id'      => 'admin',
-    'name'    => 'ManaPHP管理系统',
-    'env'     => env('APP_ENV', 'prod'),
-    'debug'   => env('APP_DEBUG', false),
-    'aliases' => [
+    'app_id'    => 'admin',
+    'app_name'  => 'ManaPHP管理系统',
+    'app_env'   => env('APP_ENV', 'prod'),
+    'app_debug' => env('APP_DEBUG', false),
+    'aliases'   => [
     ],
 ];

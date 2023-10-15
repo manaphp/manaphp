@@ -7,7 +7,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Di\Pool;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
@@ -18,9 +18,10 @@ use Psr\Container\ContainerInterface;
 class MongodbCommand extends Command
 {
     #[Autowired] protected ContainerInterface $container;
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected MongodbConnectorInterface $connector;
+
+    #[Config] protected array $dependencies;
 
     /**
      * @return array
@@ -29,7 +30,7 @@ class MongodbCommand extends Command
     {
         $connections = [];
         /** @var Pool $mongodb */
-        $mongodb = $this->config->get('dependencies', [])[MongodbInterface::class] ?? null;
+        $mongodb = $this->dependencies[MongodbInterface::class] ?? null;
         foreach ($mongodb->pool ?? [] as $connection => $config) {
             $config = json_stringify($config);
             if (str_contains($config, 'mongodb://')) {

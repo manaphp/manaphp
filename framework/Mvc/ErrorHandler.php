@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
@@ -14,11 +14,12 @@ use Throwable;
 
 class ErrorHandler implements ErrorHandlerInterface
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected LoggerInterface $logger;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected RendererInterface $renderer;
+
+    #[Config] protected bool $app_debug;
 
     public function handle(Throwable $throwable): void
     {
@@ -36,7 +37,7 @@ class ErrorHandler implements ErrorHandlerInterface
 
     public function render(Throwable $exception): string
     {
-        if ($this->config->get('debug')) {
+        if ($this->app_debug) {
             if ($this->renderer->exists('@views/Errors/Debug')) {
                 $template = '@views/Errors/Debug';
             } else {

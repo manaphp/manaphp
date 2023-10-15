@@ -10,7 +10,7 @@ use ManaPHP\Db\Db;
 use ManaPHP\Db\DbConnectorInterface;
 use ManaPHP\Db\DbInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Di\Pool;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
@@ -20,9 +20,10 @@ use ManaPHP\Model\Attribute\PrimaryKey;
 
 class DbCommand extends Command
 {
-    #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected DbConnectorInterface $connector;
+
+    #[Config] protected array $dependencies;
 
     protected array $tableConstants = [];
 
@@ -32,7 +33,7 @@ class DbCommand extends Command
     protected function getConnections(): array
     {
         /** @var Pool $db */
-        $db = $this->config->get('dependencies', [])[DbInterface::class] ?? null;
+        $db = $this->dependencies[DbInterface::class] ?? null;
         return array_keys($db->pool ?? []);
     }
 

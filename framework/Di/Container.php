@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Di;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Attribute\Config as ConfigAttribute;
 use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
 use ReflectionFunction;
@@ -89,6 +90,23 @@ class Container implements ContainerInterface
         $property->setValue($object, $value);
     }
 
+    protected function processInjectNoValue(ReflectionProperty $property, $object)
+    {
+        $rType = $property->getType();
+
+        if ($rType->allowsNull()) {
+            if (!$property->isPublic()) {
+                $property->setAccessible(true);
+            }
+            /** @noinspection PhpRedundantOptionalArgumentInspection */
+            $property->setValue($object, null);
+        } else {
+            throw new Exception(
+                sprintf('The property value of `%s::$%s` is not provided.', $property->class, $property->getName())
+            );
+        }
+    }
+
     protected function processInjectValue(ReflectionProperty $property, object $object, array $parameters): void
     {
         $name = $property->getName();
@@ -99,19 +117,26 @@ class Container implements ContainerInterface
             }
             $property->setValue($object, $parameters[$name]);
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
-            $rType = $property->getType();
+            $this->processInjectNoValue($property, $object);
+        }
+    }
 
-            if ($rType->allowsNull()) {
-                if (!$property->isPublic()) {
-                    $property->setAccessible(true);
-                }
-                /** @noinspection PhpRedundantOptionalArgumentInspection */
-                $property->setValue($object, null);
-            } else {
-                throw new Exception(
-                    sprintf('The property value of `%s::$%s` is not provided.', $property->class, $name)
-                );
+    protected function processInjectConfig(ReflectionProperty $property, object $object, array $parameters): void
+    {
+        $name = $property->getName();
+
+        if (array_key_exists($name, $parameters)) {
+            if (!$property->isPublic()) {
+                $property->setAccessible(true);
             }
+            $property->setValue($object, $parameters[$name]);
+        } elseif (($config = $this->get(ConfigInterface::class))->has($name)) {
+            if (!$property->isPublic()) {
+                $property->setAccessible(true);
+            }
+            $property->setValue($object, $config->get($name));
+        } elseif (!$property->hasDefaultValue() && $property->hasType()) {
+            $this->processInjectNoValue($property, $object);
         }
     }
 
@@ -146,6 +171,8 @@ class Container implements ContainerInterface
                         sprintf('The type of `%s::%s` is missing.', $object::class, $property->getName())
                     );
                 }
+            } elseif (isset($attributes[ConfigAttribute::class])) {
+                $this->processInjectConfig($property, $object, $parameters);
             }
         }
     }

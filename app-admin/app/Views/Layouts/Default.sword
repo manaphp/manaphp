@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{config_get('name')}}</title>
+    <title>{{config_get('app_name')}}</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="/static/css/manaphp.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.6/lib/theme-chalk/index.css">
@@ -17,7 +17,7 @@
     {{--    <el-aside style="overflow: hidden">@widget('SideMenu')</el-aside>--}}
     <el-aside style="overflow: hidden">
         <div class="product-name">
-            <el-link href="/">{{config_get('name')}}</el-link>
+            <el-link href="/">{{config_get('app_name')}}</el-link>
         </div>
         <my-menu></my-menu>
     </el-aside>
