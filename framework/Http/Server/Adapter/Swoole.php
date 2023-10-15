@@ -136,9 +136,12 @@ class Swoole extends AbstractServer
         if ($uri === '/favicon.ico') {
             $response->status(404);
             $response->end();
-        } elseif (!empty($this->settings['enable_static_handler']) && $this->router->getPrefix() !== ''
-            && $this->staticHandler->isFile($uri)
-        ) {
+            return;
+        }
+
+        $this->prepareGlobals($request);
+
+        if (!empty($this->settings['enable_static_handler']) && $this->staticHandler->isFile($uri)) {
             if (($file = $this->staticHandler->getFile($uri)) !== null) {
                 $response->header('Content-Type', $this->staticHandler->getMimeType($file));
                 $response->sendfile($file);
@@ -153,8 +156,6 @@ class Swoole extends AbstractServer
             $context->response = $response;
 
             try {
-                $this->prepareGlobals($request);
-
                 $this->httpHandler->handle();
             } catch (Throwable $throwable) {
                 $str = date('c') . ' ' . $throwable::class . ': ' . $throwable->getMessage() . PHP_EOL;
@@ -162,9 +163,9 @@ class Swoole extends AbstractServer
                 $str .= preg_replace('/#\d+\s/', '    at ', $throwable->getTraceAsString());
                 echo $str . PHP_EOL;
             }
-
-            $this->contextor->resetContexts();
         }
+
+        $this->contextor->resetContexts();
     }
 
     public function send(): void
