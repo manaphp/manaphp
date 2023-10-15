@@ -14,15 +14,13 @@ class StaticHandler implements StaticHandlerInterface
 
     protected string $doc_root;
     protected array $locations;
-    protected string $prefix;
     protected array $mime_types;
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
-    public function __construct(?string $doc_root = null, ?array $locations = null, ?string $prefix = null)
+    public function __construct(?string $doc_root = null, ?array $locations = null)
     {
         $this->doc_root = $doc_root ?? $this->alias->get('@public');
         $this->locations = $locations ?? $this->getLocations();
-        $this->prefix = $prefix ?? $this->router->getPrefix();
         $this->mime_types = $this->getMimeTypes();
     }
 
@@ -71,11 +69,12 @@ class StaticHandler implements StaticHandlerInterface
     {
         $file = ($pos = strpos($uri, '?')) === false ? $uri : substr($uri, 0, $pos);
 
-        if ($file === $this->prefix || !str_starts_with($file, $this->prefix)) {
+        $prefix = $this->router->getPrefix();
+        if ($file === $prefix || !str_starts_with($file, $prefix)) {
             return null;
         }
 
-        $file = substr($file, strlen($this->prefix));
+        $file = substr($file, strlen($prefix));
 
         if (in_array($file, $this->locations, true)) {
             return $file;
