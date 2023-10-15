@@ -44,6 +44,8 @@ class DumperManager implements DumperManagerInterface
     {
         if ($object instanceof DumperInterface) {
             return [];
+        } elseif ($object === $this) {
+            return [];
         }
 
         $class = $object::class;
