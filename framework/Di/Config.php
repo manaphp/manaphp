@@ -1,21 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP;
+namespace ManaPHP\Di;
 
 use JsonSerializable;
 use ManaPHP\Di\Attribute\Autowired;
 
 class Config implements ConfigInterface, JsonSerializable
 {
-    #[Autowired] protected AliasInterface $alias;
-
-    protected array $config = [];
-
-    public function load(string $file = '@config/app.php'): array
-    {
-        return $this->config = require $this->alias->resolve($file);
-    }
+    #[Autowired] protected array $config = [];
 
     public function all(): array
     {

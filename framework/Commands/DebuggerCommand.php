@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Redis\RedisCacheInterface;
 
 class DebuggerCommand extends Command

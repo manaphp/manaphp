@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
-use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbBegin;
 use ManaPHP\Db\Event\DbCommit;
@@ -14,6 +13,7 @@ use ManaPHP\Db\Event\DbQuerying;
 use ManaPHP\Db\Event\DbRollback;
 use ManaPHP\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Dumping\DumperManagerInterface;
 use ManaPHP\Eventing\Attribute\Event;

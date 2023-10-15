@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Redis\RedisCacheInterface;
 

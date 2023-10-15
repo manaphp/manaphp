@@ -146,9 +146,9 @@ namespace PHPSTORM_META {
     }
 
     registerArgumentsSet('manaphp_config', 'id', 'name', 'env', 'debug', 'params');
-    expectedArguments(\ManaPHP\ConfigInterface::get(), 0, argumentsSet('manaphp_config'));
-    expectedArguments(\ManaPHP\ConfigInterface::has(), 0, argumentsSet('manaphp_config'));
-    expectedArguments(\ManaPHP\ConfigInterface::set(), 0, argumentsSet('manaphp_config'));
+    expectedArguments(\ManaPHP\Di\ConfigInterface::get(), 0, argumentsSet('manaphp_config'));
+    expectedArguments(\ManaPHP\Di\ConfigInterface::has(), 0, argumentsSet('manaphp_config'));
+    expectedArguments(\ManaPHP\Di\ConfigInterface::set(), 0, argumentsSet('manaphp_config'));
 
     registerArgumentsSet(
         'filter_http_cache',

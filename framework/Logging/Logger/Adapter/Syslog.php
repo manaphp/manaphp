@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Log;

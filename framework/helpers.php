@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use ManaPHP\AliasInterface;
-use ManaPHP\ConfigInterface;
 use ManaPHP\Debugging\DataDumpInterface;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\EnvInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;

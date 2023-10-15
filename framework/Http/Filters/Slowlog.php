@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Filters;
 
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;

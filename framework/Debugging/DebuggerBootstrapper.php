@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Debugging;
 
 use ManaPHP\BootstrapperInterface;
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Http\Server\Event\ServerStart;

@@ -8,7 +8,7 @@ use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\AdminLoginLog;
-use ManaPHP\ConfigInterface;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Helper\Str;

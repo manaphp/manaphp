@@ -1,12 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP;
+namespace ManaPHP\Di;
 
 interface ConfigInterface
 {
-    public function load(string $file = '@config/app.php'): array;
-
     public function all(): array;
 
     public function get(string $key, mixed $default = null): mixed;

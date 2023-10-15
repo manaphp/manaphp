@@ -195,7 +195,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(value,name, index) in dependencies['ManaPHP\\ConfigInterface'].properties.config">
+                <tr v-for="(value,name, index) in dependencies['ManaPHP\\Di\\ConfigInterface'].properties.config">
                     <td>{{index}}</td>
                     <td>{{name}}</td>
                     <td :title="json_stringify(value)">

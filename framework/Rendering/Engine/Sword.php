@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Rendering\Engine;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Rendering\Engine\Sword\Compiler;
 use ManaPHP\Rendering\EngineInterface;
 

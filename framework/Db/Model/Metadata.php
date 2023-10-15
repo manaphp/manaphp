@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Db\Model;
 
-use ManaPHP\ConfigInterface;
 use ManaPHP\Db\Db;
 use ManaPHP\Db\DbConnectorInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Model\ShardingInterface;
 
 class Metadata implements MetadataInterface

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Eventing;
 
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Logging\Logger\Event\LoggerLog;

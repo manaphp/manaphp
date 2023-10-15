@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Kernel;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 
 class ConfigLoader implements ConfigLoaderInterface
 {

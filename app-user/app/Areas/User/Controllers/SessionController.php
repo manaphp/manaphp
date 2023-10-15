@@ -5,7 +5,7 @@ namespace App\Areas\User\Controllers;
 use App\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserLoginLog;
-use ManaPHP\ConfigInterface;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\CaptchaInterface;

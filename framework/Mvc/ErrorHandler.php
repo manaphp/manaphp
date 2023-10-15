@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Exception;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;

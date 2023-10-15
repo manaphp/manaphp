@@ -5,6 +5,7 @@ namespace ManaPHP;
 
 use JetBrains\PhpStorm\NoReturn;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\Proxy;
 use ManaPHP\Kernel\BootstrapperLoaderInterface;
 use ManaPHP\Kernel\ConfigLoaderInterface;

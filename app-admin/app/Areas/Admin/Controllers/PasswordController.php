@@ -6,7 +6,7 @@ namespace App\Areas\Admin\Controllers;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use Exception;
-use ManaPHP\ConfigInterface;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;

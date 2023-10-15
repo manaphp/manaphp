@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Server\Adapter;
 
 use ArrayObject;
-use ManaPHP\ConfigInterface;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\GlobalsInterface;
 use ManaPHP\Http\RequestInterface;
