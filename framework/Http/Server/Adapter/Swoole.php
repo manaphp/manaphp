@@ -9,6 +9,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
@@ -18,6 +19,7 @@ use ManaPHP\Http\Server\Event\ServerMasterStart;
 use ManaPHP\Http\Server\Event\ServerStart;
 use ManaPHP\Http\Server\Event\ServerWorkerStart;
 use ManaPHP\Http\Server\StaticHandlerInterface;
+use Psr\Container\ContainerInterface;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
@@ -28,11 +30,13 @@ class Swoole extends AbstractServer
 {
     use ContextTrait;
 
+    #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected StaticHandlerInterface $staticHandler;
 
     #[Autowired] protected array $settings = [];
+
     protected Server $swoole;
     protected array $_SERVER;
 
@@ -182,6 +186,12 @@ class Swoole extends AbstractServer
 
         $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
 
+        foreach ($this->response->getAppenders() as $appender) {
+            /** @var string|AppenderInterface $appender */
+            $appender = $this->container->get($appender);
+            $appender->append($this->request, $this->response);
+        }
+
         /** @var SwooleContext $context */
         $context = $this->getContext();
 
@@ -192,9 +202,6 @@ class Swoole extends AbstractServer
         foreach ($this->response->getHeaders() as $name => $value) {
             $response->header($name, $value, false);
         }
-
-        $response->header('X-Request-Id', $this->request->getRequestId(), false);
-        $response->header('X-Response-Time', sprintf('%.3f', $this->request->getElapsedTime()), false);
 
         $prefix = $this->router->getPrefix();
         foreach ($this->response->getCookies() as $cookie) {

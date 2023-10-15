@@ -7,16 +7,18 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Server\Event\ResponseStringify;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Sender implements SenderInterface
 {
-
+    #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
@@ -37,6 +39,12 @@ class Sender implements SenderInterface
         }
 
         $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
+
+        foreach ($this->response->getAppenders() as $appender) {
+            /** @var string|AppenderInterface $appender */
+            $appender = $this->container->get($appender);
+            $appender->append($this->request, $this->response);
+        }
 
         header('HTTP/1.1 ' . $this->response->getStatus());
 
@@ -60,9 +68,6 @@ class Sender implements SenderInterface
                 $cookie['httponly']
             );
         }
-
-        header('X-Request-Id: ' . $this->request->getRequestId());
-        header('X-Response-Time: ' . $this->request->getElapsedTime());
 
         $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {

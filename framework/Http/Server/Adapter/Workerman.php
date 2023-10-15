@@ -6,11 +6,14 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Http\Server\Event\ServerStart;
+use Psr\Container\ContainerInterface;
 use Throwable;
 use Workerman\Connection\ConnectionInterface;
 use Workerman\Protocols\Http;
@@ -20,7 +23,10 @@ class Workerman extends AbstractServer
 {
     use ContextTrait;
 
+    #[Autowired] protected ContainerInterface $container;
+
     #[Autowired] protected array $settings = [];
+
     protected Worker $worker;
     protected array $_SERVER = [];
     protected int $max_request;
@@ -125,14 +131,17 @@ class Workerman extends AbstractServer
 
         $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
 
+        foreach ($this->response->getAppenders() as $appender) {
+            /** @var string|AppenderInterface $appender */
+            $appender = $this->container->get($appender);
+            $appender->append($this->request, $this->response);
+        }
+
         Http::header('HTTP', true, $this->response->getStatusCode());
 
         foreach ($this->response->getHeaders() as $name => $value) {
             Http::header("$name: $value");
         }
-
-        Http::header('X-Request-Id: ' . $this->request->getRequestId());
-        Http::header('X-Response-Time: ' . $this->request->getElapsedTime());
 
         $prefix = $this->router->getPrefix();
         foreach ($this->response->getCookies() as $cookie) {

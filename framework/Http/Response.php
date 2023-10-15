@@ -12,6 +12,8 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\Response\Appenders\RequestId;
+use ManaPHP\Http\Response\Appenders\ResponseTime;
 use Throwable;
 
 class Response implements ResponseInterface
@@ -23,6 +25,11 @@ class Response implements ResponseInterface
     #[Autowired] protected UrlInterface $url;
     #[Autowired] protected RouterInterface $router;
 
+    #[Autowired] protected array $appenders
+        = [
+            RequestId::class,
+            ResponseTime::class
+        ];
     #[Autowired] protected int|string $ok_code = 0;
     #[Autowired] protected int|string $error_code = 1;
 
@@ -459,5 +466,10 @@ class Response implements ResponseInterface
         $context = $this->getContext();
 
         return $context->headers;
+    }
+
+    public function getAppenders(): array
+    {
+        return $this->appenders;
     }
 }

@@ -78,4 +78,6 @@ interface ResponseInterface
     public function setCsvContent(array $rows, string $name, null|string|array $header = null): static;
 
     public function getHeaders(): array;
+
+    public function getAppenders(): array;
 }
