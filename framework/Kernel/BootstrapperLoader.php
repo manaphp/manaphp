@@ -5,7 +5,7 @@ namespace ManaPHP\Kernel;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 class BootstrapperLoader implements BootstrapperLoaderInterface
 {
