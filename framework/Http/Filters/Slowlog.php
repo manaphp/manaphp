@@ -19,7 +19,7 @@ class Slowlog
     #[Autowired] protected DispatcherInterface $dispatcher;
 
     #[Autowired] protected float $threshold = 1.0;
-    #[Autowired] protected string $file = '@runtime/slowlogPlugin/{id}.log';
+    #[Autowired] protected string $file = '@runtime/slowlog/{app_id}.log';
     #[Autowired] protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     #[Config] protected string $app_id;
@@ -40,7 +40,7 @@ class Slowlog
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = $message . PHP_EOL;
 
-        LocalFS::fileAppend(strtr($this->file, ['{id}' => $this->app_id]), strtr($this->format, $replaced));
+        LocalFS::fileAppend(strtr($this->file, ['{app_id}' => $this->app_id]), strtr($this->format, $replaced));
     }
 
     public function onEnd(#[Event] RequestEnd $event): void

@@ -17,16 +17,16 @@ class DebuggerCommand extends Command
     /**
      * monitor generated urls
      *
-     * @param ?string $id
+     * @param ?string $app_id
      * @param string  $path
      * @param string  $ip
      *
      * @return void
      */
-    public function watchAction(?string $id = null, string $path = '', string $ip = ''): void
+    public function watchAction(?string $app_id = null, string $path = '', string $ip = ''): void
     {
-        $id = $id ?? $this->app_id;
-        $key = "__debuggerPlugin:$id:*";
+        $app_id = $app_id ?? $this->app_id;
+        $key = "__debugger:$app_id:*";
         $this->console->writeLn('subscribe to ' . $key);
 
         /** @noinspection PhpParamsInspection */

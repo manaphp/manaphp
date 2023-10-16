@@ -57,7 +57,7 @@ class RateLimit
         }
 
         $uid = $this->identity->isGuest() ? $this->request->getClientIp() : $this->identity->getName();
-        $prefix = ($this->prefix ?? sprintf('cache:%s:rateLimitPlugin:', $this->app_id))
+        $prefix = ($this->prefix ?? sprintf('cache:%s:rate_limit:', $this->app_id))
             . $dispatcher->getPath() . ':' . $uid . ':';
 
         foreach ($rateLimit->limits as $k => $v) {

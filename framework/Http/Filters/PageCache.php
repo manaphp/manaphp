@@ -34,7 +34,7 @@ class PageCache
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(?string $prefix = null)
     {
-        $this->prefix = $prefix ?? sprintf('cache:%s:pageCachePlugin:', $this->app_id);
+        $this->prefix = $prefix ?? sprintf('cache:%s:page_cache:', $this->app_id);
     }
 
     protected function getPageCache(object $controller, string $action): PageCacheAttribute|false

@@ -13,7 +13,7 @@ class File extends AbstractLogger
 {
     #[Autowired] protected AliasInterface $alias;
 
-    #[Autowired] protected string $file = '@runtime/logger/{id}.log';
+    #[Autowired] protected string $file = '@runtime/logger/{app_id}.log';
     #[Autowired] protected string $line_format = '[:time][:level][:category][:location] :message';
 
     #[Config] protected string $app_id;
@@ -47,7 +47,7 @@ class File extends AbstractLogger
      */
     protected function write(string $str): void
     {
-        $file = $this->alias->resolve(strtr($this->file, ['{id}' => $this->app_id]));
+        $file = $this->alias->resolve(strtr($this->file, ['{app_id}' => $this->app_id]));
         if (!is_file($file)) {
             $dir = dirname($file);
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
