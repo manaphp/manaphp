@@ -16,7 +16,7 @@ class Console implements ConsoleInterface
 {
     #[Autowired] protected LoggerInterface $logger;
 
-    protected int $width = 80;
+    #[Autowired] protected int $width = 80;
 
     public const FC_BLACK = 0x01;
     public const FC_RED = 0x02;
