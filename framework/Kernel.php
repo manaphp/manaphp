@@ -6,18 +6,16 @@ namespace ManaPHP;
 use JetBrains\PhpStorm\NoReturn;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\Proxy;
 use ManaPHP\Kernel\BootstrapperLoaderInterface;
-use ManaPHP\Kernel\ConfigLoaderInterface;
-use Psr\Container\ContainerInterface;
 
 class Kernel
 {
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected EnvInterface $env;
-    #[Autowired] protected ConfigInterface $config;
-    #[Autowired] protected ConfigLoaderInterface $configLoader;
+    #[Autowired] protected ConfigInterface|Proxy $config;
     #[Autowired] protected BootstrapperLoaderInterface|Proxy $bootstrapperLoader;
 
     #[Autowired] protected string $rootDir;
@@ -51,6 +49,22 @@ class Kernel
         return PHP_SAPI === 'cli' && extension_loaded('swoole');
     }
 
+    protected function loadDependencies(): void
+    {
+        $dependencies = [];
+        $config_dir = $this->alias->get('@config');
+        foreach (glob("$config_dir/*.php") as $item) {
+            $file = pathinfo($item, PATHINFO_BASENAME);
+            $dependencies += require $item;
+        }
+
+        foreach ($dependencies as $id => $definition) {
+            $this->container->set($id, $definition);
+        }
+
+        $this->container->get(ConfigInterface::class)->set('dependencies', $dependencies);
+    }
+
     #[NoReturn]
     public function start(string $server): void
     {
@@ -65,7 +79,7 @@ class Kernel
 
         $this->env->load();
 
-        $this->configLoader->load();
+        $this->loadDependencies();
 
         if (($timezone = $this->config->get('timezone')) !== null) {
             date_default_timezone_set($timezone);
@@ -75,10 +89,6 @@ class Kernel
             foreach ($aliases as $k => $v) {
                 $this->alias->set($k, $v);
             }
-        }
-
-        foreach ($this->config->get('dependencies', []) as $id => $definition) {
-            $this->container->set($id, $definition);
         }
 
         $this->bootstrapperLoader->load();
