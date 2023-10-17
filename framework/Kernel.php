@@ -8,7 +8,6 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\Proxy;
-use ManaPHP\Kernel\BootstrapperLoaderInterface;
 
 class Kernel
 {
@@ -16,7 +15,6 @@ class Kernel
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected EnvInterface $env;
     #[Autowired] protected ConfigInterface|Proxy $config;
-    #[Autowired] protected BootstrapperLoaderInterface|Proxy $bootstrapperLoader;
 
     #[Autowired] protected string $rootDir;
 
@@ -91,7 +89,17 @@ class Kernel
             }
         }
 
-        $this->bootstrapperLoader->load();
+        foreach ($this->config->get('bootstrappers', []) as $key => $value) {
+            /** @var BootstrapperInterface $bootstrapper */
+            if (is_int($key)) {
+                $bootstrapper = $this->container->get($value);
+            } else {
+                $this->container->set($key, $value);
+                $bootstrapper = $this->container->get($key);
+            }
+
+            $bootstrapper->bootstrap($this->container);
+        }
 
         /** @var string|ServerInterface $server */
         $server = $this->container->get($server);
