@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 
 class Alias implements AliasInterface, JsonSerializable
 {
-    protected array $aliases = ['@manaphp' => __DIR__];
+    #[Autowired] protected array $aliases = ['@manaphp' => __DIR__];
 
     public function all(): array
     {
