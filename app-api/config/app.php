@@ -9,10 +9,5 @@ return ['ManaPHP\Di\ConfigInterface' => [
         'timezone'      => 'Asia/Shanghai',
         'aliases'       => [
         ],
-        'bootstrappers' => [
-            ManaPHP\Debugging\DebuggerBootstrapper::class,
-            ManaPHP\Http\FilterBootstrapper::class,
-            ManaPHP\Eventing\TracerBootstrapper::class
-        ],
     ],
 ]];
