@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Di;
 
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 
 class Proxy
@@ -13,7 +13,7 @@ class Proxy
     protected object $object;
     protected ?string $value = null;
 
-    public function __construct(PsrContainerInterface $container, ReflectionProperty $property, object $object,
+    public function __construct(ContainerInterface $container, ReflectionProperty $property, object $object,
         ?string $value
     ) {
         $this->container = $container;
