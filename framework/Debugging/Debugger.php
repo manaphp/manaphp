@@ -351,17 +351,18 @@ class Debugger implements DebuggerInterface
         ];
         $data['mongodb'] = $context->mongodb;
 
-        $data['view'] = $context->view;
-        $data['dependencies'] = [];
-        $data['events'] = $context->events;
-
+        $dependencies = [];
         foreach ($this->container->getInstances() as $name => $instance) {
             $properties = $this->dumpManager->dump($instance);
 
-            $data['dependencies'][$name] = ['class'      => $instance::class,
-                                            'object_id'  => spl_object_id($instance),
-                                            'properties' => $properties];
+            $dependencies[$name] = ['class'      => $instance::class,
+                                    'object_id'  => spl_object_id($instance),
+                                    'properties' => $properties];
         }
+        $data['dependencies'] = $dependencies;
+
+        $data['view'] = $context->view;
+        $data['events'] = $context->events;
 
         $data['included_files'] = @get_included_files() ?: [];
         unset($data['server']['PATH']);
