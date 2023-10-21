@@ -5,6 +5,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\EventDispatcherInterface;
+use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Http\Server\Event\RequestAuthenticated;
@@ -17,12 +18,22 @@ use Throwable;
 abstract class AbstractHandler implements HandlerInterface
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected RouterInterface $router;
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected AccessLogInterface $accessLog;
     #[Autowired] protected ServerInterface $httpServer;
+
+    #[Autowired] protected array $middlewares = [];
+
+    public function __construct()
+    {
+        foreach ($this->middlewares as $middleware) {
+            $this->listenerProvider->add($middleware);
+        }
+    }
 
     abstract protected function handleInternal(mixed $actionReturnValue): void;
 

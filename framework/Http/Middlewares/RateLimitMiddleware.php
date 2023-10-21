@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Filters;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
@@ -15,7 +15,7 @@ use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
-class RateLimit
+class RateLimitMiddleware
 {
     #[Autowired] protected IdentityInterface $identity;
     #[Autowired] protected RequestInterface $request;

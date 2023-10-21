@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Filters;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
@@ -11,7 +11,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
 
-class Cors
+class CorsMiddleware
 {
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;

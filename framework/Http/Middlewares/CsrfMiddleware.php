@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Filters;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Http\Filters\Csrf\AttackDetectedException;
+use ManaPHP\Http\Middlewares\CsrfMiddleware\AttackDetectedException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Mvc\ViewInterface;
 use ManaPHP\Rest\Controller as RestController;
 
-class Csrf
+class CsrfMiddleware
 {
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ViewInterface $view;

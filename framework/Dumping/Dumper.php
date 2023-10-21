@@ -5,7 +5,6 @@ namespace ManaPHP\Dumping;
 
 use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\Attribute\Config;
 use ReflectionClass;
 use ReflectionNamedType;
 
