@@ -5,6 +5,7 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Http\AccessLogInterface;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\HandlerInterface;
 use ManaPHP\Http\RequestInterface;
@@ -30,6 +31,7 @@ class Handler implements HandlerInterface
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected ErrorHandlerInterface $errorHandler;
     #[Autowired] protected ServerInterface $httpServer;
+    #[Autowired] protected AccessLogInterface $accessLog;
 
     /**
      * @noinspection PhpRedundantCatchClauseInspection
@@ -83,6 +85,8 @@ class Handler implements HandlerInterface
         }
 
         $this->httpServer->send();
+
+        $this->accessLog->log();
 
         $this->eventDispatcher->dispatch(new RequestEnd($this->request, $this->response));
     }
