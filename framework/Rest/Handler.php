@@ -5,33 +5,19 @@ namespace ManaPHP\Rest;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Http\AccessLogInterface;
-use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\HandlerInterface;
-use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\AbstractHandler;
 use ManaPHP\Http\Response;
-use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Router\NotFoundRouteException;
-use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestAuthenticated;
 use ManaPHP\Http\Server\Event\RequestAuthenticating;
 use ManaPHP\Http\Server\Event\RequestBegin;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Http\Server\Event\RequestException;
-use ManaPHP\Http\ServerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
-class Handler implements HandlerInterface
+class Handler extends AbstractHandler
 {
-    #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected ResponseInterface $response;
-    #[Autowired] protected RouterInterface $router;
-    #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected ErrorHandlerInterface $errorHandler;
-    #[Autowired] protected ServerInterface $httpServer;
-    #[Autowired] protected AccessLogInterface $accessLog;
 
     /**
      * @noinspection PhpRedundantCatchClauseInspection
