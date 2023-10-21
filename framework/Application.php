@@ -44,19 +44,21 @@ class Application
         return PHP_SAPI === 'cli' && extension_loaded('swoole');
     }
 
-    protected function loadDependencies(): void
+    protected function loadConfig(): void
     {
-        $dependencies = [];
+        $configs = [];
         foreach (glob("$this->root/config/*.php") as $item) {
-            $file = pathinfo($item, PATHINFO_BASENAME);
-            $dependencies += require $item;
+            $configs += require $item;
         }
 
-        foreach ($dependencies as $id => $definition) {
+        foreach ($configs as $id => $definition) {
             $this->container->set($id, $definition);
         }
 
-        $this->container->get(ConfigInterface::class)->set('dependencies', $dependencies);
+        $config = $this->container->get(ConfigInterface::class);
+        foreach ($configs as $id => $definition) {
+            $config->set($id, $definition);
+        }
     }
 
     #[NoReturn]
@@ -64,7 +66,7 @@ class Application
     {
         $this->container->get(EnvInterface::class)->load();
 
-        $this->loadDependencies();
+        $this->loadConfig();
 
         $this->container->get(KernelInterface::class)->boot();
 

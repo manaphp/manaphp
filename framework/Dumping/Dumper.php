@@ -32,10 +32,6 @@ class Dumper implements DumperInterface
                 }
             }
 
-            if ($name === 'dependencies' && $property->getAttributes(Config::class) !== []) {
-                continue;
-            }
-
             $property->setAccessible(true);
             if ($property->isInitialized($object)) {
                 $value = $property->getValue($object);
