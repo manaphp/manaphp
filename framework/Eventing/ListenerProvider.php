@@ -39,8 +39,12 @@ class ListenerProvider implements ListenerProviderInterface
         $listeners->push($handler);
     }
 
-    public function add(object $listener)
+    public function add(string|object $listener)
     {
+        if (is_string($listener)) {
+            $listener = $this->container->get($listener);
+        }
+
         $rClass = new ReflectionClass($listener);
 
         foreach ($rClass->getMethods(ReflectionMethod::IS_PUBLIC) as $rMethod) {

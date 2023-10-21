@@ -9,7 +9,7 @@ interface ListenerProviderInterface extends PsrListenerProviderInterface
 {
     public function on(string $event, callable $handler, int $priority = 0);
 
-    public function add(object $listener);
+    public function add(string|object $listener);
 
     public function getListenersForEvent(object $event): iterable;
 
