@@ -19,7 +19,7 @@ class AccessLog implements AccessLogInterface
 
     #[Autowired] protected bool $enabled = true;
     #[Autowired] protected string $default_value = '';
-    #[Autowired] protected string $file = '@runtime/accessLogger/access.log';
+    #[Autowired] protected string $file = '@runtime/accessLog/access.log';
     #[Autowired] protected string $format = '
 time=$time_iso8601
  client_ip=$client_ip
