@@ -5,6 +5,14 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\EventDispatcherInterface;
+use ManaPHP\Exception\AbortException;
+use ManaPHP\Http\Router\NotFoundRouteException;
+use ManaPHP\Http\Server\Event\RequestAuthenticated;
+use ManaPHP\Http\Server\Event\RequestAuthenticating;
+use ManaPHP\Http\Server\Event\RequestBegin;
+use ManaPHP\Http\Server\Event\RequestEnd;
+use ManaPHP\Http\Server\Event\RequestException;
+use Throwable;
 
 abstract class AbstractHandler implements HandlerInterface
 {
@@ -15,4 +23,42 @@ abstract class AbstractHandler implements HandlerInterface
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected AccessLogInterface $accessLog;
     #[Autowired] protected ServerInterface $httpServer;
+
+    abstract protected function handleInternal(mixed $actionReturnValue): void;
+
+    abstract protected function handleError(Throwable $throwable): void;
+
+    public function handle(): void
+    {
+        try {
+            $this->eventDispatcher->dispatch(new RequestBegin($this->request));
+
+            $this->eventDispatcher->dispatch(new RequestAuthenticating());
+            $this->eventDispatcher->dispatch(new RequestAuthenticated());
+
+            if (!$this->router->match()) {
+                throw new NotFoundRouteException(
+                    ['router does not have matched route for `{1}`', $this->router->getRewriteUri()]
+                );
+            }
+
+            $actionReturnValue = $this->dispatcher->dispatch(
+                $this->router->getArea(), $this->router->getController(), $this->router->getAction(),
+                $this->router->getParams()
+            );
+
+            $this->handleInternal($actionReturnValue);
+        } catch (AbortException $exception) {
+            null;
+        } catch (Throwable $exception) {
+            $this->eventDispatcher->dispatch(new RequestException($exception));
+            $this->handleError($exception);
+        }
+
+        $this->httpServer->send();
+
+        $this->accessLog->log();
+
+        $this->eventDispatcher->dispatch(new RequestEnd($this->request, $this->response));
+    }
 }
