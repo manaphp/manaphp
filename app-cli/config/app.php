@@ -5,6 +5,7 @@ return [
     'app_id'    => 'cli',
     'app_env'   => env('APP_ENV', 'prod'),
     'app_debug' => env('APP_DEBUG', false),
+    'timezone'  => 'Asia/Shanghai',
     'aliases'   => [
     ],
 ];
