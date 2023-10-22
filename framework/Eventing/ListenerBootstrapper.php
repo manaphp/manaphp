@@ -15,15 +15,13 @@ class ListenerBootstrapper implements BootstrapperInterface
     public function bootstrap(ContainerInterface $container): void
     {
         foreach (LocalFS::glob('@app/Listeners/?*Listener.php') as $file) {
-            $listener = $container->get('App\Listeners\\' . basename($file, '.php'));
-            $this->listenerProvider->add($listener);
+            $this->listenerProvider->add('App\Listeners\\' . basename($file, '.php'));
         }
 
         foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
             $area = basename($item);
             foreach (LocalFS::glob("$item/Listeners/?*Listener.php") as $file) {
-                $listener = $container->get("App\\Areas\\$area\\Listeners\\" . basename($file, '.php'));
-                $this->listenerProvider->add($listener);
+                $this->listenerProvider->add("App\\Areas\\$area\\Listeners\\" . basename($file, '.php'));
             }
         }
     }
