@@ -39,6 +39,7 @@ abstract class AbstractHandler implements HandlerInterface
 
     abstract protected function handleError(Throwable $throwable): void;
 
+    /** @noinspection PhpRedundantCatchClauseInspection */
     public function handle(): void
     {
         try {
