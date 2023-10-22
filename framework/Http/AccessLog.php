@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use DateTime;
+use DateTimeInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use Psr\Log\LoggerInterface;
@@ -65,7 +65,7 @@ time=$time_iso8601
         } elseif ($name === 'client_ip') {
             return $this->request->getClientIp();
         } elseif ($name === 'time_iso8601' || $name === 'time') {
-            return date(DateTime::ATOM);
+            return date(DateTimeInterface::ATOM);
         } elseif ($name === 'status') {
             return (string)$this->response->getStatusCode();
         } elseif ($name === 'body_bytes_sent') {
