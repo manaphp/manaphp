@@ -60,7 +60,7 @@ abstract class AbstractHandler implements HandlerInterface
             );
 
             $this->handleInternal($actionReturnValue);
-        } catch (AbortException $exception) {
+        } catch (AbortException) {
             null;
         } catch (Throwable $exception) {
             $this->eventDispatcher->dispatch(new RequestException($exception));
