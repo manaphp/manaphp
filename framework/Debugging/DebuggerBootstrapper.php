@@ -8,7 +8,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
-use ManaPHP\Http\Server\Event\ServerStart;
+use ManaPHP\Http\Server\Event\ServerReady;
 use Psr\Container\ContainerInterface;
 
 class DebuggerBootstrapper implements BootstrapperInterface
@@ -27,7 +27,7 @@ class DebuggerBootstrapper implements BootstrapperInterface
         }
     }
 
-    public function onHttpServerStart(#[Event] ServerStart $event): void
+    public function onServerReady(#[Event] ServerReady $event): void
     {
         $this->debugger->start();
     }

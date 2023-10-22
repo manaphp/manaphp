@@ -16,7 +16,7 @@ use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Http\Server\Event\ServerManagerStart;
-use ManaPHP\Http\Server\Event\ServerMasterStart;
+use ManaPHP\Http\Server\Event\ServerReady;
 use ManaPHP\Http\Server\Event\ServerStart;
 use ManaPHP\Http\Server\Event\ServerWorkerStart;
 use ManaPHP\Http\Server\StaticHandlerInterface;
@@ -73,7 +73,7 @@ class Swoole extends AbstractServer
 
         $this->swoole = new Server($this->host, $this->port);
         $this->swoole->set($this->settings);
-        $this->swoole->on('Start', [$this, 'onMasterStart']);
+        $this->swoole->on('Start', [$this, 'onStart']);
         $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('request', [$this, 'onRequest']);
@@ -100,25 +100,25 @@ class Swoole extends AbstractServer
         $this->globals->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
     }
 
-    public function onMasterStart(Server $server): void
+    public function onStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->app_id));
 
-        $this->eventDispatcher->dispatch(new ServerMasterStart($this, $server));
+        $this->eventDispatcher->dispatch(new ServerStart($server));
     }
 
     public function onManagerStart(): void
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->app_id));
 
-        $this->eventDispatcher->dispatch(new ServerManagerStart($this, $this->swoole));
+        $this->eventDispatcher->dispatch(new ServerManagerStart($this->swoole));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->app_id, $worker_id));
 
-        $this->eventDispatcher->dispatch(new ServerWorkerStart($this, $server, $worker_id));
+        $this->eventDispatcher->dispatch(new ServerWorkerStart($server, $worker_id));
     }
 
     public function start(): void
@@ -131,7 +131,7 @@ class Swoole extends AbstractServer
 
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
-        $this->eventDispatcher->dispatch(new ServerStart($this, $this->swoole));
+        $this->eventDispatcher->dispatch(new ServerReady());
         $prefix = $this->config->get(RouterInterface::class)['prefix'] ?? '';
         $prefix = ltrim($prefix, '?');
         /** @noinspection HttpUrlsUsage */

@@ -12,7 +12,7 @@ use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Server\Event\ResponseStringify;
-use ManaPHP\Http\Server\Event\ServerStart;
+use ManaPHP\Http\Server\Event\ServerReady;
 use Psr\Container\ContainerInterface;
 use Throwable;
 use Workerman\Connection\ConnectionInterface;
@@ -89,7 +89,7 @@ class Workerman extends AbstractServer
             shell_exec("explorer.exe http://127.0.0.1:$this->port/" . $this->router->getPrefix());
         }
 
-        $this->eventDispatcher->dispatch(new ServerStart($this));
+        $this->eventDispatcher->dispatch(new ServerReady());
 
         Worker::runAll();
 

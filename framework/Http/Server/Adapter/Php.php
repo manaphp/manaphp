@@ -8,7 +8,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
-use ManaPHP\Http\Server\Event\ServerStart;
+use ManaPHP\Http\Server\Event\ServerReady;
 use ManaPHP\Http\Server\StaticHandlerInterface;
 
 class Php extends AbstractServer
@@ -75,7 +75,7 @@ class Php extends AbstractServer
                 header('HTTP/1.1 404 Not Found');
             }
         } else {
-            $this->eventDispatcher->dispatch(new ServerStart($this));
+            $this->eventDispatcher->dispatch(new ServerReady());
 
             $this->httpHandler->handle();
         }
