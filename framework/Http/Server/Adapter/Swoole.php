@@ -15,12 +15,25 @@ use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Server\Event\ResponseStringify;
+use ManaPHP\Http\Server\Event\ServerBeforeShutdown;
+use ManaPHP\Http\Server\Event\ServerClose;
+use ManaPHP\Http\Server\Event\ServerConnect;
+use ManaPHP\Http\Server\Event\ServerFinish;
 use ManaPHP\Http\Server\Event\ServerManagerStart;
+use ManaPHP\Http\Server\Event\ServerManagerStop;
+use ManaPHP\Http\Server\Event\ServerPacket;
+use ManaPHP\Http\Server\Event\ServerPipeMessage;
 use ManaPHP\Http\Server\Event\ServerReady;
+use ManaPHP\Http\Server\Event\ServerShutdown;
 use ManaPHP\Http\Server\Event\ServerStart;
+use ManaPHP\Http\Server\Event\ServerTask;
+use ManaPHP\Http\Server\Event\ServerWorkerError;
+use ManaPHP\Http\Server\Event\ServerWorkerExit;
 use ManaPHP\Http\Server\Event\ServerWorkerStart;
+use ManaPHP\Http\Server\Event\ServerWorkerStop;
 use ManaPHP\Http\Server\StaticHandlerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
@@ -35,6 +48,7 @@ class Swoole extends AbstractServer
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected StaticHandlerInterface $staticHandler;
     #[Autowired] protected ConfigInterface $config;
+    #[Autowired] protected LoggerInterface $logger;
 
     #[Autowired] protected array $settings = [];
 
@@ -74,9 +88,21 @@ class Swoole extends AbstractServer
         $this->swoole = new Server($this->host, $this->port);
         $this->swoole->set($this->settings);
         $this->swoole->on('Start', [$this, 'onStart']);
+        $this->swoole->on('BeforeShutdown', [$this, 'onBeforeShutdown']);
+        $this->swoole->on('Shutdown', [$this, 'onShutdown']);
         $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
-        $this->swoole->on('request', [$this, 'onRequest']);
+        $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
+        $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
+        $this->swoole->on('Connect', [$this, 'onConnect']);
+        $this->swoole->on('Packet', [$this, 'onPacket']);
+        $this->swoole->on('Close', [$this, 'onClose']);
+        $this->swoole->on('Task', [$this, 'onTask']);
+        $this->swoole->on('Finish', [$this, 'onFinish']);
+        $this->swoole->on('PipeMessage', [$this, 'onPipeMessage']);
+        $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
+        $this->swoole->on('ManagerStop', [$this, 'onManagerStop']);
+        $this->swoole->on('Request', [$this, 'onRequest']);
     }
 
     protected function prepareGlobals(Request $request): void
@@ -100,25 +126,94 @@ class Swoole extends AbstractServer
         $this->globals->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
     }
 
+    protected function dispatchEvent(object $object): void
+    {
+        try {
+            $this->eventDispatcher->dispatch($object);
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), ['exception' => $throwable]);
+        }
+    }
+
     public function onStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->app_id));
 
-        $this->eventDispatcher->dispatch(new ServerStart($server));
+        $this->dispatchEvent(new ServerStart($server));
     }
 
-    public function onManagerStart(): void
+    public function onBeforeShutdown(Server $server): void
+    {
+        $this->dispatchEvent(new ServerBeforeShutdown($server));
+    }
+
+    public function onShutdown(Server $server): void
+    {
+        $this->dispatchEvent(new ServerShutdown($server));
+    }
+
+    public function onManagerStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->app_id));
 
-        $this->eventDispatcher->dispatch(new ServerManagerStart($this->swoole));
+        $this->dispatchEvent(new ServerManagerStart($server));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->app_id, $worker_id));
 
-        $this->eventDispatcher->dispatch(new ServerWorkerStart($server, $worker_id));
+        $this->dispatchEvent(new ServerWorkerStart($server, $worker_id));
+    }
+
+    public function onWorkerStop(Server $server, int $worker_id): void
+    {
+        $this->dispatchEvent(new ServerWorkerStop($server, $worker_id));
+    }
+
+    public function onWorkerExit(Server $server, int $worker_id): void
+    {
+        $this->dispatchEvent(new ServerWorkerExit($server, $worker_id));
+    }
+
+    public function onConnect(Server $server, int $fd, int $reactor_id): void
+    {
+        $this->dispatchEvent(new ServerConnect($server, $fd, $reactor_id));
+    }
+
+    public function onPacket(Server $server, string $data, array $client): void
+    {
+        $this->dispatchEvent(new ServerPacket($server, $data, $client));
+    }
+
+    public function onClose(Server $server, int $fd, int $reactor_id): void
+    {
+        $this->dispatchEvent(new ServerClose($server, $fd, $reactor_id));
+    }
+
+    public function onTask(Server $server, int $worker_id, int $src_worker_id, mixed $data): void
+    {
+        $this->dispatchEvent(new ServerTask($server, $worker_id, $src_worker_id, $data));
+    }
+
+    public function onFinish(Server $server, int $worker_id, mixed $data): void
+    {
+        $this->dispatchEvent(new ServerFinish($server, $worker_id, $data));
+    }
+
+    public function onPipeMessage(Server $server, int $src_worker_id, mixed $message): void
+    {
+        $this->dispatchEvent(new ServerPipeMessage($server, $src_worker_id, $message));
+    }
+
+    public function onWorkerError(Server $server, int $worker_id, int $worker_pid, int $exit_code, int $signal): void
+    {
+        $this->dispatchEvent(new ServerWorkerError($server, $worker_id, $worker_pid, $exit_code, $signal));
+    }
+
+    public function onManagerStop(Server $server): void
+    {
+        $this->dispatchEvent(new ServerManagerStop($server));
     }
 
     public function start(): void
@@ -131,7 +226,7 @@ class Swoole extends AbstractServer
 
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
-        $this->eventDispatcher->dispatch(new ServerReady());
+        $this->dispatchEvent(new ServerReady());
         $prefix = $this->config->get(RouterInterface::class)['prefix'] ?? '';
         $prefix = ltrim($prefix, '?');
         /** @noinspection HttpUrlsUsage */
@@ -181,13 +276,13 @@ class Swoole extends AbstractServer
     public function send(): void
     {
         if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
-            $this->eventDispatcher->dispatch(new ResponseStringify($this->response));
+            $this->dispatchEvent(new ResponseStringify($this->response));
             if (!is_string($content = $this->response->getContent())) {
                 $this->response->setContent(json_stringify($content));
             }
         }
 
-        $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
+        $this->dispatchEvent(new RequestResponsing($this->request, $this->response));
 
         foreach ($this->response->getAppenders() as $appender) {
             /** @var string|AppenderInterface $appender */
@@ -231,6 +326,6 @@ class Swoole extends AbstractServer
             $response->end($content);
         }
 
-        $this->eventDispatcher->dispatch(new RequestResponded($this->request, $this->response));
+        $this->dispatchEvent(new RequestResponded($this->request, $this->response));
     }
 }

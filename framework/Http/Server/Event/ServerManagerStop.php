@@ -6,8 +6,8 @@ namespace ManaPHP\Http\Server\Event;
 use ManaPHP\Eventing\Attribute\Verbosity;
 use Swoole\Http\Server;
 
-#[Verbosity(Verbosity::LOW)]
-class ServerManagerStart
+#[Verbosity(Verbosity::MEDIUM)]
+class ServerManagerStop
 {
     public function __construct(public Server $server)
     {

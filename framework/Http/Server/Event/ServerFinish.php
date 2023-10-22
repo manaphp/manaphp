@@ -6,10 +6,10 @@ namespace ManaPHP\Http\Server\Event;
 use ManaPHP\Eventing\Attribute\Verbosity;
 use Swoole\Http\Server;
 
-#[Verbosity(Verbosity::LOW)]
-class ServerManagerStart
+#[Verbosity(Verbosity::HIGH)]
+class ServerFinish
 {
-    public function __construct(public Server $server)
+    public function __construct(public Server $server, public int $task_id, public mixed $data)
     {
 
     }

@@ -10,9 +10,8 @@ use Swoole\Http\Server;
 #[Verbosity(Verbosity::LOW)]
 class ServerStart implements JsonSerializable
 {
-    public function __construct(
-        public Server $server,
-    ) {
+    public function __construct(public Server $server)
+    {
 
     }
 
