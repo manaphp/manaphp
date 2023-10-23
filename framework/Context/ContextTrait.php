@@ -9,8 +9,8 @@ trait ContextTrait
 {
     #[Autowired] protected ContextorInterface $contextor;
 
-    protected function getContext(): object
+    protected function getContext(int $cid = 0): object
     {
-        return $this->contextor->getContext($this);
+        return $this->contextor->getContext($this, $cid);
     }
 }

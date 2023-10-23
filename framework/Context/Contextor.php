@@ -52,12 +52,12 @@ class Contextor implements ContextorInterface
         }
     }
 
-    public function getContext(object $object): object
+    public function getContext(object $object, int $cid = 0): object
     {
         $object_id = spl_object_id($object);
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            if ($ao = Coroutine::getContext()) {
+            if ($ao = Coroutine::getContext($cid)) {
                 if (($context = $ao[$object_id] ?? null) === null) {
                     if (($parent_cid = Coroutine::getPcid()) === -1) {
                         return $ao[$object_id] = $this->createContext($object);
