@@ -12,6 +12,7 @@ return [
             'port'     => 9501,
             'settings' => [
                 'worker_num'            => 4,
+                'task_worker_num'       => 1,
                 'max_request'           => 1000000,
                 'enable_static_handler' => env('APP_DEBUG', true),
                 'http_compression'      => false,
