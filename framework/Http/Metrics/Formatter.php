@@ -60,19 +60,33 @@ class Formatter implements FormatterInterface
         return "# TYPE $name counter\n" . $this->number($name, $value, $labels, $levels);
     }
 
-    public function histogram(string $name, Histogram $histogram, array $labels): string
+    protected function histogramInternal(string $name, array|Histogram $histograms, array $labels, array $levels = []
+    ): string {
+        $str = '';
+        if ($levels === []) {
+            foreach ($histograms->buckets as $le_name => $le_value) {
+                $str .= $name . '_bucket' . $this->labels($labels + ['le' => $le_name]) . " $le_value\n";
+            }
+            $str .= $name . '_bucket' . $this->labels($labels + ['le' => '+Inf']) . " $histograms->count\n";
+
+            $str .= $name . '_sum' . $this->labels($labels) . " $histograms->sum\n";
+            $str .= $name . '_count' . $this->labels($labels) . " $histograms->count\n";
+            return $str;
+        } else {
+            $level = array_shift($levels);
+            foreach ($histograms as $key => $val) {
+                $str .= $this->histogramInternal($name, $val, $labels + [$level => $key], $levels);
+            }
+        }
+
+        return $str;
+    }
+
+    public function histogram(string $name, array|Histogram $histograms, array $labels, array $levels = []): string
     {
         $name = $this->prefix . $name;
         $str = "# TYPE $name histogram\n";
 
-        foreach ($histogram->buckets as $le_name => $le_value) {
-            $str .= $name . '_bucket' . $this->labels($labels + ['le' => $le_name]) . " $le_value\n";
-        }
-        $str .= $name . '_bucket' . $this->labels($labels + ['le' => '+Inf']) . " $histogram->count\n";
-
-        $str .= $name . '_sum' . $this->labels($labels) . " $histogram->sum\n";
-        $str .= $name . '_count' . $this->labels($labels) . " $histogram->count\n";
-
-        return $str;
+        return $str . $this->histogramInternal($name, $histograms, $labels, $levels);
     }
 }

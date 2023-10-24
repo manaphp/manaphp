@@ -14,5 +14,5 @@ interface FormatterInterface
 
     public function number(string $name, int|array $value, array $labels = [], array $levels = []): string;
 
-    public function histogram(string $name, Histogram $histogram, array $labels): string;
+    public function histogram(string $name, array|Histogram $histograms, array $labels, array $levels = []): string;
 }

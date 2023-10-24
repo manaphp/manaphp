@@ -60,16 +60,8 @@ class ResponseSizeCollector implements CollectorInterface
     {
         if (($histograms = $this->workers->taskwait([$this, 'taskExport'], [], 1, 0)) === false) {
             return '';
+        } else {
+            return $this->formatter->histogram('app_http_response_size_bytes', $histograms, [], ['handler']);
         }
-
-        $result = '';
-        foreach ($histograms as $path => $histogram) {
-            $result .= $this->formatter->histogram(
-                'app_http_response_size_bytes', $histogram,
-                ['handler' => $path]
-            );
-        }
-
-        return $result;
     }
 }
