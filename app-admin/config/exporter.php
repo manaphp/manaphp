@@ -11,6 +11,7 @@ return [
             'ManaPHP\Http\Metrics\Collectors\CoroutineStatsCollector',
             'ManaPHP\Http\Metrics\Collectors\CoroutineOptionsCollector',
             'ManaPHP\Http\Metrics\Collectors\ResponseSizeCollector',
+            'ManaPHP\Http\Metrics\Collectors\MemoryUsageCollector',
         ],
     ],
 ];
