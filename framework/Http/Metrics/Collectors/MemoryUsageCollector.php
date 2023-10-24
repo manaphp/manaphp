@@ -40,13 +40,13 @@ class MemoryUsageCollector extends AbstractCollector
     {
         /** @var MemoryUsageCollectorContext $context */
         $context = $this->getContext();
-        $worker_num = $this->server->setting['worker_num'];
+        $worker_num = $this->workers->getWorkerNum();
         $context->channel = new Channel($worker_num);
-        $context->messages[$this->server->worker_id] = [memory_get_usage(), memory_get_peak_usage()];
+        $context->messages[$this->workers->getWorkerId()] = [memory_get_usage(), memory_get_peak_usage()];
         $context->channel->push(1);
 
         for ($worker_id = 0; $worker_id < $worker_num; $worker_id++) {
-            if ($this->server->worker_id !== $worker_id) {
+            if ($this->workers->getWorkerId() !== $worker_id) {
                 $arguments = [Coroutine::getCid()];
                 $this->workers->sendMessage([$this, 'taskExportRequest'], $arguments, $worker_id);
             }
@@ -70,9 +70,9 @@ class MemoryUsageCollector extends AbstractCollector
             $str .= $this->formatter->gauge('swoole_worker_memory_peak_usage', $stats[1], $labels);
         }
 
-        $worker_num = $this->server->setting['worker_num'];
-        for ($task_worker_id = 0; $task_worker_id < ($this->server->setting['task_worker_num'] ?? 0); $task_worker_id++)
-        {
+        $worker_num = $this->workers->getWorkerNum();
+        $task_worker_num = $this->workers->getTaskWorkerNum();
+        for ($task_worker_id = 0; $task_worker_id < $task_worker_num; $task_worker_id++) {
             $stats = $this->workers->taskwait([$this, 'taskExport'], [], 0.1, $task_worker_id);
             $labels = ['worker_id' => $worker_num + $task_worker_id, 'task_worker_id' => $task_worker_id];
 

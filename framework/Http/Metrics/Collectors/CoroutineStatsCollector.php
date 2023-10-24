@@ -35,13 +35,13 @@ class CoroutineStatsCollector extends AbstractCollector
     {
         /** @var CoroutineStatsCollectorContext $context */
         $context = $this->getContext();
-        $worker_num = $this->server->setting['worker_num'];
+        $worker_num = $this->workers->getWorkerNum();
         $context->channel = new Channel($worker_num);
-        $context->stats[$this->server->worker_id] = Coroutine::stats();
+        $context->stats[$this->workers->getWorkerId()] = Coroutine::stats();
         $context->channel->push(1);
 
         for ($worker_id = 0; $worker_id < $worker_num; $worker_id++) {
-            if ($this->server->worker_id !== $worker_id) {
+            if ($this->workers->getWorkerId() !== $worker_id) {
                 $arguments = [Coroutine::getCid(), $this->workers->getWorkerId()];
                 $this->workers->sendMessage([$this, 'taskExportRequest'], $arguments, $worker_id);
             }

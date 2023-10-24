@@ -89,4 +89,19 @@ class Workers implements WorkersInterface, BootstrapperInterface
     {
         return $this->server->worker_id;
     }
+
+    public function getWorkerNum(): int
+    {
+        return $this->server->setting['worker_num'];
+    }
+
+    public function getTaskWorkerNum(): int
+    {
+        return $this->server->setting['task_worker_num'];
+    }
+
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
 }
