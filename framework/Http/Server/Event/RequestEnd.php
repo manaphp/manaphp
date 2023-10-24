@@ -24,7 +24,7 @@ class RequestEnd implements JsonSerializable
             'uri'            => $this->request->getUri(),
             'http_code'      => $this->response->getStatusCode(),
             'content-type'   => $this->response->getContentType(),
-            'content-length' => strlen($this->response->getContent()),
+            'content-length' => $this->response->getContentLength(),
         ];
     }
 }

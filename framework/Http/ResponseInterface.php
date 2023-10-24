@@ -65,6 +65,8 @@ interface ResponseInterface
 
     public function getContent(): mixed;
 
+    public function getContentLength(): int;
+
     public function hasContent(): bool;
 
     public function setFile(string $file, ?string $attachmentName = null): static;

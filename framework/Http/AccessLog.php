@@ -69,8 +69,7 @@ time=$time_iso8601
         } elseif ($name === 'status') {
             return (string)$this->response->getStatusCode();
         } elseif ($name === 'body_bytes_sent') {
-            $content = $this->response->getContent();
-            return (string)(is_string($content) ? strlen($content) : 0);
+            return (string)$this->response->getContentLength();
         } elseif ($name === 'is_args') {
             return $this->request->getQueryString() === '' ? '' : '?';
         } elseif ($name === 'query_string') {
