@@ -1,0 +1,92 @@
+<?php
+declare(strict_types=1);
+
+namespace ManaPHP\Swoole;
+
+use ManaPHP\BootstrapperInterface;
+use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Eventing\ListenerProviderInterface;
+use ManaPHP\Http\Server\Event\ServerPipeMessage;
+use ManaPHP\Http\Server\Event\ServerTask;
+use ManaPHP\Http\Server\Event\ServerWorkerStart;
+use ManaPHP\Swoole\Workers\PipeCallMessage;
+use ManaPHP\Swoole\Workers\TaskCallMessage;
+use ManaPHP\Swoole\Workers\TaskWaitCallMessage;
+use Psr\Container\ContainerInterface;
+use Swoole\Server;
+
+class Workers implements WorkersInterface, BootstrapperInterface
+{
+    #[Autowired] protected ContainerInterface $container;
+    #[Autowired] protected ListenerProviderInterface $listenerProvider;
+
+    protected Server $server;
+
+    public function bootstrap(\Psr\Container\ContainerInterface $container): void
+    {
+        $this->listenerProvider->add($this);
+    }
+
+    public function onServerWorkerStart(#[Event] ServerWorkerStart $event)
+    {
+        $this->server = $event->server;
+    }
+
+    public function onTask(#[Event] ServerTask $event)
+    {
+        $message = $event->data;
+        if ($message instanceof TaskCallMessage) {
+            $target = $this->container->get($message->id);
+            $method = $message->method;
+
+            $target->$method(...$message->arguments);
+        } elseif ($message instanceof TaskWaitCallMessage) {
+            $target = $this->container->get($message->id);
+            $method = $message->method;
+
+            $return = $target->$method(...$message->arguments);
+            $this->server->finish($return);
+        }
+    }
+
+    public function onServerPipeMessage(#[Event] ServerPipeMessage $event)
+    {
+        $message = $event->message;
+        if ($message instanceof PipeCallMessage) {
+            $target = $this->container->get($message->id);
+            $method = $message->method;
+
+            $target->$method(...$message->arguments);
+        }
+    }
+
+    public function task(array|callable $task, array $arguments, int $task_worker_id): false|int
+    {
+        $id = is_string($task[0]) ? $task[0] : get_class($task[0]);
+        $data = new TaskCallMessage($id, $task[1], $arguments);
+        return $this->server->task($data, $task_worker_id);
+    }
+
+    public function taskwait(array|callable $task, array $arguments, float $timeout, int $task_worker_id): mixed
+    {
+        $id = is_string($task[0]) ? $task[0] : get_class($task[0]);
+
+        $data = new TaskWaitCallMessage($id, $task[1], $arguments);
+
+        return $this->server->taskwait($data, $timeout, $task_worker_id);
+    }
+
+    public function sendMessage(array|callable $task, array $arguments, int $dst_worker_id): bool
+    {
+        $id = is_string($task[0]) ? $task[0] : get_class($task[0]);
+        $message = new PipeCallMessage($id, $task[1], $arguments);
+
+        return $this->server->sendMessage($message, $dst_worker_id);
+    }
+
+    public function getWorkerId(): int
+    {
+        return $this->server->worker_id;
+    }
+}
