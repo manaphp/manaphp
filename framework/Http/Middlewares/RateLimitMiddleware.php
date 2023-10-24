@@ -58,7 +58,7 @@ class RateLimitMiddleware
 
         $uid = $this->identity->isGuest() ? $this->request->getClientIp() : $this->identity->getName();
         $prefix = ($this->prefix ?? sprintf('cache:%s:rate_limit:', $this->app_id))
-            . $dispatcher->getPath() . ':' . $uid . ':';
+            . $dispatcher->getHandler() . ':' . $uid . ':';
 
         foreach ($rateLimit->limits as $k => $v) {
             $v = trim($v);

@@ -77,7 +77,7 @@ class Dispatcher implements DispatcherInterface
         return isset($context->params[$name]);
     }
 
-    public function getPath(): ?string
+    public function getHandler(): ?string
     {
         /** @var DispatcherContext $context */
         $context = $this->getContext();

@@ -103,7 +103,7 @@ class Debugger implements DebuggerInterface
                 $key = implode(
                     ':',
                     ['__debugger', $this->app_id, $this->request->getClientIp(),
-                     $this->dispatcher->getPath()]
+                     $this->dispatcher->getHandler()]
                 );
                 $redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
             }

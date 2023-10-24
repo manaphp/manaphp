@@ -49,10 +49,10 @@ class ResponseSizeCollector implements CollectorInterface
 
     public function onRequestEnd(#[Event] RequestEnd $event)
     {
-        $path = $this->dispatcher->getPath();
+        $handler = $this->dispatcher->getHandler();
         $size = strlen($this->response->getContent());
 
-        $arguments = [$path, $size];
+        $arguments = [$handler, $size];
         $this->workers->task([$this, 'taskUpdateMetric'], $arguments, 0);
     }
 

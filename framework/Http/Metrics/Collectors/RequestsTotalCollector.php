@@ -38,7 +38,7 @@ class RequestsTotalCollector implements CollectorInterface
     public function onRequestEnd(#[Event] RequestEnd $event)
     {
         $code = $this->response->getStatusCode();
-        $handler = $this->dispatcher->getPath();
+        $handler = $this->dispatcher->getHandler();
 
         $arguments = [$code, $handler];
         $this->workers->task([$this, 'taskUpdateMetrics'], $arguments, 0);

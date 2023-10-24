@@ -17,7 +17,7 @@ interface DispatcherInterface
 
     public function hasParam(string $name): bool;
 
-    public function getPath(): ?string;
+    public function getHandler(): ?string;
 
     public function getControllerInstance(): ?object;
 

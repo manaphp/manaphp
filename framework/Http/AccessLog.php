@@ -51,8 +51,8 @@ time=$time_iso8601
                 return $this->request->getUrl();
             } elseif ($name === 'request_time') {
                 return sprintf('%.3f', $this->request->getElapsedTime());
-            } elseif ($name === 'request_path') {
-                return (string)$this->dispatcher->getPath();
+            } elseif ($name === 'request_handler') {
+                return (string)$this->dispatcher->getHandler();
             } else {
                 return $this->default_value;
             }

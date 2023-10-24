@@ -109,9 +109,9 @@ class PageCacheMiddleware
         }
 
         if ($key === '') {
-            $context->key = $this->prefix . $dispatcher->getPath();
+            $context->key = $this->prefix . $dispatcher->getHandler();
         } else {
-            $context->key = $this->prefix . $dispatcher->getPath() . ':' . $key;
+            $context->key = $this->prefix . $dispatcher->getHandler() . ':' . $key;
         }
 
         if ($controller instanceof MvcController && $this->request->isAjax()) {

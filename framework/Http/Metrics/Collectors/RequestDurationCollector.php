@@ -47,10 +47,10 @@ class RequestDurationCollector implements CollectorInterface
 
     public function onRequestEnd(#[Event] RequestEnd $event)
     {
-        $path = $this->dispatcher->getPath();
+        $handler = $this->dispatcher->getHandler();
         $elapsed = $this->request->getElapsedTime();
 
-        $arguments = [$path, $elapsed];
+        $arguments = [$handler, $elapsed];
         $this->workers->task([$this, 'taskUpdateMetrics'], $arguments, 0);
     }
 
