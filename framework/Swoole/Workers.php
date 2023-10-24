@@ -23,7 +23,7 @@ class Workers implements WorkersInterface, BootstrapperInterface
 
     protected Server $server;
 
-    public function bootstrap(\Psr\Container\ContainerInterface $container): void
+    public function bootstrap(ContainerInterface $container): void
     {
         $this->listenerProvider->add($this);
     }
