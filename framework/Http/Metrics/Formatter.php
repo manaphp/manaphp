@@ -29,7 +29,7 @@ class Formatter implements FormatterInterface
         if ($labels) {
             $str_labels = [];
             foreach ($labels as $name => $value) {
-                $str_labels[] = "{$name}=\"{$value}\"";
+                $str_labels[] = "$name=\"$value\"";
             }
             return '{' . implode(',', $str_labels) . '}';
         }
