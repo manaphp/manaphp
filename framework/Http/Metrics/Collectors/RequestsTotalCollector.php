@@ -50,6 +50,6 @@ class RequestsTotalCollector implements CollectorInterface
             return '';
         }
 
-        return $this->formatter->counter('app_http_requests_total', $totals, [], ['code', 'handlers']);
+        return $this->formatter->counter('app_http_requests_total', $totals, [], ['code', 'handler']);
     }
 }
