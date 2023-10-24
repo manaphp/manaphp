@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
-use ManaPHP\Http\Metrics\AbstractCollector;
+use ManaPHP\Http\Metrics\CollectorInterface;
+use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Version;
 
-class VersionCollector extends AbstractCollector
+class VersionCollector implements CollectorInterface
 {
+    #[Autowired] protected FormatterInterface $formatter;
+
     #[Config] protected string $app_version = '';
 
     public function export(): string

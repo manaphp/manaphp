@@ -6,15 +6,17 @@ namespace ManaPHP\Http\Metrics\Collectors;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\Metrics\AbstractCollector;
+use ManaPHP\Http\Metrics\CollectorInterface;
+use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersInterface;
 
-class ResponseSizeCollector extends AbstractCollector
+class ResponseSizeCollector implements CollectorInterface
 {
+    #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;

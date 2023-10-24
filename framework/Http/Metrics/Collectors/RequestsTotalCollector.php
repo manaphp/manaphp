@@ -6,13 +6,15 @@ namespace ManaPHP\Http\Metrics\Collectors;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\Metrics\AbstractCollector;
+use ManaPHP\Http\Metrics\CollectorInterface;
+use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersInterface;
 
-class RequestsTotalCollector extends AbstractCollector
+class RequestsTotalCollector implements CollectorInterface
 {
+    #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected WorkersInterface $workers;

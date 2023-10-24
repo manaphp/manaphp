@@ -3,11 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Http\Metrics\AbstractCollector;
+use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Http\Metrics\CollectorInterface;
+use ManaPHP\Http\Metrics\FormatterInterface;
 use Swoole\Coroutine;
 
-class CoroutineOptionsCollector extends AbstractCollector
+class CoroutineOptionsCollector implements CollectorInterface
 {
+    #[Autowired] protected FormatterInterface $formatter;
+
     public function export(): string
     {
         $str = '';

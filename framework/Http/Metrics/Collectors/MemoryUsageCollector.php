@@ -5,15 +5,17 @@ namespace ManaPHP\Http\Metrics\Collectors;
 
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Http\Metrics\AbstractCollector;
+use ManaPHP\Http\Metrics\CollectorInterface;
+use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Swoole\WorkersInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 
-class MemoryUsageCollector extends AbstractCollector
+class MemoryUsageCollector implements CollectorInterface
 {
     use ContextTrait;
 
+    #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected WorkersInterface $workers;
 
     public function taskExportRequest(int $cid, $worker_id)

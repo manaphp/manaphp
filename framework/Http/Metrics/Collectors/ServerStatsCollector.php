@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Metrics\Collectors;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Http\Metrics\AbstractCollector;
+use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Swoole\WorkersInterface;
 
-class ServerStatsCollector extends AbstractCollector
+class ServerStatsCollector implements CollectorInterface
 {
+    #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected WorkersInterface $workers;
 
     public function export(): string
