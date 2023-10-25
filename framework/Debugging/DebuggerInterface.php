@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
-interface DebuggerInterface
+use ManaPHP\BootstrapperInterface;
+
+interface DebuggerInterface extends BootstrapperInterface
 {
-    public function start(): void;
 }

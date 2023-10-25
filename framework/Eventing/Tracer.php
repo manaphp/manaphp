@@ -11,6 +11,7 @@ use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
 use ManaPHP\Redis\Event\RedisCalled;
 use ManaPHP\Redis\Event\RedisCalling;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
@@ -26,6 +27,8 @@ class Tracer implements TracerInterface
     #[Autowired] protected bool $verbose = true;
     #[Autowired] protected int $verbosity = Verbosity::HIGH;
     #[Autowired] protected array $verbosities = [];
+
+    #[Autowired] protected bool $enabled = true;
 
     #[Config] protected bool $app_debug;
 
@@ -101,11 +104,13 @@ class Tracer implements TracerInterface
         }
     }
 
-    public function start(): void
+    public function bootstrap(ContainerInterface $container): void
     {
-        $this->listeners = $this->getListeners();
+        if ($this->enabled) {
+            $this->listeners = $this->getListeners();
 
-        $this->listenerProvider->on('*', [$this, 'onEvent']);
+            $this->listenerProvider->on('*', [$this, 'onEvent']);
+        }
     }
 
     public function onLoggerLog(#[Event] LoggerLog $event): void

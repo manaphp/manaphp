@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Eventing;
 
-interface TracerInterface
+use ManaPHP\BootstrapperInterface;
+
+interface TracerInterface extends BootstrapperInterface
 {
-    public function start(): void;
 }

@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics;
 
-use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Http\ResponseInterface;
 use Psr\Container\ContainerInterface;
 
-class Exporter implements ExporterInterface, BootstrapperInterface
+class Exporter implements ExporterInterface
 {
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
     #[Autowired] protected ContainerInterface $container;

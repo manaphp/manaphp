@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Swoole;
 
+use ManaPHP\BootstrapperInterface;
 use Swoole\Server;
 
-interface WorkersInterface
+interface WorkersInterface extends BootstrapperInterface
 {
     public function task(array|callable $task, array $arguments, int $task_worker_id): false|int;
 

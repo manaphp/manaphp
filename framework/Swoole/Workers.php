@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Swoole;
 
-use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
@@ -16,7 +15,7 @@ use ManaPHP\Swoole\Workers\TaskWaitCallMessage;
 use Psr\Container\ContainerInterface;
 use Swoole\Server;
 
-class Workers implements WorkersInterface, BootstrapperInterface
+class Workers implements WorkersInterface
 {
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
