@@ -31,7 +31,7 @@ class Kernel implements KernelInterface
         foreach ($this->bootstrappers as $id) {
             /** @var BootstrapperInterface $bootstrapper */
             $bootstrapper = $this->container->get($id);
-            $bootstrapper->bootstrap($this->container);
+            $bootstrapper->bootstrap();
         }
     }
 }

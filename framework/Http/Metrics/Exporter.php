@@ -16,7 +16,7 @@ class Exporter implements ExporterInterface
 
     #[Autowired] protected array $collectors = [];
 
-    public function bootstrap(ContainerInterface $container): void
+    public function bootstrap(): void
     {
         foreach ($this->collectors as $collector) {
             $this->listenerProvider->add($collector);

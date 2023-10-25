@@ -22,7 +22,7 @@ class Workers implements WorkersInterface
 
     protected Server $server;
 
-    public function bootstrap(ContainerInterface $container): void
+    public function bootstrap(): void
     {
         $this->listenerProvider->add($this);
     }

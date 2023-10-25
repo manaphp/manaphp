@@ -6,13 +6,12 @@ namespace ManaPHP\Eventing;
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
-use Psr\Container\ContainerInterface;
 
 class ListenerBootstrapper implements BootstrapperInterface
 {
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
 
-    public function bootstrap(ContainerInterface $container): void
+    public function bootstrap(): void
     {
         foreach (LocalFS::glob('@app/Listeners/?*Listener.php') as $file) {
             $this->listenerProvider->add('App\Listeners\\' . basename($file, '.php'));

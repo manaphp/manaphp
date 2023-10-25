@@ -11,7 +11,6 @@ use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
 use ManaPHP\Redis\Event\RedisCalled;
 use ManaPHP\Redis\Event\RedisCalling;
-use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
@@ -104,7 +103,7 @@ class Tracer implements TracerInterface
         }
     }
 
-    public function bootstrap(ContainerInterface $container): void
+    public function bootstrap(): void
     {
         if ($this->enabled) {
             $this->listeners = $this->getListeners();

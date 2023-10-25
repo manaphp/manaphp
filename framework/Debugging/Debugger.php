@@ -38,7 +38,6 @@ use ManaPHP\Mongodb\Event\MongodbQueried;
 use ManaPHP\Redis\RedisCacheInterface;
 use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use ManaPHP\Version;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -74,7 +73,7 @@ class Debugger implements DebuggerInterface
         $this->prefix = $prefix ?? sprintf('cache:%s:debugger:', $this->app_id);
     }
 
-    public function bootstrap(PsrContainerInterface $container): void
+    public function bootstrap(): void
     {
         if ($this->enabled ?? in_array($this->app_env, ['dev', 'test'], true)) {
             $this->listenerProvider->add($this);
