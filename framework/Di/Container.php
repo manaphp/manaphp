@@ -5,7 +5,9 @@ namespace ManaPHP\Di;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config as ConfigAttribute;
+use ManaPHP\Di\Event\SingletonCreated;
 use ManaPHP\Exception\MisuseException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -26,6 +28,14 @@ class Container implements ContainerInterface
         $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
         $this->definitions['ManaPHP\Di\MakerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;
+    }
+
+    protected function dispatchEvent(object $event): void
+    {
+        if (($dispatcher = $this->instances[EventDispatcherInterface::class] ?? null) !== null) {
+            /** @var EventDispatcherInterface $dispatcher */
+            $dispatcher->dispatch($event);
+        }
     }
 
     public function set(string $id, mixed $definition): static
@@ -243,7 +253,7 @@ class Container implements ContainerInterface
     protected function getInternal(string $id, mixed $definition): mixed
     {
         if (is_string($definition)) {
-            return $this->make($definition, [], $id);
+            $instance = $this->make($definition, [], $id);
         } elseif (is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
@@ -253,10 +263,14 @@ class Container implements ContainerInterface
                 $class = $id;
             }
 
-            return $this->make($class, $definition, $id);
+            $instance = $this->make($class, $definition, $id);
         } else {
             throw new Exception(sprintf('The definition of `%s` is not supported.', $id));
         }
+
+        $this->dispatchEvent(new SingletonCreated($id, $instance, $this->definitions));
+
+        return $instance;
     }
 
     public function get(string $id): mixed
