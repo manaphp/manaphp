@@ -9,7 +9,7 @@ class AdminActionLog extends Model
     public int $admin_id;
     public string $admin_name;
     public string $method;
-    public string $path;
+    public string $handler;
     public int $tag;
     public string $url;
     public string $data;

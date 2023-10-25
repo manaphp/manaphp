@@ -9,7 +9,7 @@ class UserActionLog extends Model
     public $user_id;
     public $user_name;
     public $method;
-    public $path;
+    public $handler;
     public $tag;
     public $url;
     public $data;

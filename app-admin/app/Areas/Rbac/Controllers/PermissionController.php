@@ -28,21 +28,21 @@ class PermissionController extends Controller
 
     public function listAction()
     {
-        return Permission::select(['permission_id', 'path', 'display_name'])->orderBy(['path' => SORT_ASC]);
+        return Permission::select(['permission_id', 'handler', 'display_name'])->orderBy(['handler' => SORT_ASC]);
     }
 
     public function rebuildAction()
     {
         $count = 0;
         foreach ($this->controllerManager->getControllers() as $controller) {
-            foreach ($this->authorization->getPermissions($controller) as $path) {
-                if (Permission::exists(['path' => $path])) {
+            foreach ($this->authorization->getPermissions($controller) as $handler) {
+                if (Permission::exists(['handler' => $handler])) {
                     continue;
                 }
 
                 $permission = new Permission();
-                $permission->path = $path;
-                $permission->display_name = $path;
+                $permission->handler = $handler;
+                $permission->display_name = $handler;
                 $permission->create();
 
                 $count++;
@@ -62,7 +62,7 @@ class PermissionController extends Controller
 
         foreach (Role::all() as $role) {
             $permission_ids = RolePermission::values('permission_id', ['role_id' => $role->role_id]);
-            $granted = Permission::values('path', ['permission_id' => $permission_ids]);
+            $granted = Permission::values('handler', ['permission_id' => $permission_ids]);
             $role_permissions = $this->authorization->buildAllowed($role->role_name, $granted);
             $role->permissions = ',' . implode(',', $role_permissions) . ',';
             $role->update();

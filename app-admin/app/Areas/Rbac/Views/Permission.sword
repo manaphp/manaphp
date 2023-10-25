@@ -1,16 +1,16 @@
 <request-form>
     <request-button @click="do_rebuild" type="primary" icon="el-icon-refresh">重新扫描</request-button>
-    <selector v-model="filter.path" :data="paths"></selector>
+    <selector v-model="filter.handler" :data="handlers"></selector>
 </request-form>
 <edit-form>
     <edit-text prop="permission_id" disabled></edit-text>
-    <edit-text prop="path" disabled></edit-text>
+    <edit-text prop="handler" disabled></edit-text>
     <edit-text prop="display_name"></edit-text>
 </edit-form>
 <result-table :data="filteredResponse">
     <result-index></result-index>
     <result-id prop="permission_id"></result-id>
-    <result-column prop="path" width="200"></result-column>
+    <result-column prop="handler" width="200"></result-column>
     <result-tag prop="roles"></result-tag>
     <result-column prop="display_name" show-overflow-tooltip></result-column>
     <result-timestamp prop="updated_time"></result-timestamp>
@@ -27,7 +27,7 @@
                 response: [],
                 edit: {},
                 filter: {
-                    path: ''
+                    handler: ''
                 },
                 label: {
                     permission_id: '权限ID',
@@ -38,13 +38,13 @@
                 filteredResponse() {
                     let filter = this.filter;
 
-                    if (!filter.path) {
+                    if (!filter.handler) {
                         return this.response;
                     }
 
                     let permissions = [];
                     for (let item of this.response) {
-                        if (filter.path !== '' && item.path !== filter.path && item.path.indexOf(filter.path + '/') !== 0 && filter.path !== '/') {
+                        if (filter.handler !== '' && item.handler !== filter.handler && item.handler.indexOf(filter.handler + '/') !== 0 && filter.handler !== '/') {
                             continue;
                         }
 
@@ -53,23 +53,23 @@
 
                     return permissions;
                 },
-                paths() {
-                    let paths = [];
+                handlers() {
+                    let handlers = [];
                     for (let item of this.response) {
-                        let path = item.path;
+                        let handler = item.handler;
                         let pos = 0;
-                        while ((pos = path.indexOf('/', pos + 1)) !== -1) {
-                            let sub = path.substring(0, pos);
-                            if (paths.indexOf(sub) === -1) {
-                                paths.push(sub);
+                        while ((pos = handler.indexOf('/', pos + 1)) !== -1) {
+                            let sub = handler.substring(0, pos);
+                            if (handlers.indexOf(sub) === -1) {
+                                handlers.push(sub);
                             }
                         }
                     }
-                    return paths.sort();
+                    return handlers.sort();
                 }
             },
             watch: {
-                'filter.path': function (newValue) {
+                'filter.handler': function (newValue) {
                     if (newValue === '') {
                         this.request.permission_id = '';
                     }

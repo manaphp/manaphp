@@ -19,7 +19,7 @@ class RolePermissionController extends Controller
     public function indexAction()
     {
         return RolePermission::select(['id', 'permission_id', 'creator_name', 'created_time'])
-            ->with(['permission' => 'permission_id, display_name, path', 'roles' => 'role_id, role_name, display_name'])
+            ->with(['permission' => 'permission_id, display_name, handler', 'roles' => 'role_id, role_name, display_name'])
             ->whereCriteria($this->request->all(), ['role_id'])
             ->all();
     }
@@ -40,11 +40,11 @@ class RolePermissionController extends Controller
             $rolePermission->create();
         }
 
-        $explicit_permissions = Permission::values('path', ['permission_id' => $permission_ids]);
-        $paths = $this->authorization->buildAllowed($role->role_name, $explicit_permissions);
-        sort($paths);
+        $explicit_permissions = Permission::values('handler', ['permission_id' => $permission_ids]);
+        $handlers = $this->authorization->buildAllowed($role->role_name, $explicit_permissions);
+        sort($handlers);
 
-        $role->permissions = ',' . implode(',', $paths) . ',';
+        $role->permissions = ',' . implode(',', $handlers) . ',';
         $role->update();
     }
 

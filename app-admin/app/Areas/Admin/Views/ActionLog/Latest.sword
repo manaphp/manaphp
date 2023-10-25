@@ -1,5 +1,5 @@
 <request-form>
-    <request-text prop="path"></request-text>
+    <request-text prop="handler"></request-text>
     <request-text prop="tag"></request-text>
     <request-date prop="created_time"></request-date>
 </request-form>
@@ -7,7 +7,7 @@
 <detail-form>
     <detail-text prop="id"></detail-text>
     <detail-text prop="method"></detail-text>
-    <detail-text prop="path"></detail-text>
+    <detail-text prop="handler"></detail-text>
     <detail-text prop="url"></detail-text>
     <detail-text prop="tag"></detail-text>
     <detail-text prop="client_ip"></detail-text>
@@ -18,7 +18,7 @@
     <result-index></result-index>
     <result-id prop="id"></result-id>
     <result-column prop="method" width="100"></result-column>
-    <result-column prop="path" width="250" show-overflow-tooltip></result-column>
+    <result-column prop="handler" width="250" show-overflow-tooltip></result-column>
     <result-id prop="tag"></result-id>
     <result-ip prop="client_ip"></result-ip>
     <result-column prop="client_udid" width="200" show-overflow-tooltip></result-column>
@@ -31,7 +31,7 @@
         vm = new App({
             data: {
                 request: {
-                    path: '',
+                    handler: '',
                     client_ip: '',
                     client_udid: '',
                     created_time: [],
@@ -41,7 +41,7 @@
                 response: {},
                 label: {
                     method: '请求方法',
-                    path: '请求路径',
+                    handler: '请求路径',
                     url: '请求URL',
                     client_ip: '客户端IP',
                     client_udid: '客户端ID'

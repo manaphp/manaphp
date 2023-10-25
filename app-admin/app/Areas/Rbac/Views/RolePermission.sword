@@ -14,7 +14,7 @@
     <result-index></result-index>
     <result-column prop="id" width="50"></result-column>
     <result-link prop="permission_id" href="/rbac/permission" width="50"></result-link>
-    <result-column prop="permission.path" width="200"></result-column>
+    <result-column prop="permission.handler" width="200"></result-column>
     <result-column prop="roles" width="300" v-slot="{row}">
         <el-button size="small" v-for="role in row.roles" :key="role.role_id" type="text"
                    @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id"

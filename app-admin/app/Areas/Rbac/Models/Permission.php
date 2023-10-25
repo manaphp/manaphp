@@ -10,7 +10,7 @@ use ManaPHP\Model\Attribute\Table;
 class Permission extends Model
 {
     public int $permission_id;
-    public string $path;
+    public string $handler;
     public string $display_name;
     public int $created_time;
     public int $updated_time;

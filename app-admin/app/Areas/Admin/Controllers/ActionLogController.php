@@ -14,7 +14,7 @@ class ActionLogController extends Controller
     public function indexAction(int $page = 1, int $size = 10)
     {
         return AdminActionLog::select()
-            ->whereCriteria($this->request->all(), ['admin_name', 'path', 'client_ip', 'created_time@=', 'tag'])
+            ->whereCriteria($this->request->all(), ['admin_name', 'handler', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
             ->paginate($page, $size);
     }
@@ -35,7 +35,7 @@ class ActionLogController extends Controller
     {
         return AdminActionLog::select()
             ->where(['admin_id' => $this->identity->getId()])
-            ->whereCriteria($this->request->all(), ['path', 'client_ip', 'created_time@=', 'tag'])
+            ->whereCriteria($this->request->all(), ['handler', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
             ->paginate($page, $size);
     }
