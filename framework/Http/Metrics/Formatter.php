@@ -3,20 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 
 class Formatter implements FormatterInterface
 {
+    #[Autowired] protected string $prefix = '';
+
     #[Config] protected string $app_id;
 
-    protected string $prefix = '';
-
-    /**
-     * @param array $labels
-     *
-     * @return string
-     */
-    public function labels($labels)
+    public function labels(array $labels): string
     {
         if (isset($labels['app'])) {
             if ($labels['app'] === '') {
