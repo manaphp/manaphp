@@ -6,6 +6,7 @@ namespace ManaPHP\Validating;
 
 use Closure;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Lazy;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
@@ -22,9 +23,9 @@ use ReflectionClass;
 
 class Validator implements ValidatorInterface
 {
-    #[Autowired] protected LocaleInterface $locale;
+    #[Autowired] protected LocaleInterface|Lazy $locale;
     #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected PurifierInterface $htmlPurifier;
+    #[Autowired] protected PurifierInterface|Lazy $htmlPurifier;
     #[Autowired] protected ModelManagerInterface $modelManager;
 
     #[Autowired] protected string $dir = '@manaphp/Validating/Validator/Templates';
