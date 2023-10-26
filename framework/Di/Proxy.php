@@ -24,20 +24,6 @@ class Proxy implements Lazy
 
     public function __call($name, $args)
     {
-        $id = $this->proxyGetId();
-
-        $target = $this->container->get($id);
-
-        if (!$this->property->isPublic()) {
-            $this->property->setAccessible(true);
-        }
-        $this->property->setValue($this->object, $target);
-
-        return call_user_func_array([$target, $name], $args);
-    }
-
-    protected function proxyGetId(): string
-    {
         $proxy = false;
         $id = null;
         foreach ($this->property->getType()?->getTypes() as $rType) {
@@ -63,6 +49,13 @@ class Proxy implements Lazy
             $id = $value[0] === '#' ? "$id$value" : $value;
         }
 
-        return $id;
+        $target = $this->container->get($id);
+
+        if (!$this->property->isPublic()) {
+            $this->property->setAccessible(true);
+        }
+        $this->property->setValue($this->object, $target);
+
+        return call_user_func_array([$target, $name], $args);
     }
 }
