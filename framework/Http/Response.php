@@ -9,6 +9,7 @@ use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
+use ManaPHP\Di\Lazy;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
@@ -22,7 +23,7 @@ class Response implements ResponseInterface
     use ContextTrait;
 
     #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected UrlInterface $url;
+    #[Autowired] protected UrlInterface|Lazy $url;
     #[Autowired] protected RouterInterface $router;
 
     #[Autowired] protected array $appenders
