@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Pooling;
 
-interface PoolManagerInterface
+interface PoolsInterface
 {
     public function remove(object $owner, ?string $type = null): static;
 

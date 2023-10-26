@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Pooling\Pool\Event;
 
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 use Stringable;
 
 class PoolBase implements Stringable
 {
     public function __construct(
-        public PoolManagerInterface $poolManager,
+        public PoolsInterface $pools,
         public object $owner,
         public object $instance,
         public string $type,

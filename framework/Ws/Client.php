@@ -7,14 +7,14 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Emitter;
 use ManaPHP\Eventing\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 use ManaPHP\Ws\Client\EngineInterface;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
 
 class Client implements ClientInterface
 {
-    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolsInterface $pools;
 
     protected string $endpoint;
     protected ?string $proxy;
@@ -46,7 +46,7 @@ class Client implements ClientInterface
         );
         $parameters['owner'] = $this;
 
-        $this->poolManager->add($this, [EngineInterface::class, $parameters], $this->pool_size);
+        $this->pools->add($this, [EngineInterface::class, $parameters], $this->pool_size);
 
         $this->emitter = new Emitter();
 
@@ -78,18 +78,18 @@ class Client implements ClientInterface
     {
         $this->endpoint = $endpoint;
 
-        $size = $this->poolManager->size($this);
+        $size = $this->pools->size($this);
 
         $engines = [];
         for ($i = 0; $i < $size; $i++) {
             /** @var EngineInterface $engine */
-            $engine = $this->poolManager->pop($this);
+            $engine = $this->pools->pop($this);
             $engine->setEndpoint($endpoint);
             $engines[] = $engine;
         }
 
         foreach ($engines as $engine) {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
 
         return $this;
@@ -100,7 +100,7 @@ class Client implements ClientInterface
     {
         $end_time = microtime(true) + ($timeout ?? $this->timeout);
 
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             $engine->send(Message::TEXT_FRAME, $message, max($end_time - microtime(true), 0.01));
@@ -110,7 +110,7 @@ class Client implements ClientInterface
             $engine->send(Message::TEXT_FRAME, $message, max($end_time - microtime(true), 0.01));
             return $engine->recv(max($end_time - microtime(true), 0.01));
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
@@ -118,7 +118,7 @@ class Client implements ClientInterface
     {
         $last_time = null;
 
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             do {
@@ -147,7 +147,7 @@ class Client implements ClientInterface
                 }
             } while ($r !== false);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 }

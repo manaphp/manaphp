@@ -26,7 +26,7 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 use ManaPHP\Pooling\Transient;
 use PDO;
 use PDOException;
@@ -37,7 +37,7 @@ class Db implements DbInterface
     use ContextTrait;
 
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolsInterface $pools;
     #[Autowired] protected MakerInterface $maker;
 
     public const METADATA_ATTRIBUTES = 0;
@@ -100,7 +100,7 @@ class Db implements DbInterface
 
         if ($uris[0] !== '') {
             $uri = (string)$uris[0];
-            $this->poolManager->add($this, [ConnectionInterface::class, ['uri' => $uri]], $master_pool_size);
+            $this->pools->add($this, [ConnectionInterface::class, ['uri' => $uri]], $master_pool_size);
         }
 
         if (count($uris) > 1) {
@@ -115,15 +115,15 @@ class Db implements DbInterface
             if (MANAPHP_COROUTINE_ENABLED) {
                 shuffle($uris);
 
-                $this->poolManager->create($this, count($uris) * $slave_pool_size, 'slave');
+                $this->pools->create($this, count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
-                        $this->poolManager->add($this, [ConnectionInterface::class, ['uri' => $v]], 1, 'slave');
+                        $this->pools->add($this, [ConnectionInterface::class, ['uri' => $v]], 1, 'slave');
                     }
                 }
             } else {
                 $uri = (string)$uris[random_int(0, count($uris) - 1)];
-                $this->poolManager->add($this, [ConnectionInterface::class, ['uri' => $uri]], 1, 'slave');
+                $this->pools->add($this, [ConnectionInterface::class, ['uri' => $uri]], 1, 'slave');
             }
 
             $this->has_slave = true;
@@ -157,7 +157,7 @@ class Db implements DbInterface
         if ($context->connection) {
             $connection = $context->connection;
         } else {
-            $connection = $this->poolManager->pop($this, $this->timeout);
+            $connection = $this->pools->pop($this, $this->timeout);
         }
 
         try {
@@ -166,7 +166,7 @@ class Db implements DbInterface
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if (!$context->connection) {
-                $this->poolManager->push($this, $connection);
+                $this->pools->push($this, $connection);
             }
         }
 
@@ -211,7 +211,7 @@ class Db implements DbInterface
                 $type = $this->has_slave ? 'slave' : 'default';
             }
 
-            $connection = $this->poolManager->pop($this, $this->timeout, $type);
+            $connection = $this->pools->pop($this, $this->timeout, $type);
         }
 
         $sql = $connection->replaceQuoteCharacters($sql);
@@ -224,7 +224,7 @@ class Db implements DbInterface
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if ($type) {
-                $this->poolManager->push($this, $connection, $type);
+                $this->pools->push($this, $connection, $type);
             }
         }
 
@@ -264,7 +264,7 @@ class Db implements DbInterface
 
         $affected_rows = 0;
 
-        $connection = $context->connection ?: $this->poolManager->pop($this, $this->timeout);
+        $connection = $context->connection ?: $this->pools->pop($this, $this->timeout);
 
         $this->eventDispatcher->dispatch(new DbInserting($this, 'insert', $sql, $bind));
 
@@ -280,7 +280,7 @@ class Db implements DbInterface
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if (!$context->connection) {
-                $this->poolManager->push($this, $connection);
+                $this->pools->push($this, $connection);
             }
         }
 
@@ -430,7 +430,7 @@ class Db implements DbInterface
             $this->eventDispatcher->dispatch(new DbBegin($this));
 
             /** @var ConnectionInterface $connection */
-            $connection = $this->poolManager->pop($this, $this->timeout);
+            $connection = $this->pools->pop($this, $this->timeout);
 
             try {
                 $connection->begin();
@@ -442,7 +442,7 @@ class Db implements DbInterface
             } finally {
                 /** @noinspection PhpConditionAlreadyCheckedInspection */
                 if ($context->connection !== null) {
-                    $this->poolManager->push($this, $connection);
+                    $this->pools->push($this, $connection);
                 }
             }
         } else {
@@ -473,7 +473,7 @@ class Db implements DbInterface
                     $message = 'rollBack failed: ' . $exception->getMessage();
                     throw new DbException($message, $exception->getCode(), $exception);
                 } finally {
-                    $this->poolManager->push($this, $context->connection);
+                    $this->pools->push($this, $context->connection);
                     $context->connection = null;
                     $this->eventDispatcher->dispatch(new DbRollback($this));
                 }
@@ -498,7 +498,7 @@ class Db implements DbInterface
             } catch (PDOException $exception) {
                 throw new DbException('commit failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             } finally {
-                $this->poolManager->push($this, $context->connection);
+                $this->pools->push($this, $context->connection);
                 $context->connection = null;
                 $this->eventDispatcher->dispatch(new DbCommit($this));
             }
@@ -515,7 +515,7 @@ class Db implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $this->timeout, $type);
+            $connection = $this->pools->pop($this, $this->timeout, $type);
         }
 
         try {
@@ -534,7 +534,7 @@ class Db implements DbInterface
             }
         } finally {
             if ($type) {
-                $this->poolManager->push($this, $connection, $type);
+                $this->pools->push($this, $connection, $type);
             }
         }
     }
@@ -549,14 +549,14 @@ class Db implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $this->timeout, $type);
+            $connection = $this->pools->pop($this, $this->timeout, $type);
         }
 
         try {
             return $connection->buildSql($params);
         } finally {
             if ($type) {
-                $this->poolManager->push($this, $connection, $type);
+                $this->pools->push($this, $connection, $type);
             }
         }
     }
@@ -575,7 +575,7 @@ class Db implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $this->timeout, $type);
+            $connection = $this->pools->pop($this, $this->timeout, $type);
         }
 
         $table = $this->completeTable($table);
@@ -585,7 +585,7 @@ class Db implements DbInterface
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if ($type) {
-                $this->poolManager->push($this, $connection, $type);
+                $this->pools->push($this, $connection, $type);
             }
         }
 
@@ -605,7 +605,7 @@ class Db implements DbInterface
                 try {
                     $context->connection->rollback();
                 } finally {
-                    $this->poolManager->push($this, $context->connection);
+                    $this->pools->push($this, $context->connection);
                 }
             }
             $context->connection = null;
@@ -619,7 +619,7 @@ class Db implements DbInterface
 
     public function getTransientWrapper(string $type = 'default'): Transient
     {
-        return $this->poolManager->transient($this, $this->timeout, $type);
+        return $this->pools->transient($this, $this->timeout, $type);
     }
 
     public function transientCall(object $instance, string $method, array $arguments): mixed

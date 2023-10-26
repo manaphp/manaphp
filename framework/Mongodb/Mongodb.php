@@ -24,14 +24,14 @@ use ManaPHP\Mongodb\Event\MongodbQuerying;
 use ManaPHP\Mongodb\Event\MongodbUpdated;
 use ManaPHP\Mongodb\Event\MongodbUpdating;
 use ManaPHP\Mongodb\Exception as MongodbException;
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 use MongoDB\Driver\Exception\RuntimeException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Mongodb implements MongodbInterface
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolsInterface $pools;
     #[Autowired] protected MakerInterface $maker;
 
     #[Autowired] protected string $uri = 'mongodb://127.0.0.1:27017/';
@@ -48,7 +48,7 @@ class Mongodb implements MongodbInterface
         $path = parse_url($this->uri, PHP_URL_PATH);
         $this->db = ($path !== '/' && $path !== null) ? substr($path, 1) : null;
 
-        $this->poolManager->add($this, [Connection::class, ['uri' => $this->uri]]);
+        $this->pools->add($this, [Connection::class, ['uri' => $this->uri]]);
     }
 
     public function __clone()
@@ -82,11 +82,11 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbInserting($this, $namespace));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $count = $connection->insert($namespace, $document);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
         $this->eventDispatcher->dispatch(new MongodbInserted($this, $count, $namespace, $document));
 
@@ -101,11 +101,11 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbBulkInserting($this, $namespace, $documents));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $count = $connection->bulkInsert($namespace, $documents);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
 
         $this->eventDispatcher->dispatch(new MongodbBulkInserted($this, $namespace, $documents, $count));
@@ -121,11 +121,11 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbUpdating($this, $namespace, $document, $filter));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $count = $connection->update($namespace, $document, $filter);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
         $this->eventDispatcher->dispatch(new MongodbUpdated($this, $namespace, $document, $filter, $count));
 
@@ -140,11 +140,11 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbBulkUpdating($this, $namespace, $documents));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $count = $connection->bulkUpdate($namespace, $documents, $primaryKey);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
 
         $this->eventDispatcher->dispatch(new MongodbBulkInserted($this, $namespace, $documents, $count));
@@ -160,11 +160,11 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbBulkUpserting($this, $namespace, [$document]));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $count = $connection->upsert($namespace, $document, $primaryKey);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
 
         $this->eventDispatcher->dispatch(new MongodbBulkUpserted($this, $namespace, [$document], $count));
@@ -180,11 +180,11 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbBulkUpserting($this, $namespace, $documents));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $count = $connection->bulkUpsert($namespace, $documents, $primaryKey);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
         $this->eventDispatcher->dispatch(new MongodbBulkUpserted($this, $namespace, $documents, $count));
         $this->eventDispatcher->dispatch(new MongodbBulkWritten($this, $namespace, $documents, $count));
@@ -199,11 +199,11 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbDeleting($this, $namespace, $filter));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $count = $connection->delete($namespace, $filter);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
         $this->eventDispatcher->dispatch(new MongodbDeleted($this, $namespace, $filter, $count));
 
@@ -217,13 +217,13 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbQuerying($this, $namespace, $filter, $options));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $start_time = microtime(true);
             $result = $connection->fetchAll($namespace, $filter, $options, $secondaryPreferred);
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
 
         $this->eventDispatcher->dispatch(new MongodbQueried($this, $namespace, $filter, $options, $result, $elapsed));
@@ -240,13 +240,13 @@ class Mongodb implements MongodbInterface
         $this->eventDispatcher->dispatch(new MongodbCommanding($this, $db, $command));
 
         /** @var ConnectionInterface $connection */
-        $connection = $this->poolManager->pop($this);
+        $connection = $this->pools->pop($this);
         try {
             $start_time = microtime(true);
             $result = $connection->command($command, $db);
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
 
         $count = count($result);

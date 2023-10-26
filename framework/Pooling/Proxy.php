@@ -6,7 +6,7 @@ namespace ManaPHP\Pooling;
 class Proxy
 {
     public function __construct(
-        protected PoolManagerInterface $manager,
+        protected PoolsInterface $pools,
         protected object $owner,
         protected object $instance,
         protected string $type = 'default'
@@ -15,7 +15,7 @@ class Proxy
 
     public function __destruct()
     {
-        $this->manager->push($this->owner, $this->instance, $this->type);
+        $this->pools->push($this->owner, $this->instance, $this->type);
     }
 
     public function __call(string $method, array $arguments): mixed

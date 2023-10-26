@@ -13,7 +13,7 @@ use ManaPHP\Pooling\Pool\Event\PoolPush;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use WeakMap;
 
-class PoolManager implements PoolManagerInterface
+class Pools implements PoolsInterface
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected MakerInterface $maker;

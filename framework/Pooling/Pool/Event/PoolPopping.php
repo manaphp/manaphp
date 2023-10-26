@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Pooling\Pool\Event;
 
 use ManaPHP\Eventing\Attribute\Verbosity;
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 
 #[Verbosity(Verbosity::HIGH)]
 class PoolPopping
 {
     public function __construct(
-        public PoolManagerInterface $poolManager,
+        public PoolsInterface $pools,
         public object $owner,
         public string $type,
     ) {

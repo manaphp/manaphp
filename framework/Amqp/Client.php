@@ -8,13 +8,13 @@ use ManaPHP\Amqp\Client\Event\AmqpClientConsuming;
 use ManaPHP\Amqp\Client\Event\AmqpClientPublish;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolsInterface $pools;
 
     #[Autowired] protected string $uri;
 
@@ -29,78 +29,78 @@ class Client implements ClientInterface
             $this->pool_size = (int)$match[1];
         }
 
-        $this->poolManager->add($this, [EngineInterface::class, ['uri' => $this->uri]], $this->pool_size);
+        $this->pools->add($this, [EngineInterface::class, ['uri' => $this->uri]], $this->pool_size);
     }
 
     public function exchangeDeclare(Exchange $exchange): void
     {
         /** @var EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             $engine->exchangeDeclare($exchange);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
     public function exchangeDelete(string $exchange, bool $if_unused = false, bool $nowait = false): void
     {
         /** @var EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             $engine->exchangeDelete($exchange, $if_unused, $nowait);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
     public function queueDeclare(Queue $queue): void
     {
         /** @var EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             $engine->queueDeclare($queue);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
     public function queueDelete(string $queue, bool $if_unused = false, bool $if_empty = false, bool $nowait = false
     ): void {
         /** @var EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             $engine->queueDelete($queue, $if_unused, $if_empty, $nowait);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
     public function queueBind(Binding $binding): void
     {
         /** @var EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             $engine->queueBind($binding);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
     public function queueUnbind(Binding $binding): void
     {
         /** @var EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
 
         try {
             $engine->queueUnbind($binding);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
@@ -117,11 +117,11 @@ class Client implements ClientInterface
         );
 
         /** @var EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $this->timeout);
+        $engine = $this->pools->pop($this, $this->timeout);
         try {
             $engine->basicPublish($exchange, $routing_key, $body, $properties, $mandatory);
         } finally {
-            $this->poolManager->push($this, $engine);
+            $this->pools->push($this, $engine);
         }
     }
 
@@ -130,7 +130,7 @@ class Client implements ClientInterface
     ): string {
         if ($this->engine === null) {
             /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
-            $this->engine = $this->poolManager->pop($this, $this->timeout);
+            $this->engine = $this->pools->pop($this, $this->timeout);
         }
 
         $wrapper = function ($rawMessage) use ($callback, $queue) {

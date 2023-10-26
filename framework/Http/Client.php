@@ -28,14 +28,14 @@ use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected AliasInterface $alias;
-    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolsInterface $pools;
 
     #[Autowired] protected string $engine = 'ManaPHP\Http\Client\Engine';
     #[Autowired] protected ?string $proxy;
@@ -84,12 +84,12 @@ class Client implements ClientInterface
             $response = null;
             $engine_id = substr($request->url, 0, strpos($request->url, '/', 8) ?: 0);
 
-            if (!$this->poolManager->exists($this, $engine_id)) {
-                $this->poolManager->add($this, [$this->engine], $this->pool_size, $engine_id);
+            if (!$this->pools->exists($this, $engine_id)) {
+                $this->pools->add($this, [$this->engine], $this->pool_size, $engine_id);
             }
 
             /** @var EngineInterface $engine */
-            $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
+            $engine = $this->pools->pop($this, $options['timeout'], $engine_id);
 
             try {
                 $this->eventDispatcher->dispatch(new HttpClientRequesting($this, $method, $url, $request));
@@ -122,7 +122,7 @@ class Client implements ClientInterface
 
                 $success = true;
             } finally {
-                $this->poolManager->push($this, $engine, $engine_id);
+                $this->pools->push($this, $engine, $engine_id);
             }
 
             $response_text = $response->body;

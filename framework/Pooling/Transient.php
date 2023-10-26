@@ -5,14 +5,14 @@ namespace ManaPHP\Pooling;
 
 class Transient
 {
-    protected PoolManagerInterface $manager;
+    protected PoolsInterface $pools;
     protected Transientable $owner;
     protected object $instance;
     protected string $type;
 
-    public function __construct(PoolManagerInterface $manager, Transientable $owner, object $instance, string $type)
+    public function __construct(PoolsInterface $pools, Transientable $owner, object $instance, string $type)
     {
-        $this->manager = $manager;
+        $this->pools = $pools;
         $this->owner = $owner;
         $this->instance = $instance;
         $this->type = $type;
@@ -20,7 +20,7 @@ class Transient
 
     public function __destruct()
     {
-        $this->manager->push($this->owner, $this->instance, $this->type);
+        $this->pools->push($this->owner, $this->instance, $this->type);
     }
 
     public function __call(string $method, array $arguments): mixed

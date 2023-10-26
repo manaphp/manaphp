@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Redis;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\PoolsInterface;
 
 class Redis implements RedisInterface
 {
-    #[Autowired] protected PoolManagerInterface $poolManager;
+    #[Autowired] protected PoolsInterface $pools;
 
     #[Autowired] protected string $uri; #redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
     #[Autowired] protected int $pool_timeout = 1;
@@ -25,7 +25,7 @@ class Redis implements RedisInterface
             $this->pool_size = (int)$matches[1];
         }
 
-        $this->poolManager->add($this, [Connection::class, ['uri' => $this->uri]], $this->pool_size);
+        $this->pools->add($this, [Connection::class, ['uri' => $this->uri]], $this->pool_size);
     }
 
     public function __call(string $method, array $arguments): mixed
@@ -35,12 +35,12 @@ class Redis implements RedisInterface
         }
 
         /** @var Connection $connection */
-        $connection = $this->poolManager->pop($this, $this->pool_timeout);
+        $connection = $this->pools->pop($this, $this->pool_timeout);
 
         try {
             $return = $connection->__call($method, $arguments);
         } finally {
-            $this->poolManager->push($this, $connection);
+            $this->pools->push($this, $connection);
         }
 
         if (is_object($return)) {
@@ -52,8 +52,8 @@ class Redis implements RedisInterface
 
     public function getProxy(): RedisInterface
     {
-        $connection = $this->poolManager->pop($this, $this->pool_timeout);
+        $connection = $this->pools->pop($this, $this->pool_timeout);
 
-        return new Proxy($this->poolManager, $this, $connection);
+        return new Proxy($this->pools, $this, $connection);
     }
 }
