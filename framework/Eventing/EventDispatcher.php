@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Eventing;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Lazy;
 
 class EventDispatcher implements EventDispatcherInterface
 {
-    #[Autowired] protected ListenerProviderInterface $listenerProvider;
+    #[Autowired] protected ListenerProviderInterface|Lazy $listenerProvider;
 
     public function dispatch(object $event)
     {
