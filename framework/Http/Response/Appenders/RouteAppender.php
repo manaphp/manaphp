@@ -10,7 +10,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
 
-class Route implements AppenderInterface
+class RouteAppender implements AppenderInterface
 {
     #[Autowired] protected DispatcherInterface $dispatcher;
 

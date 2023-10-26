@@ -7,10 +7,10 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
 
-class RequestId implements AppenderInterface
+class ResponseTimeAppender implements AppenderInterface
 {
     public function append(RequestInterface $request, ResponseInterface $response): void
     {
-        $response->setHeader('X-Request-Id', $request->getRequestId());
+        $response->setHeader('X-Response-Time', sprintf('%.3f', $request->getElapsedTime()));
     }
 }

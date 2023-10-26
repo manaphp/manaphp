@@ -8,7 +8,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
 
-class Etag implements AppenderInterface
+class EtagAppender implements AppenderInterface
 {
     #[Autowired] protected string $algo = 'md5';
 

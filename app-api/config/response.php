@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-use ManaPHP\Http\Response\Appenders\Etag;
-use ManaPHP\Http\Response\Appenders\RequestId;
-use ManaPHP\Http\Response\Appenders\ResponseTime;
-use ManaPHP\Http\Response\Appenders\Route;
+use ManaPHP\Http\Response\Appenders\EtagAppender;
+use ManaPHP\Http\Response\Appenders\RequestIdAppender;
+use ManaPHP\Http\Response\Appenders\ResponseTimeAppender;
+use ManaPHP\Http\Response\Appenders\RouteAppender;
 
 return [
     'ManaPHP\Http\ResponseInterface' => [
         'appenders' => [
-            Etag::class,
-            RequestId::class,
-            ResponseTime::class,
-            Route::class,
+            EtagAppender::class,
+            RequestIdAppender::class,
+            ResponseTimeAppender::class,
+            RouteAppender::class,
         ]
     ]
 ];

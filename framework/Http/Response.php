@@ -13,9 +13,9 @@ use ManaPHP\Di\Lazy;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Http\Response\Appenders\RequestId;
-use ManaPHP\Http\Response\Appenders\ResponseTime;
-use ManaPHP\Http\Response\Appenders\Route;
+use ManaPHP\Http\Response\Appenders\RequestIdAppender;
+use ManaPHP\Http\Response\Appenders\ResponseTimeAppender;
+use ManaPHP\Http\Response\Appenders\RouteAppender;
 use Throwable;
 
 class Response implements ResponseInterface
@@ -28,9 +28,9 @@ class Response implements ResponseInterface
 
     #[Autowired] protected array $appenders
         = [
-            RequestId::class,
-            ResponseTime::class,
-            Route::class,
+            RequestIdAppender::class,
+            ResponseTimeAppender::class,
+            RouteAppender::class,
         ];
     #[Autowired] protected int|string $ok_code = 0;
     #[Autowired] protected int|string $error_code = 1;
