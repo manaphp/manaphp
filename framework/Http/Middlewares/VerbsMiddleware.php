@@ -9,12 +9,10 @@ use ManaPHP\Exception\MethodNotAllowedHttpException;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
-use ManaPHP\Mvc\ViewInterface;
 use ReflectionMethod;
 
 class VerbsMiddleware
 {
-    #[Autowired] protected ViewInterface $view;
     #[Autowired] protected RequestInterface $request;
 
     public function onValidating(#[Event] RequestValidating $event): void
