@@ -9,7 +9,7 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-class ControllerManager implements ControllerManagerInterface
+class Controllers implements ControllersInterface
 {
     #[Autowired] protected AliasInterface $alias;
 

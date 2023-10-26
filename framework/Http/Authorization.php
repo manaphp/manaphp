@@ -24,7 +24,7 @@ class Authorization implements AuthorizationInterface
     #[Autowired] protected RouterInterface $router;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
-    #[Autowired] protected ControllerManagerInterface $controllerManager;
+    #[Autowired] protected ControllersInterface $controllers;
 
     public function getPermissions(string $controller): array
     {
@@ -38,7 +38,7 @@ class Authorization implements AuthorizationInterface
             $controllerAuthorize = null;
         }
 
-        foreach ($this->controllerManager->getActions($controller) as $action) {
+        foreach ($this->controllers->getActions($controller) as $action) {
             $rMethod = new ReflectionMethod($controller, $action . 'Action');
             if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) !== null) {
                 $actionAuthorize = $attribute->newInstance();
@@ -48,7 +48,7 @@ class Authorization implements AuthorizationInterface
             }
 
             if ($actionAuthorize === null || $actionAuthorize->role === null) {
-                $permissions[] = $this->controllerManager->getPath($controller, $action);
+                $permissions[] = $this->controllers->getPath($controller, $action);
             }
         }
 
@@ -58,10 +58,10 @@ class Authorization implements AuthorizationInterface
             if (method_exists($controller, $method)) {
                 $rMethod = new ReflectionMethod($controller, $method);
                 if (!isset($rMethod->getAttributes(Authorize::class)[0])) {
-                    $permissions[] = $this->controllerManager->getPath($controller, $refer);
+                    $permissions[] = $this->controllers->getPath($controller, $refer);
                 }
             } else {
-                $permissions[] = $this->controllerManager->getPath($controller, $refer);
+                $permissions[] = $this->controllers->getPath($controller, $refer);
             }
         }
 
@@ -71,9 +71,9 @@ class Authorization implements AuthorizationInterface
     public function buildAllowed(string $role, array $granted = []): array
     {
         $permissions = [];
-        foreach ($this->controllerManager->getControllers() as $controller) {
-            foreach ($this->controllerManager->getActions($controller) as $action) {
-                $permission = $this->controllerManager->getPath($controller, $action);
+        foreach ($this->controllers->getControllers() as $controller) {
+            foreach ($this->controllers->getActions($controller) as $action) {
+                $permission = $this->controllers->getPath($controller, $action);
 
                 if (in_array($permission, $granted, true)) {
                     $permissions[] = $permission;
@@ -90,7 +90,7 @@ class Authorization implements AuthorizationInterface
                             null;
                         } elseif (str_starts_with($authorize->role, '@')) {
                             $refer = substr($authorize->role, 1);
-                            $refer_permission = $this->controllerManager->getPath($controller, $refer);
+                            $refer_permission = $this->controllers->getPath($controller, $refer);
                             if (in_array($refer_permission, $granted, true)) {
                                 $permissions[] = $permission;
                             } else {
@@ -212,7 +212,7 @@ class Authorization implements AuthorizationInterface
                 }
             }
 
-            $permission = $this->controllerManager->getPath($controller, $action);
+            $permission = $this->controllers->getPath($controller, $action);
         }
 
         $checked = ",$permission,";

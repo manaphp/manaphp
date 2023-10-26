@@ -10,13 +10,13 @@ use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\ControllerManagerInterface;
+use ManaPHP\Http\ControllersInterface;
 
 #[Authorize('@index')]
 class PermissionController extends Controller
 {
     #[Autowired] protected AuthorizationInterface $authorization;
-    #[Autowired] protected ControllerManagerInterface $controllerManager;
+    #[Autowired] protected ControllersInterface $controllers;
 
     public function indexAction()
     {
@@ -34,7 +34,7 @@ class PermissionController extends Controller
     public function rebuildAction()
     {
         $count = 0;
-        foreach ($this->controllerManager->getControllers() as $controller) {
+        foreach ($this->controllers->getControllers() as $controller) {
             foreach ($this->authorization->getPermissions($controller) as $handler) {
                 if (Permission::exists(['handler' => $handler])) {
                     continue;

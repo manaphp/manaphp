@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-interface ControllerManagerInterface
+interface ControllersInterface
 {
     public function getControllers(): array;
 
