@@ -7,7 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use Swoole\Coroutine;
 
-class CoroutineManager implements CoroutineManagerInterface
+class Coroutines implements CoroutinesInterface
 {
     #[Autowired] protected MakerInterface $maker;
 

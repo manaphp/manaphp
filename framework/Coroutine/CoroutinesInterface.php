@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
-interface CoroutineManagerInterface
+interface CoroutinesInterface
 {
     public function createScheduler(): SchedulerInterface;
 
