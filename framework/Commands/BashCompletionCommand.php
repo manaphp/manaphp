@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
-use ManaPHP\Cli\CommandManagerInterface;
+use ManaPHP\Cli\CommandsInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Helper\LocalFS;
@@ -14,7 +14,7 @@ use ReflectionMethod;
 
 class BashCompletionCommand extends Command
 {
-    #[Autowired] protected CommandManagerInterface $commandManager;
+    #[Autowired] protected CommandsInterface $commands;
     #[Autowired] protected ContainerInterface $container;
 
     /**
@@ -27,7 +27,7 @@ class BashCompletionCommand extends Command
     {
         $actions = [];
         try {
-            if (($commandClassName = $this->commandManager->getCommands()[$command] ?? null) === null) {
+            if (($commandClassName = $this->commands->getCommands()[$command] ?? null) === null) {
                 return [];
             }
 
@@ -206,7 +206,7 @@ class BashCompletionCommand extends Command
         $current = $arguments[$position] ?? '';
 
         if ($position === 1) {
-            $words = array_keys($this->commandManager->getCommands());
+            $words = array_keys($this->commands->getCommands());
         } elseif ($position === 2) {
             $words = $this->getActions($command);
         } elseif (str_starts_with($previous, '-') && !str_starts_with($current, '-')) {

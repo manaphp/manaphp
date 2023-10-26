@@ -5,7 +5,7 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Helper\LocalFS;
 
-class CommandManager implements CommandManagerInterface
+class Commands implements CommandsInterface
 {
     protected array $commands = [];
 

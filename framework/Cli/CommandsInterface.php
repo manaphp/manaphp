@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-interface CommandManagerInterface
+interface CommandsInterface
 {
     public function getCommands(): array;
 }
