@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Dumping;
 
-interface DumperManagerInterface
+interface DumpersInterface
 {
     public function dump(object $object): array;
 }

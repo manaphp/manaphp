@@ -15,7 +15,7 @@ use ManaPHP\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Di\ContainerInterface;
-use ManaPHP\Dumping\DumperManagerInterface;
+use ManaPHP\Dumping\DumpersInterface;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\AbortException;
@@ -53,7 +53,7 @@ class Debugger implements DebuggerInterface
     #[Autowired] protected RouterInterface $router;
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected PreparedEmulatorInterface $preparedEmulator;
-    #[Autowired] protected DumperManagerInterface $dumpManager;
+    #[Autowired] protected DumpersInterface $dumpers;
 
     protected int $ttl;
     protected string $prefix;
@@ -358,7 +358,7 @@ class Debugger implements DebuggerInterface
 
         $dependencies = [];
         foreach ($this->container->getInstances() as $name => $instance) {
-            $properties = $this->dumpManager->dump($instance);
+            $properties = $this->dumpers->dump($instance);
 
             $dependencies[$name] = ['class'      => $instance::class,
                                     'object_id'  => spl_object_id($instance),

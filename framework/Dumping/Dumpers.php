@@ -6,7 +6,7 @@ namespace ManaPHP\Dumping;
 use ManaPHP\Di\Attribute\Autowired;
 use Psr\Container\ContainerInterface;
 
-class DumperManager implements DumperManagerInterface
+class Dumpers implements DumpersInterface
 {
     #[Autowired] protected ContainerInterface $container;
 
