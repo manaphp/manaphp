@@ -6,7 +6,7 @@ namespace ManaPHP\Di;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 
-class Proxy
+class Proxy implements Lazy
 {
     protected ContainerInterface $container;
     protected ReflectionProperty $property;
@@ -42,7 +42,7 @@ class Proxy
         $id = null;
         foreach ($this->property->getType()?->getTypes() as $rType) {
             $type = $rType->getName();
-            if ($type === static::class) {
+            if ($type === Lazy::class) {
                 $proxy = true;
             } else {
                 $id = $type;
