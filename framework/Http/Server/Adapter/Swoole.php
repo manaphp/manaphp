@@ -8,6 +8,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Di\ConfigInterface;
+use ManaPHP\Di\Lazy;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Response\AppenderInterface;
@@ -46,7 +47,7 @@ class Swoole extends AbstractServer
 
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected AliasInterface $alias;
-    #[Autowired] protected StaticHandlerInterface $staticHandler;
+    #[Autowired] protected StaticHandlerInterface|Lazy $staticHandler;
     #[Autowired] protected ConfigInterface $config;
     #[Autowired] protected LoggerInterface $logger;
 
