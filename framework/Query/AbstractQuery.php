@@ -13,18 +13,18 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelManagerInterface;
-use ManaPHP\Model\RelationManagerInterface;
+use ManaPHP\Model\ModelsInterface;
+use ManaPHP\Model\RelationsInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Model\ThoseInterface;
 
 abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonSerializable
 {
     #[Autowired] protected MakerInterface $maker;
-    #[Autowired] protected RelationManagerInterface $relationManager;
+    #[Autowired] protected RelationsInterface $relations;
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected ShardingInterface $sharding;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     protected string $connection;
     protected string $table;
@@ -111,7 +111,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         if ($table) {
             if (str_contains($table, '\\')) {
                 $this->setModel($table);
-                $table = $this->modelManager->getTable($table);
+                $table = $this->models->getTable($table);
             }
 
             $this->table = $table;
@@ -244,7 +244,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         }
 
         $model = $this->model;
-        if ($format = $this->modelManager->getDateFormat($model)) {
+        if ($format = $this->models->getDateFormat($model)) {
             if (is_int($min)) {
                 $min = date($format, $min);
             }
@@ -348,7 +348,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
             $parent_value = $with[$parent_name];
             if (!$parent_value instanceof QueryInterface) {
-                $with[$parent_name] = $this->relationManager->getQuery($this->model, $parent_name, $parent_value);
+                $with[$parent_name] = $this->relations->getQuery($this->model, $parent_name, $parent_value);
             }
 
             $with[$parent_name]->with(is_int($k) ? [$child_name] : [$child_name => $v]);
@@ -388,7 +388,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         }
 
         if ($rows && $this->with) {
-            $rows = $this->relationManager->earlyLoad($model, $rows, $this->with);
+            $rows = $this->relations->earlyLoad($model, $rows, $this->with);
         }
 
         if (($map = $this->map) !== null) {
@@ -488,7 +488,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     {
         if ($this->model) {
             $model = $this->model;
-            $format = $this->modelManager->getDateFormat($model);
+            $format = $this->models->getDateFormat($model);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -515,7 +515,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     {
         if ($this->model) {
             $model = $this->model;
-            $format = $this->modelManager->getDateFormat($model);
+            $format = $this->models->getDateFormat($model);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -542,7 +542,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     {
         if ($this->model) {
             $model = $this->model;
-            $format = $this->modelManager->getDateFormat($model);
+            $format = $this->models->getDateFormat($model);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }

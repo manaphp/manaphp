@@ -14,10 +14,10 @@ use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Model\Relation\HasOne;
 use ManaPHP\Query\QueryInterface;
 
-class RelationManager implements RelationManagerInterface
+class Relations implements RelationsInterface
 {
     #[Autowired] protected ThoseInterface $those;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     protected array $relations;
 
@@ -81,7 +81,7 @@ class RelationManager implements RelationManagerInterface
                 return null;
             }
 
-            $selfReferencedKey = $this->modelManager->getReferencedKey($selfModel);
+            $selfReferencedKey = $this->models->getReferencedKey($selfModel);
             if (property_exists($thatModel, $selfReferencedKey)) {
                 return new HasMany($selfModel, $thatModel);
             }
@@ -113,8 +113,8 @@ class RelationManager implements RelationManagerInterface
 
             throw new RuntimeException(['infer `{relation}` relation failed', 'relation' => $name]);
         } elseif ($thatModel = $this->inferClassName($selfModel, $name)) {
-            $selfReferencedKey = $this->modelManager->getReferencedKey($selfModel);
-            $thatReferencedKey = $this->modelManager->getReferencedKey($thatModel);
+            $selfReferencedKey = $this->models->getReferencedKey($selfModel);
+            $thatReferencedKey = $this->models->getReferencedKey($thatModel);
             if (property_exists($thatModel, $selfReferencedKey)) {
                 return new HasOne($selfModel, $thatModel);
             } elseif (property_exists($selfModel, $thatReferencedKey)) {

@@ -5,7 +5,7 @@ namespace ManaPHP\Model;
 
 use ManaPHP\Query\QueryInterface;
 
-interface RelationManagerInterface
+interface RelationsInterface
 {
     public function has(string $model, string $name): bool;
 

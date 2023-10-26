@@ -509,7 +509,7 @@ class Query extends AbstractQuery
         } elseif ($joins) {
             return '*';
         } else {
-            return $this->model ? '[' . implode('], [', $this->modelManager->getFields($this->model)) . ']' : '*';
+            return $this->model ? '[' . implode('], [', $this->models->getFields($this->model)) . ']' : '*';
         }
     }
 
@@ -519,7 +519,7 @@ class Query extends AbstractQuery
             return $sql;
         }
 
-        if (($columnMap = $this->modelManager->getColumnMap($model)) === []) {
+        if (($columnMap = $this->models->getColumnMap($model)) === []) {
             return $sql;
         }
 
@@ -662,7 +662,7 @@ class Query extends AbstractQuery
         $rows = $db->fetchAll($this->sql, $this->bind, PDO::FETCH_ASSOC, $this->force_master);
 
         $model = $this->model;
-        if ($columnMap = $model ? $this->modelManager->getColumnMap($model) : []) {
+        if ($columnMap = $model ? $this->models->getColumnMap($model) : []) {
             foreach ($rows as &$row) {
                 foreach ($columnMap as $propery => $column) {
                     if (array_key_exists($column, $row)) {

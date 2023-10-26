@@ -8,7 +8,7 @@ use ManaPHP\Exception\BadRequestException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionParameter;
@@ -16,7 +16,7 @@ use ReflectionParameter;
 class Model implements ObjectValueResolverInterface
 {
     #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
     #[Autowired] protected ValidatorInterface $validator;
 
     public function resolve(ReflectionParameter $parameter, ?string $type, string $name): ?ModelInterface
@@ -25,7 +25,7 @@ class Model implements ObjectValueResolverInterface
             return null;
         }
 
-        $primaryKey = $this->modelManager->getprimaryKey($type);
+        $primaryKey = $this->models->getprimaryKey($type);
         if ($this->request->has($primaryKey)) {
             $id = $this->request->get($primaryKey);
         } elseif ($this->request->has($name)) {

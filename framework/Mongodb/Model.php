@@ -14,7 +14,7 @@ use ManaPHP\Model\Event\ModelSaved;
 use ManaPHP\Model\Event\ModelSaving;
 use ManaPHP\Model\Event\ModelUpdated;
 use ManaPHP\Model\Event\ModelUpdating;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Mongodb\Model\InferrerInterface;
 use MongoDB\BSON\ObjectId;
@@ -82,7 +82,7 @@ class Model extends AbstractModel
     {
         $this->autoFillCreated();
 
-        $fields = Container::get(ModelManagerInterface::class)->getFields(static::class);
+        $fields = Container::get(ModelsInterface::class)->getFields(static::class);
 
         $this->validate($fields);
 
@@ -137,9 +137,9 @@ class Model extends AbstractModel
      */
     public function update(): static
     {
-        $modelManager = Container::get(ModelManagerInterface::class);
+        $models = Container::get(ModelsInterface::class);
 
-        $primaryKey = $modelManager->getPrimaryKey(static::class);
+        $primaryKey = $models->getPrimaryKey(static::class);
 
         if (!isset($this->$primaryKey)) {
             throw new MisuseException('missing primary key value');
@@ -154,7 +154,7 @@ class Model extends AbstractModel
             throw new MisuseException('updating model primary key value is not support');
         }
 
-        $fields = $modelManager->getFields(static::class);
+        $fields = $models->getFields(static::class);
 
         $this->validate();
 
@@ -193,7 +193,7 @@ class Model extends AbstractModel
 
     public function delete(): static
     {
-        $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ModelsInterface::class)->getPrimaryKey(static::class);
 
         if (!isset($this->$primaryKey)) {
             throw new MisuseException('missing primary key value');

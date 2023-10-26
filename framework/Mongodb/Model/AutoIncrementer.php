@@ -4,20 +4,20 @@ declare(strict_types=1);
 namespace ManaPHP\Mongodb\Model;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Mongodb\MongodbConnectorInterface;
 use ManaPHP\Mongodb\MongodbInterface;
 
 class AutoIncrementer implements AutoIncrementerInterface
 {
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
     #[Autowired] protected ShardingInterface $sharding;
     #[Autowired] protected MongodbConnectorInterface $connector;
 
     protected function createAutoIncrementIndex(MongodbInterface $mongodb, string $source): bool
     {
-        $primaryKey = $this->modelManager->getPrimaryKey(static::class);
+        $primaryKey = $this->models->getPrimaryKey(static::class);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);

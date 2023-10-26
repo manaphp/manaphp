@@ -5,7 +5,7 @@ namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Model\ThoseInterface;
 
@@ -14,7 +14,7 @@ class CollectionGateway implements CollectionGatewayInterface
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected MongodbConnectorInterface $connector;
     #[Autowired] protected ShardingInterface $sharding;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     protected function getThat(string $model): Model
     {
@@ -47,7 +47,7 @@ class CollectionGateway implements CollectionGatewayInterface
 
         $that = $this->getThat($model);
 
-        $primaryKey = $this->modelManager->getPrimaryKey($model);
+        $primaryKey = $this->models->getPrimaryKey($model);
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
                 throw new MisuseException(['bulkUpdate `{1}` model must set primary value', static::class]);
@@ -82,7 +82,7 @@ class CollectionGateway implements CollectionGatewayInterface
 
         list($connection, $collection) = $this->sharding->getUniqueShard($model, []);
 
-        $primaryKey = $this->modelManager->getPrimaryKey($model);
+        $primaryKey = $this->models->getPrimaryKey($model);
         return $this->connector->get($connection)->bulkUpsert($collection, $documents, $primaryKey);
     }
 

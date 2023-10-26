@@ -7,7 +7,7 @@ use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
 use ManaPHP\Model\AbstractRelation;
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\QueryInterface;
 
 class HasManyToMany extends AbstractRelation
@@ -20,15 +20,15 @@ class HasManyToMany extends AbstractRelation
 
     public function __construct(string $selfModel, string $thatModel, string $pivotModel)
     {
-        $modelManager = Container::get(ModelManagerInterface::class);
+        $models = Container::get(ModelsInterface::class);
 
         $this->selfModel = $selfModel;
-        $this->selfField = $modelManager->getPrimaryKey($selfModel);
+        $this->selfField = $models->getPrimaryKey($selfModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $modelManager->getPrimaryKey($thatModel);
+        $this->thatField = $models->getPrimaryKey($thatModel);
         $this->pivotModel = $pivotModel;
-        $this->selfPivot = $modelManager->getReferencedKey($selfModel);
-        $this->thatPivot = $modelManager->getPrimaryKey($thatModel);
+        $this->selfPivot = $models->getReferencedKey($selfModel);
+        $this->thatPivot = $models->getPrimaryKey($thatModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

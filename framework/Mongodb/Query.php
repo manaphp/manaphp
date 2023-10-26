@@ -10,7 +10,7 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\AbstractQuery;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
@@ -18,7 +18,7 @@ use MongoDB\BSON\Regex;
 class Query extends AbstractQuery
 {
     #[Autowired] protected MongodbConnectorInterface $connector;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     protected array $types;
     protected array $aliases;
@@ -306,7 +306,7 @@ class Query extends AbstractQuery
         } elseif ($operator === '~=') {
             if ($this->types && !isset($this->types[$field])) {
                 $model = $this->model;
-                $collection = $model ? $this->modelManager->getTable($model) : $this->table;
+                $collection = $model ? $this->models->getTable($model) : $this->table;
                 throw new InvalidArgumentException(['`{1}` field is not exist in `{2}` collection', $field, $collection]
                 );
             }
@@ -649,12 +649,12 @@ class Query extends AbstractQuery
                     $options['projection'] = $this->fields;
                 }
             } elseif ($model !== null) {
-                $options['projection'] = array_fill_keys($this->modelManager->getFields($model), 1);
+                $options['projection'] = array_fill_keys($this->models->getFields($model), 1);
             }
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {
                 if ($model !== null) {
-                    if ($this->modelManager->getPrimaryKey($model) !== '_id') {
+                    if ($this->models->getPrimaryKey($model) !== '_id') {
                         $options['projection']['_id'] = false;
                     }
                 } else {

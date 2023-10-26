@@ -8,7 +8,7 @@ use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
 use ManaPHP\Model\AbstractRelation;
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\QueryInterface;
 
 class HasManyOthers extends AbstractRelation
@@ -19,11 +19,11 @@ class HasManyOthers extends AbstractRelation
 
     public function __construct(string $selfModel, string $thatModel)
     {
-        $modelManager = Container::get(ModelManagerInterface::class);
-        $referencedKey = $modelManager->getReferencedKey($thatModel);
+        $models = Container::get(ModelsInterface::class);
+        $referencedKey = $models->getReferencedKey($thatModel);
 
         $keys = [];
-        foreach ($modelManager->getFields($selfModel) as $field) {
+        foreach ($models->getFields($selfModel) as $field) {
             if ($field === $referencedKey || $field === 'id' || $field === '_id') {
                 continue;
             }
@@ -47,9 +47,9 @@ class HasManyOthers extends AbstractRelation
 
         $this->selfModel = $selfModel;
         $this->selfFilter = $selfFilter;
-        $this->selfValue = $modelManager->getReferencedKey($thatModel);
+        $this->selfValue = $models->getReferencedKey($thatModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $modelManager->getPrimaryKey($thatModel);
+        $this->thatField = $models->getPrimaryKey($thatModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

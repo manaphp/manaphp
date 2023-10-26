@@ -5,14 +5,14 @@ namespace ManaPHP\Db\Model;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ThoseInterface;
 
 class Inferrer implements InferrerInterface
 {
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected MetadataInterface $metadata;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     protected array $primaryKey = [];
     protected array $fields = [];
@@ -20,7 +20,7 @@ class Inferrer implements InferrerInterface
 
     protected function primaryKeyInternal(string $model): ?string
     {
-        $fields = $this->modelManager->getFields($model);
+        $fields = $this->models->getFields($model);
 
         if (in_array('id', $fields, true)) {
             return 'id';
@@ -33,7 +33,7 @@ class Inferrer implements InferrerInterface
             return $tryField;
         }
 
-        $table = $this->modelManager->getTable($model);
+        $table = $this->models->getTable($model);
         if (($pos = strpos($table, ':')) !== false) {
             $table = substr($table, 0, $pos);
         } elseif (($pos = strpos($table, ',')) !== false) {
@@ -61,7 +61,7 @@ class Inferrer implements InferrerInterface
                     throw new NotSupportedException('only support one primary key');
                 }
                 $primaryKey = $primaryKeys[0];
-                $columnMap = $this->modelManager->getColumnMap($model);
+                $columnMap = $this->models->getColumnMap($model);
                 return $this->primaryKey[$model] = array_search($primaryKey, $columnMap, true) ?: $primaryKey;
             }
         } else {
@@ -87,7 +87,7 @@ class Inferrer implements InferrerInterface
     public function intFields(string $model): array
     {
         if (($fields = $this->intFields[$model] ?? null) === null) {
-            if (($columnMap = $this->modelManager->getColumnMap($model)) !== []) {
+            if (($columnMap = $this->models->getColumnMap($model)) !== []) {
                 foreach ($this->metadata->getIntTypeAttributes($model) as $field) {
                     $fields[] = array_search($field, $columnMap, true) ?: $field;
                 }

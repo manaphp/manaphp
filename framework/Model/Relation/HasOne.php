@@ -6,7 +6,7 @@ namespace ManaPHP\Model\Relation;
 use ManaPHP\Helper\Container;
 use ManaPHP\Model\AbstractRelation;
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\QueryInterface;
 
 class HasOne extends AbstractRelation
@@ -16,14 +16,14 @@ class HasOne extends AbstractRelation
 
     public function __construct(string $selfModel, string|array $that)
     {
-        $modelManager = Container::get(ModelManagerInterface::class);
+        $models = Container::get(ModelsInterface::class);
 
         $this->selfModel = $selfModel;
-        $this->selfField = $modelManager->getPrimaryKey($selfModel);
+        $this->selfField = $models->getPrimaryKey($selfModel);
 
         if (is_string($that)) {
             $this->thatModel = $that;
-            $this->thatField = $modelManager->getReferencedKey($selfModel);
+            $this->thatField = $models->getReferencedKey($selfModel);
         } else {
             list($this->thatModel, $this->thatField) = $that;
         }

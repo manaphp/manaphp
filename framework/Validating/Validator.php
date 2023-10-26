@@ -17,7 +17,7 @@ use ManaPHP\Html\PurifierInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\I18n\LocaleInterface;
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
@@ -26,7 +26,7 @@ class Validator implements ValidatorInterface
     #[Autowired] protected LocaleInterface|Lazy $locale;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected PurifierInterface|Lazy $htmlPurifier;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     #[Autowired] protected string $dir = '@manaphp/Validating/Validator/Templates';
 
@@ -91,7 +91,7 @@ class Validator implements ValidatorInterface
             throw new ValidateFailedException([$field => $this->createError('required', $field)]);
         }
 
-        $intFields = $this->modelManager->getIntFields($model::class);
+        $intFields = $this->models->getIntFields($model::class);
         foreach ((array)$rules as $k => $v) {
             if (is_int($k)) {
                 if ($v instanceof Closure) {
@@ -472,7 +472,7 @@ class Validator implements ValidatorInterface
             return null;
         }
 
-        return date($parameter ?: $this->modelManager->getDateFormat($model::class), $ts);
+        return date($parameter ?: $this->models->getDateFormat($model::class), $ts);
     }
 
     /** @noinspection PhpUnusedParameterInspection */
@@ -573,7 +573,7 @@ class Validator implements ValidatorInterface
             throw new InvalidValueException(['validate `{1}` failed: `{2}` class is not exists.', $field, $className]);
         }
 
-        return $className::exists([$this->modelManager->getPrimaryKey($className) => $value]) ? $value : null;
+        return $className::exists([$this->models->getPrimaryKey($className) => $value]) ? $value : null;
     }
 
     protected function validate_model_level(string $field, ModelInterface $model, ?string $parameter = null): mixed

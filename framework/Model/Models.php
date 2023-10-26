@@ -17,7 +17,7 @@ use ManaPHP\Model\Attribute\Table;
 use ReflectionAttribute;
 use ReflectionClass;
 
-class ModelManager implements ModelManagerInterface
+class Models implements ModelsInterface
 {
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected InferrerInterface $inferrer;

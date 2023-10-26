@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Model;
 
-interface ModelManagerInterface
+interface ModelsInterface
 {
     public function getTable(string $model): string;
 

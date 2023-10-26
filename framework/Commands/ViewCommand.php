@@ -6,11 +6,11 @@ namespace ManaPHP\Commands;
 use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 
 class ViewCommand extends Command
 {
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     /**
      * @param string $model
@@ -37,7 +37,7 @@ HTML;
         $content = PHP_EOL . <<<HTML
 <detail-form>
 HTML;
-        foreach ($this->modelManager->getFields($model) as $field) {
+        foreach ($this->models->getFields($model) as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <detail-timestamp prop="$field"></detail-timestamp>
@@ -63,7 +63,7 @@ HTML;
      */
     public function renderCreateForm(string $model): string
     {
-        if (!$fields = $this->modelManager->getFillable($model)) {
+        if (!$fields = $this->models->getFillable($model)) {
             return '';
         }
 
@@ -89,14 +89,14 @@ HTML;
      */
     public function renderEditForm(string $model): string
     {
-        if (!$fields = $this->modelManager->getFillable($model)) {
+        if (!$fields = $this->models->getFillable($model)) {
             return '';
         }
 
         $content = PHP_EOL . <<<HTML
 <edit-form>
 HTML;
-        $primaryKey = $this->modelManager->getPrimaryKey($model);
+        $primaryKey = $this->models->getPrimaryKey($model);
         $content .= PHP_EOL . <<<HTML
     <edit-text prop="$primaryKey" disabled></edit-text>
 HTML;
@@ -121,7 +121,7 @@ HTML;
      */
     public function isTimestampField(string $model, string $field): bool
     {
-        if (!in_array($field, $this->modelManager->getIntFields($model), true)) {
+        if (!in_array($field, $this->models->getIntFields($model), true)) {
             return false;
         }
 
@@ -139,7 +139,7 @@ HTML;
 <result-table>
     <result-index></result-index>
 HTML;
-        foreach ($this->modelManager->getFields($model) as $field) {
+        foreach ($this->models->getFields($model) as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <result-timestamp prop="$field"></result-timestamp>
@@ -205,7 +205,7 @@ HTML;
      */
     public function renderScript(string $model): string
     {
-        $fields = $this->modelManager->getFillable($model);
+        $fields = $this->models->getFillable($model);
 
         $content = PHP_EOL . <<<HTML
 @section('script')
@@ -224,8 +224,8 @@ HTML;
             $content .= PHP_EOL . <<<HTML
                 create: {
 HTML;
-            $rules = $this->modelManager->getRules($model);
-            $iniFields = $this->modelManager->getIntFields($model);
+            $rules = $this->models->getRules($model);
+            $iniFields = $this->models->getIntFields($model);
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];
                 if (is_array($rule) && isset($rule['default'])) {
@@ -242,7 +242,7 @@ HTML;
                 },
                 edit: {
 HTML;
-            $content .= PHP_EOL . '                    ' . $this->modelManager->getPrimaryKey($model) . ': 0,';
+            $content .= PHP_EOL . '                    ' . $this->models->getPrimaryKey($model) . ': 0,';
 
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];

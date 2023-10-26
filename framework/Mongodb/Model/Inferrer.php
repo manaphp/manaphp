@@ -6,7 +6,7 @@ namespace ManaPHP\Mongodb\Model;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Model\ThoseInterface;
 use ManaPHP\Mongodb\Model;
@@ -18,7 +18,7 @@ class Inferrer implements InferrerInterface
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected MongodbConnectorInterface $connector;
     #[Autowired] protected ShardingInterface $sharding;
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     protected array $primaryKey = [];
     protected array $fields = [];
@@ -33,7 +33,7 @@ class Inferrer implements InferrerInterface
 
     protected function primaryKeyInternal(string $model): ?string
     {
-        $fields = $this->modelManager->getFields($model);
+        $fields = $this->models->getFields($model);
 
         if (in_array('id', $fields, true)) {
             return 'id';
@@ -46,7 +46,7 @@ class Inferrer implements InferrerInterface
             return $tryField;
         }
 
-        $table = $this->modelManager->getTable($model);
+        $table = $this->models->getTable($model);
         if (($pos = strpos($table, ':')) !== false) {
             $table = substr($table, 0, $pos);
         } elseif (($pos = strpos($table, ',')) !== false) {

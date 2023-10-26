@@ -8,7 +8,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
 class Sharding implements ShardingInterface
 {
-    #[Autowired] protected ModelManagerInterface $modelManager;
+    #[Autowired] protected ModelsInterface $models;
 
     public function getAnyShard(string $model): array
     {
@@ -34,8 +34,8 @@ class Sharding implements ShardingInterface
 
     public function getMultipleShards(string $model, array|ModelInterface $context): array
     {
-        $connection = $this->modelManager->getConnection($model);
-        $table = $this->modelManager->getTable($model);
+        $connection = $this->models->getConnection($model);
+        $table = $this->models->getTable($model);
 
         if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
             return [$connection => [$table]];
@@ -46,8 +46,8 @@ class Sharding implements ShardingInterface
 
     public function getAllShards(string $model): array
     {
-        $connection = $this->modelManager->getConnection($model);
-        $table = $this->modelManager->getTable($model);
+        $connection = $this->models->getConnection($model);
+        $table = $this->models->getTable($model);
 
         if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
             return [$connection => [$table]];
