@@ -147,17 +147,21 @@
                 <thead>
                 <tr>
                     <td width="5%">#</td>
-                    <td width="10%">name</td>
-                    <td width="20%">class</td>
-                    <td>contexts</td>
+                    <td width="5%">object_id</td>
+                    <td width="40%">name</td>
+                    <td>contextors</td>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(item, name, index) in dependencies"
                     v-if="item.properties.context && name!=='debuggerPlugin'">
                     <td>{{index}}</td>
-                    <td :title="name">{{name}}</td>
-                    <td>{{item.class}}</td>
+                    <td>#{{item.object_id}}</td>
+                    <td :title="item.class">
+                        <pre>{{name}}
+                            <div v-if="!name.startsWith(item.class)">=> {{item.class}}</div>
+                        </pre>
+                    </td>
                     <td :title="json_stringify(item.properties.context)">
                         <pre>{{item.properties.context|json 4}}</pre>
                     </td>
