@@ -121,8 +121,7 @@
                 <tr>
                     <td width="5%">#</td>
                     <td width="5%">object_id</td>
-                    <td width="10%">name</td>
-                    <td width="20%">class</td>
+                    <td width="40%">name</td>
                     <td>properties</td>
                 </tr>
                 </thead>
@@ -130,8 +129,11 @@
                 <tr v-for="(item, name, index) in dependencies">
                     <td>{{index}}</td>
                     <td>#{{item.object_id}}</td>
-                    <td :title="name">{{name}}</td>
-                    <td>{{item.class}}</td>
+                    <td :title="item.class">
+                        <pre>{{name}}
+                            <div v-if="!name.startsWith(item.class)">=> {{item.class}}</div>
+                        </pre>
+                    </td>
                     <td :title="json_stringify(item.properties)">
                         <pre>{{item.properties|json 4}}</pre>
                     </td>
