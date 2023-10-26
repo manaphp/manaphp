@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Eventing;
 
-use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 
-class ListenerBootstrapper implements BootstrapperInterface
+class Listeners implements ListenersInterface
 {
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
 
