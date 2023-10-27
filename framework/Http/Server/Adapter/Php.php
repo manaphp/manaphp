@@ -38,7 +38,7 @@ class Php extends AbstractServer
         $_SERVER['REQUEST_SCHEME'] = 'http';
 
         if (PHP_SAPI === 'cli') {
-            if (($worker_num = $this->settings['worker_num'] ?? 1) > 1) {
+            if (($worker_num = $this->settings['worker_num'] ?? 4) > 1) {
                 putenv("PHP_CLI_SERVER_WORKERS=$worker_num");
             }
 
