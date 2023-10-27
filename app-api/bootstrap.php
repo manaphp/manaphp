@@ -1,7 +1,7 @@
 <?php
 
 use JetBrains\PhpStorm\NoReturn;
-use ManaPHP\Application;
+use ManaPHP\Kernel;
 
 ini_set('memory_limit', -1);
 ini_set('html_errors', 'off');
@@ -11,6 +11,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 #[NoReturn] function bootstrap(string $server): void
 {
-    $application = new Application(__DIR__);
-    $application->start($server);
+    $kernel = new Kernel(__DIR__);
+    $kernel->start($server);
 }

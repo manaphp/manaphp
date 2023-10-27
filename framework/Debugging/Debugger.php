@@ -15,6 +15,7 @@ use ManaPHP\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Di\ContainerInterface;
+use ManaPHP\Di\Lazy;
 use ManaPHP\Dumping\DumpersInterface;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
@@ -29,6 +30,7 @@ use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Http\Server\Event\ResponseStringify;
+use ManaPHP\Http\Server\Event\ServerReady;
 use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Model\ModelInterface;
@@ -52,8 +54,8 @@ class Debugger implements DebuggerInterface
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected RouterInterface $router;
     #[Autowired] protected ContainerInterface $container;
-    #[Autowired] protected PreparedEmulatorInterface $preparedEmulator;
-    #[Autowired] protected DumpersInterface $dumpers;
+    #[Autowired] protected PreparedEmulatorInterface|Lazy $preparedEmulator;
+    #[Autowired] protected DumpersInterface|Lazy $dumpers;
 
     protected int $ttl;
     protected string $prefix;
@@ -73,10 +75,15 @@ class Debugger implements DebuggerInterface
         $this->prefix = $prefix ?? sprintf('cache:%s:debugger:', $this->app_id);
     }
 
+    public function onServerReady(): void
+    {
+        $this->listenerProvider->add($this);
+    }
+
     public function bootstrap(): void
     {
         if ($this->enabled ?? in_array($this->app_env, ['dev', 'test'], true)) {
-            $this->listenerProvider->add($this);
+            $this->listenerProvider->on(ServerReady::class, [$this, 'onServerReady']);
         }
     }
 
