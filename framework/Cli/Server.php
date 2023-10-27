@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use JetBrains\PhpStorm\NoReturn;
+use ManaPHP\BootstrapperInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Event;
@@ -14,11 +16,23 @@ use Throwable;
 
 class Server implements ServerInterface
 {
+    #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected LoggerInterface $logger;
     #[Autowired] protected ErrorHandlerInterface $errorHandler;
     #[Autowired] protected HandlerInterface $handler;
 
+    #[Autowired] protected array $bootstrappers = [];
+
     protected int $exit_code;
+
+    protected function bootstrap(): void
+    {
+        foreach ($this->bootstrappers as $name) {
+            /** @var BootstrapperInterface $bootstrapper */
+            $bootstrapper = $this->container->get($name);
+            $bootstrapper->bootstrap();
+        }
+    }
 
     /**
      * @noinspection PhpUnusedLocalVariableInspection
@@ -47,9 +61,14 @@ class Server implements ServerInterface
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine();
+
+            $this->bootstrap();
+
             Coroutine::create([$this, 'handle']);
             Event::wait();
         } else {
+            $this->bootstrap();
+
             $this->handle();
         }
 

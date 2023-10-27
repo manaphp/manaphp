@@ -33,7 +33,6 @@ use ManaPHP\Http\Server\Event\ServerWorkerExit;
 use ManaPHP\Http\Server\Event\ServerWorkerStart;
 use ManaPHP\Http\Server\Event\ServerWorkerStop;
 use ManaPHP\Http\Server\StaticHandlerInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -45,7 +44,6 @@ class Swoole extends AbstractServer
 {
     use ContextTrait;
 
-    #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected StaticHandlerInterface|Lazy $staticHandler;
     #[Autowired] protected ConfigInterface $config;
@@ -222,6 +220,8 @@ class Swoole extends AbstractServer
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine();
         }
+
+        $this->bootstrap();
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 

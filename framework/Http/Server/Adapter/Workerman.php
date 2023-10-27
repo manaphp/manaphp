@@ -13,7 +13,6 @@ use ManaPHP\Http\Server\Event\RequestResponded;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Http\Server\Event\ServerReady;
-use Psr\Container\ContainerInterface;
 use Throwable;
 use Workerman\Connection\ConnectionInterface;
 use Workerman\Protocols\Http;
@@ -22,8 +21,6 @@ use Workerman\Worker;
 class Workerman extends AbstractServer
 {
     use ContextTrait;
-
-    #[Autowired] protected ContainerInterface $container;
 
     #[Autowired] protected array $settings = [];
 
@@ -68,6 +65,8 @@ class Workerman extends AbstractServer
     public function start(): void
     {
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
+
+        $this->bootstrap();
 
         /** @noinspection HttpUrlsUsage */
         $this->worker = $worker = new Worker("http://$this->host:$this->port");

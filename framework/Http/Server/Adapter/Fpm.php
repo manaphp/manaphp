@@ -22,6 +22,8 @@ class Fpm extends AbstractServer
     {
         $this->prepareGlobals();
 
+        $this->bootstrap();
+
         $this->eventDispatcher->dispatch(new ServerReady());
 
         $this->httpHandler->handle();
