@@ -192,7 +192,6 @@ Vue.component('date-picker', {
     start-placeholder="开始日期" end-placeholder="结束日期" 
     value-format="yyyy-MM-dd" 
     size="small"
-    style="width: 215px"
     :picker-options="pickerOptions" @change="change">
 </el-date-picker>`,
     methods: {
