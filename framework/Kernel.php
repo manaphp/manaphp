@@ -20,13 +20,9 @@ class Kernel
             TracerInterface::class,
         ];
 
-    public function __construct(string $root, ?array $bootstrappers = null)
+    public function __construct(string $root)
     {
         $this->root = $root;
-
-        if (isset($bootstrappers)) {
-            $this->bootstrappers = $bootstrappers;
-        }
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define('MANAPHP_COROUTINE_ENABLED', $this->detectCoroutineCanEnabled());
@@ -75,9 +71,10 @@ class Kernel
         return $config;
     }
 
-    protected function bootstrap(): void
+    protected function bootstrap(ConfigInterface $config): void
     {
-        foreach ($this->bootstrappers as $name) {
+        $bootstrappers = $config->get(static::class)['bootstrappers'] ?? $this->bootstrappers;
+        foreach ($bootstrappers as $name) {
             /** @var BootstrapperInterface $bootstraper */
             $bootstraper = $this->container->get($name);
             $bootstraper->bootstrap();
@@ -101,7 +98,7 @@ class Kernel
             }
         }
 
-        $this->bootstrap();
+        $this->bootstrap($config);
 
         /** @var string|ServerInterface $server */
         $this->container->get($server)->start();
