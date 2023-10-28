@@ -37,11 +37,12 @@ class RequestsTotalCollector implements CollectorInterface
 
     public function onRequestEnd(#[Event] RequestEnd $event)
     {
-        $code = $this->response->getStatusCode();
-        $handler = $this->dispatcher->getHandler();
+        if (($handler = $this->dispatcher->getHandler()) !== null) {
+            $code = $this->response->getStatusCode();
 
-        $arguments = [$code, $handler];
-        $this->workers->task([$this, 'taskUpdateMetrics'], $arguments, 0);
+            $arguments = [$code, $handler];
+            $this->workers->task([$this, 'taskUpdateMetrics'], $arguments, 0);
+        }
     }
 
     public function export(): string
