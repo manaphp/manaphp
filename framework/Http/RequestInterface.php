@@ -78,7 +78,7 @@ interface RequestInterface
 
     public function getUri(): string;
 
-    public function getQueryString(): string;
+    public function getQuery(): string;
 
     public function getToken(string $name = 'token'): string;
 

@@ -20,7 +20,7 @@ class RequestBegin implements JsonSerializable
         return [
             'method'    => $this->request->getMethod(),
             'url'       => $this->request->getUrl(),
-            'query'     => $this->request->getQueryString(),
+            'query'     => $this->request->getQuery(),
             'client_ip' => $this->request->getClientIp(),
         ];
     }

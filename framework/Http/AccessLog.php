@@ -71,9 +71,9 @@ time=$time_iso8601
         } elseif ($name === 'body_bytes_sent') {
             return (string)$this->response->getContentLength();
         } elseif ($name === 'is_args') {
-            return $this->request->getQueryString() === '' ? '' : '?';
+            return $this->request->getQuery() === '' ? '' : '?';
         } elseif ($name === 'query_string') {
-            return $this->request->getQueryString();
+            return $this->request->getQuery();
         } elseif ($this->request->hasServer($var_upper = strtoupper($name))) {
             return (string)$this->request->getServer($var_upper);
         } else {

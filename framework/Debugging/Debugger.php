@@ -330,7 +330,7 @@ class Debugger implements DebuggerInterface
             'handler'            => (string)$this->dispatcher->getHandler(),
             'request_method'     => $this->request->getMethod(),
             'request_url'        => $this->request->getUrl(),
-            'request_query'      => $this->request->getQueryString(),
+            'request_query'      => $this->request->getQuery(),
             'query_count'        => $context->sql_count,
             'execute_time'       => $this->request->getElapsedTime(),
             'memory_usage'       => $memory_usage,
