@@ -12,7 +12,7 @@ class Dumper implements DumperInterface
 {
     #[Autowired] protected ContextorInterface $contextor;
 
-    public function dump(object $object): array
+    public function getProperties(object $object): array
     {
         $data = [];
         $rf = new ReflectionClass($object);
@@ -50,5 +50,29 @@ class Dumper implements DumperInterface
         }
 
         return $data;
+    }
+
+    protected function normalize(array $properties): array
+    {
+        foreach ($properties as $name => $value) {
+            if (is_string($value)) {
+                if (strlen($value) > 128) {
+                    $value = substr($value, 0, 128) . '...';
+                }
+            } elseif (is_object($value)) {
+                $value = class_implements($value) === [] ? $value : ($value::class . '::$object');
+            } elseif (is_array($value)) {
+                $value = $this->normalize($value);
+            }
+            $properties[$name] = $value;
+        }
+        return $properties;
+    }
+
+    public function dump(object $object): array
+    {
+        $properties = $this->getProperties($object);
+
+        return $this->normalize($properties);
     }
 }
