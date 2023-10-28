@@ -327,9 +327,10 @@ class Debugger implements DebuggerInterface
         $memory_usage = (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k';
 
         return [
-            'mvc'                => $this->router->getController() . '::' . $this->router->getAction(),
+            'handler'            => (string)$this->dispatcher->getHandler(),
             'request_method'     => $this->request->getMethod(),
             'request_url'        => $this->request->getUrl(),
+            'request_query'      => $this->request->getQueryString(),
             'query_count'        => $context->sql_count,
             'execute_time'       => $this->request->getElapsedTime(),
             'memory_usage'       => $memory_usage,
