@@ -136,7 +136,7 @@ class Swoole extends AbstractServer
 
     public function onStart(Server $server): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: master', $this->app_id));
+        @cli_set_process_title(sprintf('%s.swoole-master', $this->app_id));
 
         $this->dispatchEvent(new ServerStart($server));
     }
@@ -153,14 +153,20 @@ class Swoole extends AbstractServer
 
     public function onManagerStart(Server $server): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', $this->app_id));
+        @cli_set_process_title(sprintf('%s.swoole-manager', $this->app_id));
 
         $this->dispatchEvent(new ServerManagerStart($server));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->app_id, $worker_id));
+        $worker_num = $server->setting['worker_num'];
+        if ($worker_id < $worker_num) {
+            @cli_set_process_title(sprintf('%s.swoole-worker.%d', $this->app_id, $worker_id));
+        } else {
+            $tasker_id = $worker_id - $worker_num;
+            @cli_set_process_title(sprintf('%s.swoole-worker.%d.%d', $this->app_id, $worker_id, $tasker_id));
+        }
 
         $this->dispatchEvent(new ServerWorkerStart($server, $worker_id));
     }
