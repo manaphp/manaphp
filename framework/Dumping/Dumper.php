@@ -7,6 +7,7 @@ use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ReflectionClass;
 use ReflectionNamedType;
+use WeakMap;
 
 class Dumper implements DumperInterface
 {
@@ -38,7 +39,13 @@ class Dumper implements DumperInterface
                 $value = null;
             }
 
-            if (is_object($value)) {
+            if ($value instanceof WeakMap) {
+                $map = [];
+                foreach ($value as $k => $v) {
+                    $map[$k::class] = $v;
+                }
+                $value = $map;
+            } elseif (is_object($value)) {
                 continue;
             }
 
@@ -55,6 +62,10 @@ class Dumper implements DumperInterface
     protected function normalize(array $properties): array
     {
         foreach ($properties as $name => $value) {
+            if ($value instanceof WeakMap) {
+                $value = (array)$value;
+            }
+
             if (is_string($value)) {
                 if (strlen($value) > 128) {
                     $value = substr($value, 0, 128) . '...';
