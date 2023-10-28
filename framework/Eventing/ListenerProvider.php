@@ -17,6 +17,8 @@ class ListenerProvider implements ListenerProviderInterface
 
     protected array $listeners = [];
 
+    protected array $registered = [];
+
     #[Autowired] protected ContainerInterface $container;
 
     public function getListenersForEvent(object $event): iterable
@@ -44,6 +46,12 @@ class ListenerProvider implements ListenerProviderInterface
         if (is_string($listener)) {
             $listener = $this->container->get($listener);
         }
+
+        $object_id = spl_object_id($listener);
+        if (isset($this->registered[$object_id])) {
+            return;
+        }
+        $this->registered[$object_id] = $listener;
 
         $rClass = new ReflectionClass($listener);
 
