@@ -25,7 +25,7 @@ class Model implements ObjectValueResolverInterface
             return null;
         }
 
-        $primaryKey = $this->models->getprimaryKey($type);
+        $primaryKey = $this->models->getPrimaryKey($type);
         if ($this->request->has($primaryKey)) {
             $id = $this->request->get($primaryKey);
         } elseif ($this->request->has($name)) {

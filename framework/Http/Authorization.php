@@ -205,7 +205,7 @@ class Authorization implements AuthorizationInterface
             }
 
             $controller = $controllerInstance::class;
-            $action = str::camelize($permission);
+            $action = Str::camelize($permission);
             if (($authorize = $this->getAuthorize($controller, $action)) !== null) {
                 if (($allowed = $authorize->isAllowed($roles)) !== null) {
                     return $allowed;

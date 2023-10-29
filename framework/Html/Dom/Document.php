@@ -19,7 +19,7 @@ class Document
     protected string $url;
     protected string $base;
     protected string $str;
-    protected DomDocument $dom;
+    protected DOMDocument $dom;
     protected Query $query;
     protected array $errors = [];
 
@@ -174,7 +174,7 @@ class Document
         }
     }
 
-    public function absolutizeAHref(?string $selector = null, ?DomDocument $context = null): static
+    public function absolutizeAHref(?string $selector = null, ?DOMDocument $context = null): static
     {
         /** @var DOMElement $item */
         if ($selector) {

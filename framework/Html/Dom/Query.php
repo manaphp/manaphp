@@ -24,7 +24,7 @@ class Query
         $this->cssToXPath = new CssToXPath();
     }
 
-    public function xpath(string|array $expression, ?DOMNode $context = null): DomNodeList
+    public function xpath(string|array $expression, ?DOMNode $context = null): DOMNodeList
     {
         if (is_array($expression)) {
             $tr = [];
@@ -43,7 +43,7 @@ class Query
         return $r;
     }
 
-    public function css(string|array $css, ?DOMNode $context = null): DomNodeList
+    public function css(string|array $css, ?DOMNode $context = null): DOMNodeList
     {
         if ($css !== '' && $css[0] === '!') {
             $is_not = true;
