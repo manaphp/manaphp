@@ -22,18 +22,12 @@ class Renderer implements RendererInterface
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected ContainerInterface $container;
 
-    /**
-     * @var EngineInterface[]
-     */
-    protected array $resolved = [];
-
     #[Autowired] protected array $engines
         = ['.phtml' => 'ManaPHP\Rendering\Engine\Php',
            '.sword' => 'ManaPHP\Rendering\Engine\Sword'];
 
     protected array $files = [];
     protected Mutex $mutex;
-
 
     protected function getMutex(): Mutex
     {
@@ -96,8 +90,8 @@ class Renderer implements RendererInterface
             $this->files[$template] = [$file, $extension];
         }
 
-        $engine = $this->resolved[$extension] ??
-            ($this->resolved[$extension] = $this->container->get($this->engines[$extension]));
+        /** @var EngineInterface $engine */
+        $engine = $this->container->get($this->engines[$extension]);
 
         if (isset($vars['renderer'])) {
             throw new MisuseException('variable `renderer` is reserved for renderer');
