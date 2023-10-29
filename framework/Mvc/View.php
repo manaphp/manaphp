@@ -30,7 +30,7 @@ class View implements ViewInterface
     #[Autowired] protected bool $autofix_url = true;
 
     protected array $dirs = [];
-    protected array $exists_cache;
+    protected array $exists = [];
 
     public function setMaxAge(int $max_age): static
     {
@@ -269,8 +269,8 @@ class View implements ViewInterface
             }
         }
 
-        return $this->exists_cache[$template] ??
-            ($this->exists_cache[$template] = $this->renderer->exists($template));
+        return $this->exists[$template] ??
+            ($this->exists[$template] = $this->renderer->exists($template));
     }
 
     public function getWidgetClassName(string $widget): ?string
