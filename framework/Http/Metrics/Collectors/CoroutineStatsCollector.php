@@ -18,13 +18,13 @@ class CoroutineStatsCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected WorkersInterface $workers;
 
-    public function taskExportRequest(int $cid, int $worker_id)
+    public function taskExportRequest(int $cid, int $worker_id): void
     {
         $arguments = [$cid, $this->workers->getWorkerId(), Coroutine::stats()];
         $this->workers->sendMessage([$this, 'taskExportResponse'], $arguments, $worker_id);
     }
 
-    public function taskExportResponse(int $cid, $worker_id, array $stats)
+    public function taskExportResponse(int $cid, $worker_id, array $stats): void
     {
         /** @var CoroutineStatsCollectorContext $context */
         $context = $this->getContext($cid);

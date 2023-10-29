@@ -41,7 +41,7 @@ class ListenerProvider implements ListenerProviderInterface
         $listeners->push($handler);
     }
 
-    public function add(string|object $listener)
+    public function add(string|object $listener): void
     {
         if (is_string($listener)) {
             $listener = $this->container->get($listener);

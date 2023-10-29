@@ -12,7 +12,7 @@ class DaemonCommand extends Command
     #[Autowired] protected array $commands = [];
     #[Autowired] protected ?string $entrypoint;
 
-    public function startAction()
+    public function startAction(): void
     {
         $entrypoint = $this->entrypoint ?? 'php ' . get_included_files()[0];
         foreach ($this->commands as $command) {

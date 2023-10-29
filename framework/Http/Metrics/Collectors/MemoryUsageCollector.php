@@ -18,14 +18,14 @@ class MemoryUsageCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected WorkersInterface $workers;
 
-    public function taskExportRequest(int $cid, $worker_id)
+    public function taskExportRequest(int $cid, $worker_id): void
     {
         $this->workers->sendMessage([$this, 'taskExportResponse'],
             [$cid, $worker_id, [memory_get_usage(), memory_get_peak_usage()]],
             $worker_id);
     }
 
-    public function taskExportResponse(int $cid, int $worker_id, array $stats)
+    public function taskExportResponse(int $cid, int $worker_id, array $stats): void
     {
         /** @var MemoryUsageCollectorContext $context */
         $context = $this->getContext($cid);

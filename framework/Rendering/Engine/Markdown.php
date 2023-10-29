@@ -35,7 +35,7 @@ class Markdown implements EngineInterface
         echo $this->text(file_get_contents($file));
     }
 
-    public function text($text)
+    public function text($text): string
     {
         $Elements = $this->textElements($text);
 
@@ -46,7 +46,7 @@ class Markdown implements EngineInterface
         return trim($markup, "\n");
     }
 
-    protected function textElements($text)
+    protected function textElements($text): array
     {
         # make sure no definitions are set
         $this->DefinitionData = [];
@@ -64,7 +64,7 @@ class Markdown implements EngineInterface
         return $this->linesElements($lines);
     }
 
-    public function setBreaksEnabled($breaksEnabled)
+    public function setBreaksEnabled($breaksEnabled): static
     {
         $this->breaksEnabled = $breaksEnabled;
 
@@ -73,7 +73,7 @@ class Markdown implements EngineInterface
 
     protected bool $breaksEnabled;
 
-    public function setMarkupEscaped($markupEscaped)
+    public function setMarkupEscaped($markupEscaped): static
     {
         $this->markupEscaped = $markupEscaped;
 
@@ -82,7 +82,7 @@ class Markdown implements EngineInterface
 
     protected bool $markupEscaped;
 
-    public function setUrlsLinked($urlsLinked)
+    public function setUrlsLinked($urlsLinked): static
     {
         $this->urlsLinked = $urlsLinked;
 
@@ -91,7 +91,7 @@ class Markdown implements EngineInterface
 
     protected bool $urlsLinked = true;
 
-    public function setSafeMode($safeMode)
+    public function setSafeMode($safeMode): static
     {
         $this->safeMode = (bool)$safeMode;
 
@@ -100,7 +100,7 @@ class Markdown implements EngineInterface
 
     protected bool $safeMode;
 
-    public function setStrictMode($strictMode)
+    public function setStrictMode($strictMode): static
     {
         $this->strictMode = (bool)$strictMode;
 
@@ -165,12 +165,12 @@ class Markdown implements EngineInterface
      *
      * @return string
      */
-    protected function lines(array $lines)
+    protected function lines(array $lines): string
     {
         return $this->elements($this->linesElements($lines));
     }
 
-    protected function linesElements(array $lines)
+    protected function linesElements(array $lines): array
     {
         $Elements = [];
         $CurrentBlock = null;
@@ -292,12 +292,12 @@ class Markdown implements EngineInterface
         return $Component['element'];
     }
 
-    protected function isBlockContinuable($Type)
+    protected function isBlockContinuable($Type): bool
     {
         return method_exists($this, 'block' . $Type . 'Continue');
     }
 
-    protected function isBlockCompletable($Type)
+    protected function isBlockCompletable($Type): bool
     {
         return method_exists($this, 'block' . $Type . 'Complete');
     }
@@ -639,7 +639,7 @@ class Markdown implements EngineInterface
         }
     }
 
-    protected function blockListComplete(array $Block)
+    protected function blockListComplete(array $Block): array
     {
         if (isset($Block['loose'])) {
             foreach ($Block['element']['elements'] as &$li) {
@@ -981,7 +981,7 @@ class Markdown implements EngineInterface
     }
 
     #[ArrayShape(['type' => 'string', 'element' => 'array'])]
-    protected function paragraph($Line)
+    protected function paragraph($Line): array
     {
         return [
             'type'    => 'Paragraph',
@@ -1023,12 +1023,12 @@ class Markdown implements EngineInterface
 
     protected string $inlineMarkerList = '!*_&[:<`~\\';
 
-    public function line($text, $nonNestables = [])
+    public function line($text, $nonNestables = []): string
     {
         return $this->elements($this->lineElements($text, $nonNestables));
     }
 
-    protected function lineElements($text, $nonNestables = [])
+    protected function lineElements($text, $nonNestables = []): array
     {
         # standardize line breaks
         $text = str_replace(["\r\n", "\r"], "\n", $text);
@@ -1119,7 +1119,7 @@ class Markdown implements EngineInterface
     }
 
     #[ArrayShape(['extent' => 'int', 'element' => 'array'])]
-    protected function inlineText($text)
+    protected function inlineText($text): array
     {
         $Inline = [
             'extent'  => strlen($text),
@@ -1461,7 +1461,7 @@ class Markdown implements EngineInterface
         }
     }
 
-    protected function unmarkedText($text)
+    protected function unmarkedText($text):string
     {
         $Inline = $this->inlineText($text);
         return $this->element($Inline['element']);
@@ -1497,12 +1497,12 @@ class Markdown implements EngineInterface
         return $Element;
     }
 
-    protected function handleElementRecursive(array $Element)
+    protected function handleElementRecursive(array $Element): array
     {
         return $this->elementApplyRecursive([$this, 'handle'], $Element);
     }
 
-    protected function handleElementsRecursive(array $Elements)
+    protected function handleElementsRecursive(array $Elements): array
     {
         return $this->elementsApplyRecursive([$this, 'handle'], $Elements);
     }
@@ -1531,7 +1531,7 @@ class Markdown implements EngineInterface
         return $closure($Element);
     }
 
-    protected function elementsApplyRecursive($closure, array $Elements)
+    protected function elementsApplyRecursive($closure, array $Elements): array
     {
         foreach ($Elements as &$Element) {
             $Element = $this->elementApplyRecursive($closure, $Element);
@@ -1540,7 +1540,7 @@ class Markdown implements EngineInterface
         return $Elements;
     }
 
-    protected function elementsApplyRecursiveDepthFirst($closure, array $Elements)
+    protected function elementsApplyRecursiveDepthFirst($closure, array $Elements): array
     {
         foreach ($Elements as &$Element) {
             $Element = $this->elementApplyRecursiveDepthFirst($closure, $Element);
@@ -1549,7 +1549,7 @@ class Markdown implements EngineInterface
         return $Elements;
     }
 
-    protected function element(array $Element)
+    protected function element(array $Element): string
     {
         if ($this->safeMode) {
             $Element = $this->sanitiseElement($Element);
@@ -1612,7 +1612,7 @@ class Markdown implements EngineInterface
         return $markup;
     }
 
-    protected function elements(array $Elements)
+    protected function elements(array $Elements): string
     {
         $markup = '';
 
@@ -1636,7 +1636,7 @@ class Markdown implements EngineInterface
         return $markup;
     }
 
-    protected function li($lines)
+    protected function li($lines): array
     {
         $Elements = $this->linesElements($lines);
 
@@ -1647,7 +1647,7 @@ class Markdown implements EngineInterface
         return $Elements;
     }
 
-    protected static function pregReplaceElements($regexp, $Elements, $text)
+    protected static function pregReplaceElements($regexp, $Elements, $text): array
     {
         $newElements = [];
 
@@ -1670,7 +1670,7 @@ class Markdown implements EngineInterface
         return $newElements;
     }
 
-    protected function sanitiseElement(array $Element)
+    protected function sanitiseElement(array $Element): array
     {
         $goodAttribute = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*+$/';
         $safeUrlNameToAtt = [
@@ -1702,7 +1702,7 @@ class Markdown implements EngineInterface
         return $Element;
     }
 
-    protected function filterUnsafeUrlInAttribute(array $Element, $attribute)
+    protected function filterUnsafeUrlInAttribute(array $Element, $attribute): array
     {
         foreach ($this->safeLinksWhitelist as $scheme) {
             if (self::striAtStart($Element['attributes'][$attribute], $scheme)) {
@@ -1715,12 +1715,12 @@ class Markdown implements EngineInterface
         return $Element;
     }
 
-    protected static function escape($text, $allowQuotes = false)
+    protected static function escape($text, $allowQuotes = false): string
     {
         return htmlspecialchars($text, $allowQuotes ? ENT_NOQUOTES : ENT_QUOTES);
     }
 
-    protected static function striAtStart($string, $needle)
+    protected static function striAtStart($string, $needle): bool
     {
         $len = strlen($needle);
 

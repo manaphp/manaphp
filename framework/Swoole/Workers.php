@@ -27,12 +27,12 @@ class Workers implements WorkersInterface
         $this->listenerProvider->add($this);
     }
 
-    public function onServerWorkerStart(#[Event] ServerWorkerStart $event)
+    public function onServerWorkerStart(#[Event] ServerWorkerStart $event): void
     {
         $this->server = $event->server;
     }
 
-    public function onTask(#[Event] ServerTask $event)
+    public function onTask(#[Event] ServerTask $event): void
     {
         $message = $event->data;
         if ($message instanceof TaskCallMessage) {
@@ -49,7 +49,7 @@ class Workers implements WorkersInterface
         }
     }
 
-    public function onServerPipeMessage(#[Event] ServerPipeMessage $event)
+    public function onServerPipeMessage(#[Event] ServerPipeMessage $event): void
     {
         $message = $event->message;
         if ($message instanceof PipeCallMessage) {

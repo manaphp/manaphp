@@ -35,7 +35,7 @@ class RequestsTotalCollector implements CollectorInterface
         return $this->totals;
     }
 
-    public function onRequestEnd(#[Event] RequestEnd $event)
+    public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $code = $this->response->getStatusCode();

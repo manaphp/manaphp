@@ -8,7 +8,7 @@ use ManaPHP\Version;
 
 class VersionCommand extends Command
 {
-    public function showAction()
+    public function showAction(): void
     {
         $this->console->writeLn('      php: ' . PHP_VERSION);
         $this->console->writeLn('   swoole: ' . (defined('SWOOLE_VERSION') ? SWOOLE_VERSION : 'n/a'));

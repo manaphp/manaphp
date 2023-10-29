@@ -47,7 +47,7 @@ class ResponseSizeCollector implements CollectorInterface
         return $this->histograms;
     }
 
-    public function onRequestEnd(#[Event] RequestEnd $event)
+    public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $size = $this->response->getContentLength();

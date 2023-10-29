@@ -45,7 +45,7 @@ class RequestDurationCollector implements CollectorInterface
         return $this->histograms;
     }
 
-    public function onRequestEnd(#[Event] RequestEnd $event)
+    public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $elapsed = $this->request->getElapsedTime();

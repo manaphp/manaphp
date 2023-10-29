@@ -67,7 +67,7 @@ EOT;
     /**
      * list all areas
      */
-    public function listAction()
+    public function listAction(): void
     {
         $areas = [];
         foreach (LocalFS::glob('@app/Areas/*') as $item) {

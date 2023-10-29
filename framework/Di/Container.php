@@ -100,7 +100,7 @@ class Container implements ContainerInterface
         $property->setValue($object, $value);
     }
 
-    protected function processInjectNoValue(ReflectionProperty $property, $object)
+    protected function processInjectNoValue(ReflectionProperty $property, $object): void
     {
         $rType = $property->getType();
 
