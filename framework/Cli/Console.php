@@ -106,7 +106,7 @@ class Console implements ConsoleInterface
                 null;
             } elseif ($val instanceof Stringable) {
                 $val = (string)$val;
-            } elseif (is_scalar($val)) {
+            } elseif (\is_scalar($val)) {
                 $val = json_stringify($val);
             } elseif ($val instanceof JsonSerializable) {
                 $val = json_stringify($val);

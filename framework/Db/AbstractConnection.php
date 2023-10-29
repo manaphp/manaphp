@@ -122,7 +122,7 @@ abstract class AbstractConnection implements ConnectionInterface
         foreach ($bind as $parameter => $value) {
             if (\is_bool($value)) {
                 $value = (int)$value;
-            } elseif (is_scalar($value) || $value === null) {
+            } elseif (\is_scalar($value) || $value === null) {
                 null;
             } elseif (\is_array($value)) {
                 $value = json_stringify($value);

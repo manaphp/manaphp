@@ -75,7 +75,7 @@ class DataDump implements DataDumpInterface
 
         if (substr_count($message[0], '%') + 1 >= ($count = \count($message)) && isset($message[$count - 1])) {
             foreach ($message as $k => $v) {
-                if ($k === 0 || is_scalar($v) || $v === null) {
+                if ($k === 0 || \is_scalar($v) || $v === null) {
                     continue;
                 }
 
@@ -96,7 +96,7 @@ class DataDump implements DataDumpInterface
             }
         } elseif (\count($message) === 3) {
             /** @noinspection NotOptimalIfConditionsInspection */
-            if (isset($message[1], $message[2]) && !str_contains($message[0], ':1') && is_scalar($message[1])) {
+            if (isset($message[1], $message[2]) && !str_contains($message[0], ':1') && \is_scalar($message[1])) {
                 $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
             }
         }
@@ -115,7 +115,7 @@ class DataDump implements DataDumpInterface
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif (\is_string($v)) {
                 null;
-            } elseif ($v === null || is_scalar($v)) {
+            } elseif ($v === null || \is_scalar($v)) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } else {
                 $v = (string)$v;

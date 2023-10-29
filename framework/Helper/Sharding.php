@@ -136,7 +136,7 @@ class Sharding
                 } elseif ($db_has_context && !$table_has_context) {
                     $dbs = self::modulo($db, $context);
                     $tables = self::explode($table);
-                } elseif (!is_scalar($context[$db_key]) && !is_scalar($context[$table_key])) {
+                } elseif (!\is_scalar($context[$db_key]) && !\is_scalar($context[$table_key])) {
                     $dbs = self::modulo($db, $context);
                     $tables = self::explode($table);
                 } else {

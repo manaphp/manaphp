@@ -57,7 +57,7 @@ class Model extends AbstractModel
         } elseif ($type === 'float') {
             return \is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
-            return is_scalar($value) ? new ObjectID($value) : $value;
+            return \is_scalar($value) ? new ObjectID($value) : $value;
         } elseif ($type === 'bool') {
             return \is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {
@@ -101,7 +101,7 @@ class Model extends AbstractModel
             }
 
             if (isset($this->$field)) {
-                if (is_scalar($this->$field)) {
+                if (\is_scalar($this->$field)) {
                     $this->$field = $this->normalizeValue($type, $this->$field);
                 }
             } else {

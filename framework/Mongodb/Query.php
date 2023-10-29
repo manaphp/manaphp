@@ -253,7 +253,7 @@ class Query extends AbstractQuery
         } elseif ($type === 'float') {
             return \is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
-            return is_scalar($value) ? new ObjectId($value) : $value;
+            return \is_scalar($value) ? new ObjectId($value) : $value;
         } elseif ($type === 'bool') {
             return \is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {
@@ -309,7 +309,7 @@ class Query extends AbstractQuery
                 );
             }
 
-            if (is_scalar($value)) {
+            if (\is_scalar($value)) {
                 if (\is_int($value)) {
                     $this->filters[] = [$field => ['$in' => [(string)$value, $value]]];
                 } elseif (\is_float($value)) {

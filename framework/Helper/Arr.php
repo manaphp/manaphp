@@ -98,7 +98,7 @@ class Arr
     public static function indexby(array $ar, mixed $index): array
     {
         $rows = [];
-        if (is_scalar($index)) {
+        if (\is_scalar($index)) {
             foreach ($ar as $row) {
                 $rows[$row[$index]] = $row;
             }

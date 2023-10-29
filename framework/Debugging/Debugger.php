@@ -343,8 +343,8 @@ class Debugger implements DebuggerInterface
             'sapi'               => PHP_SAPI,
             'loaded_ini'         => php_ini_loaded_file(),
             'loaded_extensions'  => implode(', ', $loaded_extensions),
-            'opcache.enable'     => ini_get('opcache.enable'),
-            'opcache.enable_cli' => ini_get('opcache.enable_cli'),
+            'opcache.enable'     => \ini_get('opcache.enable'),
+            'opcache.enable_cli' => \ini_get('opcache.enable_cli'),
         ];
     }
 
