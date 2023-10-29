@@ -6,7 +6,6 @@ namespace ManaPHP\Http\Session\Adapter;
 use ManaPHP\Db\DbInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AbstractSession;
-use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 
 /**
@@ -22,7 +21,6 @@ use ManaPHP\Identifying\IdentityInterface;
  */
 class Db extends AbstractSession
 {
-    #[Autowired] protected RequestInterface $request;
     #[Autowired] protected DbInterface $db;
     #[Autowired] protected IdentityInterface $identity;
 

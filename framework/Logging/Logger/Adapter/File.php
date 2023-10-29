@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Logging\AbstractLogger;
@@ -11,8 +10,6 @@ use ManaPHP\Logging\Logger\Log;
 
 class File extends AbstractLogger
 {
-    #[Autowired] protected AliasInterface $alias;
-
     #[Autowired] protected string $file = '@runtime/logger/{app_id}.log';
     #[Autowired] protected string $line_format = '[:time][:level][:category][:location] :message';
 

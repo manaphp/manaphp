@@ -10,7 +10,6 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\AbstractQuery;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
@@ -18,7 +17,6 @@ use MongoDB\BSON\Regex;
 class Query extends AbstractQuery
 {
     #[Autowired] protected MongodbConnectorInterface $connector;
-    #[Autowired] protected ModelsInterface $models;
 
     protected array $types;
     protected array $aliases;

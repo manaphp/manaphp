@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Query\Merger;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
@@ -16,7 +15,6 @@ use ManaPHP\Query\QueryInterface;
 class Query extends AbstractQuery
 {
     #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected MakerInterface $maker;
 
     protected array $queries;
 

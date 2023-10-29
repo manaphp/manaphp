@@ -9,7 +9,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
-use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Query\AbstractQuery;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -18,7 +17,6 @@ class Query extends AbstractQuery
 {
     #[Autowired] protected LoggerInterface $logger;
     #[Autowired] protected DbConnectorInterface $connector;
-    #[Autowired] protected ShardingInterface $sharding;
 
     protected array $joins = [];
     protected array $conditions = [];
