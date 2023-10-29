@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection RegExpSimplifiable */
 /** @noinspection HttpUrlsUsage */
 /** @noinspection HttpUrlsUsage */
 /** @noinspection PhpMissingReturnTypeInspection */
