@@ -10,7 +10,7 @@ class DbConnector implements DbConnectorInterface
 {
     #[Autowired] protected ContainerInterface $container;
 
-    public function get($name = 'default'): DbInterface
+    public function get(string $name = 'default'): DbInterface
     {
         return $this->container->get(DbInterface::class . ($name === 'default' ? '' : "#$name"));
     }
