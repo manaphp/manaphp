@@ -60,12 +60,12 @@ class Client implements ClientInterface
         }
 
         foreach ($headers as $name => $value) {
-            if (is_string($name) && $value === '') {
+            if (\is_string($name) && $value === '') {
                 unset($headers[$name]);
             }
         }
 
-        if (is_int($options) || is_float($options)) {
+        if (\is_int($options) || \is_float($options)) {
             $options = ['timeout' => $options];
         }
 
@@ -102,7 +102,7 @@ class Client implements ClientInterface
                     $body = $request->body;
                 }
 
-                if (is_array($body)) {
+                if (\is_array($body)) {
                     if (isset($request->headers['Content-Type'])
                         && str_contains(
                             $request->headers['Content-Type'], 'json'
@@ -114,8 +114,8 @@ class Client implements ClientInterface
                     }
                 }
 
-                if (is_string($body)) {
-                    $request->headers['Content-Length'] = strlen($body);
+                if (\is_string($body)) {
+                    $request->headers['Content-Length'] = \strlen($body);
                 }
 
                 $response = $engine->request($request, $body);
@@ -185,7 +185,7 @@ class Client implements ClientInterface
     public function rest(string $method, string|array $url, string|array $body = [], array $headers = [],
         mixed $options = []
     ): Response {
-        if (is_string($body)) {
+        if (\is_string($body)) {
             if (!isset($headers['Content-Type'])) {
                 if (preg_match('#^\[|{#', $body)) {
                     $headers['Content-Type'] = 'application/json';
@@ -212,11 +212,11 @@ class Client implements ClientInterface
 
         $response = $this->request($method, $url, $body, $headers, $options);
 
-        if (is_string($response->body) && str_contains($response->content_type, '/html')) {
+        if (\is_string($response->body) && str_contains($response->content_type, '/html')) {
             $response->body = json_parse($response->body);
         }
 
-        if (is_string($response->body)) {
+        if (\is_string($response->body)) {
             $content_type = $response->content_type;
             throw new ContentTypeException(['content-type is not application/json: {1}', $content_type], $response);
         }

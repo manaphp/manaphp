@@ -249,7 +249,7 @@ class Mongodb implements MongodbInterface
             $this->pools->push($this, $connection);
         }
 
-        $count = count($result);
+        $count = \count($result);
         $this->eventDispatcher->dispatch(new MongodbCommanded($this, $db, $command, $result, $count, $elapsed));
 
         return $result;
@@ -329,7 +329,7 @@ class Mongodb implements MongodbInterface
             }
         } else {
             $prefix = $this->prefix;
-            $prefix_len = strlen($prefix);
+            $prefix_len = \strlen($prefix);
             foreach ($result as $collection) {
                 $name = $collection['name'];
                 if (str_starts_with($name, $prefix)) {

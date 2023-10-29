@@ -32,14 +32,14 @@ class HasManyOthers extends AbstractRelation
                 continue;
             }
 
-            if (in_array($field, ['updator_id', 'creator_id'], true)) {
+            if (\in_array($field, ['updator_id', 'creator_id'], true)) {
                 continue;
             }
 
             $keys[] = $field;
         }
 
-        if (count($keys) === 1) {
+        if (\count($keys) === 1) {
             $selfFilter = $keys[0];
         } else {
             throw new MisuseException('$thisValue must be not null');

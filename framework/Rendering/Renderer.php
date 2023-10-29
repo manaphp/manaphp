@@ -58,7 +58,7 @@ class Renderer implements RendererInterface
         }
 
         if (!str_contains($template, '/')) {
-            $template = dirname(end($context->templates)) . '/' . $template;
+            $template = \dirname(end($context->templates)) . '/' . $template;
         }
 
         $template = $this->alias->resolve($template);
@@ -148,7 +148,7 @@ class Renderer implements RendererInterface
         }
 
         if (!str_contains($template, '/')) {
-            $template = dirname(end($context->templates)) . '/' . $template;
+            $template = \dirname(end($context->templates)) . '/' . $template;
         }
 
         $template = $this->alias->resolve($template);

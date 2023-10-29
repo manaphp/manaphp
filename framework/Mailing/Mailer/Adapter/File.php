@@ -26,6 +26,6 @@ class File extends AbstractMailer
 
         LocalFS::fileAppend($this->file ?? '@runtime/mailer/file_' . date('ymd') . '.log', $data);
 
-        return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+        return \count($message->getTo()) + \count($message->getCc()) + \count($message->getBcc());
     }
 }

@@ -12,7 +12,7 @@ class Sharding
     {
         if ($divisor[0] === '0') {
             $divisor = substr($divisor, 1);
-            return ['%0' . strlen($divisor) . 'd', (int)$divisor];
+            return ['%0' . \strlen($divisor) . 'd', (int)$divisor];
         } else {
             return ['%d', (int)$divisor];
         }
@@ -151,12 +151,12 @@ class Sharding
     public static function unique(string $db, string $source, mixed $context): array
     {
         $shards = self::multiple($db, $source, $context);
-        if (count($shards) !== 1) {
+        if (\count($shards) !== 1) {
             throw new ShardingTooManyException(['too many dbs: `{dbs}`', 'dbs' => array_keys($shards)]);
         }
 
         $tables = current($shards);
-        if (count($tables) !== 1) {
+        if (\count($tables) !== 1) {
             throw new ShardingTooManyException(['too many tables: `{tables}`', 'tables' => $tables]);
         }
 

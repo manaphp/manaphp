@@ -14,7 +14,7 @@ class EtagAppender implements AppenderInterface
 
     public function append(RequestInterface $request, ResponseInterface $response): void
     {
-        if ($response->getStatusCode() !== 200 || !in_array($request->getMethod(), ['GET', 'HEAD'], true)) {
+        if ($response->getStatusCode() !== 200 || !\in_array($request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }
 

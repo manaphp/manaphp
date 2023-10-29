@@ -12,18 +12,18 @@ class PreparedEmulator implements PreparedEmulatorInterface
 
     protected function parseBindValue(mixed $value, int $preservedStrLength): int|string
     {
-        if (is_string($value)) {
+        if (\is_string($value)) {
             $quoted = $this->quote($value);
-            if ($preservedStrLength > 0 && strlen($quoted) >= $preservedStrLength) {
+            if ($preservedStrLength > 0 && \strlen($quoted) >= $preservedStrLength) {
                 return substr($quoted, 0, $preservedStrLength) . '...';
             } else {
                 return $quoted;
             }
-        } elseif (is_int($value)) {
+        } elseif (\is_int($value)) {
             return $value;
         } elseif ($value === null) {
             return 'NULL';
-        } elseif (is_bool($value)) {
+        } elseif (\is_bool($value)) {
             return (int)$value;
         } else {
             return $value;

@@ -19,6 +19,6 @@ class Memory extends AbstractMailer
     {
         $this->message = $message;
 
-        return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+        return \count($message->getTo()) + \count($message->getCc()) + \count($message->getBcc());
     }
 }

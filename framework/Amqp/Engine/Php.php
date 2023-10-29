@@ -127,18 +127,18 @@ class Php implements EngineInterface
         $exchange = $binding->exchange;
 
         $channel = $this->getChannel();
-        if (is_object($queue)) {
+        if (\is_object($queue)) {
             $this->queueDeclareInternal($channel, $queue);
         }
 
-        if (is_object($exchange)) {
+        if (\is_object($exchange)) {
             $this->exchangeDeclareInternal($channel, $exchange);
         }
 
         try {
             $channel->queue_bind(
-                is_string($queue) ? $queue : $queue->name,
-                is_string($exchange) ? $exchange : $exchange->name,
+                \is_string($queue) ? $queue : $queue->name,
+                \is_string($exchange) ? $exchange : $exchange->name,
                 $binding->binding_key, false, $binding->arguments
             );
         } catch (AMQPProtocolChannelException $exception) {
@@ -154,8 +154,8 @@ class Php implements EngineInterface
         $channel = $this->getChannel();
         try {
             $channel->queue_unbind(
-                is_string($queue) ? $queue : $queue->name,
-                is_string($exchange) ? $exchange : $exchange->name,
+                \is_string($queue) ? $queue : $queue->name,
+                \is_string($exchange) ? $exchange : $exchange->name,
                 $binding->binding_key, $binding->arguments
             );
         } catch (AMQPProtocolChannelException $exception) {
@@ -168,17 +168,17 @@ class Php implements EngineInterface
         array $properties, bool $mandatory
     ): void {
         $channel = $this->getChannel();
-        if (is_object($exchange)) {
+        if (\is_object($exchange)) {
             $this->exchangeDeclareInternal($channel, $exchange);
         }
 
-        if (is_object($routing_key)) {
+        if (\is_object($routing_key)) {
             $this->queueDeclareInternal($channel, $routing_key);
             $routing_key = $routing_key->name;
         }
 
         $message = new AMQPMessage($body, $properties);
-        $exchangeName = is_string($exchange) ? $exchange : $exchange->name;
+        $exchangeName = \is_string($exchange) ? $exchange : $exchange->name;
         $channel->basic_publish($message, $exchangeName, $routing_key, $mandatory);
     }
 
@@ -186,11 +186,11 @@ class Php implements EngineInterface
     ): string {
         $channel = $this->getChannel();
 
-        if (is_object($queue)) {
+        if (\is_object($queue)) {
             $this->queueDeclareInternal($channel, $queue);
         }
 
-        $queueName = is_string($queue) ? $queue : $queue->name;
+        $queueName = \is_string($queue) ? $queue : $queue->name;
         return $channel->basic_consume($queueName, $tag, false, $no_ack, $exclusive, false, $callback);
     }
 

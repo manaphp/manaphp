@@ -58,7 +58,7 @@ class Compiler
             '#="(/[-\w/.]+\.\w+)"#', function ($match) {
             $url = $match[1];
 
-            if (in_array(pathinfo($url, PATHINFO_EXTENSION), ['htm', 'html', 'php'], true)) {
+            if (\in_array(pathinfo($url, PATHINFO_EXTENSION), ['htm', 'html', 'php'], true)) {
                 return $match[0];
             }
 
@@ -90,7 +90,7 @@ class Compiler
         }
 
         $parts = explode('/', substr($file, $pos + 7));
-        if (count($parts) === 1) {
+        if (\count($parts) === 1) {
             $controller = Str::snakelize(pathinfo($parts[0], PATHINFO_FILENAME));
         } else {
             $controller = Str::snakelize($parts[0]);
@@ -121,7 +121,7 @@ class Compiler
         // parse each one into the corresponding valid PHP. We will then have this
         // template as the correctly rendered PHP that can be rendered natively.
         foreach (token_get_all($value) as $token) {
-            if (is_array($token)) {
+            if (\is_array($token)) {
                 list($id, $content) = $token;
                 if ($id === T_INLINE_HTML) {
                     $content = $this->compileStatements($content);
@@ -147,7 +147,7 @@ class Compiler
         $source = $this->alias->resolve($source);
         $compiled = $this->alias->resolve($compiled);
 
-        $dir = dirname($compiled);
+        $dir = \dirname($compiled);
 
         if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
@@ -190,8 +190,8 @@ class Compiler
     protected function getEchoMethods(): array
     {
         $methods = [
-            'compileRawEchos'     => strlen(stripcslashes($this->rawTags[0])),
-            'compileEscapedEchos' => strlen(stripcslashes($this->escapedTags[0])),
+            'compileRawEchos'     => \strlen(stripcslashes($this->rawTags[0])),
+            'compileEscapedEchos' => \strlen(stripcslashes($this->escapedTags[0])),
         ];
 
         uksort(
@@ -292,7 +292,7 @@ class Compiler
     protected function isSafeEchos(string $value): bool
     {
         return preg_match('#^([a-z\d_]+)\\(#', $value, $match) === 1
-            && in_array($match[1], $this->safe_functions, true);
+            && \in_array($match[1], $this->safe_functions, true);
     }
 
     protected function compileEchoDefaults(string $value): string
@@ -476,7 +476,7 @@ class Compiler
 
     protected function compile_url(string $expression): string
     {
-        if (strcspn($expression, '$\'"') === strlen($expression)) {
+        if (strcspn($expression, '$\'"') === \strlen($expression)) {
             $expression = '(\'' . trim($expression, '()') . '\')';
         }
 
@@ -485,7 +485,7 @@ class Compiler
 
     protected function compile_asset(string $expression): string
     {
-        if (strcspn($expression, '$\'"') === strlen($expression)) {
+        if (strcspn($expression, '$\'"') === \strlen($expression)) {
             $expression = '(\'' . trim($expression, '()') . '\')';
         }
 

@@ -107,7 +107,7 @@ class Client implements ClientInterface
     public function basicPublish(string|Exchange $exchange, string|Queue $routing_key, string|array $body,
         array $properties = [], bool $mandatory = false
     ): void {
-        if (!is_string($body)) {
+        if (!\is_string($body)) {
             $body = json_stringify($body);
             $properties['content_type'] ??= 'application/json';
         }

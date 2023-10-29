@@ -190,7 +190,7 @@ class Models implements ModelsInterface
             $guarded = $attribute->fields;
             $fillable = [];
             foreach ($this->getFields($model) as $field) {
-                if (!in_array($field, $guarded, true)) {
+                if (!\in_array($field, $guarded, true)) {
                     $fillable[] = $field;
                 }
             }

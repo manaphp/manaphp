@@ -21,7 +21,7 @@ class Metadata implements MetadataInterface
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
-        if ($this->app_debug || !function_exists('apcu_fetch')) {
+        if ($this->app_debug || !\function_exists('apcu_fetch')) {
             $this->ttl = 0;
         }
     }

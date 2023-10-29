@@ -34,7 +34,7 @@ class Model implements ObjectValueResolverInterface
             throw new ValidateFailedException([$primaryKey => $this->validator->createError('required', $primaryKey)]);
         }
 
-        if (!is_int($id) && !is_string($id)) {
+        if (!\is_int($id) && !\is_string($id)) {
             throw new BadRequestException('id is invalid.');
         }
 

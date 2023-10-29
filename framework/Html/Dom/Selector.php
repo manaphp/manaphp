@@ -14,7 +14,7 @@ class Selector
 
     public function __construct(string|Document $document, ?DOMElement $node = null)
     {
-        $this->document = is_string($document) ? new Document($document) : $document;
+        $this->document = \is_string($document) ? new Document($document) : $document;
         $this->node = $node;
     }
 
@@ -70,14 +70,14 @@ class Selector
 
     public function removeAttr(string $css, mixed $attr = null): static
     {
-        if (is_string($attr)) {
+        if (\is_string($attr)) {
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         /** @var DOMElement $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             foreach ($node->attributes as $attribute) {
-                if (!$attr || in_array($attribute->name, $attr, true)) {
+                if (!$attr || \in_array($attribute->name, $attr, true)) {
                     $node->removeAttribute($attribute->name);
                 }
             }
@@ -88,14 +88,14 @@ class Selector
 
     public function retainAttr(string $css, string|array $attr): static
     {
-        if (is_string($attr)) {
+        if (\is_string($attr)) {
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         /** @var DOMElement $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             foreach ($node->attributes as $attribute) {
-                if (!in_array($attribute->name, $attr, true)) {
+                if (!\in_array($attribute->name, $attr, true)) {
                     $node->removeAttribute($attribute->name);
                 }
             }

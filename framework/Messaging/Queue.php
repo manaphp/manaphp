@@ -18,7 +18,7 @@ class Queue extends AbstractQueue
 
     public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void
     {
-        if (!in_array($priority, $this->priorities, true)) {
+        if (!\in_array($priority, $this->priorities, true)) {
             throw new MisuseException(['`{1}` priority of `{2}` is invalid', $priority, $topic]);
         }
 

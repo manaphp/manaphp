@@ -111,14 +111,14 @@ class Stream implements EngineInterface
                 throw new TimeoutException($url);
             }
             $written += $n;
-        } while ($written !== strlen($data));
+        } while ($written !== \strlen($data));
     }
 
     protected function buildHeader(Request $request): string
     {
         $data = strtoupper($request->method) . ' ' . $request->url . " HTTP/1.1\r\n";
         foreach ($request->headers as $name => $value) {
-            $data .= is_int($name) ? "$value\r\n" : "$name: $value\r\n";
+            $data .= \is_int($name) ? "$value\r\n" : "$name: $value\r\n";
         }
 
         return $data;
@@ -175,11 +175,11 @@ class Stream implements EngineInterface
                     }
 
                     $chunk_package_len = $pos + 2 + $len + 2;
-                    if (strlen($chunked) >= $chunk_package_len) {
+                    if (\strlen($chunked) >= $chunk_package_len) {
                         $body .= substr($chunked, $pos + 2, $len);
                         $chunked = substr($chunked, $chunk_package_len);
                     } else {
-                        $next_read_len = $chunk_package_len - strlen($chunked);
+                        $next_read_len = $chunk_package_len - \strlen($chunked);
                         break;
                     }
                 } else {
@@ -213,7 +213,7 @@ class Stream implements EngineInterface
     ): string {
         $write = null;
         $except = null;
-        while ($length !== strlen($body)) {
+        while ($length !== \strlen($body)) {
             $read = [$stream];
             if (stream_select($read, $write, $except, 0, 10000) <= 0) {
                 if (microtime(true) > $end_time) {

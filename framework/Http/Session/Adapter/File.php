@@ -41,7 +41,7 @@ class File extends AbstractSession
     public function do_write(string $session_id, string $data, int $ttl): bool
     {
         $file = $this->getFileName($session_id);
-        $dir = dirname($file);
+        $dir = \dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
         }

@@ -24,7 +24,7 @@ class Cookie extends AbstractSession
 
         $parts = explode('.', $data, 2);
 
-        if (count($parts) !== 2) {
+        if (\count($parts) !== 2) {
             throw new CookieException(['format invalid: `{cookie}`', 'cookie' => $data]);
         }
 
@@ -35,7 +35,7 @@ class Cookie extends AbstractSession
         }
 
         $payload = json_parse($parts[0]);
-        if (!is_array($payload)) {
+        if (!\is_array($payload)) {
             throw new CookieException(['payload invalid: `{cookie}`', 'cookie' => $data]);
         }
 

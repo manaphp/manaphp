@@ -44,7 +44,7 @@ class Request implements RequestInterface, JsonSerializable
         $data = [];
 
         foreach ($this->globals->getRequest() as $name => $val) {
-            if (!in_array($name, $names, true)) {
+            if (!\in_array($name, $names, true)) {
                 $data[$name] = $val;
             }
         }
@@ -124,7 +124,7 @@ class Request implements RequestInterface, JsonSerializable
     {
         $user_agent = $this->getServer('HTTP_USER_AGENT');
 
-        return $max_len > 0 && strlen($user_agent) > $max_len ? substr($user_agent, 0, $max_len) : $user_agent;
+        return $max_len > 0 && \strlen($user_agent) > $max_len ? substr($user_agent, 0, $max_len) : $user_agent;
     }
 
     public function isPost(): bool
@@ -165,7 +165,7 @@ class Request implements RequestInterface, JsonSerializable
     public function hasFiles(bool $onlySuccessful = true): bool
     {
         foreach ($this->globals->getFiles() as $file) {
-            if (is_int($file['error'])) {
+            if (\is_int($file['error'])) {
                 $error = $file['error'];
 
                 if (!$onlySuccessful || $error === UPLOAD_ERR_OK) {
@@ -196,7 +196,7 @@ class Request implements RequestInterface, JsonSerializable
                         $r[] = $this->maker->make(File::class, [$file]);
                     }
                 }
-            } elseif (is_int($files['error'])) {
+            } elseif (\is_int($files['error'])) {
                 $file = $files;
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $file['key'] = $key;
@@ -204,7 +204,7 @@ class Request implements RequestInterface, JsonSerializable
                     $r[] = $this->maker->make(File::class, [$file]);
                 }
             } else {
-                $countFiles = count($files['error']);
+                $countFiles = \count($files['error']);
                 for ($i = 0; $i < $countFiles; $i++) {
                     if (!$onlySuccessful || $files['error'][$i] === UPLOAD_ERR_OK) {
                         $file = [
@@ -249,7 +249,7 @@ class Request implements RequestInterface, JsonSerializable
         $files = $this->getFiles();
 
         if ($key === null) {
-            return count($files) > 0;
+            return \count($files) > 0;
         } else {
             foreach ($files as $file) {
                 if ($file->getKey() === $key) {
@@ -264,7 +264,7 @@ class Request implements RequestInterface, JsonSerializable
     {
         $referer = $this->getServer('HTTP_REFERER');
 
-        return $max_len > 0 && strlen($referer) > $max_len ? substr($referer, 0, $max_len) : $referer;
+        return $max_len > 0 && \strlen($referer) > $max_len ? substr($referer, 0, $max_len) : $referer;
     }
 
     public function getOrigin(bool $strict = true): string
@@ -317,7 +317,7 @@ class Request implements RequestInterface, JsonSerializable
             return $token;
         } elseif ($token = $this->getServer('HTTP_AUTHORIZATION')) {
             $parts = explode(' ', $token, 2);
-            if ($parts[0] === 'Bearer' && count($parts) === 2) {
+            if ($parts[0] === 'Bearer' && \count($parts) === 2) {
                 return $parts[1];
             }
         }

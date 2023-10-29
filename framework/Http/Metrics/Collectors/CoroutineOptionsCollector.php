@@ -16,7 +16,7 @@ class CoroutineOptionsCollector implements CollectorInterface
     {
         $str = '';
         foreach (Coroutine::getOptions() as $name => $value) {
-            if (is_int($value)) {
+            if (\is_int($value)) {
                 $str .= $this->formatter->gauge('swoole_coroutine_options_' . $name, $value);
             } else {
                 $str .= $this->formatter->gauge('swoole_coroutine_options_' . $name, 1, ['value' => $name]);

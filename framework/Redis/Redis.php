@@ -43,7 +43,7 @@ class Redis implements RedisInterface
             $this->pools->push($this, $connection);
         }
 
-        if (is_object($return)) {
+        if (\is_object($return)) {
             throw new CallInPoolException($method);
         }
 

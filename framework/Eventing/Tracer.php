@@ -39,7 +39,7 @@ class Tracer implements TracerInterface
 
         $rClass = new ReflectionClass($this);
         foreach ($rClass->getMethods(ReflectionMethod::IS_PUBLIC) as $rMethod) {
-            if (count($rParameters = $rMethod->getParameters()) !== 1) {
+            if (\count($rParameters = $rMethod->getParameters()) !== 1) {
                 continue;
             }
             $rParameter = $rParameters[0];
@@ -133,7 +133,7 @@ class Tracer implements TracerInterface
         $method = $event->method;
         $arguments = $event->arguments;
         foreach ($arguments as $k => $v) {
-            if (is_string($v) && strlen($v) > 128) {
+            if (\is_string($v) && \strlen($v) > 128) {
                 $arguments[$k] = substr($v, 0, 128) . '...';
             }
         }
@@ -142,17 +142,17 @@ class Tracer implements TracerInterface
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $return = json_stringify($event->return, JSON_PARTIAL_OUTPUT_ON_ERROR);
 
-            $ret = strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return;
-            $args = strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1);
+            $ret = \strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return;
+            $args = \strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1);
             $this->logger->debug("\$redis->$method({0}) => {1}", [$args, $ret, 'category' => 'redis.' . $method]);
         } else {
             $key = $arguments[0] ?? false;
-            if (!$this->app_debug && is_string($key) && str_starts_with($key, 'cache:')) {
+            if (!$this->app_debug && \is_string($key) && str_starts_with($key, 'cache:')) {
                 return;
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
 
-            $args = strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1);
+            $args = \strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1);
             $this->logger->debug("\$redis->$method({0})", [$args, 'category' => 'redis.' . $method]);
         }
     }

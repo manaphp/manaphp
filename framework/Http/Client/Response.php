@@ -73,10 +73,10 @@ class Response implements JsonSerializable, Stringable
 
     protected function getLastHeaders(array $headers): array
     {
-        for ($i = count($headers) - 1; $i >= 0; $i--) {
+        for ($i = \count($headers) - 1; $i >= 0; $i--) {
             $header = $headers[$i];
             if (str_starts_with($header, 'HTTP/')) {
-                return $i === 0 ? $headers : array_slice($headers, $i);
+                return $i === 0 ? $headers : \array_slice($headers, $i);
             }
         }
 
@@ -94,7 +94,7 @@ class Response implements JsonSerializable, Stringable
             $name = substr($header, 0, $pos);
             $value = substr($header, $pos + 2);
             if (isset($headers[$name])) {
-                if (!is_array($headers[$name])) {
+                if (!\is_array($headers[$name])) {
                     $headers[$name] = [$headers[$name], $value];
                 } else {
                     $headers[$name][] = $value;
@@ -115,7 +115,7 @@ class Response implements JsonSerializable, Stringable
                 continue;
             }
 
-            $cookie = new Cookie(trim(substr($header, strlen('Set-Cookie:'))));
+            $cookie = new Cookie(trim(substr($header, \strlen('Set-Cookie:'))));
             if ($cookie->expires !== null && $cookie->expires < time()) {
                 continue;
             }
@@ -129,7 +129,7 @@ class Response implements JsonSerializable, Stringable
     public function getJsonBody(): array
     {
         $data = json_parse($this->body);
-        if (!is_array($data)) {
+        if (!\is_array($data)) {
             $cut_body = substr($this->body, 0, 128);
             throw new InvalidJsonException(['response of `{1}` is not a valid json: `{2}`', $this->url, $cut_body]);
         }

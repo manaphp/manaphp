@@ -24,7 +24,7 @@ class Gd extends AbstractImage
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(string $file)
     {
-        if (!extension_loaded('gd')) {
+        if (!\extension_loaded('gd')) {
             throw new ExtensionNotInstalledException('gd');
         }
 
@@ -187,7 +187,7 @@ class Gd extends AbstractImage
             $ext = 'jpg';
         }
 
-        $dir = dirname($file);
+        $dir = \dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
         }

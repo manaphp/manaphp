@@ -109,7 +109,7 @@ class Smtp extends AbstractMailer
         $context->file = $this->alias->resolve('@runtime/mail/{ymd}/{ymd_His_}{16}.log');
 
         /** @noinspection MkdirRaceConditionInspection */
-        @mkdir(dirname($context->file), 0777, true);
+        @mkdir(\dirname($context->file), 0777, true);
 
         return $context->socket = $socket;
     }
@@ -123,7 +123,7 @@ class Smtp extends AbstractMailer
         } while ($response[3] !== ' ');
 
         $parts = explode(' ', $response, 2);
-        if (count($parts) === 2) {
+        if (\count($parts) === 2) {
             list($code, $message) = $parts;
             $message = rtrim($message);
         } else {
@@ -132,7 +132,7 @@ class Smtp extends AbstractMailer
         }
 
         $code = (int)$code;
-        if ($expected && !in_array($code, $expected, true)) {
+        if ($expected && !\in_array($code, $expected, true)) {
             throw new BadResponseException(['response is not expected: {response}', 'response' => $response]);
         }
 
@@ -176,7 +176,7 @@ class Smtp extends AbstractMailer
     protected function sendTextBody(string $textBody): static
     {
         $this->writeLine('Content-Type: text/plain; charset=utf-8');
-        $this->writeLine('Content-Length: ' . strlen($textBody));
+        $this->writeLine('Content-Length: ' . \strlen($textBody));
         $this->writeLine('Content-Transfer-Encoding: base64');
         $this->writeLine();
         $this->writeLine(chunk_split(base64_encode($textBody), 983));
@@ -197,7 +197,7 @@ class Smtp extends AbstractMailer
             $this->writeLine("--$boundary");
         }
         $this->writeLine('Content-Type: ' . $contentType);
-        $this->writeLine('Content-Length: ' . strlen($htmlBody));
+        $this->writeLine('Content-Length: ' . \strlen($htmlBody));
         $this->writeLine('Content-Transfer-Encoding: base64');
         $this->writeLine();
         $this->writeLine(chunk_split(base64_encode($htmlBody), 983));
@@ -254,7 +254,7 @@ class Smtp extends AbstractMailer
     protected function sendAddresses(string $type, array $addresses): static
     {
         foreach ($addresses as $k => $v) {
-            if (is_int($k)) {
+            if (\is_int($k)) {
                 $this->writeLine("$type: <$v>");
             } else {
                 $this->writeLine("$type: " . $this->encode($v) . " <$k>");
@@ -296,7 +296,7 @@ class Smtp extends AbstractMailer
 
         $success = 0;
         foreach (array_merge($to, $cc, $bcc) as $k => $v) {
-            $address = is_string($k) ? $k : $v;
+            $address = \is_string($k) ? $k : $v;
             list($code, $msg) = $this->transmit("RCPT TO:<$address>");
             if ($code !== 250) {
                 if ($failedRecipients !== null) {

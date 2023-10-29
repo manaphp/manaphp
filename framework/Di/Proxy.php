@@ -56,6 +56,6 @@ class Proxy implements Lazy
         }
         $this->property->setValue($this->object, $target);
 
-        return call_user_func_array([$target, $name], $args);
+        return \call_user_func_array([$target, $name], $args);
     }
 }

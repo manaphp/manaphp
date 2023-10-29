@@ -43,7 +43,7 @@ class ColumnMap
         }
 
         foreach ($this->map as $k => $v) {
-            if (is_int($k)) {
+            if (\is_int($k)) {
                 unset($map[$v]);
             } else {
                 $map[$k] = $v;

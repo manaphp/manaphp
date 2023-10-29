@@ -24,7 +24,7 @@ class RouteAppender implements AppenderInterface
             $controller = $this->dispatcher->getControllerInstance();
             $action = $this->dispatcher->getAction();
 
-            if (is_object($controller)) {
+            if (\is_object($controller)) {
                 $response->setHeader(
                     'X-Router-Route', $controller::class . '::' . $action . 'Action'
                 );

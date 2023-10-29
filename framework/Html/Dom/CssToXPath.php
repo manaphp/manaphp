@@ -90,7 +90,7 @@ class CssToXPath
             }
         }
 
-        if (1 === count($paths)) {
+        if (1 === \count($paths)) {
             return $paths[0];
         }
         return implode('|', $paths);

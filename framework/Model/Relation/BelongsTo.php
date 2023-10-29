@@ -18,7 +18,7 @@ class BelongsTo extends AbstractRelation
     {
         $models = Container::get(ModelsInterface::class);
 
-        if (is_string($self)) {
+        if (\is_string($self)) {
             $this->selfModel = $self;
             $this->selfField = $models->getReferencedKey($thatModel);
         } else {

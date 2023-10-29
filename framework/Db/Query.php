@@ -39,12 +39,12 @@ class Query extends AbstractQuery
         $r = '';
         foreach ($fields as $k => $v) {
             if (strpbrk($v, '[(') === false) {
-                if (is_int($k)) {
+                if (\is_int($k)) {
                     $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
                 } else {
                     $r .= preg_replace('#\w+#', '[\\0]', $v) . ' AS [' . $k . '], ';
                 }
-            } elseif (is_int($k)) {
+            } elseif (\is_int($k)) {
                 $r .= $v . ', ';
             } else {
                 $r .= $v . ' AS [' . $k . '], ';
@@ -85,7 +85,7 @@ class Query extends AbstractQuery
 
     public function whereCmp(string $field, string $operator, mixed $value): static
     {
-        if (in_array($operator, ['>=', '>', '<', '<='], true)) {
+        if (\in_array($operator, ['>=', '>', '<', '<='], true)) {
             $this->shard_context[$field] = [$operator, $value];
         }
 
@@ -110,7 +110,7 @@ class Query extends AbstractQuery
                 $this->conditions[] = $normalizedField . $operator . ':' . $bind_key;
                 $this->bind[$bind_key] = $value;
             }
-        } elseif (in_array($operator, ['>', '>=', '<', '<='], true)) {
+        } elseif (\in_array($operator, ['>', '>=', '<', '<='], true)) {
             $this->conditions[] = $normalizedField . $operator . ':' . $bind_key;
             $this->bind[$bind_key] = $value;
         } else {
@@ -131,7 +131,7 @@ class Query extends AbstractQuery
     {
         $this->conditions[] = $expr;
 
-        if (is_array($bind)) {
+        if (\is_array($bind)) {
             $this->bind = array_merge($this->bind, $bind);
         }
 
@@ -192,8 +192,8 @@ class Query extends AbstractQuery
             $id = str_replace('.', '_', $field);
             $field = '[' . str_replace('.', '].[', $field) . ']';
 
-            if (is_int(current($values))) {
-                $this->conditions[] = $field . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
+            if (\is_int(current($values))) {
+                $this->conditions[] = $field . ' IN (' . implode(', ', array_map('\intval', $values)) . ')';
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
@@ -228,8 +228,8 @@ class Query extends AbstractQuery
             $id = str_replace('.', '_', $field);
             $field = '[' . str_replace('.', '].[', $field) . ']';
 
-            if (is_int(current($values))) {
-                $this->conditions[] = $field . ' NOT IN (' . implode(', ', array_map('intval', $values)) . ')';
+            if (\is_int(current($values))) {
+                $this->conditions[] = $field . ' NOT IN (' . implode(', ', array_map('\intval', $values)) . ')';
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
@@ -269,11 +269,11 @@ class Query extends AbstractQuery
             return $this;
         }
 
-        if (is_string($fields) && str_contains($fields, ',')) {
+        if (\is_string($fields) && str_contains($fields, ',')) {
             $fields = preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        if (is_array($fields)) {
+        if (\is_array($fields)) {
             $conditions = [];
             foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
@@ -298,11 +298,11 @@ class Query extends AbstractQuery
             return $this;
         }
 
-        if (is_string($fields) && str_contains($fields, ',')) {
+        if (\is_string($fields) && str_contains($fields, ',')) {
             $fields = preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        if (is_array($fields)) {
+        if (\is_array($fields)) {
             $conditions = [];
             foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
@@ -422,8 +422,8 @@ class Query extends AbstractQuery
 
     public function having(string|array $having, array $bind = []): static
     {
-        if (is_array($having)) {
-            if (count($having) === 1) {
+        if (\is_array($having)) {
+            if (\count($having) === 1) {
                 $this->having = $having[0];
             } else {
                 $items = [];
@@ -470,7 +470,7 @@ class Query extends AbstractQuery
             $shards = $this->getShards();
 
             $tables = current($shards);
-            if (count($tables) !== 1) {
+            if (\count($tables) !== 1) {
                 throw new ShardingTooManyException(__METHOD__);
             }
 
@@ -560,7 +560,7 @@ class Query extends AbstractQuery
         }
         $params['join'] = $joinSQL;
 
-        if (count($this->conditions) === 1) {
+        if (\count($this->conditions) === 1) {
             $params['where'] = $this->conditions[0];
         } elseif ($this->conditions) {
             $wheres = [];
@@ -646,7 +646,7 @@ class Query extends AbstractQuery
                 }
 
                 $join_tables = $join_shards[$connection];
-                if (count($join_tables) > 1) {
+                if (\count($join_tables) > 1) {
                     throw new NotSupportedException('');
                 }
 
@@ -663,7 +663,7 @@ class Query extends AbstractQuery
         if ($columnMap = $model ? $this->models->getColumnMap($model) : []) {
             foreach ($rows as &$row) {
                 foreach ($columnMap as $propery => $column) {
-                    if (array_key_exists($column, $row)) {
+                    if (\array_key_exists($column, $row)) {
                         $row[$propery] = $row[$column];
                         unset($row[$column]);
                     }
@@ -676,7 +676,7 @@ class Query extends AbstractQuery
 
     public function execute(): array
     {
-        if (in_array('FALSE', $this->conditions, true)) {
+        if (\in_array('FALSE', $this->conditions, true)) {
             $this->logger->debug('SQL: {0}', [$this->sql, 'category' => 'db.query.skip']);
             return [];
         }
@@ -693,7 +693,7 @@ class Query extends AbstractQuery
         $shards = $this->getShards();
 
         $result = [];
-        if (count($shards) === 1 && count(current($shards)) === 1) {
+        if (\count($shards) === 1 && \count(current($shards)) === 1) {
             $result = $this->query(key($shards), current($shards)[0]);
         } elseif ($this->order) {
             $copy = clone $this;
@@ -717,21 +717,21 @@ class Query extends AbstractQuery
                 $result = Arr::sort($result, $this->order);
             }
 
-            $result = $this->limit ? array_slice($result, $this->offset, $this->limit) : $result;
+            $result = $this->limit ? \array_slice($result, $this->offset, $this->limit) : $result;
         } elseif ($this->limit) {
             foreach ($shards as $connection => $tables) {
                 foreach ($tables as $table) {
                     if ($r = $this->query($connection, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
-                        if (count($result) >= $this->offset + $this->limit) {
-                            $result = array_slice($result, $this->offset, $this->limit);
+                        if (\count($result) >= $this->offset + $this->limit) {
+                            $result = \array_slice($result, $this->offset, $this->limit);
                             return $this->index ? Arr::indexby($result, $this->index) : $result;
                         }
                     }
                 }
             }
 
-            $result = $result ? array_slice($result, $this->offset, $this->limit) : [];
+            $result = $result ? \array_slice($result, $this->offset, $this->limit) : [];
         } else {
             foreach ($shards as $connection => $tables) {
                 foreach ($tables as $table) {
@@ -750,7 +750,7 @@ class Query extends AbstractQuery
         $fields = '';
 
         foreach ($expr as $k => $v) {
-            if (is_int($k)) {
+            if (\is_int($k)) {
                 $fields .= '[' . $v . '], ';
             } else {
                 if (preg_match('#^(\w+)\((\w+)\)$#', $v, $matches) === 1) {
@@ -765,7 +765,7 @@ class Query extends AbstractQuery
 
         if ($group) {
             foreach ($group as $k => $v) {
-                $fields .= is_int($k) ? "[$v], " : "$v, ";
+                $fields .= \is_int($k) ? "[$v], " : "$v, ";
             }
         }
 
@@ -778,7 +778,7 @@ class Query extends AbstractQuery
 
         $shards = $this->getShards();
 
-        if (count($shards) === 1 && count(current($shards)) === 1) {
+        if (\count($shards) === 1 && \count(current($shards)) === 1) {
             $this->fields = $this->buildAggregate($expr, $this->group);
 
             $result = $this->query(key($shards), current($shards)[0]);
@@ -795,7 +795,7 @@ class Query extends AbstractQuery
 
                 $agg = strtoupper($match[0]);
                 $aggs[$k] = $agg;
-                if (in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'], true)) {
+                if (\in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'], true)) {
                     null;
                 } elseif ($agg === 'AVG') {
                     $sum = $k . '_sum';
@@ -844,7 +844,7 @@ class Query extends AbstractQuery
         foreach ($shards as $connection => $tables) {
             foreach ($tables as $table) {
                 $result = $copy->query($connection, $table);
-                $row_count += $this->group ? count($result) : $result[0]['row_count'];
+                $row_count += $this->group ? \count($result) : $result[0]['row_count'];
             }
         }
 
@@ -882,7 +882,7 @@ class Query extends AbstractQuery
         $values = [];
 
         $shards = $this->getShards();
-        if (count($shards) === 1 && count(current($shards)) === 1) {
+        if (\count($shards) === 1 && \count(current($shards)) === 1) {
             $connection = key($shards);
             $table = current($shards)[0];
             foreach ($this->query($connection, $table) as $row) {
@@ -893,7 +893,7 @@ class Query extends AbstractQuery
                 foreach ($tables as $table) {
                     foreach ($this->query($connection, $table) as $row) {
                         $value = $row[$field];
-                        if (!in_array($value, $values, true)) {
+                        if (!\in_array($value, $values, true)) {
                             $values[] = $value;
                         }
                     }

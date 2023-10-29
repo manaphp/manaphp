@@ -27,7 +27,7 @@ class Imagick extends AbstractImage
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(string $file)
     {
-        if (!extension_loaded('imagick')) {
+        if (!\extension_loaded('imagick')) {
             throw new ExtensionNotInstalledException('Imagick');
         }
 
@@ -165,7 +165,7 @@ class Imagick extends AbstractImage
             $this->image->setImageCompressionQuality($quality);
         }
 
-        $dir = dirname($file);
+        $dir = \dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
         }

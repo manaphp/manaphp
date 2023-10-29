@@ -22,7 +22,7 @@ class Arr
         $r = [];
 
         foreach ($ar as $key => $value) {
-            if (is_array($value) && $value) {
+            if (\is_array($value) && $value) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $r = array_merge($r, self::dot($value, $prepend . $key . '.'));
             } else {
@@ -44,7 +44,7 @@ class Arr
 
         $t = $ar;
         foreach (explode('.', substr($key, 0, $pos)) as $segment) {
-            if (!isset($t[$segment]) || !is_array($t[$segment])) {
+            if (!isset($t[$segment]) || !\is_array($t[$segment])) {
                 return $default;
             }
             $t = $t[$segment];
@@ -57,7 +57,7 @@ class Arr
     public static function trim(array $ar, bool $removeEmpty = true): array
     {
         foreach ($ar as $k => $v) {
-            if (is_string($v)) {
+            if (\is_string($v)) {
                 if ($v === '') {
                     if ($removeEmpty) {
                         unset($ar[$k]);
@@ -70,7 +70,7 @@ class Arr
                         $ar[$k] = $v;
                     }
                 }
-            } elseif (is_array($v)) {
+            } elseif (\is_array($v)) {
                 $ar[$k] = self::trim($v, $removeEmpty);
             }
         }
@@ -82,8 +82,8 @@ class Arr
     {
         $values = [];
         foreach ($input as $item) {
-            $value = is_array($item) ? $item[$field_key] : $item->$field_key;
-            if (!in_array($value, $values, true)) {
+            $value = \is_array($item) ? $item[$field_key] : $item->$field_key;
+            if (!\in_array($value, $values, true)) {
                 $values[] = $value;
             }
         }
@@ -102,7 +102,7 @@ class Arr
             foreach ($ar as $row) {
                 $rows[$row[$index]] = $row;
             }
-        } elseif (is_array($index)) {
+        } elseif (\is_array($index)) {
             $k = key($index);
             $v = current($index);
             foreach ($ar as $row) {
@@ -122,7 +122,7 @@ class Arr
         $r = [];
 
         foreach ($ar as $value) {
-            $kv = is_object($value) ? $value->$key : $value[$value];
+            $kv = \is_object($value) ? $value->$key : $value[$value];
             $r[$kv][] = $value;
         }
 
@@ -134,16 +134,16 @@ class Arr
         usort(
             $ar, static function ($a, $b) use ($sort) {
             foreach ($sort as $k => $v) {
-                $field = is_int($k) ? $v : $k;
+                $field = \is_int($k) ? $v : $k;
 
                 $first = $a[$field];
                 $second = $b[$field];
 
-                $r = is_string($first) ? strcmp($first, $second) : $first - $second;
+                $r = \is_string($first) ? strcmp($first, $second) : $first - $second;
                 if ($r > 0) {
-                    return (is_int($k) || $v === SORT_ASC || $v === 'ASC' || $v === 'asc') ? 1 : -1;
+                    return (\is_int($k) || $v === SORT_ASC || $v === 'ASC' || $v === 'asc') ? 1 : -1;
                 } elseif ($r < 0) {
-                    return (is_int($k) || $v === SORT_ASC || $v === 'ASC' || $v === 'asc') ? -1 : 1;
+                    return (\is_int($k) || $v === SORT_ASC || $v === 'ASC' || $v === 'asc') ? -1 : 1;
                 }
             }
             return 0;
@@ -177,7 +177,7 @@ class Arr
             $row = [];
 
             foreach ($group as $gk => $gv) {
-                $field = is_int($gk) ? $gv : $gk;
+                $field = \is_int($gk) ? $gv : $gk;
                 $row[$field] = $v[0][$field];
             }
 

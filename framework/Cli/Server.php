@@ -40,7 +40,7 @@ class Server implements ServerInterface
      */
     public function handle(): void
     {
-        $args = implode(' ', array_slice($GLOBALS['argv'], 1));
+        $args = implode(' ', \array_slice($GLOBALS['argv'], 1));
         $this->logger->info('command line: {0}', [basename($GLOBALS['argv'][0]) . ' ' . $args]);
 
         try {

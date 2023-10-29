@@ -16,10 +16,10 @@ class Gd extends AbstractCaptcha
 
         imagefilledrectangle($image, 0, 0, $width, $height, $bgColor);
 
-        $font_file = $this->alias->resolve($this->fonts[random_int(0, count($this->fonts) - 1)]);
+        $font_file = $this->alias->resolve($this->fonts[random_int(0, \count($this->fonts) - 1)]);
 
         $x = 0;
-        $length = strlen($code);
+        $length = \strlen($code);
         for ($i = 0; $i < $length; $i++) {
             $font_size = $this->size + random_int(-$this->size_noise, $this->size_noise);
             $angle = random_int(-$this->angle_noise, $this->angle_noise);
@@ -30,11 +30,11 @@ class Gd extends AbstractCaptcha
         }
 
         for ($k = 0; $k < $this->char_noise; $k++) {
-            $font_file = $this->alias->resolve($this->fonts[random_int(0, count($this->fonts) - 1)]);
+            $font_file = $this->alias->resolve($this->fonts[random_int(0, \count($this->fonts) - 1)]);
 
             $y = random_int((int)($height * 0.3), (int)($height * 0.7));
             $x = random_int(0, $width) - $this->size;
-            $letter = $this->charset[random_int(0, strlen($this->charset) - 1)];
+            $letter = $this->charset[random_int(0, \strlen($this->charset) - 1)];
             $fg_color = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
             $font_size = (int)($this->size / 2 + random_int(-$this->size_noise, $this->size_noise));
             $angle = random_int(-$this->angle_noise, $this->angle_noise);

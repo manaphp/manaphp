@@ -22,7 +22,7 @@ class ServerTask implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            is_object($this->data) ? get_class($this->data) : 'data' => $this->data,
+            \is_object($this->data) ? \get_class($this->data) : 'data' => $this->data,
             'task_id'                                                => $this->task_id,
             'src_worker_id'                                          => $this->src_worker_id,
         ];

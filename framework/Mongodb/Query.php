@@ -77,7 +77,7 @@ class Query extends AbstractQuery
             );
         }
 
-        return $this->limit ? array_slice($r['values'], $this->offset, $this->limit) : $r['values'];
+        return $this->limit ? \array_slice($r['values'], $this->offset, $this->limit) : $r['values'];
     }
 
     public function select(array $fields): static
@@ -88,12 +88,12 @@ class Query extends AbstractQuery
 
         $this->aliases = [];
 
-        if (isset($fields[count($fields) - 1])) {
+        if (isset($fields[\count($fields) - 1])) {
             $this->fields = array_fill_keys($fields, 1);
         } else {
             $projection = [];
             foreach ($fields as $k => $v) {
-                if (!is_int($k)) {
+                if (!\is_int($k)) {
                     $this->aliases[$k] = $v;
                 }
                 $projection[$v] = 1;
@@ -144,7 +144,7 @@ class Query extends AbstractQuery
     public function aggregate(array $expr): array
     {
         foreach ($expr as $k => $v) {
-            if (is_array($v)) {
+            if (\is_array($v)) {
                 if (isset($v['$count_if'])) {
                     unset($v['$count_if'][0]);
                     $v = ['$sum' => ['$cond' => [$v['$count_if'], 1, 0]]];
@@ -201,7 +201,7 @@ class Query extends AbstractQuery
                 } else {
                     throw new MisuseException(['unknown AVG_IF expression: `{expression}`', 'expression' => $operand]);
                 }
-            } elseif (in_array(
+            } elseif (\in_array(
                 $accumulator,
                 ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'],
                 true
@@ -247,15 +247,15 @@ class Query extends AbstractQuery
         $type = $this->types[$field];
 
         if ($type === 'string') {
-            return is_string($value) ? $value : (string)$value;
+            return \is_string($value) ? $value : (string)$value;
         } elseif ($type === 'int') {
-            return is_int($value) ? $value : (int)$value;
+            return \is_int($value) ? $value : (int)$value;
         } elseif ($type === 'float') {
-            return is_float($value) ? $value : (float)$value;
+            return \is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
             return is_scalar($value) ? new ObjectId($value) : $value;
         } elseif ($type === 'bool') {
-            return is_bool($value) ? $value : (bool)$value;
+            return \is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {
             return (array)$value;
         } else {
@@ -295,7 +295,7 @@ class Query extends AbstractQuery
 
     public function whereCmp(string $field, string $operator, mixed $value): static
     {
-        if (in_array($operator, ['>=', '>', '<', '<='], true)) {
+        if (\in_array($operator, ['>=', '>', '<', '<='], true)) {
             $this->shard_context[$field] = [$operator, $value];
         }
 
@@ -310,9 +310,9 @@ class Query extends AbstractQuery
             }
 
             if (is_scalar($value)) {
-                if (is_int($value)) {
+                if (\is_int($value)) {
                     $this->filters[] = [$field => ['$in' => [(string)$value, $value]]];
-                } elseif (is_float($value)) {
+                } elseif (\is_float($value)) {
                     $this->filters[] = [$field => ['$in' => [(string)$value, $value]]];
                 } else {
                     $this->filters[] = [$field => ['$in' => [(string)$value, (int)$value, (float)$value]]];
@@ -417,7 +417,7 @@ class Query extends AbstractQuery
             return $this;
         }
 
-        if (is_array($fields)) {
+        if (\is_array($fields)) {
             $or = [];
             foreach ($fields as $v) {
                 $or[] = [$v => ['$regex' => $regex, '$options' => 'i']];
@@ -436,7 +436,7 @@ class Query extends AbstractQuery
             return $this;
         }
 
-        if (is_array($fields)) {
+        if (\is_array($fields)) {
             $and = [];
             foreach ($fields as $v) {
                 $and[] = [$v => ['$not' => new Regex($regex, 'i')]];
@@ -505,7 +505,7 @@ class Query extends AbstractQuery
             $like = '^' . $like;
         }
 
-        if ($like[strlen($like) - 1] !== '%') {
+        if ($like[\strlen($like) - 1] !== '%') {
             $like .= '$';
         }
 
@@ -569,7 +569,7 @@ class Query extends AbstractQuery
 
     public function groupBy(string|array $groupBy): static
     {
-        if (is_string($groupBy)) {
+        if (\is_string($groupBy)) {
             if (str_contains($groupBy, '(')) {
                 if (preg_match('#^([\w.]+)\((.*)\)$#', $groupBy, $match) === 1) {
                     $func = strtoupper($match[1]);
@@ -589,9 +589,9 @@ class Query extends AbstractQuery
                     $this->group[$field] = '$' . $field;
                 }
             }
-        } elseif (is_array($groupBy)) {
+        } elseif (\is_array($groupBy)) {
             foreach ($groupBy as $k => $v) {
-                if (is_int($k)) {
+                if (\is_int($k)) {
                     $this->group[$v] = '$' . $v;
                 } else {
                     $this->group[$k] = $v;
@@ -619,7 +619,7 @@ class Query extends AbstractQuery
         foreach ($this->filters as $filter) {
             $key = key($filter);
             $value = current($filter);
-            if (isset($filters[$key]) || count($filter) !== 1) {
+            if (isset($filters[$key]) || \count($filter) !== 1) {
                 $filters = ['$and' => $this->filters];
                 break;
             }

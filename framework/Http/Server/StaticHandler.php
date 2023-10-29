@@ -51,7 +51,7 @@ class StaticHandler implements StaticHandlerInterface
             $line = trim($line, ';');
 
             $parts = preg_split('#\s+#', $line, -1, PREG_SPLIT_NO_EMPTY);
-            if (count($parts) < 2) {
+            if (\count($parts) < 2) {
                 continue;
             }
 
@@ -74,15 +74,15 @@ class StaticHandler implements StaticHandlerInterface
             return null;
         }
 
-        $file = substr($file, strlen($prefix));
+        $file = substr($file, \strlen($prefix));
 
-        if (in_array($file, $this->locations, true)) {
+        if (\in_array($file, $this->locations, true)) {
             return $file;
         } elseif (($pos = strpos($file, '/', 1)) === false) {
             return null;
         } else {
             $level1 = substr($file, 0, $pos);
-            return in_array($level1, $this->locations, true) ? $file : null;
+            return \in_array($level1, $this->locations, true) ? $file : null;
         }
     }
 

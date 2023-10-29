@@ -22,7 +22,7 @@ class HasMany extends AbstractRelation
         $this->selfModel = $selfModel;
         $this->selfField = $models->getPrimaryKey($selfModel);
 
-        if (is_string($that)) {
+        if (\is_string($that)) {
             $this->thatModel = $that;
             $this->thatField = $models->getReferencedKey($selfModel);
         } else {

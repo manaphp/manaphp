@@ -76,7 +76,7 @@ class File implements FileInterface, JsonSerializable
             }
         }
 
-        LocalFS::dirCreate(dirname($dst));
+        LocalFS::dirCreate(\dirname($dst));
 
         if (PHP_SAPI === 'cli') {
             LocalFS::fileMove($this->file['tmp_name'], $this->alias->resolve($dst));

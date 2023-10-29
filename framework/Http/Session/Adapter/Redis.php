@@ -24,7 +24,7 @@ class Redis extends AbstractSession
     public function do_read(string $session_id): string
     {
         $data = $this->redisCache->get($this->getKey($session_id));
-        return is_string($data) ? $data : '';
+        return \is_string($data) ? $data : '';
     }
 
     public function do_write(string $session_id, string $data, int $ttl): bool

@@ -156,7 +156,7 @@ class Connection
         $redis = $this->getConnect();
 
         $read_timeout = null;
-        if (in_array($name, ['subscribe', 'psubscribe'], true)) {
+        if (\in_array($name, ['subscribe', 'psubscribe'], true)) {
             $read_timeout = $redis->getOption(Redis::OPT_READ_TIMEOUT);
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
         }

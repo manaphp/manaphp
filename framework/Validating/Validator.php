@@ -64,7 +64,7 @@ class Validator implements ValidatorInterface
         $template = $this->getTemplate($validate);
         $tr = [':field' => $field];
 
-        if (is_string($template)) {
+        if (\is_string($template)) {
             $tr[':parameter'] = $parameter;
             return strtr($template, $tr);
         } else {
@@ -77,11 +77,11 @@ class Validator implements ValidatorInterface
         $value = $model->$field;
 
         if ($value === '' || $value === null) {
-            if (is_array($rules)) {
+            if (\is_array($rules)) {
                 //default value maybe is `NULL`
-                if (array_key_exists('default', $rules)) {
+                if (\array_key_exists('default', $rules)) {
                     return $model->$field = $rules['default'];
-                } elseif (in_array('safe', $rules, true)) {
+                } elseif (\in_array('safe', $rules, true)) {
                     return $model->$field = '';
                 }
             } elseif ($rules === 'safe') {
@@ -93,7 +93,7 @@ class Validator implements ValidatorInterface
 
         $intFields = $this->models->getIntFields($model::class);
         foreach ((array)$rules as $k => $v) {
-            if (is_int($k)) {
+            if (\is_int($k)) {
                 if ($v instanceof Closure) {
                     $r = $v($value);
                     if ($r === null || $r === true) {
@@ -105,7 +105,7 @@ class Validator implements ValidatorInterface
                     }
                     continue;
                 } elseif (str_contains($v, '-')) {
-                    $validate = in_array($field, $intFields, true) ? 'range' : 'length';
+                    $validate = \in_array($field, $intFields, true) ? 'range' : 'length';
                     $parameter = $v;
                 } else {
                     $validate = $v;
@@ -143,11 +143,11 @@ class Validator implements ValidatorInterface
     public function validateValue(string $field, mixed $value, mixed $rules): mixed
     {
         if ($value === '' || $value === null) {
-            if (is_array($rules)) {
+            if (\is_array($rules)) {
                 //default value maybe is `NULL`
-                if (array_key_exists('default', $rules)) {
+                if (\array_key_exists('default', $rules)) {
                     return $rules['default'];
-                } elseif (in_array('safe', $rules, true)) {
+                } elseif (\in_array('safe', $rules, true)) {
                     return '';
                 }
             } elseif ($rules === 'safe') {
@@ -159,7 +159,7 @@ class Validator implements ValidatorInterface
 
         $rules = (array)$rules;
         foreach ($rules as $k => $v) {
-            if (is_int($k)) {
+            if (\is_int($k)) {
                 if ($v instanceof Closure) {
                     $r = $v($value);
                     if ($r === null || $r === true) {
@@ -172,12 +172,12 @@ class Validator implements ValidatorInterface
                     continue;
                 } elseif (str_contains($v, '-')) {
                     $parameter = $v;
-                    if (in_array('string', $rules, true)) {
+                    if (\in_array('string', $rules, true)) {
                         $validate = 'length';
-                    } elseif (in_array('int', $rules, true) || in_array('float', $rules, true)) {
+                    } elseif (\in_array('int', $rules, true) || \in_array('float', $rules, true)) {
                         $validate = 'range';
                     } elseif (isset($rules['default'])) {
-                        $validate = is_string($rules['default']) ? 'length' : 'range';
+                        $validate = \is_string($rules['default']) ? 'length' : 'range';
                     } else {
                         throw new InvalidArgumentException(['infer validate name failed: {value}', 'value' => $v]);
                     }
@@ -223,7 +223,7 @@ class Validator implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_bool(string $field, mixed $value): ?bool
     {
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             return $value;
         }
 
@@ -241,7 +241,7 @@ class Validator implements ValidatorInterface
     {
         $value = $model->$field;
 
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             return (int)$value;
         }
 
@@ -257,7 +257,7 @@ class Validator implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_int(string $field, mixed $value): ?int
     {
-        if (is_int($value)) {
+        if (\is_int($value)) {
             return $value;
         }
 
@@ -267,7 +267,7 @@ class Validator implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_float(string $field, mixed $value): ?float
     {
-        if (is_int($value) || is_float($value)) {
+        if (\is_int($value) || \is_float($value)) {
             return $value;
         }
 
@@ -300,12 +300,12 @@ class Validator implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_array(string $field, mixed $value): array
     {
-        return is_string($value) ? preg_split('#,#', $value, -1, PREG_SPLIT_NO_EMPTY) : (array)$value;
+        return \is_string($value) ? preg_split('#,#', $value, -1, PREG_SPLIT_NO_EMPTY) : (array)$value;
     }
 
     protected function normalizeNumber(string $field, mixed $value, mixed $parameter): int|float
     {
-        if (!is_int($value) && !is_float($value)) {
+        if (!\is_int($value) && !\is_float($value)) {
             if (str_contains($parameter, '.')) {
                 if (($value = $this->validate_float($field, $value)) === null) {
                     throw new ValidateFailedException([$field => $this->createError('float', $field)]);
@@ -415,7 +415,7 @@ class Validator implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_trim(string $field, mixed $value): string|array
     {
-        if (is_array($value)) {
+        if (\is_array($value)) {
             $r = [];
             foreach ($value as $v) {
                 if (($v = trim($v)) !== '') {
@@ -501,24 +501,24 @@ class Validator implements ValidatorInterface
     protected function validate_in(string $field, mixed $value, string $parameter): mixed
     {
         /** @noinspection PhpRedundantOptionalArgumentInspection */
-        return in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
+        return \in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_not_in(string $field, mixed $value, string $parameter): mixed
     {
         /** @noinspection PhpRedundantOptionalArgumentInspection */
-        return !in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
+        return !\in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_ext(string $field, string $value, mixed $parameter): ?string
     {
         $ext = strtolower(pathinfo($value, PATHINFO_EXTENSION));
-        if (is_array($parameter)) {
-            return in_array($ext, $parameter, true) ? $value : null;
+        if (\is_array($parameter)) {
+            return \in_array($ext, $parameter, true) ? $value : null;
         } else {
-            return in_array($ext, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), true) ? $value : null;
+            return \in_array($ext, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), true) ? $value : null;
         }
     }
 
@@ -528,15 +528,15 @@ class Validator implements ValidatorInterface
 
         $filters = [$field => $value];
 
-        if (is_string($parameters)) {
+        if (\is_string($parameters)) {
             foreach (explode(',', $parameters) as $parameter) {
                 if (($parameter = trim($parameter)) !== '') {
                     $filters[$parameter] = $model->$parameter;
                 }
             }
-        } elseif (is_array($parameters)) {
+        } elseif (\is_array($parameters)) {
             foreach ($parameters as $k => $v) {
-                if (is_int($k)) {
+                if (\is_int($k)) {
                     $filters[$v] = $model->$v;
                 } else {
                     $filters[$k] = $v;
@@ -595,7 +595,7 @@ class Validator implements ValidatorInterface
         $rClass = new ReflectionClass($model);
         foreach ($rClass->getConstants() as $cName => $cValue) {
             if (str_starts_with($cName, $name)) {
-                $constants[$cValue] = strtolower(substr($cName, strlen($name)));
+                $constants[$cValue] = strtolower(substr($cName, \strlen($name)));
             }
         }
 

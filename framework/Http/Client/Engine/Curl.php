@@ -125,7 +125,7 @@ class Curl implements EngineInterface
 
             $headers = [];
             foreach ($request->headers as $name => $value) {
-                $headers[] = is_int($name) ? $value : "$name: $value";
+                $headers[] = \is_int($name) ? $value : "$name: $value";
             }
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 

@@ -40,7 +40,7 @@ class CsrfMiddleware
         }
 
         if ($domains = $this->domains) {
-            if (in_array($origin_domain, $domains, true)) {
+            if (\in_array($origin_domain, $domains, true)) {
                 return true;
             }
 

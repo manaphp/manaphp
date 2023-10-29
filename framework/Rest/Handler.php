@@ -16,13 +16,13 @@ class Handler extends AbstractHandler
     {
         if ($actionReturnValue === null) {
             $this->response->setJsonOk();
-        } elseif (is_array($actionReturnValue)) {
+        } elseif (\is_array($actionReturnValue)) {
             $this->response->setJsonData($actionReturnValue);
         } elseif ($actionReturnValue instanceof Response) {
             null;
-        } elseif (is_string($actionReturnValue)) {
+        } elseif (\is_string($actionReturnValue)) {
             $this->response->setJsonError($actionReturnValue);
-        } elseif (is_int($actionReturnValue)) {
+        } elseif (\is_int($actionReturnValue)) {
             $this->response->setJsonError('', $actionReturnValue);
         } elseif ($actionReturnValue instanceof Throwable) {
             $this->response->setJsonThrowable($actionReturnValue);

@@ -152,12 +152,12 @@ class Dispatcher implements DispatcherInterface
         $globals = $this->globals->get();
 
         foreach ($params as $k => $v) {
-            if (is_string($k)) {
+            if (\is_string($k)) {
                 $globals->_REQUEST[$k] = $v;
             }
         }
 
-        if (($id = $params[0] ?? null) !== null && (is_int($id) || is_string($id))) {
+        if (($id = $params[0] ?? null) !== null && (\is_int($id) || \is_string($id))) {
             $globals->_REQUEST['id'] = $id;
         }
 

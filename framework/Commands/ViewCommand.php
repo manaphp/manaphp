@@ -121,11 +121,11 @@ HTML;
      */
     public function isTimestampField(string $model, string $field): bool
     {
-        if (!in_array($field, $this->models->getIntFields($model), true)) {
+        if (!\in_array($field, $this->models->getIntFields($model), true)) {
             return false;
         }
 
-        return in_array($field, ['updated_time', 'created_time', 'deleted_time'], true);
+        return \in_array($field, ['updated_time', 'created_time', 'deleted_time'], true);
     }
 
     /**
@@ -156,7 +156,7 @@ HTML;
                 $content .= PHP_EOL . <<<HTML
     <result-ip prop="$field"></result-ip>
 HTML;
-            } elseif (in_array($field, ['admin_name', 'user_name', 'updator_name', 'creator_name'], true)) {
+            } elseif (\in_array($field, ['admin_name', 'user_name', 'updator_name', 'creator_name'], true)) {
                 $content .= PHP_EOL . <<<HTML
     <result-account prop="$field"></result-account>
 HTML;
@@ -228,9 +228,9 @@ HTML;
             $iniFields = $this->models->getIntFields($model);
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];
-                if (is_array($rule) && isset($rule['default'])) {
+                if (\is_array($rule) && isset($rule['default'])) {
                     $value = json_stringify($rule['default']);
-                } elseif (in_array($field, $iniFields, true)) {
+                } elseif (\in_array($field, $iniFields, true)) {
                     $value = 0;
                 } else {
                     $value = "''";
@@ -246,9 +246,9 @@ HTML;
 
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];
-                if (is_array($rule) && isset($rule['default'])) {
+                if (\is_array($rule) && isset($rule['default'])) {
                     $value = json_stringify($rule['default']);
-                } elseif (in_array($field, $iniFields, true)) {
+                } elseif (\in_array($field, $iniFields, true)) {
                     $value = 0;
                 } else {
                     $value = "''";

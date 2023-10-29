@@ -43,7 +43,7 @@ class ListenerProvider implements ListenerProviderInterface
 
     public function add(string|object $listener): void
     {
-        if (is_string($listener)) {
+        if (\is_string($listener)) {
             $listener = $this->container->get($listener);
         }
 
@@ -56,7 +56,7 @@ class ListenerProvider implements ListenerProviderInterface
         $rClass = new ReflectionClass($listener);
 
         foreach ($rClass->getMethods(ReflectionMethod::IS_PUBLIC) as $rMethod) {
-            if (count($rParameters = $rMethod->getParameters()) !== 1) {
+            if (\count($rParameters = $rMethod->getParameters()) !== 1) {
                 continue;
             }
             $rParameter = $rParameters[0];

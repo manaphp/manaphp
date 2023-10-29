@@ -57,14 +57,14 @@ class Server implements ServerInterface
 
         if (($id = $this->identity->isGuest() ? 0 : $this->identity->getId()) !== 0) {
             unset($this->ids[$room][$id][$fd]);
-            if (count($this->ids[$room][$id]) === 0) {
+            if (\count($this->ids[$room][$id]) === 0) {
                 unset($this->ids[$room][$id]);
             }
         }
 
         if (($name = $this->identity->isGuest() ? '' : $this->identity->getName()) !== '') {
             unset($this->names[$room][$name][$fd]);
-            if (count($this->names[$room][$name]) === 0) {
+            if (\count($this->names[$room][$name]) === 0) {
                 unset($this->names[$room][$name]);
             }
         }
@@ -224,7 +224,7 @@ class Server implements ServerInterface
             function () {
                 $this->pubSub->psubscribe(
                     [$this->prefix . '*'], function ($channel, $message) {
-                    list($type, $room, $receivers) = explode(':', substr($channel, strlen($this->prefix)), 4);
+                    list($type, $room, $receivers) = explode(':', substr($channel, \strlen($this->prefix)), 4);
                     if ($type !== null && $room !== null && $receivers !== null) {
                         $receivers = explode(',', $receivers);
                         $this->eventDispatcher->dispatch(new ServerPushing($this, $type, $receivers, $message));

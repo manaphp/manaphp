@@ -18,7 +18,7 @@ class ServerPipeMessage implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            is_object($this->message) ? get_class($this->message) : 'message' => $this->message,
+            \is_object($this->message) ? \get_class($this->message) : 'message' => $this->message,
             'src_worker_id'                                                   => $this->src_worker_id,
         ];
     }

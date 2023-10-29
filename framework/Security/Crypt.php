@@ -19,7 +19,7 @@ class Crypt implements CryptInterface
             throw new CryptException('generate iv failed');
         }
 
-        $data = pack('N', strlen($text)) . $text . md5($text, true);
+        $data = pack('N', \strlen($text)) . $text . md5($text, true);
         return $iv . openssl_encrypt($data, $this->method, md5($key, true), OPENSSL_RAW_DATA, $iv);
     }
 
@@ -27,7 +27,7 @@ class Crypt implements CryptInterface
     {
         $iv_length = openssl_cipher_iv_length($this->method);
 
-        if (strlen($text) < $iv_length * 2) {
+        if (\strlen($text) < $iv_length * 2) {
             throw new CryptException('encrypted data is too short.');
         }
 
@@ -37,7 +37,7 @@ class Crypt implements CryptInterface
 
         $length = unpack('N', $decrypted)[1];
 
-        if (4 + $length + 16 !== strlen($decrypted)) {
+        if (4 + $length + 16 !== \strlen($decrypted)) {
             throw new CryptException('decrypted data length is wrong.');
         }
 

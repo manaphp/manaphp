@@ -11,13 +11,13 @@ class Exception extends \Exception
 
     public function __construct(string|Stringable|array $message = '', int $code = 0, \Exception $previous = null)
     {
-        if (is_array($message)) {
+        if (\is_array($message)) {
             $replaces = [];
 
             preg_match_all('#{(\w+)}#', $message[0], $matches);
             foreach ($matches[1] as $key) {
                 if (($val = $message[$key] ?? null) !== null) {
-                    if (is_string($val)) {
+                    if (\is_string($val)) {
                         null;
                     } elseif ($val instanceof Stringable) {
                         $val = (string)$val;
@@ -44,11 +44,11 @@ class Exception extends \Exception
 
     public function setJson(mixed $data): static
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             $this->json = $data;
-        } elseif (is_string($data)) {
+        } elseif (\is_string($data)) {
             $this->json = ['code' => 1, 'message' => $data];
-        } elseif (is_int($data)) {
+        } elseif (\is_int($data)) {
             $this->json = ['code' => $data, 'message' => $this->getMessage()];
         } else {
             $this->json = $data;

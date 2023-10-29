@@ -18,7 +18,7 @@ class SingletonCreated implements JsonSerializable
     {
         return [
             'id'       => $this->id,
-            'instance' => get_class($this->instance),
+            'instance' => \get_class($this->instance),
         ];
     }
 }

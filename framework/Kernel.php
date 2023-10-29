@@ -24,8 +24,8 @@ class Kernel
     {
         $this->root = $root;
 
-        if (!defined('MANAPHP_COROUTINE_ENABLED')) {
-            define('MANAPHP_COROUTINE_ENABLED', $this->detectCoroutineCanEnabled());
+        if (!\defined('MANAPHP_COROUTINE_ENABLED')) {
+            \define('MANAPHP_COROUTINE_ENABLED', $this->detectCoroutineCanEnabled());
         }
 
         $this->container = new Container([
@@ -49,7 +49,7 @@ class Kernel
 
     public function detectCoroutineCanEnabled(): bool
     {
-        return PHP_SAPI === 'cli' && extension_loaded('swoole');
+        return PHP_SAPI === 'cli' && \extension_loaded('swoole');
     }
 
     protected function loadConfig(): ConfigInterface

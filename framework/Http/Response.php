@@ -350,7 +350,7 @@ class Response implements ResponseInterface
 
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
-        if (is_array($content) || is_string($content)) {
+        if (\is_array($content) || \is_string($content)) {
             null;
         } elseif ($content instanceof JsonSerializable) {
             $content = ['code' => $this->ok_code, 'message' => '', 'data' => $content];
@@ -373,7 +373,7 @@ class Response implements ResponseInterface
     {
         $content = $this->getContent();
 
-        return is_string($content) ? strlen($content) : 0;
+        return \is_string($content) ? \strlen($content) : 0;
     }
 
     public function hasContent(): bool
@@ -447,10 +447,10 @@ class Response implements ResponseInterface
         $file = fopen('php://temp', 'rb+');
         fprintf($file, "\xEF\xBB\xBF");
 
-        if (is_string($header)) {
+        if (\is_string($header)) {
             $header = explode(',', $header);
         } elseif ($header === null && $first = current($rows)) {
-            $header = array_keys(is_array($first) ? $first : $first->toArray());
+            $header = array_keys(\is_array($first) ? $first : $first->toArray());
         }
 
         if ($header !== null) {
@@ -458,7 +458,7 @@ class Response implements ResponseInterface
         }
 
         foreach ($rows as $row) {
-            fputcsv($file, is_array($row) ? $row : $row->toArray());
+            fputcsv($file, \is_array($row) ? $row : $row->toArray());
         }
 
         rewind($file);

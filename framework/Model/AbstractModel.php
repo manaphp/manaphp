@@ -62,7 +62,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public static function lists(array $fields, array $filters = []): array
     {
         $keyField = Container::get(ModelsInterface::class)->getPrimaryKey(static::class);
-        if (!in_array($keyField, $fields, true)) {
+        if (!\in_array($keyField, $fields, true)) {
             array_unshift($fields, $keyField);
         }
 
@@ -220,7 +220,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     {
         $dict = [];
 
-        if (is_string($kv)) {
+        if (\is_string($kv)) {
             $key = Container::get(ModelsInterface::class)->getPrimaryKey(static::class);
             $value = $kv;
             foreach (static::select([$key, $value])->where($filters)->execute() as $row) {
@@ -230,7 +230,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $key = array_key_first($kv);
             $fields = $kv[$key];
 
-            if (is_string($fields)) {
+            if (\is_string($fields)) {
                 $value = $fields;
                 foreach (static::select([$key, $value])->where($filters)->execute() as $row) {
                     $dict[$row[$key]] = $row[$value];
@@ -266,7 +266,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function assign(array|object $data, array $fields): static
     {
-        if (is_object($data)) {
+        if (\is_object($data)) {
             foreach ($fields as $field) {
                 $this->$field = $data->$field;
             }
@@ -283,12 +283,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     {
         foreach (Container::get(ModelsInterface::class)->getFillable(static::class) as $field) {
             if (($val = $kv[$field] ?? null) !== null) {
-                if (is_bool($val)) {
+                if (\is_bool($val)) {
                     $val = (int)$val;
-                } elseif (is_float($val)) {
+                } elseif (\is_float($val)) {
                     $val = (string)$val;
                 }
-                $this->$field = is_string($val) ? trim($val) : $val;
+                $this->$field = \is_string($val) ? trim($val) : $val;
             }
         }
 
@@ -439,13 +439,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 continue;
             }
 
-            if (is_object($value)) {
+            if (\is_object($value)) {
                 if ($value instanceof self) {
                     $value = $value->toArray();
                 } else {
                     continue;
                 }
-            } elseif (is_array($value) && ($first = current($value)) && $first instanceof self) {
+            } elseif (\is_array($value) && ($first = current($value)) && $first instanceof self) {
                 foreach ($value as $k => $v) {
                     $value[$k] = $v->toArray();
                 }
@@ -635,7 +635,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 continue;
             }
 
-            if (is_object($value) && !$value instanceof ModelInterface) {
+            if (\is_object($value) && !$value instanceof ModelInterface) {
                 continue;
             }
 
@@ -654,7 +654,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $value = $this->$field;
 
             /**1973/3/3 17:46:40*/
-            if (is_int($value) && $value > 100000000
+            if (\is_int($value) && $value > 100000000
                 && !str_ends_with($field, '_id')
                 && !str_ends_with($field, 'Id')
             ) {

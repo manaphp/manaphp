@@ -191,7 +191,7 @@ class Markdown implements EngineInterface
 
                 $line = $beforeTab
                     . str_repeat(' ', $shortage)
-                    . substr($line, strlen($beforeTab) + 1);
+                    . substr($line, \strlen($beforeTab) + 1);
             }
 
             $indent = strspn($line, ' ');
@@ -496,7 +496,7 @@ class Markdown implements EngineInterface
         list($name, $pattern) = ($Line['text'][0] <= '-') ? ['ul', '[*+-]'] : ['ol', '[0-9]{1,9}+[.\)]'];
 
         if (preg_match('/^(' . $pattern . '([ ]++|$))(.*+)/', $Line['text'], $matches)) {
-            $contentIndent = strlen($matches[2]);
+            $contentIndent = \strlen($matches[2]);
 
             if ($contentIndent >= 5) {
                 --$contentIndent;
@@ -560,7 +560,7 @@ class Markdown implements EngineInterface
             return null;
         }
 
-        $requiredIndent = ($Block['indent'] + strlen($Block['data']['marker']));
+        $requiredIndent = ($Block['indent'] + \strlen($Block['data']['marker']));
 
         if ($Line['indent'] < $requiredIndent
             && (
@@ -772,7 +772,7 @@ class Markdown implements EngineInterface
         ) {
             $element = strtolower($matches[1]);
 
-            if (in_array($element, $textLevelElements, true)) {
+            if (\in_array($element, $textLevelElements, true)) {
                 return;
             }
 
@@ -877,7 +877,7 @@ class Markdown implements EngineInterface
 
         $headerCells = explode('|', $header);
 
-        if (count($headerCells) !== count($alignments)) {
+        if (\count($headerCells) !== \count($alignments)) {
             return;
         }
 
@@ -936,7 +936,7 @@ class Markdown implements EngineInterface
             return;
         }
 
-        if (count($Block['alignments']) === 1 || $Line['text'][0] === '|' || strpos($Line['text'], '|')) {
+        if (\count($Block['alignments']) === 1 || $Line['text'][0] === '|' || strpos($Line['text'], '|')) {
             $Elements = [];
 
             $row = $Line['text'];
@@ -946,7 +946,7 @@ class Markdown implements EngineInterface
 
             preg_match_all('/(?:(\\\\[|])|[^|`]|`[^`]++`|`)++/', $row, $matches);
 
-            $cells = array_slice($matches[0], 0, count($Block['alignments']));
+            $cells = \array_slice($matches[0], 0, \count($Block['alignments']));
 
             foreach ($cells as $index => $cell) {
                 $cell = trim($cell);
@@ -1044,7 +1044,7 @@ class Markdown implements EngineInterface
         while ($excerpt = strpbrk($text, $this->inlineMarkerList)) {
             $marker = $excerpt[0];
 
-            $markerPosition = strlen($text) - strlen($excerpt);
+            $markerPosition = \strlen($text) - \strlen($excerpt);
 
             $Excerpt = ['text' => $excerpt, 'context' => $text];
 
@@ -1122,7 +1122,7 @@ class Markdown implements EngineInterface
     protected function inlineText($text): array
     {
         $Inline = [
-            'extent'  => strlen($text),
+            'extent'  => \strlen($text),
             'element' => [],
         ];
 
@@ -1152,7 +1152,7 @@ class Markdown implements EngineInterface
             $text = preg_replace('/[ ]*+\n/', ' ', $text);
 
             return [
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
                 'element' => [
                     'name' => 'code',
                     'text' => $text,
@@ -1179,7 +1179,7 @@ class Markdown implements EngineInterface
             }
 
             return [
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
                 'element' => [
                     'name'       => 'a',
                     'text'       => $matches[1],
@@ -1221,7 +1221,7 @@ class Markdown implements EngineInterface
         }
 
         return [
-            'extent'  => strlen($matches[0]),
+            'extent'  => \strlen($matches[0]),
             'element' => [
                 'name'    => $emphasis,
                 'handler' => [
@@ -1300,7 +1300,7 @@ class Markdown implements EngineInterface
         if (preg_match(/**@lang text */ '/\[((?:[^][]++|(?R))*+)\]/', $remainder, $matches)) {
             $Element['handler']['argument'] = $matches[1];
 
-            $extent += strlen($matches[0]);
+            $extent += \strlen($matches[0]);
 
             $remainder = substr($remainder, $extent);
         } else {
@@ -1318,13 +1318,13 @@ class Markdown implements EngineInterface
                 $Element['attributes']['title'] = substr($matches[2], 1, -1);
             }
 
-            $extent += strlen($matches[0]);
+            $extent += \strlen($matches[0]);
         } else {
             if (preg_match(/**@lang text */ '/^\s*\[(.*?)\]/', $remainder, $matches)) {
                 $definition = $matches[1] !== '' ? $matches[1] : $Element['handler']['argument'];
                 $definition = strtolower($definition);
 
-                $extent += strlen($matches[0]);
+                $extent += \strlen($matches[0]);
             } else {
                 $definition = strtolower($Element['handler']['argument']);
             }
@@ -1356,7 +1356,7 @@ class Markdown implements EngineInterface
         ) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
             ];
         }
 
@@ -1364,7 +1364,7 @@ class Markdown implements EngineInterface
         if ($Excerpt['text'][1] === '!' && preg_match('/^<!---?[^>-](?:-?+[^-])*-->/s', $Excerpt['text'], $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
             ];
         }
 
@@ -1376,7 +1376,7 @@ class Markdown implements EngineInterface
         ) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
             ];
         }
     }
@@ -1389,7 +1389,7 @@ class Markdown implements EngineInterface
         ) {
             return [
                 'element' => ['rawHtml' => '&' . $matches[1] . ';'],
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
             ];
         }
     }
@@ -1402,7 +1402,7 @@ class Markdown implements EngineInterface
 
         if ($Excerpt['text'][1] === '~' && preg_match('/^~~(?=\S)(.+?)(?<=\S)~~/', $Excerpt['text'], $matches)) {
             return [
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
                 'element' => [
                     'name'    => 'del',
                     'handler' => [
@@ -1427,7 +1427,7 @@ class Markdown implements EngineInterface
             $url = $matches[0][0];
 
             return [
-                'extent'   => strlen($matches[0][0]),
+                'extent'   => \strlen($matches[0][0]),
                 'position' => $matches[0][1],
                 'element'  => [
                     'name'       => 'a',
@@ -1449,7 +1449,7 @@ class Markdown implements EngineInterface
             $url = $matches[1];
 
             return [
-                'extent'  => strlen($matches[0]),
+                'extent'  => \strlen($matches[0]),
                 'element' => [
                     'name'       => 'a',
                     'text'       => $url,
@@ -1474,7 +1474,7 @@ class Markdown implements EngineInterface
                 $Element['nonNestables'] = [];
             }
 
-            if (is_string($Element['handler'])) {
+            if (\is_string($Element['handler'])) {
                 $function = $Element['handler'];
                 $argument = $Element['text'];
                 unset($Element['text']);
@@ -1640,7 +1640,7 @@ class Markdown implements EngineInterface
     {
         $Elements = $this->linesElements($lines);
 
-        if (!in_array('', $lines, true) && isset($Elements[0]['name']) && $Elements[0]['name'] === 'p') {
+        if (!\in_array('', $lines, true) && isset($Elements[0]['name']) && $Elements[0]['name'] === 'p') {
             unset($Elements[0]['name']);
         }
 
@@ -1654,7 +1654,7 @@ class Markdown implements EngineInterface
         while (preg_match($regexp, $text, $matches, PREG_OFFSET_CAPTURE)) {
             $offset = $matches[0][1];
             $before = substr($text, 0, $offset);
-            $after = substr($text, $offset + strlen($matches[0][0]));
+            $after = substr($text, $offset + \strlen($matches[0][0]));
 
             $newElements[] = ['text' => $before];
 
@@ -1722,9 +1722,9 @@ class Markdown implements EngineInterface
 
     protected static function striAtStart($string, $needle): bool
     {
-        $len = strlen($needle);
+        $len = \strlen($needle);
 
-        if ($len > strlen($string)) {
+        if ($len > \strlen($string)) {
             return false;
         } else {
             return str_starts_with($string, $needle);

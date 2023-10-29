@@ -70,7 +70,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         if (($session_id = $this->cookies->get($this->name)) && ($str = $this->do_read($session_id))) {
             $context->is_new = false;
 
-            if (is_array($data = $this->unserialize($str))) {
+            if (\is_array($data = $this->unserialize($str))) {
                 $context->_SESSION = $data;
             } else {
                 $context->_SESSION = [];
@@ -189,7 +189,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         } elseif ($serializer === 'php_binary') {
             $r = '';
             foreach ($data as $key => $value) {
-                $r .= chr(strlen($key)) . $key . serialize($value);
+                $r .= \chr(\strlen($key)) . $key . serialize($value);
             }
             return $r;
         } elseif ($serializer === 'php_serialize') {
@@ -210,7 +210,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         if ($serializer === 'php') {
             $r = [];
             $offset = 0;
-            while ($offset < strlen($data)) {
+            while ($offset < \strlen($data)) {
                 if (!str_contains(substr($data, $offset), '|')) {
                     return null;
                 }
@@ -220,20 +220,20 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
                 $offset += $num + 1;
                 $value = unserialize(substr($data, $offset), ['allowed_classes' => true]);
                 $r[$key] = $value;
-                $offset += strlen(serialize($value));
+                $offset += \strlen(serialize($value));
             }
             return $r;
         } elseif ($serializer === 'php_binary') {
             $r = [];
             $offset = 0;
-            while ($offset < strlen($data)) {
-                $num = ord($data[$offset]);
+            while ($offset < \strlen($data)) {
+                $num = \ord($data[$offset]);
                 $offset++;
                 $key = substr($data, $offset, $num);
                 $offset += $num;
                 $value = unserialize(substr($data, $offset), ['allowed_classes' => true]);
                 $r[$key] = $value;
-                $offset += strlen(serialize($value));
+                $offset += \strlen(serialize($value));
             }
             return $r;
         } elseif ($serializer === 'php_serialize') {

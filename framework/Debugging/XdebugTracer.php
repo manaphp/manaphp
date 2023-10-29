@@ -33,7 +33,7 @@ class XdebugTracer implements XdebugTracerInterface
     public function onRequestBegin(#[Event] RequestBegin $event): void
     {
         $file = $this->alias->resolve('@runtime/backtracePlugin/trace_{ymd_His}_{8}.log');
-        $dir = dirname($file);
+        $dir = \dirname($file);
         if (!is_dir($dir)) {
             /** @noinspection MkdirRaceConditionInspection */
             @mkdir($dir, 0777, true);

@@ -46,7 +46,7 @@ class File extends AbstractLogger
     {
         $file = $this->alias->resolve(strtr($this->file, ['{app_id}' => $this->app_id]));
         if (!is_file($file)) {
-            $dir = dirname($file);
+            $dir = \dirname($file);
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
                 trigger_error("Unable to create $dir directory: " . error_get_last()['message'], E_USER_WARNING);
             }

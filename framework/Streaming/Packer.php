@@ -10,12 +10,12 @@ class Packer
 
     protected function append(string $format, array $args): static
     {
-        $count = count($args);
+        $count = \count($args);
         if ($count === 1) {
             $this->format .= $format;
             $this->values[] = $args[0];
         } else {
-            $this->format .= $format . count($args);
+            $this->format .= $format . \count($args);
             $this->values = array_merge($this->values, $args);
         }
 
@@ -25,7 +25,7 @@ class Packer
     public function string(...$args): static
     {
         foreach ($args as $arg) {
-            $this->format .= 'a' . strlen($arg);
+            $this->format .= 'a' . \strlen($arg);
             $this->values[] = $arg;
         }
 

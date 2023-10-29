@@ -19,7 +19,7 @@ class Listeners implements ListenersInterface
     public function bootstrap(): void
     {
         foreach ($this->listeners as $glob => $class) {
-            if (is_int($glob)) {
+            if (\is_int($glob)) {
                 $this->listenerProvider->add($class);
             } else {
                 foreach (LocalFS::glob($glob) as $file) {
@@ -42,7 +42,7 @@ class Listeners implements ListenersInterface
                     if (preg_match($pattern, $file, $matches) === 1) {
                         array_shift($matches);
 
-                        if (count($matches) !== substr_count($listener, '*')) {
+                        if (\count($matches) !== substr_count($listener, '*')) {
                             throw new InvalidValueException(sprintf('%s glob with %s class', $glob, $class));
                         }
 

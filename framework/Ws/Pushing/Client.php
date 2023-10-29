@@ -19,11 +19,11 @@ class Client implements ClientInterface
 
     protected function push(string $type, int|string|array $receivers, string|array $message, ?string $endpoint): void
     {
-        if (is_array($receivers)) {
+        if (\is_array($receivers)) {
             $receivers = implode(',', $receivers);
         }
 
-        if (!is_string($message)) {
+        if (!\is_string($message)) {
             $message = json_stringify($message);
         }
 

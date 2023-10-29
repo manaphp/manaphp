@@ -10,7 +10,7 @@ class Detector
         if (PHP_SAPI === 'cli') {
             if (class_exists('Workerman\Worker')) {
                 return '#workerman';
-            } elseif (extension_loaded('swoole')) {
+            } elseif (\extension_loaded('swoole')) {
                 return '#swoole';
             } else {
                 return '#php';

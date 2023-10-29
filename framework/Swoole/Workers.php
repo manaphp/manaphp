@@ -62,14 +62,14 @@ class Workers implements WorkersInterface
 
     public function task(array|callable $task, array $arguments, int $task_worker_id): false|int
     {
-        $id = is_string($task[0]) ? $task[0] : get_class($task[0]);
+        $id = \is_string($task[0]) ? $task[0] : \get_class($task[0]);
         $data = new TaskCallMessage($id, $task[1], $arguments);
         return $this->server->task($data, $task_worker_id);
     }
 
     public function taskwait(array|callable $task, array $arguments, float $timeout, int $task_worker_id): mixed
     {
-        $id = is_string($task[0]) ? $task[0] : get_class($task[0]);
+        $id = \is_string($task[0]) ? $task[0] : \get_class($task[0]);
 
         $data = new TaskWaitCallMessage($id, $task[1], $arguments);
 
@@ -78,7 +78,7 @@ class Workers implements WorkersInterface
 
     public function sendMessage(array|callable $task, array $arguments, int $dst_worker_id): bool
     {
-        $id = is_string($task[0]) ? $task[0] : get_class($task[0]);
+        $id = \is_string($task[0]) ? $task[0] : \get_class($task[0]);
         $message = new PipeCallMessage($id, $task[1], $arguments);
 
         return $this->server->sendMessage($message, $dst_worker_id);

@@ -33,7 +33,7 @@ class Globals implements GlobalsInterface, JsonSerializable
         $context = $this->getContext();
 
         if (!$POST
-            && (isset($SERVER['REQUEST_METHOD']) && !in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+            && (isset($SERVER['REQUEST_METHOD']) && !\in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
         ) {
             if (isset($SERVER['CONTENT_TYPE'])
                 && str_contains($SERVER['CONTENT_TYPE'], 'application/json')
@@ -43,7 +43,7 @@ class Globals implements GlobalsInterface, JsonSerializable
                 parse_str($RAW_BODY, $POST);
             }
 
-            if (!is_array($POST)) {
+            if (!\is_array($POST)) {
                 $POST = [];
             }
         }

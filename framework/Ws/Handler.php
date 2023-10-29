@@ -60,11 +60,11 @@ class Handler implements HandlerInterface
 
             if ($returnValue === null || $returnValue instanceof Response) {
                 null;
-            } elseif (is_string($returnValue)) {
+            } elseif (\is_string($returnValue)) {
                 $this->response->setJsonError($returnValue);
-            } elseif (is_array($returnValue)) {
+            } elseif (\is_array($returnValue)) {
                 $this->response->setJsonData($returnValue);
-            } elseif (is_int($returnValue)) {
+            } elseif (\is_int($returnValue)) {
                 $this->response->setJsonError('', $returnValue);
             } else {
                 $this->response->setJsonContent($returnValue);

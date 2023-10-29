@@ -85,7 +85,7 @@ class Syslog extends AbstractLogger
 
                 // <PRI>TIMESTAMP HOST TAG:CONTENT
                 $packet = "<$priority>$timestamp $log->hostname $tag:$content";
-                socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
+                socket_sendto($this->socket, $packet, \strlen($packet), 0, $host, $port);
             }
         } else {
             $replaced[':message'] = $log->message;
@@ -93,7 +93,7 @@ class Syslog extends AbstractLogger
 
             // <PRI>TIMESTAMP HOST TAG:CONTENT
             $packet = "<$priority>$timestamp $log->hostname $tag:$content";
-            socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
+            socket_sendto($this->socket, $packet, \strlen($packet), 0, $host, $port);
         }
     }
 }

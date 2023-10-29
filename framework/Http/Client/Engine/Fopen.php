@@ -42,11 +42,11 @@ class Fopen implements EngineInterface
 
         $headers = [];
         foreach ($request->headers as $name => $value) {
-            $headers[] = is_int($name) ? $value : "$name: $value";
+            $headers[] = \is_int($name) ? $value : "$name: $value";
         }
         $http['header'] = $headers;
 
-        if (is_string($body)) {
+        if (\is_string($body)) {
             $http['content'] = $body;
         }
 

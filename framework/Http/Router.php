@@ -103,7 +103,7 @@ class Router implements RouterInterface
     protected function addRoute(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface
     {
         $route = new Route($pattern, $paths, $methods, $this->case_sensitive);
-        if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
+        if (!\is_array($methods) && strpbrk($pattern, ':{') === false) {
             $this->simples[$methods][$pattern] = $route;
         } else {
             $this->regexes[] = $route;
@@ -190,14 +190,14 @@ class Router implements RouterInterface
         if ($handledUri !== '/' && $this->areas) {
             if (($pos = strpos($handledUri, '/', 1)) !== false) {
                 $area = Str::pascalize(substr($handledUri, 1, $pos - 1));
-                if (in_array($area, $this->areas, true)) {
+                if (\in_array($area, $this->areas, true)) {
                     $handledUri = substr($handledUri, $pos);
                 } else {
                     $area = null;
                 }
             } else {
                 $area = Str::pascalize(substr($handledUri, 1));
-                if (in_array($area, $this->areas, true)) {
+                if (\in_array($area, $this->areas, true)) {
                     $handledUri = '/';
                 } else {
                     $area = null;
@@ -207,7 +207,7 @@ class Router implements RouterInterface
 
         $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
 
-        for ($i = count($this->defaults) - 1; $i >= 0; $i--) {
+        for ($i = \count($this->defaults) - 1; $i >= 0; $i--) {
             $route = $this->defaults[$i];
             if (($parts = $route->match($handledUri, $method)) !== null) {
                 if ($area !== null) {
@@ -241,7 +241,7 @@ class Router implements RouterInterface
 
         if (($prefix = $this->getPrefix()) !== '') {
             if (str_starts_with($uri, $prefix)) {
-                $handledUri = substr($uri, strlen($prefix)) ?: '/';
+                $handledUri = substr($uri, \strlen($prefix)) ?: '/';
             } else {
                 $handledUri = false;
             }
@@ -260,7 +260,7 @@ class Router implements RouterInterface
         } else {
             $parts = null;
             $routes = $this->regexes;
-            for ($i = count($routes) - 1; $i >= 0; $i--) {
+            for ($i = \count($routes) - 1; $i >= 0; $i--) {
                 $route = $routes[$i];
                 if (($parts = $route->match($handledUri, $method)) !== null) {
                     if ($handledUri !== '/' && $this->areas) {
@@ -270,7 +270,7 @@ class Router implements RouterInterface
                             $area = Str::pascalize(substr($handledUri, 1, $pos - 1));
                         }
 
-                        if (!in_array($area, $this->areas, true)) {
+                        if (!\in_array($area, $this->areas, true)) {
                             $area = null;
                         }
                     }
@@ -401,7 +401,7 @@ class Router implements RouterInterface
         /** @var RouterContext $context */
         $context = $this->getContext();
 
-        if (is_string($args)) {
+        if (\is_string($args)) {
             if (($pos = strpos($args, '?')) !== false) {
                 $path = substr($args, 0, $pos);
                 parse_str(substr($args, $pos + 1), $params);
@@ -432,7 +432,7 @@ class Router implements RouterInterface
             $ca = rtrim($path, '/');
         }
 
-        while (($pos = strrpos($ca, '/index')) !== false && $pos + 6 === strlen($ca)) {
+        while (($pos = strrpos($ca, '/index')) !== false && $pos + 6 === \strlen($ca)) {
             $ca = substr($ca, 0, $pos);
         }
 

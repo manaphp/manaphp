@@ -55,7 +55,7 @@ class CoroutineStatsCollector implements CollectorInterface
                 break;
             }
             $context->channel->pop($timeout);
-        } while (count($context->stats) < $worker_num);
+        } while (\count($context->stats) < $worker_num);
 
         $types = [
             'event_num'           => FormatterInterface::GAUGE,

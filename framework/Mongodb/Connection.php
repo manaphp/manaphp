@@ -183,7 +183,7 @@ class Connection implements ConnectionInterface
 
     public function fetchAll(string $namespace, array $filter = [], array $options = [], bool $secondaryPreferred = true
     ): array {
-        if (is_bool($secondaryPreferred)) {
+        if (\is_bool($secondaryPreferred)) {
             if ($secondaryPreferred) {
                 $readPreference = new ReadPreference(ReadPreference::RP_SECONDARY_PREFERRED);
             } else {

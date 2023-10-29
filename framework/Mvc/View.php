@@ -307,7 +307,7 @@ class View implements ViewInterface
         $widgetInstance = $this->container->get($widgetClassName);
         $vars = $widgetInstance->run($options);
 
-        if (is_string($vars)) {
+        if (\is_string($vars)) {
             echo $vars;
         } else {
             $this->renderer->render($view, $vars, true);

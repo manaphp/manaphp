@@ -21,7 +21,7 @@ class Options implements ScalarValueResolverInterface
         }
 
         if ($value !== null) {
-            return $type === 'bool' ? !in_array($value, ['0', 'false', 'FALSE'], true) : $value;
+            return $type === 'bool' ? !\in_array($value, ['0', 'false', 'FALSE'], true) : $value;
         } else {
             return null;
         }

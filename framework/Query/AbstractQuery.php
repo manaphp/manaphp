@@ -94,12 +94,12 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     {
         $shards = $this->getShards();
 
-        if (count($shards) !== 1) {
+        if (\count($shards) !== 1) {
             throw new ShardingTooManyException(['too many dbs: `{dbs}`', 'dbs' => array_keys($shards)]);
         }
 
         $tables = current($shards);
-        if (count($tables) !== 1) {
+        if (\count($tables) !== 1) {
             throw new ShardingTooManyException(['too many tables: `{tables}`', 'tables' => $tables]);
         }
 
@@ -131,7 +131,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     public function whereCriteria(array $data, array $filters): static
     {
         foreach ($filters as $k => $v) {
-            if (is_string($k)) {
+            if (\is_string($k)) {
                 $this->where([$k => $v]);
             } else {
                 preg_match('#^\w+#', ($pos = strpos($v, '.')) ? substr($v, $pos + 1) : $v, $match);
@@ -141,7 +141,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                     continue;
                 }
                 $value = $data[$field];
-                if (is_string($value)) {
+                if (\is_string($value)) {
                     $value = trim($value);
                     if ($value === '') {
                         continue;
@@ -157,14 +157,14 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     public function where(array $filters): static
     {
         foreach ($filters as $filter => $value) {
-            if (is_int($filter)) {
+            if (\is_int($filter)) {
                 $this->whereExpr($value);
-            } elseif (is_array($value)) {
+            } elseif (\is_array($value)) {
                 if (preg_match('#([~@!<>|=%]+)$#', $filter, $match)) {
                     $operator = $match[1];
-                    $field = substr($filter, 0, -strlen($operator));
+                    $field = substr($filter, 0, -\strlen($operator));
                     if ($operator === '~=') {
-                        if (count($value) !== 2) {
+                        if (\count($value) !== 2) {
                             throw new MisuseException(['value of `{filter}` filter is invalid', 'filter' => $filter]);
                         }
                         $this->whereBetween($field, $value[0], $value[1]);
@@ -190,7 +190,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                 list(, $field, $operator) = $matches;
 
                 if (str_contains($operator, '?')) {
-                    $value = is_string($value) ? trim($value) : $value;
+                    $value = \is_string($value) ? trim($value) : $value;
                     if ($value === '' || $value === null) {
                         continue;
                     }
@@ -201,7 +201,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                     $operator = '=';
                 }
 
-                if (in_array($operator, ['=', '~=', '!=', '<>', '>', '>=', '<', '<='], true)) {
+                if (\in_array($operator, ['=', '~=', '!=', '<>', '>', '>=', '<', '<='], true)) {
                     $this->whereCmp($field, $operator, $value);
                 } elseif ($operator === '^=') {
                     $this->whereStartsWith($field, $value);
@@ -245,17 +245,17 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
         $model = $this->model;
         if ($format = $this->models->getDateFormat($model)) {
-            if (is_int($min)) {
+            if (\is_int($min)) {
                 $min = date($format, $min);
             }
-            if (is_int($max)) {
+            if (\is_int($max)) {
                 $max = date($format, $max);
             }
         } else {
-            if ($min && !is_int($min)) {
+            if ($min && !\is_int($min)) {
                 $min = (int)strtotime($min);
             }
-            if ($max && !is_int($max)) {
+            if ($max && !\is_int($max)) {
                 $max = (int)strtotime($max);
             }
         }
@@ -265,7 +265,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
     public function groupBy(string|array $groupBy): static
     {
-        if (is_string($groupBy)) {
+        if (\is_string($groupBy)) {
             $this->group = preg_split('#[\s,]+#', $groupBy, -1, PREG_SPLIT_NO_EMPTY);
         } else {
             $this->group = $groupBy;
@@ -276,7 +276,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
     public function orderBy(string|array $orderBy): static
     {
-        if (is_string($orderBy)) {
+        if (\is_string($orderBy)) {
             foreach (explode(',', $orderBy) as $order) {
                 $order = trim($order);
                 if ($pos = strrpos($order, ' ')) {
@@ -295,7 +295,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
             }
         } else {
             foreach ($orderBy as $k => $v) {
-                if (is_int($k)) {
+                if (\is_int($k)) {
                     $this->order[$v] = SORT_ASC;
                 } elseif ($v === SORT_ASC || $v === SORT_DESC) {
                     $this->order[$k] = $v;
@@ -314,7 +314,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
     public function indexBy(string|array|callable $indexBy): static
     {
-        if (is_array($indexBy)) {
+        if (\is_array($indexBy)) {
             $this->select([key($indexBy), current($indexBy)]);
         }
 
@@ -336,7 +336,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         $with = $this->with ? array_merge($this->with, $with) : $with;
 
         foreach ($with as $k => $v) {
-            $name = is_string($k) ? $k : $v;
+            $name = \is_string($k) ? $k : $v;
             if (($pos = strpos($name, '.')) === false) {
                 continue;
             }
@@ -351,7 +351,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
                 $with[$parent_name] = $this->relations->getQuery($this->model, $parent_name, $parent_value);
             }
 
-            $with[$parent_name]->with(is_int($k) ? [$child_name] : [$child_name => $v]);
+            $with[$parent_name]->with(\is_int($k) ? [$child_name] : [$child_name => $v]);
             unset($with[$k]);
         }
 
@@ -413,10 +413,10 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
         $items = $this->fetch();
 
-        if (count($items) === $size) {
+        if (\count($items) === $size) {
             $count = $this->count();
         } else {
-            $count = $this->offset + count($items);
+            $count = $this->offset + \count($items);
         }
 
         $paginator = $this->maker->make(PaginatorInterface::class);
@@ -490,10 +490,10 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
             $model = $this->model;
             $format = $this->models->getDateFormat($model);
         } else {
-            $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
+            $format = \is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
 
-        $ts = is_int($date) ? $date : strtotime($date);
+        $ts = \is_int($date) ? $date : strtotime($date);
 
         $min = date('Y-m-d 00:00:00', $ts);
         $max = date('Y-m-d 23:59:59', $ts);
@@ -517,10 +517,10 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
             $model = $this->model;
             $format = $this->models->getDateFormat($model);
         } else {
-            $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
+            $format = \is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
 
-        $ts = is_int($date) ? $date : strtotime($date);
+        $ts = \is_int($date) ? $date : strtotime($date);
 
         $min = date('Y-m-01 00:00:00', $ts);
         $max = date('Y-m-t 23:59:59', $ts);
@@ -544,10 +544,10 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
             $model = $this->model;
             $format = $this->models->getDateFormat($model);
         } else {
-            $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
+            $format = \is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
 
-        $ts = is_int($date) ? $date : strtotime($date);
+        $ts = \is_int($date) ? $date : strtotime($date);
 
         $min = date('Y-01-01 00:00:00', $ts);
         $max = date('Y-12-31 23:59:59', $ts);

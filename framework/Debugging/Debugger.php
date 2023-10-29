@@ -82,7 +82,7 @@ class Debugger implements DebuggerInterface
 
     public function bootstrap(): void
     {
-        if ($this->enabled ?? in_array($this->app_env, ['dev', 'test'], true)) {
+        if ($this->enabled ?? \in_array($this->app_env, ['dev', 'test'], true)) {
             $this->listenerProvider->on(ServerReady::class, [$this, 'onServerReady']);
         }
     }
@@ -100,7 +100,7 @@ class Debugger implements DebuggerInterface
             $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : null;
         }
 
-        return is_string($content) ? gzdecode($content) : $content;
+        return \is_string($content) ? gzdecode($content) : $content;
     }
 
     protected function writeData(string $key, array $data): void
@@ -177,7 +177,7 @@ class Debugger implements DebuggerInterface
     public function onResponseStringify(#[Event] ResponseStringify $event): void
     {
         if ($this->tail) {
-            if (is_array($content = $this->response->getContent())) {
+            if (\is_array($content = $this->response->getContent())) {
                 $content['debugger'] = $this->response->getHeader('X-Debugger-Link');
                 $this->response->setContent($content);
             }
@@ -270,13 +270,13 @@ class Debugger implements DebuggerInterface
 
         $vars = $event->vars;
         foreach ($vars as $k => $v) {
-            if (is_object($v) && !$v instanceof ModelInterface && class_implements($v) !== []) {
+            if (\is_object($v) && !$v instanceof ModelInterface && class_implements($v) !== []) {
                 unset($vars[$k]);
             }
         }
 
         $file = $event->file;
-        $base_name = basename(dirname($file)) . '/' . basename($file);
+        $base_name = basename(\dirname($file)) . '/' . basename($file);
         $context->view[] = ['file' => $file, 'vars' => $vars, 'base_name' => $base_name];
     }
 

@@ -13,7 +13,7 @@ class RateLimit
 
     public function __construct(string|array $limits, ?string $burst = null)
     {
-        $this->limits = is_string($limits) ? [$limits] : $limits;
+        $this->limits = \is_string($limits) ? [$limits] : $limits;
         $this->burst = $burst;
     }
 }

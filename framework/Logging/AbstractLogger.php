@@ -55,7 +55,7 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 
         $replaces = [];
         if ($this->alias->has('@root')) {
-            $replaces[dirname(realpath($this->alias->get('@root'))) . DIRECTORY_SEPARATOR] = '';
+            $replaces[\dirname(realpath($this->alias->get('@root'))) . DIRECTORY_SEPARATOR] = '';
         }
 
         return strtr($str, $replaces);
@@ -70,7 +70,7 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
                 continue;
             }
 
-            if (is_string($val)) {
+            if (\is_string($val)) {
                 null;
             } elseif ($val instanceof Stringable) {
                 $val = (string)$val;
@@ -78,9 +78,9 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
                 $val = json_stringify($val);
             } elseif ($val instanceof JsonSerializable) {
                 $val = json_stringify($val);
-            } elseif (is_array($val)) {
+            } elseif (\is_array($val)) {
                 $val = json_stringify($val);
-            } elseif (is_object($val)) {
+            } elseif (\is_object($val)) {
                 $val = json_stringify((array)$val);
             } else {
                 continue;
@@ -93,7 +93,7 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 
     protected function formatMessage(mixed $message, array $context): string
     {
-        if (is_string($message)) {
+        if (\is_string($message)) {
             if ($context !== [] && str_contains($message, '{')) {
                 $message = $this->interpolateMessage($message, $context);
             }
@@ -114,8 +114,8 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
     protected function getCategory(mixed $message, array $context, array $traces): string
     {
         if (($v = $context['category'] ?? null) !== null
-            && is_string($v)
-            && (!is_string($message) || !str_contains($message, '{category}'))
+            && \is_string($v)
+            && (!\is_string($message) || !str_contains($message, '{category}'))
         ) {
             return $v;
         } else {

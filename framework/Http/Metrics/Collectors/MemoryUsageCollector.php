@@ -61,7 +61,7 @@ class MemoryUsageCollector implements CollectorInterface
                 break;
             }
             $context->channel->pop($timeout);
-        } while (count($context->messages) < $worker_num);
+        } while (\count($context->messages) < $worker_num);
 
         ksort($context->messages);
 

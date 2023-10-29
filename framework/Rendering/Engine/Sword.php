@@ -28,9 +28,9 @@ class Sword implements EngineInterface
     public function getCompiledFile(string $source): string
     {
         if (str_starts_with($source, $root = $this->alias->get('@root'))) {
-            $compiled = '@runtime/sword' . substr($source, strlen($root));
+            $compiled = '@runtime/sword' . substr($source, \strlen($root));
         } elseif ($this->doc_root !== '' && str_starts_with($source, $this->doc_root)) {
-            $compiled = '@runtime/sword/' . substr($source, strlen($this->doc_root));
+            $compiled = '@runtime/sword/' . substr($source, \strlen($this->doc_root));
         } else {
             $compiled = "@runtime/sword/$source";
             if (DIRECTORY_SEPARATOR === '\\') {

@@ -120,7 +120,7 @@ class BashCompletionCommand extends Command
             return $words;
         }
 
-        if (in_array($current, $words, true)) {
+        if (\in_array($current, $words, true)) {
             return [$current];
         }
 
@@ -181,12 +181,12 @@ class BashCompletionCommand extends Command
      */
     public function completeAction(): int
     {
-        $arguments = array_slice($GLOBALS['argv'], 3);
+        $arguments = \array_slice($GLOBALS['argv'], 3);
         $position = (int)$arguments[0];
 
-        $arguments = array_slice($arguments, 1);
+        $arguments = \array_slice($arguments, 1);
 
-        $count = count($arguments);
+        $count = \count($arguments);
 
         $command = null;
         if ($count > 1) {
@@ -214,7 +214,7 @@ class BashCompletionCommand extends Command
         } else {
             $words = $this->getArgumentNames($command, $action);
             foreach ($words as $k => $word) {
-                if (in_array($word, $arguments, true)) {
+                if (\in_array($word, $arguments, true)) {
                     unset($words[$k]);
                 }
             }

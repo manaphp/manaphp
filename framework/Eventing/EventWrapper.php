@@ -31,7 +31,7 @@ class EventWrapper implements JsonSerializable, Stringable
                 }
             } else {
                 foreach (get_object_vars($event) as $key => $val) {
-                    if (is_object($val)) {
+                    if (\is_object($val)) {
                         continue;
                     }
 

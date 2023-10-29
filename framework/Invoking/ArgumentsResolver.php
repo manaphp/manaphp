@@ -84,7 +84,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             if ($type !== null) {
                 $type = $type->getName();
             } elseif ($rParameter->isDefaultValueAvailable()) {
-                $type = gettype($rParameter->getDefaultValue());
+                $type = \gettype($rParameter->getDefaultValue());
             }
 
             if ($type !== null && str_contains($type, '\\')) {
@@ -119,7 +119,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
                     $value = (string)$value;
                     break;
                 case 'array':
-                    $value = is_string($value) ? explode(',', $value) : (array)$value;
+                    $value = \is_string($value) ? explode(',', $value) : (array)$value;
                     break;
             }
 

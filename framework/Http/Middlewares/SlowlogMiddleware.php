@@ -28,7 +28,7 @@ class SlowlogMiddleware
     {
         $elapsed = round($elapsed, 3);
 
-        if (!is_string($message)) {
+        if (!\is_string($message)) {
             $message = json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         }
 

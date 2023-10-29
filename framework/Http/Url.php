@@ -12,7 +12,7 @@ class Url implements UrlInterface
 
     public function get(string|array $args = [], bool|string $scheme = false): string
     {
-        if (is_string($args)) {
+        if (\is_string($args)) {
             $url = $args;
             if ($url === '') {
                 return $this->router->createUrl($url, $scheme);

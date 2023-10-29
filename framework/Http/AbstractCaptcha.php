@@ -39,7 +39,7 @@ abstract class AbstractCaptcha implements CaptchaInterface
     public function generate(int $width = 100, int $height = 30, int $ttl = 300): ResponseInterface
     {
         $code = '';
-        $charsetCount = strlen($this->charset);
+        $charsetCount = \strlen($this->charset);
         for ($i = 0; $i < $this->length; $i++) {
             $code .= $this->charset[random_int(0, $charsetCount - 1)];
         }

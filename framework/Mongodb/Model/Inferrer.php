@@ -35,14 +35,14 @@ class Inferrer implements InferrerInterface
     {
         $fields = $this->models->getFields($model);
 
-        if (in_array('id', $fields, true)) {
+        if (\in_array('id', $fields, true)) {
             return 'id';
         }
 
         $prefix = lcfirst(($pos = strrpos($model, '\\')) === false ? $model : substr($model, $pos + 1));
-        if (in_array($tryField = $prefix . '_id', $fields, true)) {
+        if (\in_array($tryField = $prefix . '_id', $fields, true)) {
             return $tryField;
-        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
+        } elseif (\in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
@@ -54,9 +54,9 @@ class Inferrer implements InferrerInterface
         }
 
         $prefix = (($pos = strpos($table, '.')) ? substr($table, $pos + 1) : $table);
-        if (in_array($tryField = $prefix . '_id', $fields, true)) {
+        if (\in_array($tryField = $prefix . '_id', $fields, true)) {
             return $tryField;
-        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
+        } elseif (\in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
@@ -119,7 +119,7 @@ class Inferrer implements InferrerInterface
 
             $types = [];
             foreach ($docs[0] as $field => $value) {
-                $type = gettype($value);
+                $type = \gettype($value);
                 if ($type === 'integer') {
                     $types[$field] = 'int';
                 } elseif ($type === 'string') {

@@ -25,7 +25,7 @@ class Invoker implements InvokerInterface
             $method = $action . 'View';
             if (method_exists($object, $method)) {
                 $arguments = $this->argumentsResolver->resolve($object, $method);
-                if (is_array($r = $object->$method(...$arguments))) {
+                if (\is_array($r = $object->$method(...$arguments))) {
                     return $view->setVars($r);
                 } elseif ($r === null) {
                     return $view;

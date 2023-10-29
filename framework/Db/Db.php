@@ -103,7 +103,7 @@ class Db implements DbInterface
             $this->pools->add($this, [ConnectionInterface::class, ['uri' => $uri]], $master_pool_size);
         }
 
-        if (count($uris) > 1) {
+        if (\count($uris) > 1) {
             array_shift($uris);
 
             foreach ($uris as $i => $v) {
@@ -115,14 +115,14 @@ class Db implements DbInterface
             if (MANAPHP_COROUTINE_ENABLED) {
                 shuffle($uris);
 
-                $this->pools->create($this, count($uris) * $slave_pool_size, 'slave');
+                $this->pools->create($this, \count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
                         $this->pools->add($this, [ConnectionInterface::class, ['uri' => $v]], 1, 'slave');
                     }
                 }
             } else {
-                $uri = (string)$uris[random_int(0, count($uris) - 1)];
+                $uri = (string)$uris[random_int(0, \count($uris) - 1)];
                 $this->pools->add($this, [ConnectionInterface::class, ['uri' => $uri]], 1, 'slave');
             }
 
@@ -228,7 +228,7 @@ class Db implements DbInterface
             }
         }
 
-        $count = count($result);
+        $count = \count($result);
         $this->eventDispatcher->dispatch(new DbQueried($this, $sql, $bind, $count, $result, $elapsed));
 
         return $result;
@@ -313,8 +313,8 @@ class Db implements DbInterface
         $wheres = [];
 
         foreach ((array)$conditions as $k => $v) {
-            if (is_int($k)) {
-                if (!is_string($v) || $v === '' || preg_match('#^\w+$#', $v) === 1) {
+            if (\is_int($k)) {
+                if (!\is_string($v) || $v === '' || preg_match('#^\w+$#', $v) === 1) {
                     throw new NotSupportedException(['update with `{1}` condition is danger!', json_stringify($v)]);
                 }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
@@ -326,7 +326,7 @@ class Db implements DbInterface
 
         $setFields = [];
         foreach ($fieldValues as $k => $v) {
-            if (is_int($k)) {
+            if (\is_int($k)) {
                 $setFields[] = $v;
             } elseif ($v instanceof SqlFragmentable) {
                 $v->setField($k);
@@ -364,12 +364,12 @@ class Db implements DbInterface
             $bind = [];
             $updates = [];
             foreach ($updateFieldValues as $k => $v) {
-                $field = is_string($k) ? $k : $v;
+                $field = \is_string($k) ? $k : $v;
                 if ($primaryKey === $field) {
                     continue;
                 }
 
-                if (is_int($k)) {
+                if (\is_int($k)) {
                     $updates[] = "[$field]=:$field";
                     $bind[$field] = $insertFieldValues[$field];
                 } elseif ($v instanceof SqlFragmentable) {
@@ -397,8 +397,8 @@ class Db implements DbInterface
 
         $wheres = [];
         foreach ((array)$conditions as $k => $v) {
-            if (is_int($k)) {
-                if (!is_string($v) || $v === '' || ($v !== 'FALSE' && preg_match('#^\w+$#', $v) === 1)) {
+            if (\is_int($k)) {
+                if (!\is_string($v) || $v === '' || ($v !== 'FALSE' && preg_match('#^\w+$#', $v) === 1)) {
                     throw new NotSupportedException(['delete with `{1}` condition is danger!', json_stringify($v)]);
                 }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
@@ -523,7 +523,7 @@ class Db implements DbInterface
                 return $connection->getTables($schema);
             } else {
                 $prefix = $this->prefix;
-                $prefix_len = strlen($prefix);
+                $prefix_len = \strlen($prefix);
                 $tables = [];
                 foreach ($connection->getTables($schema) as $table) {
                     if (str_starts_with($table, $prefix)) {

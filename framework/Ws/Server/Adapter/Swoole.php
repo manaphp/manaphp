@@ -52,7 +52,7 @@ class Swoole implements ServerInterface
         $script_filename = get_included_files()[0];
         /** @noinspection PhpArrayWriteIsNotUsedInspection */
         $_SERVER = [
-            'DOCUMENT_ROOT'   => dirname($script_filename),
+            'DOCUMENT_ROOT'   => \dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
             'SERVER_ADDR'     => $this->host,
@@ -69,7 +69,7 @@ class Swoole implements ServerInterface
         }
 
         if (isset($this->settings['dispatch_mode'])) {
-            if (!in_array((int)$this->settings['dispatch_mode'], [2, 4, 5], true)) {
+            if (!\in_array((int)$this->settings['dispatch_mode'], [2, 4, 5], true)) {
                 throw new NotSupportedException('only support dispatch_mode=2,4,5');
             }
         } else {
@@ -93,7 +93,7 @@ class Swoole implements ServerInterface
         $_server = array_change_key_case($request->server, CASE_UPPER);
 
         foreach ($request->header ?: [] as $k => $v) {
-            if (in_array($k, ['content-type', 'content-length'], true)) {
+            if (\in_array($k, ['content-type', 'content-length'], true)) {
                 $_server[strtoupper(strtr($k, '-', '_'))] = $v;
             } else {
                 $_server['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
@@ -250,7 +250,7 @@ class Swoole implements ServerInterface
      */
     public function push(int $fd, mixed $data): bool
     {
-        return @$this->swoole->push($fd, is_string($data) ? $data : json_stringify($data));
+        return @$this->swoole->push($fd, \is_string($data) ? $data : json_stringify($data));
     }
 
     /**

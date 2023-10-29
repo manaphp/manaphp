@@ -61,7 +61,7 @@ class Pools implements PoolsInterface
             }
         }
 
-        if (is_array($sample)) {
+        if (\is_array($sample)) {
             $sample = $this->maker->make($sample[0], $sample[1] ?? []);
         }
 

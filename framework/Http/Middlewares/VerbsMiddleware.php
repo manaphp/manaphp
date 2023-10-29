@@ -24,7 +24,7 @@ class VerbsMiddleware
         if (($attribute = $rm->getAttributes(AcceptVerbs::class)[0] ?? null) !== null) {
             $request_method = $this->request->getMethod();
             $acceptVerbs = $attribute->newInstance();
-            if (!in_array($request_method, $acceptVerbs->verbs, true)) {
+            if (!\in_array($request_method, $acceptVerbs->verbs, true)) {
                 throw new MethodNotAllowedHttpException($acceptVerbs->verbs);
             }
         }
