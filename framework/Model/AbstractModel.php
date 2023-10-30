@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Model;
 
+use AllowDynamicProperties;
 use ArrayAccess;
 use JsonSerializable;
 use ManaPHP\Db\SqlFragmentable;
@@ -17,6 +18,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 use Stringable;
 
+#[AllowDynamicProperties]
 abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable, Stringable
 {
     protected ?array $_snapshot = [];
