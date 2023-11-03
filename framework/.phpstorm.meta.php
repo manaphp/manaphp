@@ -17,7 +17,7 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\Http\RequestInterface::hasServer(), 0, array_keys($_SERVER)[$i]);
 
     expectedArguments(
-        \ManaPHP\Http\ResponseInterface::setJsonContent(), 0, ['code' => 0, 'message' => '', 'data' => []]
+        \ManaPHP\Http\ResponseInterface::json(), 0, ['code' => 0, 'msg' => '', 'data' => []]
     );
 
     registerArgumentsSet('wspClientEndpoint', 'admin', 'user');

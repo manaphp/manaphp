@@ -43,6 +43,6 @@ class ObjectController extends Controller
         }
 
         $url = $this->bosClient->getPutObjectUrl($bucket_name, $key, ['insert_only' => $insert_only !== 'false']);
-        return $this->response->setJsonData($url);
+        return $this->response->json(['code' => 0, 'msg' => '', 'data' => $url]);
     }
 }

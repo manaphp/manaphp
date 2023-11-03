@@ -13,7 +13,7 @@ class InternalErrorException extends Exception
 
         $this->json = [
             'code'    => 500,
-            'message' => $this->getMessage()
+            'msg' => $this->getMessage()
         ];
     }
 }

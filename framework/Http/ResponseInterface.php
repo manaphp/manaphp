@@ -53,15 +53,9 @@ interface ResponseInterface
 
     public function setContent(mixed $content): static;
 
-    public function setJsonOk(string $message = ''): static;
-
-    public function setJsonError(string $message, ?int $code = null): static;
-
-    public function setJsonData(mixed $data, string $message = ''): static;
-
     public function setJsonThrowable(Throwable $throwable): static;
 
-    public function setJsonContent(mixed $content): static;
+    public function json(mixed $content, int $status = 200): static;
 
     public function getContent(): mixed;
 

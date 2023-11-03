@@ -51,7 +51,7 @@ class PasswordController extends Controller
                  'token'                                              => $token]
             )
             ->send();
-        return $this->response->setJsonOk('重置密码连接已经发送到您的邮箱');
+        return $this->response->json(['code' => 0, 'msg' => '重置密码连接已经发送到您的邮箱']);
     }
 
     public function resetView(string $token)
@@ -85,7 +85,7 @@ class PasswordController extends Controller
         $admin->password = $password;
         $admin->update();
 
-        return $this->response->setJsonOk('重置密码成功');
+        return $this->response->json(['code' => 0, 'msg' => '重置密码成功']);
     }
 
     #[Authorize('user')]

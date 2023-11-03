@@ -49,8 +49,8 @@ axios.interceptors.response.use(function (res) {
         }
 
         if (res.data.code === 0) {
-            if (res.data.message) {
-                vm.$message({type: 'success', duration: 1000, message: res.data.message});
+            if (res.data.msg) {
+                vm.$message({type: 'success', duration: 1000, message: res.data.msg});
             } else if (res.config.method !== 'get') {
                 vm.$message({type: 'success', duration: 1000, message: '操作成功'});
             }
@@ -74,7 +74,7 @@ axios.interceptors.response.use(function (res) {
         if (error.response.status) {
             switch (error.response.status) {
                 case 400:
-                    alert(error.response.data.message);
+                    alert(error.response.data.msg);
                     break;
                 case 401:
                     window.location.href = '/login';
@@ -114,8 +114,8 @@ Vue.prototype.ajax_get = function (url, data, success) {
                 }
                 success.bind(this)(res.data.data);
             }
-        } else if (res.data.message) {
-            this.$alert(res.data.message);
+        } else if (res.data.msg) {
+            this.$alert(res.data.msg);
         }
         return res;
     });
@@ -137,8 +137,8 @@ Vue.prototype.ajax_post = function (url, data, success) {
             success.bind(this)(res.data.data);
         }
 
-        if (res.data.message !== '') {
-            this.$alert(res.data.message);
+        if (res.data.msg !== '') {
+            this.$alert(res.data.msg);
         }
         return res
     });
@@ -886,7 +886,7 @@ App = Vue.extend({
 
             return this.$axios.get(document.location.href).then((res) => {
                 if (res.data.code !== 0) {
-                    this.$alert(res.data.message);
+                    this.$alert(res.data.msg);
                 } else {
                     this.response = res.data.data;
                 }

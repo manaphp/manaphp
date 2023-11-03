@@ -12,7 +12,7 @@ class ValidateFailedException extends Exception
     public function __construct(array $errors, int $code = 0, ?\Exception $previous = null)
     {
         $this->errors = $errors;
-        $this->json = ['code' => 'validator.errors', 'message' => json_stringify($errors, JSON_PRETTY_PRINT)];
+        $this->json = ['code' => -1, 'msg' => json_stringify($errors, JSON_PRETTY_PRINT)];
 
         parent::__construct(json_stringify($errors), $code, $previous);
     }

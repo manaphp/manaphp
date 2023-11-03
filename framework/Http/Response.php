@@ -310,50 +310,36 @@ class Response implements ResponseInterface
         return $this;
     }
 
-    public function setJsonOk(string $message = ''): static
-    {
-        return $this->setJsonContent(['code' => $this->ok_code, 'message' => $message]);
-    }
-
-    public function setJsonError(string $message, ?int $code = null): static
-    {
-        return $this->setJsonContent(['code' => $code ?? $this->error_code, 'message' => $message]);
-    }
-
-    public function setJsonData(mixed $data, string $message = ''): static
-    {
-        return $this->setJsonContent(['code' => $this->ok_code, 'message' => $message, 'data' => $data]);
-    }
-
     public function setJsonThrowable(Throwable $throwable): static
     {
         if ($throwable instanceof \ManaPHP\Exception) {
-            $code = $throwable->getStatusCode();
+            $status = $throwable->getStatusCode();
             $json = $throwable->getJson();
         } else {
-            $code = 500;
-            $json = ['code' => $code, 'message' => 'Internal Server Error'];
+            $status = 500;
+            $json = ['code' => $status, 'msg' => 'Internal Server Error'];
         }
 
         if ($this->app_debug) {
-            $json['message'] = $throwable::class . ': ' . $throwable->getMessage();
+            $json['msg'] = $throwable::class . ': ' . $throwable->getMessage();
             $json['exception'] = explode("\n", (string)$throwable);
         }
 
-        return $this->setStatus($code)->setJsonContent($json);
+        return $this->json($json, $status);
     }
 
-    public function setJsonContent(mixed $content): static
+    public function json(mixed $content, int $status = 200): static
     {
         /** @var ResponseContext $context */
         $context = $this->getContext();
 
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
+        $this->setStatus($status);
 
         if (\is_array($content) || \is_string($content)) {
             null;
         } elseif ($content instanceof JsonSerializable) {
-            $content = ['code' => $this->ok_code, 'message' => '', 'data' => $content];
+            $content = ['code' => $this->ok_code, 'msg' => '', 'data' => $content];
         }
 
         $context->content = $content;

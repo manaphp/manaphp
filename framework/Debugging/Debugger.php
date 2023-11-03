@@ -143,7 +143,7 @@ class Debugger implements DebuggerInterface
                 } elseif ($ext === 'raw') {
                     $this->response->setContent($data)->setContentType('text/plain;charset=UTF-8');
                 } else {
-                    $this->response->setJsonContent($data);
+                    $this->response->json($data);
                 }
             } else {
                 $this->response->setContent('NOT FOUND')->setStatus(404);

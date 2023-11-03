@@ -123,24 +123,24 @@ class HttpResponseTest extends TestCase
     {
         $response = new Response();
 
-        $response->setJsonContent(0);
+        $response->json(0);
         $this->assertEquals(['code' => 0, 'message' => ''], json_decode($response->getContent(), true));
 
-        $response->setJsonContent(100);
+        $response->json(100);
         $this->assertEquals(['code' => 100, 'message' => ''], json_decode($response->getContent(), true));
 
-        $response->setJsonContent(['name' => 'manaphp']);
+        $response->json(['name' => 'manaphp']);
         $this->assertEquals(
             ['code' => 0, 'message' => '', 'data' => ['name' => 'manaphp']], json_decode($response->getContent(), true)
         );
 
-        $response->setJsonContent(['code' => 0, 'message' => 'OK']);
+        $response->json(['code' => 0, 'message' => 'OK']);
         $this->assertEquals(['code' => 0, 'message' => 'OK'], json_decode($response->getContent(), true));
 
-        $response->setJsonContent('{"code":10,"message":"OK"}');
+        $response->json('{"code":10,"message":"OK"}');
         $this->assertEquals(['code' => 10, 'message' => 'OK'], json_decode($response->getContent(), true));
 
-        $response->setJsonContent(['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国']);
+        $response->json(['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国']);
         $this->assertEquals(
             ['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国'],
             json_decode($response->getContent(), true)

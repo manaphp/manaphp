@@ -13,9 +13,9 @@ class InvalidCaptchaException extends Exception
         return 200;
     }
 
-    #[ArrayShape(['code' => 'int', 'message' => 'string', 'field' => 'string'])]
+    #[ArrayShape(['code' => 'int', 'msg' => 'string', 'field' => 'string'])]
     public function getJson(): array
     {
-        return ['code' => 1, 'message' => '验证码错误', 'field' => 'captcha'];
+        return ['code' => -1, 'msg' => '验证码错误', 'field' => 'captcha'];
     }
 }

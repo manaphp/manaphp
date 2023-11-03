@@ -15,19 +15,19 @@ class Handler extends AbstractHandler
     protected function handleInternal(mixed $actionReturnValue): void
     {
         if ($actionReturnValue === null) {
-            $this->response->setJsonOk();
+            $this->response->json(['code' => 0, 'msg' => '']);
         } elseif (\is_array($actionReturnValue)) {
-            $this->response->setJsonData($actionReturnValue);
+            $this->response->json(['code' => 0, 'msg' => '', 'data' => $actionReturnValue]);
         } elseif ($actionReturnValue instanceof Response) {
             null;
         } elseif (\is_string($actionReturnValue)) {
-            $this->response->setJsonError($actionReturnValue);
+            $this->response->json(['code' => -1, 'msg' => $actionReturnValue]);
         } elseif (\is_int($actionReturnValue)) {
-            $this->response->setJsonError('', $actionReturnValue);
+            $this->response->json(['code' => $actionReturnValue, 'msg' => '']);
         } elseif ($actionReturnValue instanceof Throwable) {
             $this->response->setJsonThrowable($actionReturnValue);
         } else {
-            $this->response->setJsonData($actionReturnValue);
+            $this->response->json(['code' => 0, 'msg' => '', 'data' => $actionReturnValue]);
         }
     }
 

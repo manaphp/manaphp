@@ -7,6 +7,6 @@ class IndexController extends Controller
 {
     public function helloAction()
     {
-        return $this->response->setJsonData('Hello ManaPHP');
+        return $this->response->json(['code' => 0, 'msg' => '', 'data' => 'Hello ManaPHP']);
     }
 }
