@@ -310,24 +310,6 @@ class Response implements ResponseInterface
         return $this;
     }
 
-    public function setJsonThrowable(Throwable $throwable): static
-    {
-        if ($throwable instanceof \ManaPHP\Exception) {
-            $status = $throwable->getStatusCode();
-            $json = $throwable->getJson();
-        } else {
-            $status = 500;
-            $json = ['code' => $status, 'msg' => 'Internal Server Error'];
-        }
-
-        if ($this->app_debug) {
-            $json['msg'] = $throwable::class . ': ' . $throwable->getMessage();
-            $json['exception'] = explode("\n", (string)$throwable);
-        }
-
-        return $this->json($json, $status);
-    }
-
     public function json(mixed $content, int $status = 200): static
     {
         /** @var ResponseContext $context */

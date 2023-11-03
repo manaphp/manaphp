@@ -53,8 +53,6 @@ interface ResponseInterface
 
     public function setContent(mixed $content): static;
 
-    public function setJsonThrowable(Throwable $throwable): static;
-
     public function json(mixed $content, int $status = 200): static;
 
     public function getContent(): mixed;
