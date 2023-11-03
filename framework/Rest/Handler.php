@@ -25,7 +25,7 @@ class Handler extends AbstractHandler
         } elseif (\is_int($actionReturnValue)) {
             $this->response->json(['code' => $actionReturnValue, 'msg' => '']);
         } elseif ($actionReturnValue instanceof Throwable) {
-            $this->response->setJsonThrowable($actionReturnValue);
+            $this->handleError($actionReturnValue);
         } else {
             $this->response->json(['code' => 0, 'msg' => '', 'data' => $actionReturnValue]);
         }
