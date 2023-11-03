@@ -302,7 +302,9 @@ class Swoole extends AbstractServer
 
         $response = $context->response;
 
-        $response->status($this->response->getStatusCode());
+        $http_code = $this->response->getStatusCode();
+        $reason = $this->response->getStatusText($http_code);
+        $response->status($http_code, $reason);
 
         foreach ($this->response->getHeaders() as $name => $value) {
             $response->header($name, $value, false);
