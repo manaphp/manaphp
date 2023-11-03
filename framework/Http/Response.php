@@ -16,7 +16,6 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Response\Appenders\RequestIdAppender;
 use ManaPHP\Http\Response\Appenders\ResponseTimeAppender;
 use ManaPHP\Http\Response\Appenders\RouteAppender;
-use Throwable;
 
 class Response implements ResponseInterface
 {
@@ -354,14 +353,10 @@ class Response implements ResponseInterface
         return $content !== '' && $content !== null;
     }
 
-    public function setFile(string $file, ?string $attachmentName = null): static
+    public function download(string $file, ?string $name = null): static
     {
         /** @var ResponseContext $context */
         $context = $this->getContext();
-
-        if ($attachmentName === null) {
-            $attachmentName = basename($file);
-        }
 
         if (!LocalFS::fileExists($file)) {
             throw new FileNotFoundException(['Sent file is not exists: `{file}`', 'file' => $file]);
@@ -370,7 +365,7 @@ class Response implements ResponseInterface
 
         $context->file = $file;
 
-        $this->setAttachment($attachmentName);
+        $this->setAttachment($name ?? \basename($file));
 
         return $this;
     }

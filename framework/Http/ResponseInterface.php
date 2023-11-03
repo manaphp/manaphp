@@ -61,7 +61,7 @@ interface ResponseInterface
 
     public function hasContent(): bool;
 
-    public function setFile(string $file, ?string $attachmentName = null): static;
+    public function download(string $file, ?string $name = null): static;
 
     public function getFile(): ?string;
 

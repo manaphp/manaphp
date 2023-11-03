@@ -175,7 +175,7 @@ class HttpResponseTest extends TestCase
     {
         $response = new Response();
 
-        $response->setFile(__FILE__);
+        $response->download(__FILE__);
         ob_start();
         $response->send();
         $this->assertStringEqualsFile(__FILE__, ob_get_clean());
