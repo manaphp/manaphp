@@ -213,7 +213,7 @@ class Response implements ResponseInterface
 
     public function setExpires(int $timestamp): static
     {
-        if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
+        if (str_contains('GET,OPTIONS', $this->request->method())) {
             if ($timestamp <= 2592000) {
                 $timestamp += time();
             }
@@ -247,7 +247,7 @@ class Response implements ResponseInterface
 
     public function setCacheControl(string $control): static
     {
-        if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
+        if (str_contains('GET,OPTIONS', $this->request->method())) {
             return $this->setHeader('Cache-Control', $control);
         }
 
@@ -256,7 +256,7 @@ class Response implements ResponseInterface
 
     public function setMaxAge(int $age, ?string $extra = null): static
     {
-        if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
+        if (str_contains('GET,OPTIONS', $this->request->method())) {
             $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
             $this->setExpires(time() + $age);
         }
@@ -388,8 +388,8 @@ class Response implements ResponseInterface
 
     public function setAttachment(string $attachmentName): static
     {
-        if ($userAgent = $this->request->getUserAgent()) {
-            if (str_contains($userAgent, 'Trident') || str_contains($userAgent, 'MSIE')) {
+        if ($user_agent = $this->request->header('user-agent')) {
+            if (str_contains($user_agent, 'Trident') || str_contains($user_agent, 'MSIE')) {
                 $attachmentName = urlencode($attachmentName);
             }
         }

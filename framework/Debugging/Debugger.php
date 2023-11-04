@@ -114,7 +114,7 @@ class Debugger implements DebuggerInterface
             if ($this->broadcast) {
                 $key = implode(
                     ':',
-                    ['__debugger', $this->app_id, $this->request->getClientIp(),
+                    ['__debugger', $this->app_id, $this->request->ip(),
                      $this->dispatcher->getHandler()]
                 );
                 $redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
@@ -129,7 +129,7 @@ class Debugger implements DebuggerInterface
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
-        if (($debugger = $this->request->get('__debugger', ''))
+        if (($debugger = $this->request->input('__debugger')) !== null
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
         ) {
             $context->enabled = false;
@@ -150,7 +150,7 @@ class Debugger implements DebuggerInterface
             }
 
             throw new AbortException();
-        } elseif (str_contains($this->request->getUserAgent(), 'ApacheBench')) {
+        } elseif (str_contains($this->request->header('user-agent'), 'ApacheBench')) {
             $context->enabled = false;
         } else {
             $context->enabled = true;
@@ -328,16 +328,16 @@ class Debugger implements DebuggerInterface
 
         return [
             'handler'            => (string)$this->dispatcher->getHandler(),
-            'request_method'     => $this->request->getMethod(),
-            'request_url'        => $this->request->getUrl(),
-            'request_query'      => $this->request->getQuery(),
+            'request_method'     => $this->request->method(),
+            'request_url'        => $this->request->url(),
+            'request_query'      => $this->request->server('QUERY_STRING'),
             'query_count'        => $context->sql_count,
-            'execute_time'       => $this->request->getElapsedTime(),
+            'execute_time'       => $this->request->elapsed(),
             'memory_usage'       => $memory_usage,
             'system_time'        => date('Y-m-d H:i:s'),
-            'server_ip'          => $this->request->getServer('SERVER_ADDR'),
-            'client_ip'          => $this->request->getClientIp(),
-            'server_software'    => $this->request->getServer('SERVER_SOFTWARE'),
+            'server_ip'          => $this->request->server('SERVER_ADDR'),
+            'client_ip'          => $this->request->ip(),
+            'server_software'    => $this->request->server('SERVER_SOFTWARE'),
             'manaphp_version'    => Version::get(),
             'php_version'        => PHP_VERSION,
             'sapi'               => PHP_SAPI,

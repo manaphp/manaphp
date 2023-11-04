@@ -24,8 +24,8 @@ class InformationController extends Controller
 
         $data['operating_system'] = php_uname();
         $data['system_time'] = date('Y-m-d H:i:s');
-        $data['server_ip'] = $this->request->getServer('SERVER_ADDR');
-        $data['client_ip'] = $this->request->getServer('REMOTE_ADDR');
+        $data['server_ip'] = $this->request->server('SERVER_ADDR');
+        $data['client_ip'] = $this->request->server('REMOTE_ADDR');
         $data['upload_max_filesize'] = ini_get('upload_max_filesize');
         $data['post_max_size'] = ini_get('post_max_size');
         $data['loaded_ini'] = php_ini_loaded_file();

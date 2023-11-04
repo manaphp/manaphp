@@ -72,7 +72,7 @@ class Sender implements SenderInterface
         $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
             null;
-        } elseif ($this->request->isHead()) {
+        } elseif ($this->request->method() === 'HEAD') {
             header('Content-Length: ' . \strlen($content));
         } elseif ($file = $this->response->getFile()) {
             readfile($this->alias->resolve($file));

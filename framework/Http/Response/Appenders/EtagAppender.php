@@ -14,7 +14,7 @@ class EtagAppender implements AppenderInterface
 
     public function append(RequestInterface $request, ResponseInterface $response): void
     {
-        if ($response->getStatusCode() !== 200 || !\in_array($request->getMethod(), ['GET', 'HEAD'], true)) {
+        if ($response->getStatusCode() !== 200 || !\in_array($request->method(), ['GET', 'HEAD'], true)) {
             return;
         }
 
@@ -23,7 +23,7 @@ class EtagAppender implements AppenderInterface
             $response->setETag($etag);
         }
 
-        $if_none_match = $request->getIfNoneMatch();
+        $if_none_match = $request->header('if-none-match');
         if ($if_none_match === $etag) {
             $response->removeHeader('ETag');
             $response->setNotModified();

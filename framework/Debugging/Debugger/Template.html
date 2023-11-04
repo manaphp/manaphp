@@ -77,7 +77,7 @@
         <li><a href="#contexts" data-toggle="tab">Contexts</a></li>
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Global <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li v-for="(value, name) in dependencies['ManaPHP\\Http\\GlobalsInterface'].properties.context"
+                <li v-for="(value, name) in dependencies['ManaPHP\\Http\\RequestInterface'].properties.context"
                     v-if="typeof value === 'object' && value !== null">
                     <a data-toggle="tab" @click="global_type=name" href="#global">{{name}}
                         <span v-if="!Object.keys(value).length">*</span>
@@ -222,7 +222,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(value, name, index) in dependencies['ManaPHP\\Http\\GlobalsInterface'].properties.context[global_type]">
+                <tr v-for="(value, name, index) in dependencies['ManaPHP\\Http\\RequestInterface'].properties.context[global_type]">
                     <td>{{ index }}</td>
                     <td>{{ name }}</td>
                     <td>{{ value }}</td>

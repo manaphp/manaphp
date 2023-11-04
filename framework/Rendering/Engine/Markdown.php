@@ -1461,7 +1461,7 @@ class Markdown implements EngineInterface
         }
     }
 
-    protected function unmarkedText($text):string
+    protected function unmarkedText($text): string
     {
         $Inline = $this->inlineText($text);
         return $this->element($Inline['element']);

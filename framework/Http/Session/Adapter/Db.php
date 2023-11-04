@@ -35,7 +35,7 @@ class Db extends AbstractSession
     {
         $field_values = [
             'user_id'      => $this->identity->isGuest() ? 0 : $this->identity->getId(),
-            'client_ip'    => $this->request->getClientIp(),
+            'client_ip'    => $this->request->ip(),
             'data'         => $data,
             'updated_time' => time(),
             'expired_time' => $ttl + time()
@@ -55,7 +55,7 @@ class Db extends AbstractSession
     {
         $field_values = [
             'user_id'      => $this->identity->isGuest() ? 0 : $this->identity->getId(),
-            'client_ip'    => $this->request->getClientIp(),
+            'client_ip'    => $this->request->ip(),
             'updated_time' => time(),
             'expired_time' => $ttl + time()
         ];

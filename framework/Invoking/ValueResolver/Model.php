@@ -26,11 +26,7 @@ class Model implements ObjectValueResolverInterface
         }
 
         $primaryKey = $this->models->getPrimaryKey($type);
-        if ($this->request->has($primaryKey)) {
-            $id = $this->request->get($primaryKey);
-        } elseif ($this->request->has($name)) {
-            $id = $this->request->get($name);
-        } else {
+        if (($id = $this->request->input($primaryKey) ?? $this->request->input($name)) === null) {
             throw new ValidateFailedException([$primaryKey => $this->validator->createError('required', $primaryKey)]);
         }
 

@@ -57,7 +57,7 @@ class SessionController extends Controller
             return '账号已锁定';
         }
 
-        $client_ip = $this->request->getClientIp();
+        $client_ip = $this->request->ip();
 
         if (!Ip::contains($admin->white_ip, $client_ip)) {
             return "$client_ip 地址未在白名单";
@@ -90,7 +90,7 @@ class SessionController extends Controller
         $adminLoginLog->admin_name = $admin->admin_name;
         $adminLoginLog->client_ip = $client_ip;
         $adminLoginLog->client_udid = $udid;
-        $adminLoginLog->user_agent = $this->request->getUserAgent(255);
+        $adminLoginLog->user_agent = \substr($this->request->header('user-agent'), 0, 255);
 
         $adminLoginLog->create();
     }

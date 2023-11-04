@@ -58,10 +58,8 @@ class Paginator implements PaginatorInterface, JsonSerializable
     public function renderAsHtml(?string $urlTemplate = null): string
     {
         if ($urlTemplate === null) {
-            if (!$this->request->hasServer('REQUEST_URI')) {
+            if (!$urlTemplate = $this->request->path()) {
                 throw new PreconditionException('REQUEST_URI is not exist');
-            } else {
-                $urlTemplate = $this->request->getServer('REQUEST_URI', 'ignore');
             }
 
             if (!str_contains($urlTemplate, '?page=') && !str_contains($urlTemplate, '&page=')) {

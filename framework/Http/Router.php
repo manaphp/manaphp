@@ -66,7 +66,7 @@ class Router implements RouterInterface
     {
         $prefix = $this->prefix;
         if (str_starts_with($prefix, '?')) {
-            $uri = $this->request->getUri();
+            $uri = $this->request->path();
             $pattern = '#^/[\w-]+' . substr($prefix, 1) . '#';
             if (preg_match($pattern, $uri, $match)) {
                 return $match[0];
@@ -167,8 +167,8 @@ class Router implements RouterInterface
 
     public function getRewriteUri(): string
     {
-        if (($url = $this->request->get('_url', '')) === '') {
-            $request_uri = $this->request->getServer('REQUEST_URI', '/');
+        if (($url = $this->request->input('_url', '')) === '') {
+            $request_uri = $this->request->path();
             $pos = strpos($request_uri, '?');
             $url = $pos === false ? $request_uri : substr($request_uri, 0, $pos);
         }
@@ -230,7 +230,7 @@ class Router implements RouterInterface
         $uri = $uri ?: $this->getRewriteUri();
 
         if ($method === null) {
-            $method = $this->request->getMethod();
+            $method = $this->request->method();
         }
 
         $context->controller = null;
@@ -458,9 +458,9 @@ class Router implements RouterInterface
 
         if ($scheme) {
             if ($scheme === true) {
-                $scheme = $this->request->getScheme();
+                $scheme = $this->request->scheme();
             }
-            return ($scheme === '//' ? '//' : "$scheme://") . $this->request->getServer('HTTP_HOST') . $url;
+            return ($scheme === '//' ? '//' : "$scheme://") . $this->request->header('host') . $url;
         } else {
             return $url;
         }

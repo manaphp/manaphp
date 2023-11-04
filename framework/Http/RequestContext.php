@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Coroutine\Context\Stickyable;
 
-class GlobalsContext implements Stickyable
+class RequestContext implements Stickyable
 {
     public array $_GET = [];
     public array $_POST = [];

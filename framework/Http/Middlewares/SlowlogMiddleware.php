@@ -35,8 +35,8 @@ class SlowlogMiddleware
         $replaced = [];
         $ts = microtime(true);
         $replaced[':date'] = date('Y-m-d\TH:i:s', $ts) . sprintf('.%03d', ($ts - (int)$ts) * 1000);
-        $replaced[':client_ip'] = $this->request->getClientIp();
-        $replaced[':request_id'] = $this->request->getRequestId();
+        $replaced[':client_ip'] = $this->request->ip();
+        $replaced[':request_id'] = $this->request->header('x-request-id', '');
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = $message . PHP_EOL;
 
@@ -48,7 +48,7 @@ class SlowlogMiddleware
         if ($event->response->hasHeader('X-Response-Time')) {
             $elapsed = $event->response->getHeader('X-Response-Time');
         } else {
-            $elapsed = $event->request->getElapsedTime();
+            $elapsed = $event->request->elapsed();
         }
 
         if ($this->threshold > $elapsed) {
@@ -59,9 +59,9 @@ class SlowlogMiddleware
         $route = implode('::', [$dispatcher->getArea(), $dispatcher->getController(), $dispatcher->getAction()]);
 
         $message = [
-            'method'   => $this->request->getMethod(),
+            'method'   => $this->request->method(),
             'route'    => $route,
-            'url'      => $this->request->getUrl(),
+            'url'      => $this->request->url(),
             '_REQUEST' => $this->request->all(),
             'elapsed'  => $elapsed,
         ];

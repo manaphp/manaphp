@@ -136,11 +136,11 @@ if (!\function_exists('input')) {
         $request = Container::get(RequestInterface::class);
 
         if ($defaultOrRules === null) {
-            $value = $request->get($name);
+            $value = $request->input($name);
         } elseif (\is_array($defaultOrRules)) {
-            $value = $request->get($name, $defaultOrRules['default'] ?? null);
+            $value = $request->input($name, $defaultOrRules['default'] ?? null);
         } else {
-            return $request->get($name, $defaultOrRules);
+            return $request->input($name, $defaultOrRules);
         }
 
         return $value ?? Container::get(ValidatorInterface::class)->validateValue($name, null, 'required');

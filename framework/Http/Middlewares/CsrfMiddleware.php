@@ -22,11 +22,11 @@ class CsrfMiddleware
 
     protected function isOriginSafe(): bool
     {
-        if (($origin = $this->request->getOrigin(false)) === '') {
+        if (($origin = $this->request->origin(false)) === '') {
             return false;
         }
 
-        if (($host = $this->request->getHost()) === '') {
+        if (($host = $this->request->header('host')) === null) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class CsrfMiddleware
             return;
         }
 
-        if ($this->request->isGet()) {
+        if ($this->request->method() === 'GET') {
             if (!$this->strict) {
                 return;
             }

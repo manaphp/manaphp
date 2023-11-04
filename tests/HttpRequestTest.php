@@ -17,110 +17,55 @@ class HttpRequestTest extends TestCase
         $this->container = new FactoryDefault();
     }
 
-    public function test_get()
+    public function test_input()
     {
         $request = new Request();
 
-        $this->assertSame('', $request->get('name'));
+        $this->assertSame('', $request->input('name'));
 
-        $this->assertEquals('test', $request->get('name', null, 'test'));
+        $this->assertEquals('test', $request->input('name', null, 'test'));
 
         try {
-            $this->assertEquals('test', $request->get('name', 'int'));
+            $this->assertEquals('test', $request->input('name', 'int'));
             $this->fail('why not?');
         } catch (\Exception $e) {
             $this->assertInstanceOf('ManaPHP\Http\Filter\Exception', $e);
         }
 
         $_REQUEST['name'] = 'mana';
-        $this->assertEquals('mana', $request->get('name'));
+        $this->assertEquals('mana', $request->input('name'));
     }
 
-    public function test_getGet()
+    public function test_query()
     {
         $request = new Request();
 
-        $this->assertSame('', $request->getGet('name'));
+        $this->assertSame('', $request->query('name'));
 
-        $this->assertEquals('test', $request->getGet('name', null, 'test'));
+        $this->assertEquals('test', $request->query('name', null, 'test'));
 
         try {
-            $this->assertEquals('test', $request->getGet('name', 'int'));
+            $this->assertEquals('test', $request->query('name', 'int'));
             $this->fail('why not?');
         } catch (\Exception $e) {
             $this->assertInstanceOf('ManaPHP\Http\Filter\Exception', $e);
         }
 
         $_GET['name'] = 'mana';
-        $this->assertEquals('mana', $request->getGet('name'));
+        $this->assertEquals('mana', $request->query('name'));
     }
 
-    public function test_getPost()
+    public function test_scheme()
     {
         $request = new Request();
 
-        $this->assertSame('', $request->getPost('name'));
-
-        $this->assertEquals('test', $request->getPost('name', null, 'test'));
-
-        try {
-            $this->assertEquals('test', $request->getPost('name', 'int'));
-            $this->fail('why not?');
-        } catch (\Exception $e) {
-            $this->assertInstanceOf('ManaPHP\Http\Filter\Exception', $e);
-        }
-
-        $_POST['name'] = 'mana';
-        $this->assertEquals('mana', $request->getPost('name'));
-    }
-
-    public function test_getPut()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $this->assertSame('', $request->getPut('name'));
-
-        $this->assertEquals('test', $request->getPut('name', null, 'test'));
-
-        try {
-            $this->assertEquals('test', $request->getPut('name', 'int'));
-            $this->fail('why not?');
-        } catch (\Exception $e) {
-            $this->assertInstanceOf('ManaPHP\Http\Filter\Exception', $e);
-        }
-    }
-
-    public function test_getQuery()
-    {
-        $request = new Request();
-
-        $this->assertSame('', $request->getQuery('name'));
-
-        $this->assertEquals('test', $request->getQuery('name', null, 'test'));
-
-        try {
-            $this->assertEquals('test', $request->getQuery('name', 'int'));
-            $this->fail('why not?');
-        } catch (\Exception $e) {
-            $this->assertInstanceOf('ManaPHP\Http\Filter\Exception', $e);
-        }
-
-        $_GET['name'] = 'mana';
-        $this->assertEquals('mana', $request->getQuery('name'));
-    }
-
-    public function test_getScheme()
-    {
-        $request = new Request();
-
-        $this->assertEquals('http', $request->getScheme());
+        $this->assertEquals('http', $request->scheme());
 
         $_SERVER['HTTPS'] = 'off';
-        $this->assertEquals('http', $request->getScheme());
+        $this->assertEquals('http', $request->scheme());
 
         $_SERVER['HTTPS'] = 'on';
-        $this->assertEquals('https', $request->getScheme());
+        $this->assertEquals('https', $request->scheme());
     }
 
     public function test_isAjax()
@@ -135,246 +80,18 @@ class HttpRequestTest extends TestCase
         $this->assertFalse($request->isAjax());
     }
 
-    public function test_getRawBody()
-    {
-
-    }
-
-    public function test_getClientIp()
+    public function test_ip()
     {
         $_SERVER['REMOTE_ADDR'] = '1.2.3.4';
         $request = new Request();
-        $this->assertEquals('1.2.3.4', $request->getClientIp());
+        $this->assertEquals('1.2.3.4', $request->ip());
 
         $_SERVER['HTTP_X_REAL_IP'] = '10.20.30.40';
         $request = new Request();
-        $this->assertEquals('10.20.30.40', $request->getClientIp());
+        $this->assertEquals('10.20.30.40', $request->ip());
     }
 
-    public function test_getUserAgent()
-    {
-        $request = new Request();
-
-        $this->assertEquals('', $request->getUserAgent());
-
-        $_SERVER['HTTP_USER_AGENT'] = 'IOS';
-        $this->assertEquals('IOS', $request->getUserAgent());
-    }
-
-    public function test_isPost()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $this->assertFalse($request->isPost());
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertTrue($request->isPost());
-    }
-
-    public function test_isGet()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertFalse($request->isGet());
-
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $this->assertTrue($request->isGet());
-    }
-
-    public function test_isPut()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertFalse($request->isPut());
-
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $this->assertTrue($request->isPut());
-    }
-
-    public function test_isHead()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertFalse($request->isHead());
-
-        $_SERVER['REQUEST_METHOD'] = 'HEAD';
-        $this->assertTrue($request->isHead());
-    }
-
-    public function test_isDelete()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertFalse($request->isDelete());
-
-        $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        $this->assertTrue($request->isDelete());
-    }
-
-    public function test_isOptions()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertFalse($request->isOptions());
-
-        $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
-        $this->assertTrue($request->isOptions());
-    }
-
-    public function test_isPatch()
-    {
-        $request = new Request();
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertFalse($request->isPatch());
-
-        $_SERVER['REQUEST_METHOD'] = 'PATCH';
-        $this->assertTrue($request->isPatch());
-    }
-
-    public function test_getReferer()
-    {
-        $request = new Request();
-
-        $this->assertEquals('', $request->getReferer());
-
-        $_SERVER['HTTP_REFERER'] = 'http://www.google.com/';
-        $this->assertEquals('http://www.google.com/', $request->getReferer());
-    }
-
-    public function test_hasFiles()
-    {
-        $request = new Request();
-
-        $_FILES = array(
-            'test' => array(
-                'name'     => 'name',
-                'type'     => 'text/plain',
-                'size'     => 1,
-                'tmp_name' => 'tmp_name',
-                'error'    => 0,
-            )
-        );
-
-        $this->assertEquals($request->hasFiles(false), 1);
-        $this->assertEquals($request->hasFiles(true), 1);
-
-        $_FILES = array(
-            'test' => array(
-                'name'     => array('name1', 'name2'),
-                'type'     => array('text/plain', 'text/plain'),
-                'size'     => array(1, 1),
-                'tmp_name' => array('tmp_name1', 'tmp_name2'),
-                'error'    => array(0, 0),
-            )
-        );
-
-        $this->assertEquals($request->hasFiles(false), 2);
-        $this->assertEquals($request->hasFiles(true), 2);
-
-        $_FILES = array(
-            'photo' => array(
-                'name'     => array(
-                    0 => '',
-                    1 => '',
-                    2 => array(0 => '', 1 => '', 2 => ''),
-                    3 => array(0 => ''),
-                    4 => array(
-                        0 => array(0 => ''),
-                    ),
-                    5 => array(
-                        0 => array(
-                            0 => array(
-                                0 => array(0 => ''),
-                            ),
-                        ),
-                    ),
-                ),
-                'type'     => array(
-                    0 => '',
-                    1 => '',
-                    2 => array(0 => '', 1 => '', 2 => ''),
-                    3 => array(0 => ''),
-                    4 => array(
-                        0 => array(0 => ''),
-                    ),
-                    5 => array(
-                        0 => array(
-                            0 => array(
-                                0 => array(0 => ''),
-                            ),
-                        ),
-                    ),
-                ),
-                'tmp_name' => array(
-                    0 => '',
-                    1 => '',
-                    2 => array(0 => '', 1 => '', 2 => ''),
-                    3 => array(0 => ''),
-                    4 => array(
-                        0 => array(0 => ''),
-                    ),
-                    5 => array(
-                        0 => array(
-                            0 => array(
-                                0 => array(0 => ''),
-                            ),
-                        ),
-                    ),
-                ),
-                'error'    => array(
-                    0 => 4,
-                    1 => 4,
-                    2 => array(0 => 4, 1 => 4, 2 => 4),
-                    3 => array(0 => 4),
-                    4 => array(
-                        0 => array(0 => 4),
-                    ),
-                    5 => array(
-                        0 => array(
-                            0 => array(
-                                0 => array(0 => 4),
-                            ),
-                        ),
-                    ),
-                ),
-                'size'     => array(
-                    0 => 0,
-                    1 => 0,
-                    2 => array(0 => 0, 1 => 0, 2 => 0),
-                    3 => array(0 => 0),
-                    4 => array(
-                        0 => array(0 => 0),
-                    ),
-                    5 => array(
-                        0 => array(
-                            0 => array(
-                                0 => array(0 => 0),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-            'test'  => array(
-                'name'     => '',
-                'type'     => '',
-                'tmp_name' => '',
-                'error'    => 4,
-                'size'     => 0,
-            ),
-        );
-
-        $this->assertEquals($request->hasFiles(false), 9);
-        $this->assertEquals($request->hasFiles(true), 0);
-    }
-
-    public function test_getFiles()
+    public function test_files()
     {
         $request = new Request();
 
@@ -388,7 +105,7 @@ class HttpRequestTest extends TestCase
             ),
         );
 
-        $files = $request->getFiles();
+        $files = $request->files();
         $this->assertCount(1, $files);
 
         $file = $files[0];
@@ -410,8 +127,8 @@ class HttpRequestTest extends TestCase
             ),
         ];
 
-        $all = $request->getFiles(false);
-        $successful = $request->getFiles(true);
+        $all = $request->files(false);
+        $successful = $request->files(true);
         $this->assertCount(2, $all);
         $this->assertCount(1, $successful);
 
@@ -439,7 +156,7 @@ class HttpRequestTest extends TestCase
         ];
 
         $_SERVER = $base;
-        $this->assertEquals('http://www.manaphp.com/index.php', $request->getUrl());
+        $this->assertEquals('http://www.manaphp.com/index.php', $request->url());
 
 //        $_SERVER=$base;
 //        $_SERVER['SERVER_PORT']='81';
@@ -456,7 +173,7 @@ class HttpRequestTest extends TestCase
 //        $this->assertEquals('https://www.manaphp.com:8080/index.php',$request->getUrl());
 //
         $_SERVER = $base;
-        $this->assertEquals('http://www.manaphp.com/index.php', $request->getUrl());
+        $this->assertEquals('http://www.manaphp.com/index.php', $request->url());
     }
 
     public function test_getEmptyValue()
@@ -464,13 +181,13 @@ class HttpRequestTest extends TestCase
         $request = new Request();
 
         $_REQUEST = [];
-        $this->assertSame('', $request->get('k'));
-        $this->assertNull($request->get('k', null, null));
-        $this->assertSame('v', $request->get('k', null, 'v'));
+        $this->assertSame('', $request->input('k'));
+        $this->assertNull($request->input('k', null, null));
+        $this->assertSame('v', $request->input('k', null, 'v'));
 
         $_REQUEST = ['k' => ''];
-        $this->assertSame('', $request->get('k'));
-        $this->assertNull($request->get('k', null, null));
-        $this->assertSame('v', $request->get('k', null, 'v'));
+        $this->assertSame('', $request->input('k'));
+        $this->assertNull($request->input('k', null, null));
+        $this->assertSame('v', $request->input('k', null, 'v'));
     }
 }

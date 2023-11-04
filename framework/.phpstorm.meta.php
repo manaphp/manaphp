@@ -13,8 +13,7 @@ namespace PHPSTORM_META {
     override(\ManaPHP\Helper\Container::make(), map(['' => '@']));
     override(\ManaPHP\Di\MakerInterface::make(), map(['' => '@']));
 
-    expectedArguments(\ManaPHP\Http\RequestInterface::getServer(), 0, array_keys($_SERVER)[$i]);
-    expectedArguments(\ManaPHP\Http\RequestInterface::hasServer(), 0, array_keys($_SERVER)[$i]);
+    expectedArguments(\ManaPHP\Http\RequestInterface::server(), 0, array_keys($_SERVER)[$i]);
 
     expectedArguments(
         \ManaPHP\Http\ResponseInterface::json(), 0, ['code' => 0, 'msg' => '', 'data' => []]
@@ -170,6 +169,28 @@ namespace PHPSTORM_META {
     expectedArguments(\Psr\Log\LoggerInterface::critical(), 1, argumentsSet('logger_category'));
     expectedArguments(\Psr\Log\LoggerInterface::alert(), 1, argumentsSet('logger_category'));
     expectedArguments(\Psr\Log\LoggerInterface::emergency(), 1, argumentsSet('logger_category'));
+
+    registerArgumentsSet('request_header', [
+        "accept-charset",
+        "accept-encoding",
+        "accept-language",
+        "authorization",
+        "cache-control",
+        "connection",
+        "content-length",
+        "cookie",
+        "host",
+        "origin",
+        "referer",
+        "set-cookie",
+        "transfer-encoding",
+        "user-agent",
+        "if-none-match",
+        'x-real-ip',
+        'x-forwarded-for',
+        'x-requested-with',
+    ]);
+    expectedArguments(\ManaPHP\Http\RequestInterface::header(), 0, argumentsSet('request_header'));
 }
 
 /**

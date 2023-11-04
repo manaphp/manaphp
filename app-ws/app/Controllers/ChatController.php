@@ -16,11 +16,11 @@ class ChatController extends Controller
 
     public function openAction($fd)
     {
-        $this->chatServer->open($fd, $this->request->get('room_id', 'meeting'));
+        $this->chatServer->open($fd, $this->request->input('room_id', 'meeting'));
     }
 
     public function closeAction($fd)
     {
-        $this->chatServer->open($fd, $this->request->get('room_id', 'meeting'));
+        $this->chatServer->open($fd, $this->request->input('room_id', 'meeting'));
     }
 }

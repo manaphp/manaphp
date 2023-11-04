@@ -62,7 +62,7 @@ class SessionController extends Controller
             $this->session->destroy($user->session_id);
         }
 
-        $user->login_ip = $this->request->getClientIp();
+        $user->login_ip = $this->request->ip();
         $user->login_time = time();
         $user->session_id = $session_id;
         $user->update();
@@ -71,9 +71,9 @@ class SessionController extends Controller
 
         $adminLoginLog->user_id = $user->user_id;
         $adminLoginLog->user_name = $user->user_name;
-        $adminLoginLog->client_ip = $this->request->getClientIp();
+        $adminLoginLog->client_ip = $this->request->ip();
         $adminLoginLog->client_udid = $udid;
-        $adminLoginLog->user_agent = $this->request->getUserAgent(255);
+        $adminLoginLog->user_agent = \substr($this->request->header('user-agent'), 0, 255);
 
         $adminLoginLog->create();
     }

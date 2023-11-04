@@ -11,6 +11,8 @@ class RequestIdAppender implements AppenderInterface
 {
     public function append(RequestInterface $request, ResponseInterface $response): void
     {
-        $response->setHeader('X-Request-Id', $request->getRequestId());
+        if (($x_request_id = $request->header('x-request-id')) !== null) {
+            $response->setHeader('X-Request-Id', $x_request_id);
+        }
     }
 }

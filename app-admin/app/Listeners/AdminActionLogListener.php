@@ -73,9 +73,9 @@ class AdminActionLogListener
         $adminActionLog = new AdminActionLog();
         $adminActionLog->admin_id = $this->identity->isGuest() ? 0 : $this->identity->getId();
         $adminActionLog->admin_name = $this->identity->isGuest() ? '' : $this->identity->getName();
-        $adminActionLog->client_ip = $this->request->getClientIp();
-        $adminActionLog->method = $this->request->getMethod();
-        $adminActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
+        $adminActionLog->client_ip = $this->request->ip();
+        $adminActionLog->method = $this->request->method();
+        $adminActionLog->url = $this->request->path();
         $adminActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
         $adminActionLog->data = json_stringify($data);
         $adminActionLog->handler = $this->dispatcher->getHandler();

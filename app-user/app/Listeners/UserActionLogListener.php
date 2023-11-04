@@ -62,9 +62,9 @@ class UserActionLogListener
         $userActionLog = new UserActionLog();
         $userActionLog->user_id = $this->identity->isGuest() ? 0 : $this->identity->getId();
         $userActionLog->user_name = $this->identity->isGuest() ? '' : $this->identity->getName();
-        $userActionLog->client_ip = $this->request->getClientIp();
-        $userActionLog->method = $this->request->getMethod();
-        $userActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
+        $userActionLog->client_ip = $this->request->ip();
+        $userActionLog->method = $this->request->method();
+        $userActionLog->url = $this->request->path();
         $userActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
         $userActionLog->data = json_stringify($data);
         $userActionLog->handler = $this->dispatcher->getHandler();

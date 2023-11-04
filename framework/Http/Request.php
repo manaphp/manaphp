@@ -4,34 +4,84 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use JsonSerializable;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\Request\File;
-use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
+use ManaPHP\Http\Request\Proxy;
 
 class Request implements RequestInterface, JsonSerializable
 {
     #[Autowired] protected MakerInterface $maker;
-    #[Autowired] protected GlobalsInterface $globals;
 
-    public function getRawBody(): string
+    use ContextTrait;
+
+    #[Autowired] protected bool $proxy = false;
+
+    public function __construct()
     {
-        return $this->globals->getRawBody();
+        if ($this->proxy) {
+            $_GET = new Proxy($this, '_GET');
+            $_POST = new Proxy($this, '_POST');
+            $_REQUEST = new Proxy($this, '_REQUEST');
+            $_FILES = new Proxy($this, '_FILES');
+            $_COOKIE = new Proxy($this, '_COOKIE');
+            $_SERVER = new Proxy($this, '_SERVER');
+        }
+    }
+
+    public function prepare(array $GET, array $POST, array $SERVER, ?string $RAW_BODY = null, array $COOKIE = [],
+        array $FILES = []
+    ): void {
+        $context = $this->getContext();
+
+        if (!$POST
+            && (isset($SERVER['REQUEST_METHOD']) && !\in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+        ) {
+            if (isset($SERVER['CONTENT_TYPE'])
+                && str_contains($SERVER['CONTENT_TYPE'], 'application/json')
+            ) {
+                $POST = json_parse($RAW_BODY);
+            } else {
+                parse_str($RAW_BODY, $POST);
+            }
+
+            if (!\is_array($POST)) {
+                $POST = [];
+            }
+        }
+
+        $context->_GET = $GET;
+        $context->_POST = $POST;
+        $context->_REQUEST = $POST === [] ? $GET : array_merge($GET, $POST);
+        $context->_SERVER = $SERVER;
+        $context->rawBody = $RAW_BODY;
+        $context->_COOKIE = $COOKIE;
+        $context->_FILES = $FILES;
+    }
+
+    public function getContext(int $cid = 0): RequestContext
+    {
+        return $this->contextor->getContext($this, $cid);
+    }
+
+    public function rawBody(): string
+    {
+        return $this->getContext()->rawBody;
     }
 
     public function all(): array
     {
-        return $this->globals->getRequest();
+        return $this->getContext()->_REQUEST;
     }
 
     public function only(array $names): array
     {
         $data = [];
-        $request = $this->globals->getRequest();
 
-        foreach ($names as $name) {
-            if (($val = $request[$name] ?? null) !== null) {
+        foreach ($this->all() as $name => $val) {
+            if (\in_array($name, $names, true)) {
                 $data[$name] = $val;
             }
         }
@@ -43,7 +93,7 @@ class Request implements RequestInterface, JsonSerializable
     {
         $data = [];
 
-        foreach ($this->globals->getRequest() as $name => $val) {
+        foreach ($this->all() as $name => $val) {
             if (!\in_array($name, $names, true)) {
                 $data[$name] = $val;
             }
@@ -52,142 +102,74 @@ class Request implements RequestInterface, JsonSerializable
         return $data;
     }
 
-    public function get(string $name, mixed $default = null): mixed
+    public function input(string $name, mixed $default = null): mixed
     {
-        return $this->globals->getRequest()[$name] ?? $default;
+        return $this->all()[$name] ?? $default;
+    }
+
+    public function query(string $name, mixed $default = null): string
+    {
+        return $this->getContext()->_GET[$name] ?? $default;
     }
 
     public function set(string $name, mixed $value): static
     {
-        $globals = $this->globals->get();
+        $context = $this->getContext();
 
-        $globals->_GET[$name] = $value;
-        $globals->_REQUEST[$name] = $value;
+        $context->_GET[$name] = $value;
+        $context->_REQUEST[$name] = $value;
 
         return $this;
     }
 
     public function delete(string $name): static
     {
-        $globals = $this->globals->get();
+        $context = $this->getContext();
 
-        unset($globals->_GET[$name], $globals->_POST[$name], $globals->_REQUEST[$name]);
+        unset($context->_GET[$name], $context->_POST[$name], $context->_REQUEST[$name]);
 
         return $this;
     }
 
-    public function getServer(?string $name = null, mixed $default = ''): mixed
+    public function header(string $name, mixed $default = null): mixed
     {
-        return $this->globals->getServer()[$name] ?? $default;
+        return $this->server('HTTP_' . strtr(\strtoupper($name), '-', '_'), $default);
     }
 
-    public function getMethod(): string
+    public function server(?string $name = null, mixed $default = null): mixed
     {
-        return $this->getServer('REQUEST_METHOD');
+        return $this->getContext()->_SERVER[$name] ?? $default;
     }
 
-    public function has(string $name): bool
+    public function method(): string
     {
-        return isset($this->globals->getRequest()[$name]);
+        return $this->server('REQUEST_METHOD');
     }
 
-    public function hasServer(string $name): bool
+    public function scheme(): string
     {
-        return isset($this->globals->getServer()[$name]);
-    }
-
-    public function getScheme(): string
-    {
-        if ($scheme = $this->getServer('REQUEST_SCHEME')) {
+        if ($scheme = $this->server('REQUEST_SCHEME')) {
             return $scheme;
         } else {
-            return $this->getServer('HTTPS') === 'on' ? 'https' : 'http';
+            return $this->server('HTTPS') === 'on' ? 'https' : 'http';
         }
     }
 
     public function isAjax(): bool
     {
-        return $this->getServer('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest';
+        return $this->header('x-requested-with') === 'XMLHttpRequest';
     }
 
-    public function isWebSocket(): bool
+    public function ip(): string
     {
-        return $this->getServer('HTTP_UPGRADE') === 'websocket';
+        return $this->header('x-real-ip') ?: $this->server('REMOTE_ADDR');
     }
 
-    public function getClientIp(): string
-    {
-        return $this->getServer('HTTP_X_REAL_IP') ?: $this->getServer('REMOTE_ADDR');
-    }
-
-    public function getUserAgent(int $max_len = -1): string
-    {
-        $user_agent = $this->getServer('HTTP_USER_AGENT');
-
-        return $max_len > 0 && \strlen($user_agent) > $max_len ? substr($user_agent, 0, $max_len) : $user_agent;
-    }
-
-    public function isPost(): bool
-    {
-        return $this->getMethod() === 'POST';
-    }
-
-    public function isGet(): bool
-    {
-        return $this->getMethod() === 'GET';
-    }
-
-    public function isPut(): bool
-    {
-        return $this->getMethod() === 'PUT';
-    }
-
-    public function isPatch(): bool
-    {
-        return $this->getMethod() === 'PATCH';
-    }
-
-    public function isHead(): bool
-    {
-        return $this->getMethod() === 'HEAD';
-    }
-
-    public function isDelete(): bool
-    {
-        return $this->getMethod() === 'DELETE';
-    }
-
-    public function isOptions(): bool
-    {
-        return $this->getMethod() === 'OPTIONS';
-    }
-
-    public function hasFiles(bool $onlySuccessful = true): bool
-    {
-        foreach ($this->globals->getFiles() as $file) {
-            if (\is_int($file['error'])) {
-                $error = $file['error'];
-
-                if (!$onlySuccessful || $error === UPLOAD_ERR_OK) {
-                    return true;
-                }
-            } else {
-                foreach ($file['error'] as $error) {
-                    if (!$onlySuccessful || $error === UPLOAD_ERR_OK) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public function getFiles(bool $onlySuccessful = true): array
+    public function files(bool $onlySuccessful = true): array
     {
         $r = [];
 
-        foreach ($this->globals->getFiles() as $key => $files) {
+        foreach ($this->getContext()->_FILES as $key => $files) {
             if (isset($files[0])) {
                 foreach ($files as $file) {
                     if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
@@ -224,56 +206,29 @@ class Request implements RequestInterface, JsonSerializable
         return $r;
     }
 
-    public function getFile(?string $key = null): FileInterface
+    public function file(?string $key = null): ?FileInterface
     {
-        $files = $this->getFiles();
+        $files = $this->files();
 
         if ($key === null) {
-            if ($files) {
-                return current($files);
-            } else {
-                throw new FileException('can not found any uploaded files');
-            }
+            return $files ? current($files) : null;
         } else {
             foreach ($files as $file) {
                 if ($file->getKey() === $key) {
                     return $file;
                 }
             }
-            throw new FileException(['can not found uploaded `{key}` file', 'key' => $key]);
+            return null;
         }
     }
 
-    public function hasFile(?string $key = null): bool
+    public function origin(bool $strict = true): string
     {
-        $files = $this->getFiles();
-
-        if ($key === null) {
-            return \count($files) > 0;
-        } else {
-            foreach ($files as $file) {
-                if ($file->getKey() === $key) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public function getReferer(int $max_len = -1): string
-    {
-        $referer = $this->getServer('HTTP_REFERER');
-
-        return $max_len > 0 && \strlen($referer) > $max_len ? substr($referer, 0, $max_len) : $referer;
-    }
-
-    public function getOrigin(bool $strict = true): string
-    {
-        if ($origin = $this->getServer('HTTP_ORIGIN')) {
+        if ($origin = $this->header('origin')) {
             return $origin;
         }
 
-        if (!$strict && ($referer = $this->getServer('HTTP_REFERER'))) {
+        if (!$strict && ($referer = $this->header('referer'))) {
             if ($pos = strpos($referer, '?')) {
                 $referer = substr($referer, 0, $pos);
             }
@@ -287,86 +242,23 @@ class Request implements RequestInterface, JsonSerializable
         return '';
     }
 
-    public function getHost(): string
+    public function url(): string
     {
-        return $this->getServer('HTTP_HOST');
-    }
-
-    public function getUrl(): string
-    {
-        return strip_tags(
-            $this->getScheme() . '://' . $this->getServer('HTTP_HOST') . $this->getServer(
-                'REQUEST_URI'
-            )
-        );
-    }
-
-    public function getUri(): string
-    {
-        return strip_tags($this->getServer('REQUEST_URI'));
-    }
-
-    public function getQuery(): string
-    {
-        return $this->getServer('QUERY_STRING');
-    }
-
-    public function getToken(string $name = 'token'): string
-    {
-        if ($token = $this->get($name, '')) {
-            return $token;
-        } elseif ($token = $this->getServer('HTTP_AUTHORIZATION')) {
-            $parts = explode(' ', $token, 2);
-            if ($parts[0] === 'Bearer' && \count($parts) === 2) {
-                return $parts[1];
-            }
-        }
-
-        return '';
+        return $this->scheme() . '://' . $this->header('host') . $this->path();
     }
 
     public function jsonSerialize(): array
     {
-        return (array)$this->globals->get();
+        return (array)$this->getContext();
     }
 
-    public function getRequestId(): string
+    public function elapsed(int $precision = 3): float
     {
-        return $this->getServer('HTTP_X_REQUEST_ID') ?: $this->setRequestId();
+        return round(microtime(true) - $this->server('REQUEST_TIME_FLOAT'), $precision);
     }
 
-    public function setRequestId(?string $request_id = null): string
+    public function path(): string
     {
-        if ($request_id !== null) {
-            $request_id = preg_replace('#[^\-\w.]#', 'X', $request_id);
-        }
-
-        if (!$request_id) {
-            $request_id = bin2hex(random_bytes(16));
-        }
-
-        $this->globals->setServer('HTTP_X_REQUEST_ID', $request_id);
-
-        return $request_id;
-    }
-
-    public function getRequestTime(): float
-    {
-        return $this->getServer('REQUEST_TIME_FLOAT');
-    }
-
-    public function getElapsedTime(int $precision = 3): float
-    {
-        return round(microtime(true) - $this->getRequestTime(), $precision);
-    }
-
-    public function getIfNoneMatch(): string
-    {
-        return $this->getServer('HTTP_IF_NONE_MATCH');
-    }
-
-    public function getAcceptLanguage(): string
-    {
-        return $this->getServer('HTTP_ACCEPT_LANGUAGE');
+        return $this->server('REQUEST_URI');
     }
 }

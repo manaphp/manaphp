@@ -19,9 +19,24 @@ class Jwt extends Identity
 
     #[Config] protected string $app_id;
 
+    protected function getToken(): ?string
+    {
+        if (($token = $this->request->header('authorization')) !== null) {
+            $parts = explode(' ', $token, 2);
+            if ($parts[0] === 'Bearer' && \count($parts) === 2) {
+                return $parts[1];
+            }
+        } elseif (($token = $this->request->input('access_token')) !== null) {
+            return $token;
+        }
+
+        return null;
+    }
+
     public function authenticate(): array
     {
-        if ($token = $this->request->getToken()) {
+        $token = $this->getToken();
+        if ($token !== '' && $token !== null) {
             return $this->scopedJwt->decode($token, $this->scope ?? $this->app_id);
         } else {
             return [];

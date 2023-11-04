@@ -122,7 +122,7 @@ class Swoole extends AbstractServer
         $_get = $request->get ?: [];
         $_post = $request->post ?: [];
         $raw_body = $request->rawContent();
-        $this->globals->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
+        $this->request->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
     }
 
     protected function dispatchEvent(object $object): void
@@ -326,7 +326,7 @@ class Swoole extends AbstractServer
         $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
             $response->end('');
-        } elseif ($this->request->isHead()) {
+        } elseif ($this->request->method() === 'HEAD') {
             $response->header('Content-Length', (string)\strlen($content), false);
             $response->end('');
         } elseif ($file = $this->response->getFile()) {

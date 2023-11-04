@@ -12,8 +12,8 @@ class InternalErrorException extends Exception
         parent::__construct($message);
 
         $this->json = [
-            'code'    => 500,
-            'msg' => $this->getMessage()
+            'code' => 500,
+            'msg'  => $this->getMessage()
         ];
     }
 }

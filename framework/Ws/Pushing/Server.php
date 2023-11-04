@@ -46,7 +46,7 @@ class Server implements ServerInterface
             $this->names[$name][$fd] = true;
         }
 
-        if (($room = $this->request->get('room_id', '')) !== '') {
+        if (($room = $this->request->input('room_id', '')) !== '') {
             $this->rooms[$room][$fd] = true;
         }
 
@@ -75,7 +75,7 @@ class Server implements ServerInterface
             }
         }
 
-        if (($room = $this->request->get('room_id', '')) !== '') {
+        if (($room = $this->request->input('room_id', '')) !== '') {
             unset($this->rooms[$room][$fd]);
             if (\count($this->rooms[$room]) === 0) {
                 unset($this->rooms[$room]);

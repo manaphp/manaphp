@@ -24,8 +24,8 @@ class CorsMiddleware
 
     public function onBegin(#[Event] RequestBegin $event): void
     {
-        $origin = $this->request->getServer('HTTP_ORIGIN');
-        $host = $this->request->getServer('HTTP_HOST');
+        $origin = $this->request->origin();
+        $host = $this->request->header('host');
 
         if ($origin !== '' && $origin !== $host) {
             if ($this->origin) {
@@ -55,7 +55,7 @@ class CorsMiddleware
                 ->setHeader('Access-Control-Max-Age', (string)$this->max_age);
         }
 
-        if ($this->request->isOptions()) {
+        if ($this->request->method() === 'OPTIONS') {
             throw new AbortException();
         }
     }

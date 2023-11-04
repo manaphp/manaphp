@@ -50,7 +50,7 @@ class PageCacheMiddleware
 
     public function onReady(#[Event] RequestReady $event): void
     {
-        if (!\in_array($this->request->getMethod(), ['GET', 'POST', 'HEAD'], true)) {
+        if (!\in_array($this->request->method(), ['GET', 'POST', 'HEAD'], true)) {
             return;
         }
 
@@ -118,7 +118,7 @@ class PageCacheMiddleware
             $context->key .= ':ajax';
         }
 
-        $context->if_none_match = $this->request->getIfNoneMatch();
+        $context->if_none_match = $this->request->header('if-none-match');
 
         if (($etag = $this->redisCache->hGet($context->key, 'etag')) === false) {
             return;
@@ -140,7 +140,7 @@ class PageCacheMiddleware
             $this->response->setContentType($cache['content-type']);
         }
 
-        if (str_contains($this->request->getServer('HTTP_ACCEPT_ENCODING'), 'gzip')) {
+        if (str_contains($this->request->header('accept-encoding'), 'gzip')) {
             $this->response->setHeader('Content-Encoding', 'gzip');
             $this->response->setContent($cache['content']);
         } else {

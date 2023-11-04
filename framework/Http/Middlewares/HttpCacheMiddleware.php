@@ -34,7 +34,7 @@ class HttpCacheMiddleware
 
     public function onResponding(#[Event] RequestResponsing $event): void
     {
-        if ($this->response->getStatusCode() !== 200 || !\in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
+        if ($this->response->getStatusCode() !== 200 || !\in_array($this->request->method(), ['GET', 'HEAD'], true)) {
             return;
         }
 
@@ -62,7 +62,7 @@ class HttpCacheMiddleware
                         $this->response->setETag($etag);
                     }
 
-                    $if_none_match = $this->request->getIfNoneMatch();
+                    $if_none_match = $this->request->header('if-none-match');
                     if ($if_none_match === $etag) {
                         $this->response->setNotModified();
                         return;

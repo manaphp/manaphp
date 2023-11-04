@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use Throwable;
-
 interface ResponseInterface
 {
     public function setCookie(

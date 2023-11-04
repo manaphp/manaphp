@@ -11,6 +11,6 @@ class ResponseTimeAppender implements AppenderInterface
 {
     public function append(RequestInterface $request, ResponseInterface $response): void
     {
-        $response->setHeader('X-Response-Time', sprintf('%.3f', $request->getElapsedTime()));
+        $response->setHeader('X-Response-Time', sprintf('%.3f', $request->elapsed()));
     }
 }

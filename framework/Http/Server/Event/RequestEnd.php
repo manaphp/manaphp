@@ -21,7 +21,7 @@ class RequestEnd implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'uri'            => $this->request->getUri(),
+            'uri'            => $this->request->path(),
             'http_code'      => $this->response->getStatusCode(),
             'content-type'   => $this->response->getContentType(),
             'content-length' => $this->response->getContentLength(),

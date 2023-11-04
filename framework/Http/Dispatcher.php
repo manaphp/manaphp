@@ -24,7 +24,7 @@ class Dispatcher implements DispatcherInterface
     use ContextTrait;
 
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected GlobalsInterface $globals;
+    #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected InvokerInterface $invoker;
 
@@ -149,7 +149,7 @@ class Dispatcher implements DispatcherInterface
         /** @var DispatcherContext $context */
         $context = $this->getContext();
 
-        $globals = $this->globals->get();
+        $globals = $this->request->getContext();
 
         foreach ($params as $k => $v) {
             if (\is_string($k)) {

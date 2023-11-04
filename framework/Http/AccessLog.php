@@ -44,26 +44,26 @@ time=$time_iso8601
     {
         if (str_starts_with($name, 'request_')) {
             if ($name === 'request_method') {
-                return $this->request->getMethod();
+                return $this->request->method();
             } elseif ($name === 'request_uri') {
-                return $this->request->getUri();
+                return $this->request->path();
             } elseif ($name === 'request_url') {
-                return $this->request->getUrl();
+                return $this->request->url();
             } elseif ($name === 'request_time') {
-                return sprintf('%.3f', $this->request->getElapsedTime());
+                return sprintf('%.3f', $this->request->elapsed());
             } elseif ($name === 'request_handler') {
                 return (string)$this->dispatcher->getHandler();
             } else {
                 return $this->default_value;
             }
         } elseif (str_starts_with($name, 'http_')) {
-            return (string)$this->request->getServer(strtoupper($name), $this->default_value);
+            return (string)$this->request->header(\substr($name, 5), $this->default_value);
         } elseif (str_starts_with($name, 'cookie_')) {
             return $this->cookies->get(substr($name, 7), $this->default_value);
         } elseif (str_starts_with($name, 'arg_')) {
-            return $this->request->get(substr($name, 4), $this->default_value);
+            return $this->request->input(substr($name, 4), $this->default_value);
         } elseif ($name === 'client_ip') {
-            return $this->request->getClientIp();
+            return $this->request->ip();
         } elseif ($name === 'time_iso8601' || $name === 'time') {
             return date(DateTimeInterface::ATOM);
         } elseif ($name === 'status') {
@@ -71,11 +71,11 @@ time=$time_iso8601
         } elseif ($name === 'body_bytes_sent') {
             return (string)$this->response->getContentLength();
         } elseif ($name === 'is_args') {
-            return $this->request->getQuery() === '' ? '' : '?';
+            return $this->request->server('QUERY_STRING', '') === '' ? '' : '?';
         } elseif ($name === 'query_string') {
-            return $this->request->getQuery();
-        } elseif ($this->request->hasServer($var_upper = strtoupper($name))) {
-            return (string)$this->request->getServer($var_upper);
+            return $this->request->server('QUERY_STRING', '');
+        } elseif (($server = $this->request->server(strtoupper($name))) !== null) {
+            return (string)$server;
         } else {
             return $this->default_value;
         }

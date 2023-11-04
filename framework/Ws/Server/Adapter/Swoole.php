@@ -8,7 +8,6 @@ use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Http\GlobalsInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Ws\HandlerInterface;
 use ManaPHP\Ws\Server\Event\ServerStart;
@@ -28,7 +27,6 @@ class Swoole implements ServerInterface
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected LoggerInterface $logger;
     #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected GlobalsInterface $globals;
     #[Autowired] protected HandlerInterface $wsHandler;
 
     #[Autowired] protected string $host = '0.0.0.0';
@@ -104,7 +102,7 @@ class Swoole implements ServerInterface
 
         $_get = $request->get ?: [];
 
-        $this->globals->prepare($_get, [], $_server, null, $request->cookie ?? []);
+        $this->request->prepare($_get, [], $_server, null, $request->cookie ?? []);
     }
 
     /** @noinspection PhpUnusedParameterInspection */

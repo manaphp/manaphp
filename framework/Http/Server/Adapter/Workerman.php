@@ -52,7 +52,7 @@ class Workerman extends AbstractServer
         $_SERVER += $this->_SERVER;
 
         $raw_body = $GLOBALS['HTTP_RAW_POST_DATA'] ?? null;
-        $this->globals->prepare($_GET, $_POST, $_SERVER, $raw_body, $_COOKIE, $_FILES);
+        $this->request->prepare($_GET, $_POST, $_SERVER, $raw_body, $_COOKIE, $_FILES);
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
         foreach ($_SERVER as $k => $v) {
@@ -160,7 +160,7 @@ class Workerman extends AbstractServer
         $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
             $context->connection->close('');
-        } elseif ($this->request->isHead()) {
+        } elseif ($this->request->method() === 'HEAD') {
             Http::header('Content-Length: ' . \strlen($content));
             $context->connection->close('');
         } else {

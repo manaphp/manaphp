@@ -22,7 +22,7 @@ class VerbsMiddleware
 
         $rm = new ReflectionMethod($controller, $action . 'Action');
         if (($attribute = $rm->getAttributes(AcceptVerbs::class)[0] ?? null) !== null) {
-            $request_method = $this->request->getMethod();
+            $request_method = $this->request->method();
             $acceptVerbs = $attribute->newInstance();
             if (!\in_array($request_method, $acceptVerbs->verbs, true)) {
                 throw new MethodNotAllowedHttpException($acceptVerbs->verbs);

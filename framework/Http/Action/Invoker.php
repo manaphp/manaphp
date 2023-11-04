@@ -21,7 +21,7 @@ class Invoker implements InvokerInterface
     {
         $view = $this->container->get(ViewInterface::class);
 
-        if ($this->request->isGet() && !$this->request->isAjax()) {
+        if ($this->request->method() === 'GET' && !$this->request->isAjax()) {
             $method = $action . 'View';
             if (method_exists($object, $method)) {
                 $arguments = $this->argumentsResolver->resolve($object, $method);

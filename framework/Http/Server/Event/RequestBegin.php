@@ -18,10 +18,10 @@ class RequestBegin implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'method'    => $this->request->getMethod(),
-            'url'       => $this->request->getUrl(),
-            'query'     => $this->request->getQuery(),
-            'client_ip' => $this->request->getClientIp(),
+            'method'    => $this->request->method(),
+            'url'       => $this->request->url(),
+            'query'     => $this->request->server('QUERY_STRING'),
+            'client_ip' => $this->request->ip(),
         ];
     }
 }

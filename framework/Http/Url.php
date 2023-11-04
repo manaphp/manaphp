@@ -54,9 +54,9 @@ class Url implements UrlInterface
 
         if ($scheme) {
             if ($scheme === true) {
-                $scheme = $this->request->getScheme();
+                $scheme = $this->request->scheme();
             }
-            return ($scheme === '//' ? $scheme : "$scheme://") . $this->request->getServer('HTTP_HOST') . $url;
+            return ($scheme === '//' ? $scheme : "$scheme://") . $this->request->header('host') . $url;
         } else {
             return $url;
         }

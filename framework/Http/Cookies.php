@@ -8,19 +8,18 @@ use ManaPHP\Di\Attribute\Autowired;
 
 class Cookies implements CookiesInterface, JsonSerializable
 {
-    #[Autowired] protected GlobalsInterface $globals;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
 
     public function all(): array
     {
-        return $this->globals->getCookie();
+        return $this->request->getContext()->_COOKIE;
     }
 
     public function set(string $name, string $value, int $expire = 0, string $path = '', string $domain = '',
         bool $secure = false, bool $httponly = true
     ): static {
-        $this->globals->setCookie($name, $value);
+        $this->request->getContext()->_COOKIE[$name] = $value;
         $this->response->setCookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 
         return $this;
@@ -28,20 +27,21 @@ class Cookies implements CookiesInterface, JsonSerializable
 
     public function get(string $name, string $default = ''): string
     {
-        return $this->globals->getCookie()[$name] ?? $default;
+        return $this->all()[$name] ?? $default;
     }
 
     public function has(string $name): bool
     {
-        return isset($this->globals->getCookie()[$name]);
+        return isset($this->all()[$name]);
     }
 
     public function delete(string $name, ?string $path = null, ?string $domain = null): static
     {
-        $this->globals->unsetCookie($name);
+        unset($this->request->getContext()->_COOKIE[$name]);
+
         $this->response->setCookie(
             $name, 'deleted', 1,
-            $path ?? $this->request->getUri(), $domain ?? $this->request->getHost()
+            $path ?? $this->request->path(), $domain ?? $this->request->header('host')
         );
 
         return $this;
