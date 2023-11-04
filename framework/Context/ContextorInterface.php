@@ -11,7 +11,7 @@ interface ContextorInterface
 
     public function createContext(object $object): object;
 
-    public function getContext(object $object, int $cid = 0): object;
+    public function getContext(object $object, int $cid = 0): mixed;
 
     public function hasContext(object $object): bool;
 

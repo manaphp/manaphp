@@ -9,7 +9,7 @@ trait ContextTrait
 {
     #[Autowired] protected ContextorInterface $contextor;
 
-    protected function getContext(int $cid = 0): object
+    protected function getContext(int $cid = 0): mixed
     {
         return $this->contextor->getContext($this, $cid);
     }

@@ -52,7 +52,7 @@ class Contextor implements ContextorInterface
         }
     }
 
-    public function getContext(object $object, int $cid = 0): object
+    public function getContext(object $object, int $cid = 0): mixed
     {
         $object_id = spl_object_id($object);
 
