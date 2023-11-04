@@ -5,6 +5,7 @@ return [
     'ManaPHP\Http\HandlerInterface' => [
         'class'       => 'ManaPHP\Rest\Handler',
         'middlewares' => [
+            \ManaPHP\Http\Middlewares\RequestIdMiddleware::class,
             \ManaPHP\Http\Middlewares\VerbsMiddleware::class,
         ],
     ],
