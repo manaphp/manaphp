@@ -4,16 +4,25 @@ declare(strict_types=1);
 namespace ManaPHP\Token;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Encoding\Base64UrlInterface;
 use ManaPHP\Security\CryptInterface;
 
 class Jwt implements JwtInterface
 {
     #[Autowired] protected CryptInterface $crypt;
-    #[Autowired] protected Base64UrlInterface $base64Url;
 
     #[Autowired] protected string $alg = 'HS256';
     #[Autowired] protected ?string $key;
+
+    protected function base64UrlEncode(string $str): string
+    {
+        return strtr(rtrim(base64_encode($str), '='), '+/', '-_');
+    }
+
+    protected function base64UrlDecode(string $str): ?string
+    {
+        $v = base64_decode(strtr($str, '-_', '+/'));
+        return $v === false ? null : $v;
+    }
 
     public function encode(array $claims, int $ttl, ?string $key = null): string
     {
@@ -22,10 +31,10 @@ class Jwt implements JwtInterface
         $claims['iat'] = time();
         $claims['exp'] = time() + $ttl;
 
-        $header = $this->base64Url->encode(json_stringify(['alg' => $this->alg, 'typ' => 'JWT']));
-        $payload = $this->base64Url->encode(json_stringify($claims));
+        $header = $this->base64UrlEncode(json_stringify(['alg' => $this->alg, 'typ' => 'JWT']));
+        $payload = $this->base64UrlEncode(json_stringify($claims));
         $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), "$header.$payload", $key, true);
-        $signature = $this->base64Url->encode($hmac);
+        $signature = $this->base64UrlEncode($hmac);
 
         return "$header.$payload.$signature";
     }
@@ -45,13 +54,13 @@ class Jwt implements JwtInterface
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
         /** @noinspection JsonEncodingApiUsageInspection */
-        if (!\is_array($claims = json_decode($this->base64Url->decode($payload), true))) {
+        if (!\is_array($claims = json_decode($this->base64UrlDecode($payload), true))) {
             throw new MalformedException('payload is not array.');
         }
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
         /** @noinspection JsonEncodingApiUsageInspection */
-        $decoded_header = json_decode($this->base64Url->decode($header), true);
+        $decoded_header = json_decode($this->base64UrlDecode($header), true);
         if (!$decoded_header) {
             throw new MalformedException('The JWT header is not distinguished');
         }
@@ -100,7 +109,7 @@ class Jwt implements JwtInterface
         $signature = substr($token, $pos + 1);
         $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), $data, $key, true);
 
-        if ($this->base64Url->encode($hmac) !== $signature) {
+        if ($this->base64UrlEncode($hmac) !== $signature) {
             throw new SignatureException('signature is not corrected');
         }
     }
