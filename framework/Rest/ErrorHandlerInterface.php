@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rest;
 
-interface ErrorHandlerInterface extends \ManaPHP\ErrorHandlerInterface
-{
+use Throwable;
 
+interface ErrorHandlerInterface
+{
+    public function handle(Throwable $throwable): void;
 }
