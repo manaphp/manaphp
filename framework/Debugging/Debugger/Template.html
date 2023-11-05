@@ -154,7 +154,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, name, index) in dependencies"
-                    v-if="item.properties.context && name!=='debuggerPlugin'">
+                    v-if="item.properties.context && name!=='debugger'">
                     <td>{{index}}</td>
                     <td>#{{item.object_id}}</td>
                     <td :title="item.class">
@@ -376,10 +376,10 @@
 <script>
     $(function () {
         $('#tabs a').on('shown.bs.tab', function (e) {
-            localStorage.setItem('__debuggerPlugin.last', e.target.hash);
+            localStorage.setItem('__debugger.last', e.target.hash);
         })
 
-        let hash = localStorage.getItem('__debuggerPlugin.last') || '#basic';
+        let hash = localStorage.getItem('__debugger.last') || '#basic';
         $("a[href='" + hash + "']").tab('show');
     });
 
