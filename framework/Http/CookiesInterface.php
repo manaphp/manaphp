@@ -11,7 +11,7 @@ interface CookiesInterface
         bool $secure = false, bool $httponly = true
     ): static;
 
-    public function get(string $name, string $default = ''): string;
+    public function get(string $name, mixed $default = null): mixed;
 
     public function has(string $name): bool;
 
