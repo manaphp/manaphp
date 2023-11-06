@@ -13,6 +13,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\I18n\TranslatorInterface;
 use ManaPHP\Token\ScopedJwtInterface;
+use ManaPHP\Validating\Rule\Attribute\Required;
 use ManaPHP\Validating\ValidatorInterface;
 
 if (!\function_exists('json_parse')) {
@@ -143,7 +144,7 @@ if (!\function_exists('input')) {
             return $request->input($name, $defaultOrRules);
         }
 
-        return $value ?? Container::get(ValidatorInterface::class)->validateValue($name, null, 'required');
+        return $value ?? Container::get(ValidatorInterface::class)->validate([], [$name => new Required()]);
     }
 }
 

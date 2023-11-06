@@ -5,6 +5,11 @@ namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
+use ManaPHP\Validating\Rule\Attribute\Boolean;
+use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\Lower;
+use ManaPHP\Validating\Rule\Attribute\Trim;
+use ManaPHP\Validating\Rule\Attribute\Unique;
 
 #[Table('rbac_role')]
 class Role extends Model
@@ -22,9 +27,9 @@ class Role extends Model
     public function rules(): array
     {
         return [
-            'role_name'    => ['lower', 'length' => '3-15', 'unique'],
-            'display_name' => ['trim', 'lower', 'length' => '3-15', 'unique'],
-            'enabled'      => 'bool',
+            'role_name'    => [new Lower(), new Length(3, 15), new Unique()],
+            'display_name' => [new Trim(), new Lower(), new Length(3, 15), new Unique()],
+            'enabled'      => new Boolean(),
         ];
     }
 }

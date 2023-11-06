@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Validating\Validator\ValidateFailedException;
+use ManaPHP\Validating\Rule\Attribute\Boolean;
+use ManaPHP\Validating\Rule\Attribute\Double;
+use ManaPHP\Validating\Rule\Attribute\Integer;
+use ManaPHP\Validating\Rule\Attribute\Required;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
@@ -105,15 +108,15 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             switch ($type) {
                 case 'boolean':
                 case 'bool':
-                    $value = $this->validator->validateValue($name, $value, ['bool']);
+                    $value = $this->validator->validate([$name => $value], [$name => new Boolean()])[$name];
                     break;
                 case 'integer':
                 case 'int':
-                    $value = $this->validator->validateValue($name, $value, ['int']);
+                    $value = $this->validator->validate([$name => $value], [$name => new Integer()])[$name];
                     break;
                 case 'double':
                 case 'float':
-                    $value = $this->validator->validateValue($name, $value, ['float']);
+                    $value = $this->validator->validate([$name => $value], [$name => new Double()])[$name];
                     break;
                 case 'string':
                     $value = (string)$value;
@@ -127,11 +130,14 @@ class ArgumentsResolver implements ArgumentsResolverInterface
         }
 
         if ($missing) {
-            $errors = [];
+            $validation = $this->validator->beginValidate([]);
+            $validation->value = null;
+
             foreach ($missing as $field) {
-                $errors[$field] = $this->validator->createError('required', $field);
+                $validation->field = $field;
+                $validation->validate(new Required());
             }
-            throw new ValidateFailedException($errors);
+            $this->validator->endValidate($validation);
         }
 
         return $args;

@@ -2,32 +2,26 @@
 declare(strict_types=1);
 
 return [
-    'default'   => 'The :field is invalid.',
-    'required'  => 'The :field field is required.',
-    'bool'      => 'The :field field must be true or false.',
-    'int'       => 'The :field must be an integer.',
-    'float'     => 'The :field must be a float.',
-    'date'      => 'The :field is not a valid date.',
-    'range'     => static function ($field, $parameter) {
-        $tr = [':field' => $field];
-        $pos = strpos($parameter, '-', 1);
-        $tr[':min'] = substr($parameter, 0, $pos);
-        $tr[':max'] = substr($parameter, $pos + 1);
-        return strtr('The :field must be between :min and :max.', $tr);
-    },
-    'min'       => 'The :field must be not less than :parameter.',
-    'max'       => 'The :field must be not great than :parameter.',
-    'minLength' => 'The :field must be at least :parameter characters.',
-    'maxLength' => 'The :field must be shorter than :parameter characters.',
-    'length'    => 'The :field must be :parameter characters.',
-    'equal'     => 'The :field must equal :parameter.',
-    'alpha'     => 'The :field may only contain letters.',
-    'digit'     => 'The :field must be digits.',
-    'alnum'     => 'The :field may only contain letters and numbers.',
-    'email'     => 'The :field must be a valid email address.',
-    'json'      => 'The :field must be a valid JSON string.',
-    'ip'        => 'The :field must be a valid IP address.',
-    'unique'    => 'The :field must be unique',
-    'readonly'  => 'The :field can not be modified',
-    'uuid'      => 'The :field is not a valid uuid'
+    'default'                                      => 'The :field is invalid.',
+    'ManaPHP\Validating\Rule\Attribute\Required'   => 'The :field field is required.',
+    'ManaPHP\Validating\Rule\Attribute\Boolean'    => 'The :field field must be true or false.',
+    'ManaPHP\Validating\Rule\Attribute\Integer'    => 'The :field must be an integer.',
+    'ManaPHP\Validating\Rule\Attribute\Double'     => 'The :field must be a float.',
+    'ManaPHP\Validating\Rule\Attribute\Date'       => 'The :field is not a valid date.',
+    'ManaPHP\Validating\Rule\Attribute\Range'      => 'The :field must be between :min and :max.',
+    'ManaPHP\Validating\Rule\Attribute\Min'        => 'The :field must be not less than :min.',
+    'ManaPHP\Validating\Rule\Attribute\Max'        => 'The :field must be not great than :max.',
+    'ManaPHP\Validating\Rule\Attribute\MinLength'  => 'The :field must be at least :min characters.',
+    'ManaPHP\Validating\Rule\Attribute\MaxLength'  => 'The :field must be shorter than :max characters.',
+    'ManaPHP\Validating\Rule\Attribute\Length'     => 'The :field must be :min :max characters.',
+    'ManaPHP\Validating\Rule\Attribute\Equal'      => 'The :field must equal :parameter.',
+    'ManaPHP\Validating\Rule\Attribute\Alpha'      => 'The :field may only contain letters.',
+    'ManaPHP\Validating\Rule\Attribute\Digit'      => 'The :field must be digits.',
+    'ManaPHP\Validating\Rule\Attribute\Alnum'      => 'The :field may only contain letters and numbers.',
+    'ManaPHP\Validating\Rule\Attribute\Email'      => 'The :field must be a valid email address.',
+    'ManaPHP\Validating\Rule\Attribute\Json'       => 'The :field must be a valid JSON string.',
+    'ManaPHP\Validating\Rule\Attribute\Ip'         => 'The :field must be a valid IP address.',
+    'ManaPHP\Validating\Rule\Attribute\Unique'     => 'The :field must be unique',
+    'ManaPHP\Validating\Rule\Attribute\IsReadonly' => 'The :field can not be modified',
+    'ManaPHP\Validating\Rule\Attribute\Uuid'       => 'The :field is not a valid uuid'
 ];

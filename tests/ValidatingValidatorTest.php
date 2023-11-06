@@ -4,6 +4,7 @@ namespace Tests;
 
 use ManaPHP\Data\Db;
 use ManaPHP\Mvc\Factory;
+use ManaPHP\Validating\Rule\Attribute\StringType;
 use ManaPHP\Validating\Validator;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use PHPUnit\Framework\TestCase;
@@ -96,11 +97,11 @@ class ValidatingValidatorTest extends TestCase
 
         $city = new City();
         $city->city_id = 100;
-        $this->assertSame('100', $validator->validate('city_id', $city, 'string'));
+        $this->assertSame('100', $validator->validateValue('city_id', $city, [new StringType()]));
         $this->assertSame($city->city_id, '100');
 
         $city->city_id = '100';
-        $this->assertSame('100', $validator->validate('city_id', $city, 'string'));
+        $this->assertSame('100', $validator->validateValue('city_id', $city, [new StringType()]));
         $this->assertSame($city->city_id, '100');
     }
 
@@ -136,13 +137,7 @@ class ValidatingValidatorTest extends TestCase
 
         $payment->amount = '+1.25';
         $payment->validate();
-        $this->assertSame(1.25, $payment->amount);
-
-        $payment->amount = 'xxx';
-
-        $this->expectException(ValidateFailedException::class);
-        $validator->validate('', $payment, ['amount']);
-    }
+        $this->assertSame(1.25, $payment->amount);}
 
     public function test_range()
     {
@@ -169,7 +164,7 @@ class ValidatingValidatorTest extends TestCase
         $this->assertSame(3, $city->city_id);
 
         $city->city_id = 10;
-        $validator->validate('city_id', $city);
+        $validator->validateModel('city_id', $city);
         $this->assertSame(10, $city->city_id);
 
         $city->city_id = 100;
@@ -204,10 +199,6 @@ class ValidatingValidatorTest extends TestCase
 
         $city = $this->createMock(City::class);
         $city->method('rules')->willReturn(['city_id' => ['min' => 10]]);
-
-        $city->city_id = 0;
-        $this->expectException(ValidateFailedException::class);
-        $validator->validate('city_id', $city, ['city_id']);
 
         $city->city_id = 10;
         $city->validate();

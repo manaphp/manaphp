@@ -5,6 +5,7 @@ namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
+use ManaPHP\Validating\Rule\Attribute\Length;
 
 #[Table('rbac_permission')]
 class Permission extends Model
@@ -18,7 +19,7 @@ class Permission extends Model
     public function rules(): array
     {
         return [
-            'display_name' => ['length' => '0-128']
+            'display_name' => new Length(0, 128),
         ];
     }
 }

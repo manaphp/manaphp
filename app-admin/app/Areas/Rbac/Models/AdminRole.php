@@ -6,6 +6,7 @@ namespace App\Areas\Rbac\Models;
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Fillable;
 use ManaPHP\Model\Attribute\Table;
+use ManaPHP\Validating\Rule\Attribute\Unique;
 
 #[Table('rbac_admin_role')]
 #[Fillable([])]
@@ -22,7 +23,7 @@ class AdminRole extends Model
     public function rules(): array
     {
         return [
-            'admin_id' => ['unique' => 'role_id']
+            'admin_id' => new Unique(['role_id']),
         ];
     }
 }

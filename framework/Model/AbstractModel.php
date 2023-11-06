@@ -12,7 +12,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Query\QueryInterface;
-use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
@@ -317,7 +316,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * @param ?array $fields =model_fields(new static)
      *
      * @return void
-     * @noinspection PhpRedundantCatchClauseInspection
      */
     public function validate(?array $fields = null): void
     {
@@ -331,44 +329,29 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
         $validator = Container::get(ValidatorInterface::class);
 
-        $errors = [];
+        $validation = $validator->beginValidate($this);
 
         foreach ($fields ?: $this->getChangedFields() as $field) {
             if (!isset($rules[$field]) || $this->$field instanceof SqlFragmentable) {
                 continue;
             }
 
-            try {
-                $this->$field = $validator->validateModel($field, $this, $rules[$field]);
-            } catch (ValidateFailedException $exception) {
-                $errors += $exception->getErrors();
+            $validation->field = $field;
+            $validation->value = $this->$field ?? null;
+
+            $attribute_rules = $rules[$fields];
+            foreach (\is_array($attribute_rules) ? $attribute_rules : [$attribute_rules] as $rule) {
+                if (!$validation->validate($rule)) {
+                    break;
+                }
+            }
+
+            if (!$validation->hasError($field)) {
+                $this->$field = $validation->value;
             }
         }
 
-        if ($errors) {
-            throw new ValidateFailedException($errors);
-        }
-    }
-
-    /**
-     * @param string $field =model_field(new static)
-     * @param ?array $rules
-     *
-     * @return void
-     */
-    public function validateField(string $field, array $rules = null): void
-    {
-        if ($rules === null) {
-            if (!isset($rules[$field])) {
-                return;
-            }
-
-            $rules = $rules[$field];
-        }
-
-        $validator = Container::get(ValidatorInterface::class);
-
-        $this->$field = $validator->validateModel($field, $this, $rules);
+        $validator->endValidate($validation);
     }
 
     protected function autoFillCreated(): void

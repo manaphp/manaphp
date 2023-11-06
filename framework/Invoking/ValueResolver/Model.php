@@ -9,7 +9,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelsInterface;
-use ManaPHP\Validating\Validator\ValidateFailedException;
+use ManaPHP\Validating\Rule\Attribute\Required;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionParameter;
 
@@ -27,7 +27,7 @@ class Model implements ObjectValueResolverInterface
 
         $primaryKey = $this->models->getPrimaryKey($type);
         if (($id = $this->request->input($primaryKey) ?? $this->request->input($name)) === null) {
-            throw new ValidateFailedException([$primaryKey => $this->validator->createError('required', $primaryKey)]);
+            $this->validator->validate([], [$primaryKey => new Required()]);
         }
 
         if (!\is_int($id) && !\is_string($id)) {

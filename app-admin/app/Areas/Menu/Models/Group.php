@@ -5,6 +5,9 @@ namespace App\Areas\Menu\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
+use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\Range;
+use ManaPHP\Validating\Rule\Attribute\Unique;
 
 #[Table('menu_group')]
 class Group extends Model
@@ -21,9 +24,9 @@ class Group extends Model
     public function rules(): array
     {
         return [
-            'group_name'    => 'unique',
-            'display_order' => ['range' => '0-127'],
-            'icon'          => ['length' => '0-64']
+            'group_name'    => [new Unique()],
+            'display_order' => [new Range(0, 127)],
+            'icon'          => [new Length(0, 64)]
         ];
     }
 }

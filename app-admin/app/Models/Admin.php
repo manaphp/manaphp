@@ -6,6 +6,13 @@ namespace App\Models;
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use ManaPHP\Model\Relation\HasManyToMany;
+use ManaPHP\Validating\Rule\Attribute\Account;
+use ManaPHP\Validating\Rule\Attribute\Defaults;
+use ManaPHP\Validating\Rule\Attribute\Email;
+use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\MaxLength;
+use ManaPHP\Validating\Rule\Attribute\IsReadonly;
+use ManaPHP\Validating\Rule\Attribute\Unique;
 
 class Admin extends Model
 {
@@ -35,10 +42,10 @@ class Admin extends Model
     public function rules(): array
     {
         return [
-            'admin_name' => ['length' => '4-16', 'account', 'readonly'],
-            'email'      => ['lower', 'email', 'unique'],
+            'admin_name' => [new Length(4, 16), new Account(), new IsReadonly()],
+            'email'      => [new Email(), new Unique()],
             'status'     => 'const',
-            'white_ip'   => ['default' => '', 'maxLength' => 64]
+            'white_ip'   => [new Defaults(''), new MaxLength(64)]
         ];
     }
 

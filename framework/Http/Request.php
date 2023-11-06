@@ -6,14 +6,17 @@ namespace ManaPHP\Http;
 use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Lazy;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\Request\File;
 use ManaPHP\Http\Request\FileInterface;
 use ManaPHP\Http\Request\Proxy;
+use ManaPHP\Validating\ValidatorInterface;
 
 class Request implements RequestInterface, JsonSerializable
 {
-    #[Autowired] protected MakerInterface $maker;
+    #[Autowired] protected MakerInterface|Lazy $maker;
+    #[Autowired] protected ValidatorInterface|Lazy $validator;
 
     use ContextTrait;
 
@@ -74,6 +77,11 @@ class Request implements RequestInterface, JsonSerializable
     public function all(): array
     {
         return $this->getContext()->_REQUEST;
+    }
+
+    public function validate(array $rules): array
+    {
+        return $this->validator->validate($this->all(), $rules);
     }
 
     public function only(array $names): array

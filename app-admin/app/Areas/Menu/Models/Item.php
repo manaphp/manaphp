@@ -5,6 +5,10 @@ namespace App\Areas\Menu\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
+use ManaPHP\Validating\Rule\Attribute\Exists;
+use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\Range;
+use ManaPHP\Validating\Rule\Attribute\Unique;
 
 #[Table('menu_item')]
 class Item extends Model
@@ -23,11 +27,11 @@ class Item extends Model
     public function rules(): array
     {
         return [
-            'item_name'     => ['length' => '2-32', 'unique' => 'group_id'],
-            'group_id'      => 'exists',
-            'url'           => ['length' => '1-128', 'unique' => 'group_id'],
-            'display_order' => ['range' => '0-127'],
-            'icon'          => ['length' => '0-64']
+            'item_name'     => [new Length(2, 32), new Unique(['group_id'])],
+            'group_id'      => new Exists(),
+            'url'           => [new Length(1, 128), new Unique(['group_id'])],
+            'display_order' => new Range(0, 127),
+            'icon'          => new Length(0, 64),
         ];
     }
 }
