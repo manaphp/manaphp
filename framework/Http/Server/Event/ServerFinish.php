@@ -17,9 +17,11 @@ class ServerFinish implements JsonSerializable
 
     public function jsonSerialize(): array
     {
+        $type = \is_object($this->data) ? \get_class($this->data) : 'data';
+
         return [
-            \is_object($this->data) ? \get_class($this->data) : 'data' => $this->data,
-            'task_id'                                                => $this->task_id,
+            $type     => $this->data,
+            'task_id' => $this->task_id,
         ];
     }
 }
