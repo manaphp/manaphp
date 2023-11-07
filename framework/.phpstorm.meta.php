@@ -26,50 +26,8 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToAll(), 1, argumentsSet('wspClientEndpoint'));
     expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::broadcast(), 1, argumentsSet('wspClientEndpoint'));
 
-    registerArgumentsSet(
-        'validator_rules', [
-            'required',
-            'default',
-            'bool',
-            'int',
-            'float',
-            'string',
-            'min'       => 1,
-            'max'       => 2,
-            'length'    => '1-10',
-            'minLength' => 1,
-            'maxLength' => 1,
-            'range'     => '1-3',
-            'regex'     => '#^\d+$#',
-            'alpha',
-            'digit',
-            'xdigit',
-            'alnum',
-            'lower',
-            'upper',
-            'trim',
-            'email',
-            'url',
-            'ip',
-            'date',
-            'timestamp',
-            'escape',
-            'xss',
-            'in'        => [1, 2],
-            'not_in'    => [1, 2],
-            'ext'       => 'pdf,doc',
-            'unique',
-            'exists',
-            'const',
-            'account',
-            'mobile',
-            'safe',
-            'readonly'
-        ]
-    );
-    expectedArguments(\input(), 1, argumentsSet('validator_rules'));
-    expectedArguments(\ManaPHP\Validating\Validator::validateValue(), 2, argumentsSet('validator_rules'));
-    expectedArguments(\ManaPHP\Validating\Validator::validateModel(), 2, argumentsSet('validator_rules'));
+    registerArgumentsSet('validator_rule_type', ['bool', 'bit', 'int', 'float', 'array', 'mixed', 'iterable', 'mixed']);
+    expectedArguments(\ManaPHP\Validating\Rule\Attribute\Type::__construct(), 0, argumentsSet('validator_rule_type'));
 
     expectedArguments(
         \json_stringify(), 1,
