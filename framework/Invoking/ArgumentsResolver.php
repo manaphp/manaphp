@@ -106,15 +106,15 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             switch ($type) {
                 case 'boolean':
                 case 'bool':
-                    $value = $this->validator->validate([$name => $value], [$name => new Type('bool')])[$name];
+                    $value = $this->validator->validateValue($name, $value, [new Type('bool')]);
                     break;
                 case 'integer':
                 case 'int':
-                    $value = $this->validator->validate([$name => $value], [$name => new Type('int')])[$name];
+                    $value = $this->validator->validateValue($name, $value, [new Type('int')]);
                     break;
                 case 'double':
                 case 'float':
-                    $value = $this->validator->validate([$name => $value], [$name => new Type('float')])[$name];
+                    $value = $this->validator->validateValue($name, $value, [new Type('float')]);
                     break;
                 case 'string':
                     $value = (string)$value;

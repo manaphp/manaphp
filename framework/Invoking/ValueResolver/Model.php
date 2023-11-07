@@ -27,7 +27,7 @@ class Model implements ObjectValueResolverInterface
 
         $primaryKey = $this->models->getPrimaryKey($type);
         if (($id = $this->request->input($primaryKey) ?? $this->request->input($name)) === null) {
-            $this->validator->validate([], [$primaryKey => new Required()]);
+            $this->validator->validateValue($primaryKey, null, [new Required()]);
         }
 
         if (!\is_int($id) && !\is_string($id)) {

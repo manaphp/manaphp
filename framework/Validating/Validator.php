@@ -35,20 +35,7 @@ class Validator implements ValidatorInterface
         return $templates[$validate] ?? $templates['default'];
     }
 
-    public function createError(string $validate, string $field, mixed $parameter = null): string
-    {
-        $template = $this->getTemplate($validate);
-        $tr = [':field' => $field];
-
-        if (\is_string($template)) {
-            $tr[':parameter'] = $parameter;
-            return strtr($template, $tr);
-        } else {
-            return $template($field, $parameter);
-        }
-    }
-
-    public function validate(array $source, array $rules): array
+    public function validateValues(array $source, array $rules): array
     {
         $validation = $this->beginValidate($source);
 
@@ -71,6 +58,11 @@ class Validator implements ValidatorInterface
         $this->endValidate($validation);
 
         return $values;
+    }
+
+    public function validateValue(string $field, mixed $value, array $rules): mixed
+    {
+        return $this->validateValues([$field => $value], $rules)[$field] ?? null;
     }
 
     public function beginValidate(array|object $source): Validation

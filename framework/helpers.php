@@ -144,7 +144,7 @@ if (!\function_exists('input')) {
             return $request->input($name, $defaultOrRules);
         }
 
-        return $value ?? Container::get(ValidatorInterface::class)->validate([], [$name => new Required()]);
+        return $value ?? Container::get(ValidatorInterface::class)->validateValue($name, null, [new Required()]);
     }
 }
 
