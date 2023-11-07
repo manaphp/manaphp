@@ -5,10 +5,10 @@ namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\Rule\Attribute\Boolean;
 use ManaPHP\Validating\Rule\Attribute\Length;
 use ManaPHP\Validating\Rule\Attribute\Lower;
 use ManaPHP\Validating\Rule\Attribute\Trim;
+use ManaPHP\Validating\Rule\Attribute\Type;
 use ManaPHP\Validating\Rule\Attribute\Unique;
 
 #[Table('rbac_role')]
@@ -29,7 +29,7 @@ class Role extends Model
         return [
             'role_name'    => [new Lower(), new Length(3, 15), new Unique()],
             'display_name' => [new Trim(), new Lower(), new Length(3, 15), new Unique()],
-            'enabled'      => new Boolean(),
+            'enabled'      => new Type('bit'),
         ];
     }
 }

@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 return [
     'default'                                      => ':field 值无效',
+    'ManaPHP\Validating\Rule\Attribute\Type'       => ':field 数据类型不正确',
     'ManaPHP\Validating\Rule\Attribute\Required'   => ':field 是必填项',
-    'ManaPHP\Validating\Rule\Attribute\Integer'    => ':field 应是整数',
-    'ManaPHP\Validating\Rule\Attribute\Double'     => ':field 应是浮点数',
     'ManaPHP\Validating\Rule\Attribute\Date'       => ':field 日期格式错误',
     'ManaPHP\Validating\Rule\Attribute\Range'      => ':field 有效范围为: :parameter',
     'ManaPHP\Validating\Rule\Attribute\Min'        => ':field 不能小于 :min',

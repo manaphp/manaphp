@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Validating\Rule\Attribute\Boolean;
-use ManaPHP\Validating\Rule\Attribute\Double;
-use ManaPHP\Validating\Rule\Attribute\Integer;
 use ManaPHP\Validating\Rule\Attribute\Required;
+use ManaPHP\Validating\Rule\Attribute\Type;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
@@ -108,15 +106,15 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             switch ($type) {
                 case 'boolean':
                 case 'bool':
-                    $value = $this->validator->validate([$name => $value], [$name => new Boolean()])[$name];
+                    $value = $this->validator->validate([$name => $value], [$name => new Type('bool')])[$name];
                     break;
                 case 'integer':
                 case 'int':
-                    $value = $this->validator->validate([$name => $value], [$name => new Integer()])[$name];
+                    $value = $this->validator->validate([$name => $value], [$name => new Type('int')])[$name];
                     break;
                 case 'double':
                 case 'float':
-                    $value = $this->validator->validate([$name => $value], [$name => new Double()])[$name];
+                    $value = $this->validator->validate([$name => $value], [$name => new Type('float')])[$name];
                     break;
                 case 'string':
                     $value = (string)$value;

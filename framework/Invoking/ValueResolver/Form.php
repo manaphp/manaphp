@@ -40,7 +40,13 @@ class Form implements ObjectValueResolverInterface
             $validation->value = $source[$field] ?? null;
 
             if (isset($source[$field])) {
-                if ($validation->validate(new Type($rProperty->getType()?->getName()))) {
+                if ($attributes = $rProperty->getAttributes(Type::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                    $rule = $attributes[0]->newInstance();
+                } else {
+                    $rule = new Type($rProperty->getType()?->getName());
+                }
+
+                if ($validation->validate($rule)) {
                     $form->$field = $validation->value;
                 }
             } else {
@@ -61,6 +67,10 @@ class Form implements ObjectValueResolverInterface
             $validation->value = $form->$field ?? null;
             $attributes = $rProperty->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attribute) {
+                if ($validation instanceof Type) {
+                    continue;
+                }
+
                 if (!$validation->validate($attribute->newInstance())) {
                     break;
                 }
