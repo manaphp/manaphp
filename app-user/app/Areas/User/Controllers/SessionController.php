@@ -25,7 +25,7 @@ class SessionController extends Controller
 
     public function loginView()
     {
-        $this->view->setVar('redirect', input('redirect', $this->router->createUrl('/')));
+        $this->view->setVar('redirect', $this->request->input('redirect', $this->router->createUrl('/')));
 
         return $this->view->setVar('user_name', $this->cookies->get('user_name'));
     }

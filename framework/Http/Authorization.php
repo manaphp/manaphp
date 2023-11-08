@@ -253,7 +253,7 @@ class Authorization implements AuthorizationInterface
             if ($this->request->isAjax()) {
                 throw new NoCredentialException('No Credential or Invalid Credential');
             } else {
-                $redirect = input('redirect', $this->request->url());
+                $redirect = $this->request->input('redirect', $this->request->url());
                 $this->response->redirect(["/login?redirect=$redirect"]);
             }
         } else {

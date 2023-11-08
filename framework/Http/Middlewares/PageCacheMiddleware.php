@@ -80,7 +80,7 @@ class PageCacheMiddleware
                 foreach ((array)$pageCache['key'] as $k => $v) {
                     if (\is_int($k)) {
                         $param_name = $v;
-                        $param_value = input($param_name, '');
+                        $param_value = $this->request->input($param_name, '');
                     } else {
                         $param_name = $k;
                         $param_value = $v;
