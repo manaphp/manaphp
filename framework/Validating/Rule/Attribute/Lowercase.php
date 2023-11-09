@@ -8,7 +8,7 @@ use ManaPHP\Validating\AbstractRule;
 use ManaPHP\Validating\Validation;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Lower extends AbstractRule
+class Lowercase extends AbstractRule
 {
     public function validate(Validation $validation): bool
     {

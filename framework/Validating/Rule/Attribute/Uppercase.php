@@ -8,16 +8,11 @@ use ManaPHP\Validating\AbstractRule;
 use ManaPHP\Validating\Validation;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Trim extends AbstractRule
+class Uppercase extends AbstractRule
 {
-    public function __construct(public string $characters = " \n\r\t\v\x00", public ?string $message = null)
-    {
-
-    }
-
     public function validate(Validation $validation): bool
     {
-        $validation->value = \trim($validation->value, $this->characters);
+        $validation->value = \strtoupper($validation->value);
 
         return true;
     }
