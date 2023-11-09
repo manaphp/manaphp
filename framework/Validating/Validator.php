@@ -62,7 +62,7 @@ class Validator implements ValidatorInterface
 
     public function validateValue(string $field, mixed $value, array $rules): mixed
     {
-        return $this->validateValues([$field => $value], $rules)[$field] ?? null;
+        return $this->validateValues([$field => $value], [$field => $rules])[$field] ?? null;
     }
 
     public function beginValidate(array|object $source): Validation
