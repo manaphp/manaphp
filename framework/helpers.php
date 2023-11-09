@@ -9,12 +9,9 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\I18n\TranslatorInterface;
 use ManaPHP\Token\ScopedJwtInterface;
-use ManaPHP\Validating\Rule\Attribute\Required;
-use ManaPHP\Validating\ValidatorInterface;
 
 if (!\function_exists('json_parse')) {
     function json_parse(string $str): mixed
@@ -122,29 +119,6 @@ if (!\function_exists('jwt_verify')) {
     function jwt_verify(string $token, string $scope): void
     {
         Container::get(ScopedJwtInterface::class)->verify($token, $scope);
-    }
-}
-
-if (!\function_exists('input')) {
-    /**
-     * @param string $name
-     * @param mixed  $defaultOrRules =\PHPSTORM_META\validator_rule()
-     *
-     * @return mixed
-     */
-    function input(string $name, mixed $defaultOrRules = null): mixed
-    {
-        $request = Container::get(RequestInterface::class);
-
-        if ($defaultOrRules === null) {
-            $value = $request->input($name);
-        } elseif (\is_array($defaultOrRules)) {
-            $value = $request->input($name, $defaultOrRules['default'] ?? null);
-        } else {
-            return $request->input($name, $defaultOrRules);
-        }
-
-        return $value ?? Container::get(ValidatorInterface::class)->validateValue($name, null, [new Required()]);
     }
 }
 

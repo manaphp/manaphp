@@ -10,6 +10,7 @@ use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\InputInterface;
 
 #[Authorize('*')]
 class SessionController extends Controller
@@ -30,7 +31,7 @@ class SessionController extends Controller
         return $this->view->setVar('user_name', $this->cookies->get('user_name'));
     }
 
-    public function loginAction(string $code)
+    public function loginAction(InputInterface $input, string $code)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
@@ -42,8 +43,8 @@ class SessionController extends Controller
             $this->session->remove('captcha');
         }
 
-        $user = User::first(['user_name' => input('user_name')]);
-        if (!$user || !$user->verifyPassword(input('password'))) {
+        $user = User::first(['user_name' => $input->string('user_name')]);
+        if (!$user || !$user->verifyPassword($input->string('password'))) {
             return '账号或密码不正确';
         }
 

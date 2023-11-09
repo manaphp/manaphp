@@ -8,6 +8,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\InputInterface;
 use ManaPHP\Mailing\MailerInterface;
 
 #[Authorize('*')]
@@ -30,10 +31,10 @@ class PasswordController extends Controller
         return $this->view->setVar('user_name', $this->cookies->get('user_name'));
     }
 
-    public function forgetAction()
+    public function forgetAction(InputInterface $input)
     {
-        $user_name = input('user_name');
-        $email = input('email');
+        $user_name = $input->string('user_name');
+        $email = $input->string('email');
 
         $user = User::first(['user_name' => $user_name]);
         if (!$user || $user->email !== $email) {
@@ -53,9 +54,9 @@ class PasswordController extends Controller
         return $this->response->json(['code' => 0, 'msg' => '重置密码连接已经发送到您的邮箱']);
     }
 
-    public function resetView()
+    public function resetView(InputInterface $input)
     {
-        $token = input('token');
+        $token = $input->string('token');
 
         try {
             $claims = jwt_decode($token, 'user.password.forget');
@@ -72,10 +73,10 @@ class PasswordController extends Controller
         );
     }
 
-    public function resetAction()
+    public function resetAction(InputInterface $input)
     {
         try {
-            $claims = jwt_decode(input('token'), 'user.password.forget');
+            $claims = jwt_decode($input->string('token'), 'user.password.forget');
         } catch (\Exception $exception) {
             return '重置失败：Token已过期';
         }
@@ -83,22 +84,22 @@ class PasswordController extends Controller
         $user_name = $claims['user_name'];
 
         $user = User::firstOrFail(['user_name' => $user_name]);
-        $user->password = input('password');
+        $user->password = $input->string('password');
         $user->update();
 
         return $this->response->json(['code' => 0, 'msg' => '重置密码成功']);
     }
 
     #[Authorize('user')]
-    public function changeAction()
+    public function changeAction(InputInterface $input)
     {
         $user = User::get($this->identity->getId());
-        if (!$user->verifyPassword(input('old_password'))) {
+        if (!$user->verifyPassword($input->string('old_password'))) {
             return '旧密码不正确';
         }
 
-        $user->password = input('new_password');
-        if (input('new_password_confirm') !== $user->password) {
+        $user->password = $input->string('new_password');
+        if ($input->string('new_password_confirm') !== $user->password) {
             return '两次输入的密码不一致';
         }
 
