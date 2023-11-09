@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 return [
     'default'                                      => 'The :field is invalid.',
-    'ManaPHP\Validating\Rule\Attribute\Type'       => 'The :field date type is not :type.',
+    'ManaPHP\Validating\Rule\Attribute\Type'       => 'The :field data type is not :type.',
     'ManaPHP\Validating\Rule\Attribute\Required'   => 'The :field field is required.',
     'ManaPHP\Validating\Rule\Attribute\Date'       => 'The :field is not a valid date.',
     'ManaPHP\Validating\Rule\Attribute\Range'      => 'The :field must be between :min and :max.',
