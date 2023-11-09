@@ -11,7 +11,7 @@ use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Validating\Rule\Attribute\Account;
 use ManaPHP\Validating\Rule\Attribute\Defaults;
 use ManaPHP\Validating\Rule\Attribute\Email;
-use ManaPHP\Validating\Rule\Attribute\IsReadonly;
+use ManaPHP\Validating\Rule\Attribute\Immutable;
 use ManaPHP\Validating\Rule\Attribute\Length;
 use ManaPHP\Validating\Rule\Attribute\MaxLength;
 use ManaPHP\Validating\Rule\Attribute\Unique;
@@ -42,7 +42,7 @@ class Admin extends Model
     public function rules(): array
     {
         return [
-            'admin_name' => [new Length(4, 16), new Account(), new IsReadonly()],
+            'admin_name' => [new Length(4, 16), new Account(), new Immutable()],
             'email'      => [new Email(), new Unique()],
             'status'     => 'const',
             'white_ip'   => [new Defaults(''), new MaxLength(64)],

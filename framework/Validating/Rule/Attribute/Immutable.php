@@ -10,7 +10,7 @@ use ManaPHP\Validating\AbstractRule;
 use ManaPHP\Validating\Validation;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class IsReadonly extends AbstractRule
+class Immutable extends AbstractRule
 {
     public function __construct(public ?string $message = null)
     {
