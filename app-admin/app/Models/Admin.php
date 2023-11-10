@@ -5,8 +5,8 @@ namespace App\Models;
 
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
-use ManaPHP\Helper\Container;
-use ManaPHP\Http\InputInterface;
+use ManaPHP\Identifying\IdentityInterface;
+use ManaPHP\Invoking\ArgumentResolvable;
 use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Validating\Rule\Attribute\Account;
 use ManaPHP\Validating\Rule\Attribute\Defaults;
@@ -15,8 +15,9 @@ use ManaPHP\Validating\Rule\Attribute\Immutable;
 use ManaPHP\Validating\Rule\Attribute\Length;
 use ManaPHP\Validating\Rule\Attribute\MaxLength;
 use ManaPHP\Validating\Rule\Attribute\Unique;
+use Psr\Container\ContainerInterface;
 
-class Admin extends Model
+class Admin extends Model implements ArgumentResolvable
 {
     public const STATUS_INIT = 0;
     public const STATUS_ACTIVE = 1;
@@ -38,6 +39,12 @@ class Admin extends Model
     public string $updator_name;
     public int $created_time;
     public int $updated_time;
+
+    public static function argumentResolve(ContainerInterface $container): mixed
+    {
+        $identity = $container->get(IdentityInterface::class);
+        return static::get($identity->getId());
+    }
 
     public function rules(): array
     {
@@ -67,9 +74,7 @@ class Admin extends Model
     public function create(): static
     {
         $this->salt = bin2hex(random_bytes(8));
-
-        $input = Container::get(InputInterface::class);
-        $this->password = $this->hashPassword($input->string('password'[new Length(1, 30)]));
+        $this->password = $this->hashPassword($this->password);
 
         return parent::create();
     }

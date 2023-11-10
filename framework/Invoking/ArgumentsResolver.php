@@ -89,7 +89,11 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             }
 
             if ($type !== null && str_contains($type, '\\')) {
-                $value = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);
+                if (\is_subclass_of($type, ArgumentResolvable::class)) {
+                    $value = $type::argumentResolve($this->container);
+                } else {
+                    $value = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);
+                }
             } elseif (($value = $this->resolveScalarValue($rParameter, $type, $name)) !== null) {
                 null;
             } elseif ($rParameter->isDefaultValueAvailable()) {
