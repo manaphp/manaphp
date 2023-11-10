@@ -27,7 +27,7 @@ class Unique extends AbstractRule
         }
 
         $filters = [$validation->field => $validation->value];
-        foreach ($filters as $key => $value) {
+        foreach ($this->filters as $key => $value) {
             if (\is_int($key)) {
                 $filters[$value] = $source->$value;
             } else {
