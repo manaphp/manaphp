@@ -13,6 +13,11 @@ class Input implements InputInterface
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ValidatorInterface $validator;
 
+    public function all(): array
+    {
+        return $this->request->all();
+    }
+
     public function has(string $name): bool
     {
         return $this->request->input($name) !== null;

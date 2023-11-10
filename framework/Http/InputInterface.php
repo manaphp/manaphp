@@ -5,6 +5,8 @@ namespace ManaPHP\Http;
 
 interface  InputInterface
 {
+    public function all(): array;
+
     public function has(string $name): bool;
 
     public function get(string $name, mixed $default = null): mixed;
