@@ -339,7 +339,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $validation->field = $field;
             $validation->value = $this->$field ?? null;
 
-            $attribute_rules = $rules[$fields];
+            $attribute_rules = $rules[$field];
             foreach (\is_array($attribute_rules) ? $attribute_rules : [$attribute_rules] as $rule) {
                 if (!$validation->validate($rule)) {
                     break;
