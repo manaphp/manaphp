@@ -20,10 +20,13 @@ class AccountController extends Controller
         return $this->captcha->generate();
     }
 
-    public function registerAction(string $code)
+    public function registerAction(string $code, string $password)
     {
         $this->captcha->verify($code);
 
-        return Admin::fillCreate($this->request->all(), ['white_ip' => '*', 'status' => Admin::STATUS_INIT]);
+        return Admin::fillCreate(
+            $this->request->all(),
+            ['white_ip' => '*', 'status' => Admin::STATUS_INIT, 'password' => $password]
+        );
     }
 }
