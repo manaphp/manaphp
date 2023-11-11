@@ -72,77 +72,52 @@ class ArgumentsResolver implements ArgumentsResolverInterface
 
     public function resolve(object $controller, string $method): array
     {
-        $args = [];
-        $missing = [];
-
         $rMethod = new ReflectionMethod($controller, $method);
-        $rParameters = $rMethod->getParameters();
-        foreach ($rParameters as $rParameter) {
-            $name = $rParameter->getName();
-            $value = null;
 
-            $type = $rParameter->getType();
-            if ($type !== null) {
-                $type = $type->getName();
-            } elseif ($rParameter->isDefaultValueAvailable()) {
-                $type = \gettype($rParameter->getDefaultValue());
-            }
-
-            if ($type !== null && str_contains($type, '\\')) {
-                if (\is_subclass_of($type, ArgumentResolvable::class)) {
-                    $value = $type::argumentResolve($this->container);
-                } else {
-                    $value = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);
-                }
-            } elseif (($value = $this->resolveScalarValue($rParameter, $type, $name)) !== null) {
-                null;
-            } elseif ($rParameter->isDefaultValueAvailable()) {
-                $value = $rParameter->getDefaultValue();
-            } elseif ($type === 'NULL') {
-                $value = null;
-            }
-
-            if ($value === null && $type !== 'NULL') {
-                if ($rParameter->hasType() && !$rParameter->getType()?->allowsNull()) {
-                    $missing[] = $name;
-                } else {
-                    $args[] = null;
-                }
-
-                continue;
-            }
-
-            switch ($type) {
-                case 'boolean':
-                case 'bool':
-                    $value = $this->validator->validateValue($name, $value, [new Type('bool')]);
-                    break;
-                case 'integer':
-                case 'int':
-                    $value = $this->validator->validateValue($name, $value, [new Type('int')]);
-                    break;
-                case 'double':
-                case 'float':
-                    $value = $this->validator->validateValue($name, $value, [new Type('float')]);
-                    break;
-                case 'string':
-                    $value = (string)$value;
-                    break;
-                case 'array':
-                    $value = \is_string($value) ? explode(',', $value) : (array)$value;
-                    break;
-            }
-
-            $args[] = $value;
+        if (($numOfParameters = $rMethod->getNumberOfParameters()) === 0) {
+            return [];
         }
 
-        if ($missing) {
-            $validation = $this->validator->beginValidate([]);
-            $validation->value = null;
+        $args = \array_fill(0, $numOfParameters, null);
 
-            foreach ($missing as $field) {
-                $validation->field = $field;
-                $validation->validate(new Required());
+        $rParameters = $rMethod->getParameters();
+
+        $numOfObjects = 0;
+        foreach ($rParameters as $i => $rParameter) {
+            if (($rType = $rParameter->getType()) !== null && !$rType->isBuiltin()) {
+                $numOfObjects++;
+                $name = $rParameter->getName();
+                $type = $rType->getName();
+                $args[$i] = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);
+            }
+        }
+
+        if ($numOfObjects !== $numOfParameters) {
+            $validation = $this->validator->beginValidate([]);
+            foreach ($args as $i => $value) {
+                if ($value !== null) {
+                    continue;
+                }
+
+                $rParameter = $rParameters[$i];
+
+                $name = $rParameter->getName();
+                $rType = $rParameter->getType();
+                $type = $rType?->getName();
+
+                $validation->field = $name;
+                $validation->value = $this->resolveScalarValue($rParameter, $type, $name);
+                if ($validation->value === null) {
+                    if ($rParameter->isDefaultValueAvailable()) {
+                        $args[$i] = $rParameter->getDefaultValue();
+                    }
+                    if (!$rType->allowsNull()) {
+                        $validation->validate(new Required());
+                    }
+                    continue;
+                }
+                $validation->validate(new Type($type));
+                $args[$i] = $validation->value;
             }
             $this->validator->endValidate($validation);
         }
