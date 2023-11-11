@@ -14,6 +14,12 @@ class Request implements ScalarValueResolverInterface
 
     public function resolve(ReflectionParameter $parameter, ?string $type, string $name): mixed
     {
-        return $this->request->input($name);
+        $value = $this->request->input($name);
+
+        if ($value === '') {
+            return $type === 'string' ? '' : null;
+        } else {
+            return $value;
+        }
     }
 }
