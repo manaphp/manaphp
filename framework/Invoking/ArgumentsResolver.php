@@ -103,7 +103,12 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             }
 
             if ($value === null && $type !== 'NULL') {
-                $missing[] = $name;
+                if ($rParameter->hasType() && !$rParameter->getType()?->allowsNull()) {
+                    $missing[] = $name;
+                } else {
+                    $args[] = null;
+                }
+
                 continue;
             }
 
