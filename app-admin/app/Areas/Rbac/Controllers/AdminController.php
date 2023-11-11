@@ -9,6 +9,7 @@ use App\Controllers\Controller;
 use App\Models\Admin;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\InputInterface;
 use ManaPHP\Query\QueryInterface;
 
 #[Authorize('@index')]
@@ -56,8 +57,18 @@ class AdminController extends Controller
         return $admin->update();
     }
 
-    public function createAction(Admin $admin, $role_id)
+    public function createAction(InputInterface $input, $role_id)
     {
+        $admin = new Admin();
+
+        $admin->admin_name = $input->string('admin_name');
+        $admin->email = $input->string('email');
+        $admin->password = $input->string('password');
+        $admin->white_ip = $input->string('white_ip');
+        $admin->status = $input->int('status');
+
+        $admin->create();
+
         if ($role_id) {
             $role = Role::get($role_id);
 
