@@ -39,8 +39,10 @@ class AdminController extends Controller
         return Admin::kvalues('admin_name');
     }
 
-    public function lockAction(Admin $admin)
+    public function lockAction(int $admin_id)
     {
+        $admin = Admin::get($admin_id);
+
         if ($this->identity->getId() === $admin->admin_id) {
             return '不能锁定自己';
         }
@@ -50,8 +52,10 @@ class AdminController extends Controller
         return $admin->update();
     }
 
-    public function activeAction(Admin $admin)
+    public function activeAction(int $admin_id)
     {
+        $admin = Admin::get($admin_id);
+
         $admin->status = Admin::STATUS_ACTIVE;
 
         return $admin->update();
@@ -59,15 +63,7 @@ class AdminController extends Controller
 
     public function createAction(InputInterface $input, $role_id)
     {
-        $admin = new Admin();
-
-        $admin->admin_name = $input->string('admin_name');
-        $admin->email = $input->string('email');
-        $admin->password = $input->string('password');
-        $admin->white_ip = $input->string('white_ip');
-        $admin->status = $input->int('status');
-
-        $admin->create();
+        $admin = Admin::fillCreate($input->all());
 
         if ($role_id) {
             $role = Role::get($role_id);
@@ -84,8 +80,10 @@ class AdminController extends Controller
         return $admin;
     }
 
-    public function editAction(Admin $admin, array $role_ids = [], string $password = '')
+    public function editAction(int $admin_id, array $role_ids = [], string $password = '')
     {
+        $admin = Admin::get($admin_id);
+
         $admin->assign($this->request->all(), ['email', 'white_ip']);
 
         if ($password !== '') {

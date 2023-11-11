@@ -15,6 +15,7 @@ use ManaPHP\Validating\Rule\Attribute\Email;
 use ManaPHP\Validating\Rule\Attribute\Immutable;
 use ManaPHP\Validating\Rule\Attribute\Length;
 use ManaPHP\Validating\Rule\Attribute\MaxLength;
+use ManaPHP\Validating\Rule\Attribute\Safe;
 use ManaPHP\Validating\Rule\Attribute\Unique;
 use Psr\Container\ContainerInterface;
 
@@ -52,6 +53,7 @@ class Admin extends Model implements ArgumentResolvable
         return [
             'admin_name' => [new Length(4, 16), new Account(), new Immutable(), new Unique()],
             'email'      => [new Email(), new Unique()],
+            'password'   => [new Safe()],
             'status'     => [new Constant()],
             'white_ip'   => [new Defaults(''), new MaxLength(64)],
         ];
