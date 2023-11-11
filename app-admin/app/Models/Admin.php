@@ -9,6 +9,7 @@ use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
 use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Validating\Rule\Attribute\Account;
+use ManaPHP\Validating\Rule\Attribute\Constant;
 use ManaPHP\Validating\Rule\Attribute\Defaults;
 use ManaPHP\Validating\Rule\Attribute\Email;
 use ManaPHP\Validating\Rule\Attribute\Immutable;
@@ -49,9 +50,9 @@ class Admin extends Model implements ArgumentResolvable
     public function rules(): array
     {
         return [
-            'admin_name' => [new Length(4, 16), new Account(), new Immutable()],
+            'admin_name' => [new Length(4, 16), new Account(), new Immutable(), new Unique()],
             'email'      => [new Email(), new Unique()],
-            'status'     => 'const',
+            'status'     => [new Constant()],
             'white_ip'   => [new Defaults(''), new MaxLength(64)],
         ];
     }
