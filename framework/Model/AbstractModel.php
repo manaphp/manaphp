@@ -12,9 +12,11 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Query\QueryInterface;
+use ManaPHP\Validating\Rule\Attribute\Type;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
+use ReflectionProperty;
 use Stringable;
 
 #[AllowDynamicProperties]
@@ -282,16 +284,23 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function fill(array $kv): static
     {
+        $validator = Container::get(ValidatorInterface::class);
+
+        $validation = $validator->beginValidate($kv);
         foreach (Container::get(ModelsInterface::class)->getFillable(static::class) as $field) {
-            if (($val = $kv[$field] ?? null) !== null) {
-                if (\is_bool($val)) {
-                    $val = (int)$val;
-                } elseif (\is_float($val)) {
-                    $val = (string)$val;
+            if (($value = $kv[$field] ?? null) !== null) {
+                $validation->field = $field;
+                $validation->value = $value;
+
+                $rProperty = new ReflectionProperty(static::class, $field);
+                if ($rProperty->hasType()) {
+                    $validation->validate(new Type($rProperty->getType()?->getName() ?? 'mixed'));
                 }
-                $this->$field = \is_string($val) ? trim($val) : $val;
+
+                $this->$field = $validation->value;
             }
         }
+        $validator->endValidate($validation);
 
         return $this;
     }
