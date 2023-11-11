@@ -61,7 +61,7 @@ class AdminController extends Controller
         return $admin->update();
     }
 
-    public function createAction(InputInterface $input, $role_id)
+    public function createAction(InputInterface $input, ?int $role_id)
     {
         $admin = Admin::fillCreate($input->all());
 
