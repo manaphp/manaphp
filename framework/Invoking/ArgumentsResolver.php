@@ -88,7 +88,11 @@ class ArgumentsResolver implements ArgumentsResolverInterface
                 $numOfObjects++;
                 $name = $rParameter->getName();
                 $type = $rType->getName();
-                $args[$i] = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);
+                if (\is_subclass_of($type, ArgumentResolvable::class)) {
+                    $args[$i] = $type::argumentResolve($this->container);
+                } else {
+                    $args[$i] = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);
+                }
             }
         }
 
