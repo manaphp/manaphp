@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Validating\Rule\Attribute;
 
+use Attribute;
 use ManaPHP\Validating\AbstractRule;
 use ManaPHP\Validating\Validation;
 use ReflectionClass;
 
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class Constant extends AbstractRule
 {
     public function __construct(public ?string $name = null, public ?string $message = null)
