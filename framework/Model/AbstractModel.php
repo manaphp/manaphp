@@ -341,7 +341,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $validator = Container::get(ValidatorInterface::class);
 
         $validation = $validator->beginValidate($this);
-
         foreach ($fields ?: $this->getChangedFields() as $field) {
             if (!isset($rules[$field]) || $this->$field instanceof SqlFragmentable) {
                 continue;
@@ -361,7 +360,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 $this->$field = $validation->value;
             }
         }
-
         $validator->endValidate($validation);
     }
 
