@@ -16,7 +16,7 @@ class AdminRoleController extends Controller
     {
         return Admin::select(['admin_id', 'admin_name', 'created_time'])
             ->orderBy(['admin_id' => SORT_DESC])
-            ->where(['admin_name*=' => $keyword])
+            ->whereContains(['admin_name'], $keyword)
             ->with(['roles' => 'role_id, display_name'])
             ->paginate($page, $size);
     }
@@ -26,8 +26,9 @@ class AdminRoleController extends Controller
         return AdminRole::all(['admin_id' => $admin_id]);
     }
 
-    public function editAction(Admin $admin, array $role_ids = [])
+    public function editAction(int $admin_id, array $role_ids = [])
     {
+        $admin = Admin::get($admin_id);
         $old_roles = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
         AdminRole::deleteAll(['role_id' => array_values(array_diff($old_roles, $role_ids))]);
 
