@@ -19,13 +19,16 @@ class RolePermissionController extends Controller
     public function indexAction()
     {
         return RolePermission::select(['id', 'permission_id', 'creator_name', 'created_time'])
-            ->with(['permission' => 'permission_id, display_name, handler', 'roles' => 'role_id, role_name, display_name'])
+            ->with(
+                ['permission' => 'permission_id, display_name, handler', 'roles' => 'role_id, role_name, display_name']
+            )
             ->whereCriteria($this->request->all(), ['role_id'])
             ->all();
     }
 
-    public function saveAction(Role $role, array $permission_ids = [])
+    public function saveAction(int $role_id, array $permission_ids = [])
     {
+        $role = Role::get($role_id);
         $old_permissions = RolePermission::values('permission_id', ['role_id' => $role->role_id]);
 
         RolePermission::deleteAll(
@@ -48,8 +51,8 @@ class RolePermissionController extends Controller
         $role->update();
     }
 
-    public function editAction(Role $role, array $permission_ids)
+    public function editAction(int $role_id, array $permission_ids)
     {
-        $this->saveAction($role, $permission_ids);
+        $this->saveAction($role_id, $permission_ids);
     }
 }
