@@ -64,7 +64,9 @@ class Type extends AbstractRule
 
     public function validateFloat(Validation $validation): bool
     {
-        if (!\is_int($validation->value) && !\is_float($validation->value)) {
+        if (\is_int($validation->value) || \is_float($validation->value)) {
+            return true;
+        } elseif (\is_string($validation->value)) {
             if (filter_var($validation->value, FILTER_VALIDATE_FLOAT) !== false
                 && preg_match('#^[+\-]?[\d.]+$#', $validation->value) === 1
             ) {
@@ -72,6 +74,8 @@ class Type extends AbstractRule
             } else {
                 return false;
             }
+        } else {
+            return false;
         }
 
         return true;
@@ -79,12 +83,18 @@ class Type extends AbstractRule
 
     public function validateInt(Validation $validation): bool
     {
-        if (!\is_int($validation->value)) {
+        if (\is_int($validation->value)) {
+            return true;
+        } elseif (\is_bool($validation->value)) {
+            $validation->value = (int)$validation->value;
+        } elseif (\is_string($validation->value)) {
             if (preg_match('#^[+\-]?\d+$#', $validation->value) === 1) {
                 $validation->value = (int)$validation->value;
             } else {
                 return false;
             }
+        } else {
+            return false;
         }
 
         return true;
