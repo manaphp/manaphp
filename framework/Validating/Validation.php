@@ -16,6 +16,10 @@ class Validation
 
     public function validate(RuleInterface $rule): bool
     {
+        if (isset($this->errors[$this->field])) {
+            return false;
+        }
+
         if (!$rule->validate($this)) {
             $this->addError($rule->getMessage(), (array)$rule);
         }

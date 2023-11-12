@@ -297,7 +297,9 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                     $validation->validate(new Type($rProperty->getType()?->getName() ?? 'mixed'));
                 }
 
-                $this->$field = $validation->value;
+                if (!$validation->hasError($validation->field)) {
+                    $this->$field = $validation->value;
+                }
             }
         }
         $validator->endValidate($validation);

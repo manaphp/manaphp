@@ -119,8 +119,10 @@ class ArgumentsResolver implements ArgumentsResolverInterface
                     }
                     continue;
                 }
-                $validation->validate(new Type($type));
-                $args[$i] = $validation->value;
+
+                if ($validation->validate(new Type($type))) {
+                    $args[$i] = $validation->value;
+                }
             }
             $this->validator->endValidate($validation);
         }
