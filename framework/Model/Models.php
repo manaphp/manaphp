@@ -14,6 +14,7 @@ use ManaPHP\Model\Attribute\Guarded;
 use ManaPHP\Model\Attribute\PrimaryKey;
 use ManaPHP\Model\Attribute\ReferencedKey;
 use ManaPHP\Model\Attribute\Table;
+use ManaPHP\Validating\RuleInterface;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -195,7 +196,13 @@ class Models implements ModelsInterface
                 }
             }
         } else {
-            $fillable = array_keys($this->getRules($model));
+            $fillable = [];
+            $rClass = new ReflectionClass($model);
+            foreach ($rClass->getProperties(\ReflectionProperty::IS_PUBLIC) as $rProperty) {
+                if ($rProperty->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
+                    $fillable[] = $rProperty->getName();
+                }
+            }
         }
 
         return $fillable;
@@ -241,19 +248,5 @@ class Models implements ModelsInterface
         }
 
         return $intFields;
-    }
-
-    protected function getRulesInternal(string $model): array
-    {
-        return $this->those->get($model)->rules();
-    }
-
-    public function getRules(string $model): array
-    {
-        if (($rules = $this->rules[$model] ?? null) === null) {
-            $rules = $this->rules[$model] = $this->getRulesInternal($model);
-        }
-
-        return $rules;
     }
 }

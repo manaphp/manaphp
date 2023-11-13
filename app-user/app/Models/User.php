@@ -3,6 +3,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use ManaPHP\Validating\Rule\Attribute\Account;
+use ManaPHP\Validating\Rule\Attribute\Constant;
+use ManaPHP\Validating\Rule\Attribute\Email;
+use ManaPHP\Validating\Rule\Attribute\Immutable;
+use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\Lowercase;
+use ManaPHP\Validating\Rule\Attribute\Unique;
+
 class User extends Model
 {
     const STATUS_INIT = 0;
@@ -12,8 +20,11 @@ class User extends Model
     const PASSWORD_LENGTH = '1-30';
 
     public $user_id;
+    #[Length(4, 16), Account, Immutable]
     public $user_name;
+    #[Constant]
     public $status;
+    #[Email, Lowercase, Unique]
     public $email;
     public $salt;
     public $password;
@@ -24,15 +35,6 @@ class User extends Model
     public $updator_name;
     public $created_time;
     public $updated_time;
-
-    public function rules(): array
-    {
-        return [
-            'user_name' => ['length' => '4-16', 'account', 'readonly'],
-            'email'     => ['lower', 'email', 'unique'],
-            'status'    => 'const',
-        ];
-    }
 
     public function hashPassword(string $password): string
     {

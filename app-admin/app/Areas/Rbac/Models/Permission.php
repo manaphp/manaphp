@@ -12,14 +12,8 @@ class Permission extends Model
 {
     public int $permission_id;
     public string $handler;
+    #[Length(0, 128)]
     public string $display_name;
     public int $created_time;
     public int $updated_time;
-
-    public function rules(): array
-    {
-        return [
-            'display_name' => new Length(0, 128),
-        ];
-    }
 }

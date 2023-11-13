@@ -224,37 +224,11 @@ HTML;
             $content .= PHP_EOL . <<<HTML
                 create: {
 HTML;
-            $rules = $this->models->getRules($model);
-            $iniFields = $this->models->getIntFields($model);
-            foreach ($fields as $field) {
-                $rule = $rules[$field] ?? [];
-                if (\is_array($rule) && isset($rule['default'])) {
-                    $value = json_stringify($rule['default']);
-                } elseif (\in_array($field, $iniFields, true)) {
-                    $value = 0;
-                } else {
-                    $value = "''";
-                }
-                $content .= PHP_EOL . "                    $field: $value, ";
-            }
-
             $content .= PHP_EOL . <<<HTML
                 },
                 edit: {
 HTML;
             $content .= PHP_EOL . '                    ' . $this->models->getPrimaryKey($model) . ': 0,';
-
-            foreach ($fields as $field) {
-                $rule = $rules[$field] ?? [];
-                if (\is_array($rule) && isset($rule['default'])) {
-                    $value = json_stringify($rule['default']);
-                } elseif (\in_array($field, $iniFields, true)) {
-                    $value = 0;
-                } else {
-                    $value = "''";
-                }
-                $content .= PHP_EOL . "                    $field: $value,";
-            }
             $content .= PHP_EOL . '                },';
         }
 

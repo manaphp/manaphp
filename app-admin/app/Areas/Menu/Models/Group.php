@@ -13,20 +13,14 @@ use ManaPHP\Validating\Rule\Attribute\Unique;
 class Group extends Model
 {
     public int $group_id;
+    #[Unique]
     public string $group_name;
+    #[Length(0, 64)]
     public string $icon;
+    #[Range(0, 127)]
     public int $display_order;
     public string $creator_name;
     public string $updator_name;
     public int $created_time;
     public int $updated_time;
-
-    public function rules(): array
-    {
-        return [
-            'group_name'    => [new Unique()],
-            'display_order' => [new Range(0, 127)],
-            'icon'          => [new Length(0, 64)]
-        ];
-    }
 }

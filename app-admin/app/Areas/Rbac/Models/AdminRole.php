@@ -13,17 +13,11 @@ use ManaPHP\Validating\Rule\Attribute\Unique;
 class AdminRole extends Model
 {
     public int $id;
+    #[Unique(['role_id'])]
     public int $admin_id;
     public string $admin_name;
     public int $role_id;
     public string $role_name;
     public string $creator_name;
     public int $created_time;
-
-    public function rules(): array
-    {
-        return [
-            'admin_id' => new Unique(['role_id']),
-        ];
-    }
 }

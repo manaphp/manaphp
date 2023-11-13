@@ -15,21 +15,15 @@ use ManaPHP\Validating\Rule\Attribute\Unique;
 class Role extends Model
 {
     public int $role_id;
+    #[Lowercase, Length(3, 15), Unique]
     public string $role_name;
+    #[Trim, Lowercase, Length(3, 15), Unique]
     public string $display_name;
+    #[Type('bit')]
     public int $enabled;
     public string $permissions;
     public string $creator_name;
     public string $updator_name;
     public int $created_time;
     public int $updated_time;
-
-    public function rules(): array
-    {
-        return [
-            'role_name'    => [new Lowercase(), new Length(3, 15), new Unique()],
-            'display_name' => [new Trim(), new Lowercase(), new Length(3, 15), new Unique()],
-            'enabled'      => new Type('bit'),
-        ];
-    }
 }

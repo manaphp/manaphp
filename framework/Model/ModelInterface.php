@@ -7,8 +7,6 @@ use ManaPHP\Query\QueryInterface;
 
 interface ModelInterface
 {
-    public function rules(): array;
-
     public static function query(?string $alias = null): QueryInterface;
 
     public static function all(array $filters = [], array $fields = []): array;

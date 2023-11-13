@@ -26,13 +26,18 @@ class Admin extends Model implements ArgumentResolvable
     public const STATUS_LOCKED = 2;
 
     public int $admin_id;
+    #[Length(4, 16), Account, Immutable, Unique]
     public string $admin_name;
+    #[Constant]
     public int $status;
     public int $type;
     public int $tag;
+    #[Email, Unique]
     public string $email;
     public string $salt;
+    #[Safe]
     public string $password;
+    #[Defaults(''), MaxLength(64)]
     public string $white_ip;
     public string $login_ip;
     public int $login_time;
@@ -46,17 +51,6 @@ class Admin extends Model implements ArgumentResolvable
     {
         $identity = $container->get(IdentityInterface::class);
         return static::get($identity->getId());
-    }
-
-    public function rules(): array
-    {
-        return [
-            'admin_name' => [new Length(4, 16), new Account(), new Immutable(), new Unique()],
-            'email'      => [new Email(), new Unique()],
-            'password'   => [new Safe()],
-            'status'     => [new Constant()],
-            'white_ip'   => [new Defaults(''), new MaxLength(64)],
-        ];
     }
 
     public function relations(): array

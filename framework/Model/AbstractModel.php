@@ -6,15 +6,15 @@ namespace ManaPHP\Model;
 use AllowDynamicProperties;
 use ArrayAccess;
 use JsonSerializable;
-use ManaPHP\Db\SqlFragmentable;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Query\QueryInterface;
 use ManaPHP\Validating\Rule\Attribute\Type;
+use ManaPHP\Validating\RuleInterface;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use Stringable;
@@ -33,14 +33,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 $this->{$field} = $value;
             }
         }
-    }
-
-    /**
-     * @return array =model_var(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
-     */
-    public function rules(): array
-    {
-        return [];
     }
 
     /**
@@ -330,34 +322,27 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function validate(?array $fields = null): void
     {
-        if (!$rules = $this->rules()) {
-            return;
-        }
-
-        if (isset($rules[0])) {
-            throw new MisuseException(['`{1}` rules must be an associative array', static::class]);
-        }
-
         $validator = Container::get(ValidatorInterface::class);
 
         $validation = $validator->beginValidate($this);
         foreach ($fields ?: $this->getChangedFields() as $field) {
-            if (!isset($rules[$field]) || $this->$field instanceof SqlFragmentable) {
-                continue;
-            }
+            $rProperty = new ReflectionProperty(static::class, $field);
+            $attributes = $rProperty->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF);
+            if ($attributes !== []) {
+                $validation->field = $field;
+                $validation->value = $this->$field ?? null;
 
-            $validation->field = $field;
-            $validation->value = $this->$field ?? null;
-
-            $attribute_rules = $rules[$field];
-            foreach (\is_array($attribute_rules) ? $attribute_rules : [$attribute_rules] as $rule) {
-                if (!$validation->validate($rule)) {
-                    break;
+                foreach ($attributes as $attribute) {
+                    /** @var RuleInterface $rule */
+                    $rule = $attribute->newInstance();
+                    if (!$validation->validate($rule)) {
+                        break;
+                    }
                 }
-            }
 
-            if (!$validation->hasError($field)) {
-                $this->$field = $validation->value;
+                if (!$validation->hasError($field)) {
+                    $this->$field = $validation->value;
+                }
             }
         }
         $validator->endValidate($validation);
