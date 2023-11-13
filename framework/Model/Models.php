@@ -235,18 +235,4 @@ class Models implements ModelsInterface
 
         return $dateFormat;
     }
-
-    protected function getIntFieldsInternal(string $model): array
-    {
-        return $this->inferrer->intFields($model);
-    }
-
-    public function getIntFields(string $model): array
-    {
-        if (($intFields = $this->intFields[$model] ?? null) === null) {
-            $intFields = $this->intFields[$model] = $this->getIntFieldsInternal($model);
-        }
-
-        return $intFields;
-    }
 }

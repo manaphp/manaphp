@@ -7,6 +7,7 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Model\ModelsInterface;
+use ReflectionProperty;
 
 class ViewCommand extends Command
 {
@@ -121,7 +122,8 @@ HTML;
      */
     public function isTimestampField(string $model, string $field): bool
     {
-        if (!\in_array($field, $this->models->getIntFields($model), true)) {
+        $rProperty = new ReflectionProperty($model, $field);
+        if ($rProperty->getType()?->getName() !== 'int') {
             return false;
         }
 
