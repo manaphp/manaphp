@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use ManaPHP\Helper\Container;
+use ManaPHP\Http\InputInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\UrlInterface;
 use ManaPHP\Mvc\View\AssetInterface;
@@ -9,7 +10,8 @@ use ManaPHP\Mvc\View\AssetInterface;
 if (!\function_exists('attr_nv')) {
     function attr_nv(string $name, string $default = ''): string
     {
-        return sprintf('name="%s" value="%s"', $name, e(input($name, $default)));
+        $input = Container::get(InputInterface::class);
+        return sprintf('name="%s" value="%s"', $name, e($input->get($name, $default)));
     }
 }
 
@@ -22,7 +24,9 @@ if (!\function_exists('attr_inv')) {
             $id = $name;
         }
 
-        return sprintf('id="%s" name="%s" value="%s"', $id, $name, e(input($name, $default)));
+        $input = Container::get(InputInterface::class);
+
+        return sprintf('id="%s" name="%s" value="%s"', $id, $name, e($input->get($name, $default)));
     }
 }
 
