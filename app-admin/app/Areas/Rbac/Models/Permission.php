@@ -5,14 +5,14 @@ namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\MaxLength;
 
 #[Table('rbac_permission')]
 class Permission extends Model
 {
     public int $permission_id;
     public string $handler;
-    #[Length(0, 128)]
+    #[MaxLength(128)]
     public string $display_name;
     public int $created_time;
     public int $updated_time;

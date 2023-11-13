@@ -7,6 +7,7 @@ use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
 use ManaPHP\Validating\Rule\Attribute\Exists;
 use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\MaxLength;
 use ManaPHP\Validating\Rule\Attribute\Range;
 use ManaPHP\Validating\Rule\Attribute\Unique;
 
@@ -22,7 +23,7 @@ class Item extends Model
     public int $display_order;
     #[Length(1, 128), Unique(['group_id'])]
     public string $url;
-    #[Length(0, 64)]
+    #[MaxLength(64)]
     public string $icon;
     public string $creator_name;
     public string $updator_name;

@@ -5,7 +5,7 @@ namespace App\Areas\Menu\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\Rule\Attribute\Length;
+use ManaPHP\Validating\Rule\Attribute\MaxLength;
 use ManaPHP\Validating\Rule\Attribute\Range;
 use ManaPHP\Validating\Rule\Attribute\Unique;
 
@@ -15,7 +15,7 @@ class Group extends Model
     public int $group_id;
     #[Unique]
     public string $group_name;
-    #[Length(0, 64)]
+    #[MaxLength(64)]
     public string $icon;
     #[Range(0, 127)]
     public int $display_order;
