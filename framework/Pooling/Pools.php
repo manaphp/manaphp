@@ -25,18 +25,16 @@ class Pools implements PoolsInterface
         $this->pools = new WeakMap();
     }
 
-    public function remove(object $owner, ?string $type = null): static
+    public function remove(object $owner, ?string $type = null): void
     {
         if ($type === null) {
             unset($this->pools[$owner]);
         } else {
             unset($this->pools[$owner][$type]);
         }
-
-        return $this;
     }
 
-    public function create(object $owner, int $capacity, string $type = 'default'): static
+    public function create(object $owner, int $capacity, string $type = 'default'): void
     {
         if (isset($this->pools[$owner][$type])) {
             throw new MisuseException(['`{1}` pool of `{2}` is exists', $type, $owner::class]);
@@ -44,11 +42,9 @@ class Pools implements PoolsInterface
 
         $this->pools[$owner] ??= [];
         $this->pools[$owner][$type] = new Channel($capacity);
-
-        return $this;
     }
 
-    public function add(object $owner, object|array $sample, int $size = 1, string $type = 'default'): static
+    public function add(object $owner, object|array $sample, int $size = 1, string $type = 'default'): void
     {
         if (!$queue = $this->pools[$owner][$type] ?? null) {
             $this->pools[$owner] ??= [];
@@ -70,11 +66,9 @@ class Pools implements PoolsInterface
         for ($i = 1; $i < $size; $i++) {
             $queue->push(clone $sample);
         }
-
-        return $this;
     }
 
-    public function push(object $owner, object $instance, string $type = 'default'): static
+    public function push(object $owner, object $instance, string $type = 'default'): void
     {
         if (!$queue = $this->pools[$owner][$type] ?? null) {
             throw new MisuseException(['`{1}` pool of `{2}` is not exists', $type, $owner::class]);
@@ -83,8 +77,6 @@ class Pools implements PoolsInterface
         $queue->push($instance);
 
         $this->eventDispatcher->dispatch(new PoolPush($this, $owner, $instance, $type));
-
-        return $this;
     }
 
     public function pop(object $owner, ?float $timeout = null, string $type = 'default'): object
