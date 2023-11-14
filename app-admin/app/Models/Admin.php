@@ -17,7 +17,6 @@ use ManaPHP\Validating\Constraint\Attribute\Email;
 use ManaPHP\Validating\Constraint\Attribute\Immutable;
 use ManaPHP\Validating\Constraint\Attribute\Length;
 use ManaPHP\Validating\Constraint\Attribute\MaxLength;
-use ManaPHP\Validating\Constraint\Attribute\Safe;
 use ManaPHP\Validating\Constraint\Attribute\Unique;
 use Psr\Container\ContainerInterface;
 
@@ -37,7 +36,7 @@ class Admin extends Model implements ArgumentResolvable
     #[Email, Unique]
     public string $email;
     public string $salt;
-    #[Safe]
+    #[Length(6, 16)]
     public string $password;
     #[Defaults(''), MaxLength(64)]
     public string $white_ip;
