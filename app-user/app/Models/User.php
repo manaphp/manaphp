@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use ManaPHP\Model\Event\ModelCreating;
+use ManaPHP\Model\Event\ModelUpdating;
 use ManaPHP\Validating\Constraint\Attribute\Account;
 use ManaPHP\Validating\Constraint\Attribute\Constant;
 use ManaPHP\Validating\Constraint\Attribute\Email;
@@ -16,8 +18,6 @@ class User extends Model
     const STATUS_INIT = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_LOCKED = 2;
-
-    const PASSWORD_LENGTH = '1-30';
 
     public $user_id;
     #[Length(4, 16), Account, Immutable]
@@ -46,26 +46,13 @@ class User extends Model
         return $this->hashPassword($password) === $this->password;
     }
 
-    public function create(): static
+    public function fireEvent(object $event): void
     {
-        $this->salt = bin2hex(random_bytes(8));
+        parent::fireEvent($event);
 
-        $this->password = $this->hashPassword(input('password', ['string', self::PASSWORD_LENGTH]));
-
-        return parent::create();
-    }
-
-    public function update(array $kv = []): static
-    {
-        foreach ($kv as $key => $val) {
-            $this->$key = $val;
-        }
-
-        if ($this->hasChanged(['password'])) {
+        if ($event instanceof ModelCreating || ($event instanceof ModelUpdating && $this->hasChanged(['password']))) {
             $this->salt = bin2hex(random_bytes(8));
             $this->password = $this->hashPassword($this->password);
         }
-
-        return parent::update();
     }
 }

@@ -7,6 +7,8 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
+use ManaPHP\Model\Event\ModelCreating;
+use ManaPHP\Model\Event\ModelUpdating;
 use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Validating\Constraint\Attribute\Account;
 use ManaPHP\Validating\Constraint\Attribute\Constant;
@@ -68,21 +70,13 @@ class Admin extends Model implements ArgumentResolvable
         return $this->hashPassword($password) === $this->password;
     }
 
-    public function create(): static
+    public function fireEvent(object $event): void
     {
-        $this->salt = bin2hex(random_bytes(8));
-        $this->password = $this->hashPassword($this->password);
+        parent::fireEvent($event);
 
-        return parent::create();
-    }
-
-    public function update(): static
-    {
-        if ($this->hasChanged(['password'])) {
+        if ($event instanceof ModelCreating || ($event instanceof ModelUpdating && $this->hasChanged(['password']))) {
             $this->salt = bin2hex(random_bytes(8));
             $this->password = $this->hashPassword($this->password);
         }
-
-        return parent::update();
     }
 }
