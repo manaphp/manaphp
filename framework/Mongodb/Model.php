@@ -82,9 +82,11 @@ class Model extends AbstractModel
     {
         $this->autoFillCreated();
 
-        $fields = Container::get(ModelsInterface::class)->getFields(static::class);
+        $models = Container::get(ModelsInterface::class);
 
-        $this->validate($fields);
+        $fields = $models->getFields(static::class);
+
+        $this->validate($models->getFillable(static::class));
 
         if ($this->_id) {
             if (\is_string($this->_id) && \strlen($this->_id) === 24) {
@@ -156,7 +158,7 @@ class Model extends AbstractModel
 
         $fields = $models->getFields(static::class);
 
-        $this->validate();
+        $this->validate($this->getChangedFields());
 
         if (!$this->hasChanged($fields)) {
             return $this;

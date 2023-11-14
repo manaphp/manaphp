@@ -38,7 +38,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $fields = $models->getFields(static::class);
 
-        $this->validate($fields);
+        $this->validate($models->getFillable(static::class));
 
         $primaryKey = $models->getPrimaryKey(static::class);
 
@@ -112,7 +112,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $fields = $models->getFields(static::class);
 
-        $this->validate();
+        $this->validate($this->getChangedFields());
 
         if (!$this->hasChanged($fields)) {
             return $this;

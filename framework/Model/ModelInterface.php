@@ -43,7 +43,7 @@ interface ModelInterface
 
     public function fillUpdate(array $data): static;
 
-    public function validate(?array $fields = null): void;
+    public function validate(array $fields): void;
 
     public function save(): static;
 

@@ -319,16 +319,16 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param ?array $fields =model_fields(new static)
+     * @param array $fields =model_fields(new static)
      *
      * @return void
      */
-    public function validate(?array $fields = null): void
+    public function validate(array $fields): void
     {
         $validator = Container::get(ValidatorInterface::class);
 
         $validation = $validator->beginValidate($this);
-        foreach ($fields ?: $this->getChangedFields() as $field) {
+        foreach ($fields as $field) {
             $rProperty = new ReflectionProperty(static::class, $field);
             $attributes = $rProperty->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF);
             if ($attributes !== []) {
