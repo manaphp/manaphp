@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 return [
-    'default'                                     => 'The :field is invalid.',
+    'default'                                           => 'The :field is invalid.',
     'ManaPHP\Validating\Constraint\Attribute\Type'      => 'The :field data type is not :type.',
     'ManaPHP\Validating\Constraint\Attribute\Required'  => 'The :field field is required.',
     'ManaPHP\Validating\Constraint\Attribute\Date'      => 'The :field is not a valid date.',

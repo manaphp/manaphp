@@ -26,8 +26,12 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToAll(), 1, argumentsSet('wspClientEndpoint'));
     expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::broadcast(), 1, argumentsSet('wspClientEndpoint'));
 
-    registerArgumentsSet('validator_constraint_type', ['bool', 'bit', 'int', 'float', 'array', 'mixed', 'iterable', 'mixed']);
-    expectedArguments(\ManaPHP\Validating\Constraint\Attribute\Type::__construct(), 0, argumentsSet('validator_constraint_type'));
+    registerArgumentsSet(
+        'validator_constraint_type', ['bool', 'bit', 'int', 'float', 'array', 'mixed', 'iterable', 'mixed']
+    );
+    expectedArguments(
+        \ManaPHP\Validating\Constraint\Attribute\Type::__construct(), 0, argumentsSet('validator_constraint_type')
+    );
 
     expectedArguments(
         \json_stringify(), 1,
