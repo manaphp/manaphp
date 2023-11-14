@@ -12,7 +12,7 @@ class Defaults extends AbstractConstraint
 {
     public function __construct(public mixed $default, public ?string $message = null)
     {
-
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

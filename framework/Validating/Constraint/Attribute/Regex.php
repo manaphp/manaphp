@@ -12,7 +12,7 @@ class Regex extends AbstractConstraint
 {
     public function __construct(public string $pattern, public ?string $message = null)
     {
-
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

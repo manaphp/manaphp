@@ -5,7 +5,10 @@ namespace ManaPHP\Validating;
 
 abstract class AbstractConstraint implements ConstraintInterface
 {
-    public ?string $message = null;
+    public function __construct(protected ?string $message = null)
+    {
+
+    }
 
     public function getMessage(): string
     {

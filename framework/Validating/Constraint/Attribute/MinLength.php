@@ -11,6 +11,7 @@ class MinLength extends AbstractConstraint
 {
     public function __construct(public int $min, public ?string $message = null)
     {
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

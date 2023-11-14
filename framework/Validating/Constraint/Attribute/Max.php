@@ -11,6 +11,7 @@ class Max extends AbstractConstraint
 {
     public function __construct(public float $max, public ?string $message = null)
     {
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

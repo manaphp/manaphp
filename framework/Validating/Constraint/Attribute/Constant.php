@@ -13,7 +13,7 @@ class Constant extends AbstractConstraint
 {
     public function __construct(public ?string $name = null, public ?string $message = null)
     {
-
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

@@ -11,6 +11,7 @@ class MaxLength extends AbstractConstraint
 {
     public function __construct(public int $max, public ?string $message = null)
     {
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

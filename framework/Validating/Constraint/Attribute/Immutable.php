@@ -12,11 +12,6 @@ use ManaPHP\Validating\Validation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Immutable extends AbstractConstraint
 {
-    public function __construct(public ?string $message = null)
-    {
-
-    }
-
     public function validate(Validation $validation): bool
     {
         /** @var ModelInterface $source */

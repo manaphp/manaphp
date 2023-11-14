@@ -12,7 +12,7 @@ class In extends AbstractConstraint
 {
     public function __construct(public array $values, public ?string $message = null)
     {
-
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

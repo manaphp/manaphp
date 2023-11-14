@@ -11,6 +11,7 @@ class Min extends AbstractConstraint
 {
     public function __construct(public float $min, public ?string $message = null)
     {
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

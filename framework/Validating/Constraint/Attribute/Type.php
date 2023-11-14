@@ -17,7 +17,7 @@ class Type extends AbstractConstraint
         public array $false = [0, '0', 'false', 'off', 'no'],
         public ?string $message = null
     ) {
-
+        parent::__construct($this->message);
     }
 
     public function validate(Validation $validation): bool

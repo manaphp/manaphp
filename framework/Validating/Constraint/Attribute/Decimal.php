@@ -12,6 +12,7 @@ class Decimal extends AbstractConstraint
 {
     public function __construct(public int $M = 10, public int $D = 0, public ?string $message = null)
     {
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool

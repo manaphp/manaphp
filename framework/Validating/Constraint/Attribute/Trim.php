@@ -12,7 +12,7 @@ class Trim extends AbstractConstraint
 {
     public function __construct(public string $characters = " \n\r\t\v\x00", public ?string $message = null)
     {
-
+        parent::__construct($message);
     }
 
     public function validate(Validation $validation): bool
