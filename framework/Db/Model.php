@@ -110,13 +110,11 @@ class Model extends AbstractModel implements ModelInterface
             throw new MisuseException('updating model primary key value is not support');
         }
 
-        $fields = $models->getFields(static::class);
-
-        $this->validate($this->getChangedFields());
-
-        if (!$this->hasChanged($fields)) {
+        if (($changedFields = $this->getChangedFields()) === []) {
             return $this;
         }
+
+        $this->validate($changedFields);
 
         $this->autoFillUpdated();
 
@@ -126,7 +124,7 @@ class Model extends AbstractModel implements ModelInterface
         $this->fireEvent(new ModelUpdating($this));
 
         $fieldValues = [];
-        foreach ($fields as $field) {
+        foreach ($models->getFields(static::class) as $field) {
             if (!isset($this->$field)) {
                 if (isset($snapshot[$field])) {
                     $fieldValues[$field] = null;
