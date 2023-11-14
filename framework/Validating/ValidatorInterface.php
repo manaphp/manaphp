@@ -5,9 +5,9 @@ namespace ManaPHP\Validating;
 
 interface ValidatorInterface
 {
-    public function validateValue(string $field, mixed $value, array $rules): mixed;
+    public function validateValue(string $field, mixed $value, array $constraints): mixed;
 
-    public function validateValues(array $source, array $rules): array;
+    public function validateValues(array $source, array $constraints): array;
 
     public function beginValidate(array|object $source): Validation;
 

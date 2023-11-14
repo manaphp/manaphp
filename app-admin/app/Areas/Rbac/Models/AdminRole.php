@@ -6,7 +6,7 @@ namespace App\Areas\Rbac\Models;
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Fillable;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\Rule\Attribute\Unique;
+use ManaPHP\Validating\Constraint\Attribute\Unique;
 
 #[Table('rbac_admin_role')]
 #[Fillable([])]

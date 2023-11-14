@@ -17,7 +17,7 @@ interface RequestInterface
 
     public function all(): array;
 
-    public function validate(array $rules): array;
+    public function validate(array $constraints): array;
 
     public function only(array $names): array;
 

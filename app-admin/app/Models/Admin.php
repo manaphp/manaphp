@@ -8,15 +8,15 @@ use App\Areas\Rbac\Models\Role;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
 use ManaPHP\Model\Relation\HasManyToMany;
-use ManaPHP\Validating\Rule\Attribute\Account;
-use ManaPHP\Validating\Rule\Attribute\Constant;
-use ManaPHP\Validating\Rule\Attribute\Defaults;
-use ManaPHP\Validating\Rule\Attribute\Email;
-use ManaPHP\Validating\Rule\Attribute\Immutable;
-use ManaPHP\Validating\Rule\Attribute\Length;
-use ManaPHP\Validating\Rule\Attribute\MaxLength;
-use ManaPHP\Validating\Rule\Attribute\Safe;
-use ManaPHP\Validating\Rule\Attribute\Unique;
+use ManaPHP\Validating\Constraint\Attribute\Account;
+use ManaPHP\Validating\Constraint\Attribute\Constant;
+use ManaPHP\Validating\Constraint\Attribute\Defaults;
+use ManaPHP\Validating\Constraint\Attribute\Email;
+use ManaPHP\Validating\Constraint\Attribute\Immutable;
+use ManaPHP\Validating\Constraint\Attribute\Length;
+use ManaPHP\Validating\Constraint\Attribute\MaxLength;
+use ManaPHP\Validating\Constraint\Attribute\Safe;
+use ManaPHP\Validating\Constraint\Attribute\Unique;
 use Psr\Container\ContainerInterface;
 
 class Admin extends Model implements ArgumentResolvable

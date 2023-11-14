@@ -7,9 +7,9 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\FormInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
-use ManaPHP\Validating\Rule\Attribute\Required;
-use ManaPHP\Validating\Rule\Attribute\Type;
-use ManaPHP\Validating\RuleInterface;
+use ManaPHP\Validating\Constraint\Attribute\Required;
+use ManaPHP\Validating\Constraint\Attribute\Type;
+use ManaPHP\Validating\ConstraintInterface;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -41,12 +41,12 @@ class Form implements ObjectValueResolverInterface
 
             if (isset($source[$field])) {
                 if ($attributes = $rProperty->getAttributes(Type::class, ReflectionAttribute::IS_INSTANCEOF)) {
-                    $rule = $attributes[0]->newInstance();
+                    $constraint = $attributes[0]->newInstance();
                 } else {
-                    $rule = new Type($rProperty->getType()?->getName());
+                    $constraint = new Type($rProperty->getType()?->getName());
                 }
 
-                if ($validation->validate($rule)) {
+                if ($validation->validate($constraint)) {
                     $form->$field = $validation->value;
                 }
             } else {
@@ -65,7 +65,7 @@ class Form implements ObjectValueResolverInterface
 
             $validation->field = $field;
             $validation->value = $form->$field ?? null;
-            $attributes = $rProperty->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $rProperty->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attribute) {
                 if ($validation instanceof Type) {
                     continue;

@@ -14,7 +14,7 @@ use ManaPHP\Model\Attribute\Guarded;
 use ManaPHP\Model\Attribute\PrimaryKey;
 use ManaPHP\Model\Attribute\ReferencedKey;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\RuleInterface;
+use ManaPHP\Validating\ConstraintInterface;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -32,8 +32,6 @@ class Models implements ModelsInterface
     protected array $columnMap = [];
     protected array $fillable = [];
     protected array $dateFormat = [];
-    protected array $intFields = [];
-    protected array $rules = [];
 
     protected function getClassReflection(string $model): ReflectionClass
     {
@@ -199,7 +197,7 @@ class Models implements ModelsInterface
             $fillable = [];
             $rClass = new ReflectionClass($model);
             foreach ($rClass->getProperties(\ReflectionProperty::IS_PUBLIC) as $rProperty) {
-                if ($rProperty->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
+                if ($rProperty->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
                     $fillable[] = $rProperty->getName();
                 }
             }

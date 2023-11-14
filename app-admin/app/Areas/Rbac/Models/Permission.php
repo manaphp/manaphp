@@ -5,7 +5,7 @@ namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\Rule\Attribute\MaxLength;
+use ManaPHP\Validating\Constraint\Attribute\MaxLength;
 
 #[Table('rbac_permission')]
 class Permission extends Model

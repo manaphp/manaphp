@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Validating\Rule\Attribute\Required;
-use ManaPHP\Validating\Rule\Attribute\Type;
+use ManaPHP\Validating\Constraint\Attribute\Required;
+use ManaPHP\Validating\Constraint\Attribute\Type;
 use ManaPHP\Validating\ValidatorInterface;
 
 class Input implements InputInterface
@@ -32,49 +32,49 @@ class Input implements InputInterface
         }
     }
 
-    public function type(string $type, string $name, array $rules = [], mixed $default = null): mixed
+    public function type(string $type, string $name, array $constraints = [], mixed $default = null): mixed
     {
         if (($value = $this->request->input($name, $default)) === null) {
             return $this->validator->validateValue($name, null, [new Required()]);
         } else {
-            \array_unshift($rules, new Type($type));
+            \array_unshift($constraints, new Type($type));
 
-            return $this->validator->validateValue($name, $value, $rules);
+            return $this->validator->validateValue($name, $value, $constraints);
         }
     }
 
-    public function string(string $name, array $rules = [], ?string $default = null): string
+    public function string(string $name, array $constraints = [], ?string $default = null): string
     {
-        return $this->type('string', $name, $rules, $default);
+        return $this->type('string', $name, $constraints, $default);
     }
 
-    public function float(string $name, array $rules = [], ?float $default = null): float
+    public function float(string $name, array $constraints = [], ?float $default = null): float
     {
-        return $this->type('float', $name, $rules, $default);
+        return $this->type('float', $name, $constraints, $default);
     }
 
-    public function int(string $name, array $rules = [], ?int $default = null): int
+    public function int(string $name, array $constraints = [], ?int $default = null): int
     {
-        return $this->type('int', $name, $rules, $default);
+        return $this->type('int', $name, $constraints, $default);
     }
 
-    public function array(string $name, array $rules = [], ?array $default = null): array
+    public function array(string $name, array $constraints = [], ?array $default = null): array
     {
-        return $this->type('array', $name, $rules, $default);
+        return $this->type('array', $name, $constraints, $default);
     }
 
-    public function bool(string $name, array $rules = [], ?bool $default = null): bool
+    public function bool(string $name, array $constraints = [], ?bool $default = null): bool
     {
-        return $this->type('bool', $name, $rules, $default);
+        return $this->type('bool', $name, $constraints, $default);
     }
 
-    public function bit(string $name, array $rules = [], ?int $default = null): int
+    public function bit(string $name, array $constraints = [], ?int $default = null): int
     {
-        return $this->type('bit', $name, $rules, $default);
+        return $this->type('bit', $name, $constraints, $default);
     }
 
-    public function mixed(string $name, array $rules = [], mixed $default = null): mixed
+    public function mixed(string $name, array $constraints = [], mixed $default = null): mixed
     {
-        return $this->type('mixed', $name, $rules, $default);
+        return $this->type('mixed', $name, $constraints, $default);
     }
 }

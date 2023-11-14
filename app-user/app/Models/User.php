@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use ManaPHP\Validating\Rule\Attribute\Account;
-use ManaPHP\Validating\Rule\Attribute\Constant;
-use ManaPHP\Validating\Rule\Attribute\Email;
-use ManaPHP\Validating\Rule\Attribute\Immutable;
-use ManaPHP\Validating\Rule\Attribute\Length;
-use ManaPHP\Validating\Rule\Attribute\Lowercase;
-use ManaPHP\Validating\Rule\Attribute\Unique;
+use ManaPHP\Validating\Constraint\Attribute\Account;
+use ManaPHP\Validating\Constraint\Attribute\Constant;
+use ManaPHP\Validating\Constraint\Attribute\Email;
+use ManaPHP\Validating\Constraint\Attribute\Immutable;
+use ManaPHP\Validating\Constraint\Attribute\Length;
+use ManaPHP\Validating\Constraint\Attribute\Lowercase;
+use ManaPHP\Validating\Constraint\Attribute\Unique;
 
 class User extends Model
 {

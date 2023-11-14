@@ -14,14 +14,14 @@ class Validation
 
     }
 
-    public function validate(RuleInterface $rule): bool
+    public function validate(ConstraintInterface $constraint): bool
     {
         if (isset($this->errors[$this->field])) {
             return false;
         }
 
-        if (!$rule->validate($this)) {
-            $this->addError($rule->getMessage(), (array)$rule);
+        if (!$constraint->validate($this)) {
+            $this->addError($constraint->getMessage(), (array)$constraint);
         }
 
         return !isset($this->errors[$this->field]);

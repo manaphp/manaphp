@@ -5,11 +5,11 @@ namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\Rule\Attribute\Length;
-use ManaPHP\Validating\Rule\Attribute\Lowercase;
-use ManaPHP\Validating\Rule\Attribute\Trim;
-use ManaPHP\Validating\Rule\Attribute\Type;
-use ManaPHP\Validating\Rule\Attribute\Unique;
+use ManaPHP\Validating\Constraint\Attribute\Length;
+use ManaPHP\Validating\Constraint\Attribute\Lowercase;
+use ManaPHP\Validating\Constraint\Attribute\Trim;
+use ManaPHP\Validating\Constraint\Attribute\Type;
+use ManaPHP\Validating\Constraint\Attribute\Unique;
 
 #[Table('rbac_role')]
 class Role extends Model

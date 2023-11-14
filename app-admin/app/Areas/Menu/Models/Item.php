@@ -5,11 +5,11 @@ namespace App\Areas\Menu\Models;
 
 use App\Models\Model;
 use ManaPHP\Model\Attribute\Table;
-use ManaPHP\Validating\Rule\Attribute\Exists;
-use ManaPHP\Validating\Rule\Attribute\Length;
-use ManaPHP\Validating\Rule\Attribute\MaxLength;
-use ManaPHP\Validating\Rule\Attribute\Range;
-use ManaPHP\Validating\Rule\Attribute\Unique;
+use ManaPHP\Validating\Constraint\Attribute\Exists;
+use ManaPHP\Validating\Constraint\Attribute\Length;
+use ManaPHP\Validating\Constraint\Attribute\MaxLength;
+use ManaPHP\Validating\Constraint\Attribute\Range;
+use ManaPHP\Validating\Constraint\Attribute\Unique;
 
 #[Table('menu_item')]
 class Item extends Model

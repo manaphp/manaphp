@@ -9,7 +9,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelsInterface;
-use ManaPHP\Validating\Rule\Attribute\Required;
+use ManaPHP\Validating\Constraint\Attribute\Required;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionParameter;
 

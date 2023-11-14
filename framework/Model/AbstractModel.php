@@ -10,8 +10,8 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Query\QueryInterface;
-use ManaPHP\Validating\Rule\Attribute\Type;
-use ManaPHP\Validating\RuleInterface;
+use ManaPHP\Validating\Constraint\Attribute\Type;
+use ManaPHP\Validating\ConstraintInterface;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionAttribute;
@@ -327,13 +327,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $validation = $validator->beginValidate($this);
         foreach ($fields ?: $this->getChangedFields() as $field) {
             $rProperty = new ReflectionProperty(static::class, $field);
-            $attributes = $rProperty->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $rProperty->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF);
             if ($attributes !== []) {
                 $validation->field = $field;
                 $validation->value = $this->$field ?? null;
 
                 foreach ($attributes as $attribute) {
-                    /** @var RuleInterface $rule */
+                    /** @var ConstraintInterface $rule */
                     $rule = $attribute->newInstance();
                     if (!$validation->validate($rule)) {
                         break;

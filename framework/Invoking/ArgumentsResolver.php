@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Validating\Rule\Attribute\Required;
-use ManaPHP\Validating\Rule\Attribute\Type;
+use ManaPHP\Validating\Constraint\Attribute\Required;
+use ManaPHP\Validating\Constraint\Attribute\Type;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;

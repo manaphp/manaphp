@@ -4,7 +4,7 @@ namespace Tests;
 
 use ManaPHP\Data\Db;
 use ManaPHP\Mvc\Factory;
-use ManaPHP\Validating\Rule\Attribute\Type;
+use ManaPHP\Validating\Constraint\Attribute\Type;
 use ManaPHP\Validating\Validator;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use PHPUnit\Framework\TestCase;

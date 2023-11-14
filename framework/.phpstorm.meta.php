@@ -26,8 +26,8 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToAll(), 1, argumentsSet('wspClientEndpoint'));
     expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::broadcast(), 1, argumentsSet('wspClientEndpoint'));
 
-    registerArgumentsSet('validator_rule_type', ['bool', 'bit', 'int', 'float', 'array', 'mixed', 'iterable', 'mixed']);
-    expectedArguments(\ManaPHP\Validating\Rule\Attribute\Type::__construct(), 0, argumentsSet('validator_rule_type'));
+    registerArgumentsSet('validator_constraint_type', ['bool', 'bit', 'int', 'float', 'array', 'mixed', 'iterable', 'mixed']);
+    expectedArguments(\ManaPHP\Validating\Constraint\Attribute\Type::__construct(), 0, argumentsSet('validator_constraint_type'));
 
     expectedArguments(
         \json_stringify(), 1,
@@ -58,49 +58,6 @@ namespace PHPSTORM_META {
         ]
     );
     expectedArguments(\ManaPHP\Amqp\Queue::__construct(), 1, argumentsSet('amqp_queue_features'));
-
-    function validator_rule()
-    {
-        return [
-            'required',
-            'bool',
-            'int',
-            'float',
-            'string',
-            'alpha',
-            'digit',
-            'xdigit',
-            'alnum',
-            'lower',
-            'upper',
-            'trim',
-            'email',
-            'url',
-            'ip',
-            'date',
-            'timestamp',
-            'escape',
-            'xss',
-            'unique',
-            'exists',
-            'const',
-            'account',
-            'mobile',
-            'safe',
-            'readonly',
-            'default'   => '',
-            'min'       => 0,
-            'max'       => 1,
-            'range'     => '0-1',
-            'length'    => '0-1',
-            'minLength' => 1,
-            'maxLength' => 1,
-            'regex'     => '#^\d+#',
-            'in'        => '1,2',
-            'not_in'    => '1,2',
-            'ext'       => 'jpg,jpeg',
-        ];
-    }
 
     registerArgumentsSet('manaphp_config', 'id', 'name', 'env', 'debug', 'params');
     expectedArguments(\ManaPHP\Di\ConfigInterface::get(), 0, argumentsSet('manaphp_config'));

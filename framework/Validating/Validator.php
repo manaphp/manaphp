@@ -35,23 +35,23 @@ class Validator implements ValidatorInterface
         return $templates[$validate] ?? $templates['default'];
     }
 
-    public function validateValues(array $source, array $rules): array
+    public function validateValues(array $source, array $constraints): array
     {
         $validation = $this->beginValidate($source);
 
         $values = [];
-        foreach ($rules as $attribute => $attribute_rules) {
-            $validation->field = $attribute;
-            $validation->value = $source[$attribute] ?? null;
+        foreach ($constraints as $field => $field_constraints) {
+            $validation->field = $field;
+            $validation->value = $source[$field] ?? null;
 
-            foreach (\is_array($attribute_rules) ? $attribute_rules : [$attribute_rules] as $rule) {
-                if (!$validation->validate($rule)) {
+            foreach (\is_array($field_constraints) ? $field_constraints : [$field_constraints] as $constraint) {
+                if (!$validation->validate($constraint)) {
                     break;
                 }
             }
 
-            if (!$validation->hasError($attribute)) {
-                $values[$attribute] = $validation->value;
+            if (!$validation->hasError($field)) {
+                $values[$field] = $validation->value;
             }
         }
 
@@ -60,9 +60,9 @@ class Validator implements ValidatorInterface
         return $values;
     }
 
-    public function validateValue(string $field, mixed $value, array $rules): mixed
+    public function validateValue(string $field, mixed $value, array $constraints): mixed
     {
-        return $this->validateValues([$field => $value], [$field => $rules])[$field] ?? null;
+        return $this->validateValues([$field => $value], [$field => $constraints])[$field] ?? null;
     }
 
     public function beginValidate(array|object $source): Validation

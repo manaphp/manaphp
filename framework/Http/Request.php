@@ -79,9 +79,9 @@ class Request implements RequestInterface, JsonSerializable
         return $this->getContext()->_REQUEST;
     }
 
-    public function validate(array $rules): array
+    public function validate(array $constraints): array
     {
-        return $this->validator->validateValues($this->all(), $rules);
+        return $this->validator->validateValues($this->all(), $constraints);
     }
 
     public function only(array $names): array
