@@ -285,11 +285,14 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 $validation->value = $value;
 
                 $rProperty = new ReflectionProperty(static::class, $field);
-                if ($rProperty->hasType()) {
-                    $validation->validate(new Type($rProperty->getType()?->getName() ?? 'mixed'));
+
+                if ($attributes = $rProperty->getAttributes(Type::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                    $constraint = $attributes[0]->newInstance();
+                } else {
+                    $constraint = new Type($rProperty->getType()?->getName() ?? 'mixed');
                 }
 
-                if (!$validation->hasError($validation->field)) {
+                if ($validation->validate($constraint)) {
                     $this->$field = $validation->value;
                 }
             }
@@ -333,9 +336,9 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 $validation->value = $this->$field ?? null;
 
                 foreach ($attributes as $attribute) {
-                    /** @var ConstraintInterface $rule */
-                    $rule = $attribute->newInstance();
-                    if (!$validation->validate($rule)) {
+                    /** @var ConstraintInterface $constraint */
+                    $constraint = $attribute->newInstance();
+                    if (!$validation->validate($constraint)) {
                         break;
                     }
                 }

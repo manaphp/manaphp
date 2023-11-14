@@ -43,7 +43,7 @@ class Form implements ObjectValueResolverInterface
                 if ($attributes = $rProperty->getAttributes(Type::class, ReflectionAttribute::IS_INSTANCEOF)) {
                     $constraint = $attributes[0]->newInstance();
                 } else {
-                    $constraint = new Type($rProperty->getType()?->getName());
+                    $constraint = new Type($rProperty->getType()?->getName() ?? 'mixed');
                 }
 
                 if ($validation->validate($constraint)) {
