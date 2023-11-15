@@ -47,10 +47,11 @@ class Db implements DbInterface
 
     #[Autowired] protected string $uri;
 
-    protected string $prefix = '';
+    #[Autowired] protected string $prefix = '';
+    #[Autowired] protected float $timeout = 3.0;
+    #[Autowired] protected string $pool_size = '4';
+
     protected bool $has_slave = false;
-    protected float $timeout = 3.0;
-    protected string $pool_size = '4';
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()

@@ -35,7 +35,8 @@ class Mongodb implements MongodbInterface
     #[Autowired] protected MakerInterface $maker;
 
     #[Autowired] protected string $uri = 'mongodb://127.0.0.1:27017/';
-    protected string $prefix;
+    #[Autowired] protected string $prefix;
+
     protected string $db;
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */

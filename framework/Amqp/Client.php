@@ -18,8 +18,9 @@ class Client implements ClientInterface
 
     #[Autowired] protected string $uri;
 
-    protected int $pool_size = 4;
-    protected int $timeout = 3;
+    #[Autowired] protected int $pool_size = 4;
+    #[Autowired] protected int $timeout = 3;
+
     protected ?EngineInterface $engine = null;
 
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
