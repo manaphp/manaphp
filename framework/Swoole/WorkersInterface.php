@@ -8,9 +8,7 @@ use Swoole\Server;
 
 interface WorkersInterface extends BootstrapperInterface
 {
-    public function task(array|callable $task, array $arguments, int $task_worker_id): false|int;
-
-    public function taskwait(array|callable $task, array $arguments, float $timeout, int $task_worker_id): mixed;
+    public function task(array|callable $task, array $arguments, int $task_worker_id, float $timeout = null): mixed;
 
     public function sendMessage(array|callable $task, array $arguments, int $dst_worker_id): bool;
 

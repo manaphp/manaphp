@@ -6,7 +6,6 @@ namespace ManaPHP\Swoole;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Swoole\Workers\Caller\SendMessage;
 use ManaPHP\Swoole\Workers\Caller\Task;
-use ManaPHP\Swoole\Workers\Caller\TaskWait;
 
 trait WorkersTrait
 {
@@ -17,12 +16,8 @@ trait WorkersTrait
         return new SendMessage($this->workers, static::class, $task_worker_id);
     }
 
-    public function task(int $task_worker_id, float $timeout = null): static|TaskWait|Task
+    public function task(int $task_worker_id, float $timeout = null): static|Task
     {
-        if ($timeout === null) {
-            return new Task($this->workers, static::class, $task_worker_id);
-        } else {
-            return new TaskWait($this->workers, static::class, $timeout, $task_worker_id);
-        }
+        return new Task($this->workers, static::class, $task_worker_id, $timeout);
     }
 }
