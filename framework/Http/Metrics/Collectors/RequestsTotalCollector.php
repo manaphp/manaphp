@@ -22,7 +22,7 @@ class RequestsTotalCollector implements CollectorInterface
 
     protected array $totals = [];
 
-    public function taskUpdateMetrics(int $code, string $handler): void
+    public function updateRequest(int $code, string $handler): void
     {
         if (!isset($this->totals[$code][$handler])) {
             $this->totals[$code][$handler] = 0;
@@ -31,7 +31,7 @@ class RequestsTotalCollector implements CollectorInterface
         }
     }
 
-    public function taskExport(): array
+    public function getResponse(): array
     {
         return $this->totals;
     }
@@ -41,13 +41,13 @@ class RequestsTotalCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $code = $this->response->getStatusCode();
 
-            $this->task(0)->taskUpdateMetrics($code, $handler);
+            $this->task(0)->updateRequest($code, $handler);
         }
     }
 
     public function export(): string
     {
-        $totals = $this->taskwait(1.0, 0)->taskExport();
+        $totals = $this->taskwait(1.0, 0)->getResponse();
 
         return $this->formatter->counter('app_http_requests_total', $totals, [], ['code', 'handler']);
     }

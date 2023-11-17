@@ -18,14 +18,14 @@ class CoroutineStatsCollector implements CollectorInterface
 
     #[Autowired] protected FormatterInterface $formatter;
 
-    public function taskExportRequest(int $cid, int $worker_id): void
+    public function getRequest(int $cid, int $worker_id): void
     {
         $my_worker_id = $this->workers->getWorkerId();
         $stats = Coroutine::stats();
-        $this->sendMessage($worker_id)->taskExportResponse($cid, $my_worker_id, $stats);
+        $this->sendMessage($worker_id)->getResponse($cid, $my_worker_id, $stats);
     }
 
-    public function taskExportResponse(int $cid, $worker_id, array $stats): void
+    public function getResponse(int $cid, $worker_id, array $stats): void
     {
         /** @var CoroutineStatsCollectorContext $context */
         $context = $this->getContext($cid);
@@ -44,7 +44,7 @@ class CoroutineStatsCollector implements CollectorInterface
 
         for ($worker_id = 0; $worker_id < $worker_num; $worker_id++) {
             if ($this->workers->getWorkerId() !== $worker_id) {
-                $this->sendMessage($worker_id)->taskExportRequest(Coroutine::getCid(), $this->workers->getWorkerId());
+                $this->sendMessage($worker_id)->getRequest(Coroutine::getCid(), $this->workers->getWorkerId());
             }
         }
 

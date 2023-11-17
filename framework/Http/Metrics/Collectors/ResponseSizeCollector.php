@@ -27,7 +27,7 @@ class ResponseSizeCollector implements CollectorInterface
 
     protected array $histograms = [];
 
-    public function taskUpdateMetric(string $path, int $size): void
+    public function updateRequest(string $path, int $size): void
     {
         if (($histogram = $this->histograms[$path] ?? null) === null) {
             $histogram = $this->histograms[$path] = new Histogram($this->buckets);
@@ -43,7 +43,7 @@ class ResponseSizeCollector implements CollectorInterface
         $histogram->count++;
     }
 
-    public function taskExport(): array
+    public function getResponse(): array
     {
         return $this->histograms;
     }
@@ -53,13 +53,13 @@ class ResponseSizeCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $size = $this->response->getContentLength();
 
-            $this->task(0)->taskUpdateMetric($handler, $size);
+            $this->task(0)->updateRequest($handler, $size);
         }
     }
 
     public function export(): string
     {
-        $histograms = $this->taskwait(1.0, 0)->taskExport();
+        $histograms = $this->taskwait(1.0, 0)->getResponse();
 
         return $this->formatter->histogram('app_http_response_size_bytes', $histograms, [], ['handler']);
     }

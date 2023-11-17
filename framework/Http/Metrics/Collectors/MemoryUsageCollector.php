@@ -18,14 +18,14 @@ class MemoryUsageCollector implements CollectorInterface
 
     #[Autowired] protected FormatterInterface $formatter;
 
-    public function taskExportRequest(int $cid, $worker_id): void
+    public function getWorkerRequest(int $cid, $worker_id): void
     {
-        $this->sendMessage($worker_id)->taskExportResponse(
+        $this->sendMessage($worker_id)->getWorkerResponse(
             $cid, $worker_id, [memory_get_usage(), memory_get_peak_usage()]
         );
     }
 
-    public function taskExportResponse(int $cid, int $worker_id, array $stats): void
+    public function getWorkerResponse(int $cid, int $worker_id, array $stats): void
     {
         /** @var MemoryUsageCollectorContext $context */
         $context = $this->getContext($cid);
@@ -33,7 +33,7 @@ class MemoryUsageCollector implements CollectorInterface
         $context->channel->push(1);
     }
 
-    public function taskExport(): array
+    public function getTaskResponse(): array
     {
         return [memory_get_usage(), memory_get_peak_usage()];
     }
@@ -50,7 +50,7 @@ class MemoryUsageCollector implements CollectorInterface
         $my_worker_id = $this->workers->getWorkerId();
         for ($worker_id = 0; $worker_id < $worker_num; $worker_id++) {
             if ($my_worker_id !== $worker_id) {
-                $this->sendMessage($worker_id)->taskExportRequest(Coroutine::getCid(), $my_worker_id);
+                $this->sendMessage($worker_id)->getWorkerRequest(Coroutine::getCid(), $my_worker_id);
             }
         }
 
@@ -75,7 +75,7 @@ class MemoryUsageCollector implements CollectorInterface
         $worker_num = $this->workers->getWorkerNum();
         $task_worker_num = $this->workers->getTaskWorkerNum();
         for ($task_worker_id = 0; $task_worker_id < $task_worker_num; $task_worker_id++) {
-            $stats = $this->taskwait(0.1, $task_worker_id)->taskExport();
+            $stats = $this->taskwait(0.1, $task_worker_id)->getTaskResponse();
             $labels = ['worker_id' => $worker_num + $task_worker_id, 'task_worker_id' => $task_worker_id];
 
             $str .= $this->formatter->gauge('swoole_task_worker_memory_usage', $stats[0], $labels);

@@ -25,7 +25,7 @@ class RequestDurationCollector implements CollectorInterface
 
     protected array $histograms = [];
 
-    public function taskUpdateMetrics(string $path, float $elapsed): void
+    public function updateRequest(string $path, float $elapsed): void
     {
         if (($histogram = $this->histograms[$path] ?? null) === null) {
             $histogram = $this->histograms[$path] = new Histogram($this->buckets);
@@ -41,7 +41,7 @@ class RequestDurationCollector implements CollectorInterface
         $histogram->count++;
     }
 
-    public function taskExport(): array
+    public function getResponse(): array
     {
         return $this->histograms;
     }
@@ -51,13 +51,13 @@ class RequestDurationCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $elapsed = $this->request->elapsed();
 
-            $this->task(0)->taskUpdateMetrics($handler, $elapsed);
+            $this->task(0)->updateRequest($handler, $elapsed);
         }
     }
 
     public function export(): string
     {
-        $histograms = $this->taskwait(1.0, 0)->taskExport();
+        $histograms = $this->taskwait(1.0, 0)->getResponse();
 
         return $this->formatter->histogram('app_http_request_duration_seconds', $histograms, [], ['handler']);
     }
