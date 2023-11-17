@@ -75,9 +75,9 @@ class Kernel
     {
         $bootstrappers = $config->get(static::class)['bootstrappers'] ?? $this->bootstrappers;
         foreach ($bootstrappers as $name) {
-            /** @var BootstrapperInterface $bootstraper */
-            $bootstraper = $this->container->get($name);
-            $bootstraper->bootstrap();
+            /** @var BootstrapperInterface $bootstrapper */
+            $bootstrapper = $this->container->get($name);
+            $bootstrapper->bootstrap();
         }
     }
 
