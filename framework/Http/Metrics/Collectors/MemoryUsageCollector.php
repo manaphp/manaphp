@@ -75,7 +75,7 @@ class MemoryUsageCollector implements CollectorInterface
         $worker_num = $this->workers->getWorkerNum();
         $task_worker_num = $this->workers->getTaskWorkerNum();
         for ($task_worker_id = 0; $task_worker_id < $task_worker_num; $task_worker_id++) {
-            $stats = $this->taskwait(0.1, $task_worker_id)->getTaskResponse();
+            $stats = $this->task($task_worker_id, 0.1)->getTaskResponse();
             $labels = ['worker_id' => $worker_num + $task_worker_id, 'task_worker_id' => $task_worker_id];
 
             $str .= $this->formatter->gauge('swoole_task_worker_memory_usage', $stats[0], $labels);

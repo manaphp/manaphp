@@ -12,18 +12,17 @@ trait WorkersTrait
 {
     #[Autowired] protected WorkersInterface $workers;
 
-    public function task(int $task_worker_id): static|Task
-    {
-        return new Task($this->workers, static::class, $task_worker_id);
-    }
-
     public function sendMessage(int $task_worker_id): static|SendMessage
     {
         return new SendMessage($this->workers, static::class, $task_worker_id);
     }
 
-    public function taskwait(float $timeout, int $task_worker_id): static|TaskWait
+    public function task(int $task_worker_id, float $timeout = null): static|TaskWait|Task
     {
-        return new TaskWait($this->workers, static::class, $timeout, $task_worker_id);
+        if ($timeout === null) {
+            return new Task($this->workers, static::class, $task_worker_id);
+        } else {
+            return new TaskWait($this->workers, static::class, $timeout, $task_worker_id);
+        }
     }
 }

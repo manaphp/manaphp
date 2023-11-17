@@ -47,7 +47,7 @@ class RequestsTotalCollector implements CollectorInterface
 
     public function export(): string
     {
-        $totals = $this->taskwait(1.0, 0)->getResponse();
+        $totals = $this->task(0, 1.0)->getResponse();
 
         return $this->formatter->counter('app_http_requests_total', $totals, [], ['code', 'handler']);
     }

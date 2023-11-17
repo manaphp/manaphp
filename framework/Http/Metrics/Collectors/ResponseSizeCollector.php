@@ -59,7 +59,7 @@ class ResponseSizeCollector implements CollectorInterface
 
     public function export(): string
     {
-        $histograms = $this->taskwait(1.0, 0)->getResponse();
+        $histograms = $this->task(0, 1.0)->getResponse();
 
         return $this->formatter->histogram('app_http_response_size_bytes', $histograms, [], ['handler']);
     }
