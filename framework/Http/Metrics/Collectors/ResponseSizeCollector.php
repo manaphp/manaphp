@@ -12,15 +12,16 @@ use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
-use ManaPHP\Swoole\WorkersInterface;
+use ManaPHP\Swoole\WorkersTrait;
 
 class ResponseSizeCollector implements CollectorInterface
 {
+    use WorkersTrait;
+
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
-    #[Autowired] protected WorkersInterface $workers;
 
     #[Autowired] protected array $buckets = [1 << 10, 1 << 12, 1 << 14, 1 << 16, 1 << 18, 1 << 20];
 
@@ -52,17 +53,14 @@ class ResponseSizeCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $size = $this->response->getContentLength();
 
-            $arguments = [$handler, $size];
-            $this->workers->task([$this, 'taskUpdateMetric'], $arguments, 0);
+            $this->task(0)->taskUpdateMetric($handler, $size);
         }
     }
 
     public function export(): string
     {
-        if (($histograms = $this->workers->taskwait([$this, 'taskExport'], [], 1, 0)) === false) {
-            return '';
-        } else {
-            return $this->formatter->histogram('app_http_response_size_bytes', $histograms, [], ['handler']);
-        }
+        $histograms = $this->taskwait(1.0, 0)->taskExport();
+
+        return $this->formatter->histogram('app_http_response_size_bytes', $histograms, [], ['handler']);
     }
 }

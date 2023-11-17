@@ -11,14 +11,15 @@ use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
-use ManaPHP\Swoole\WorkersInterface;
+use ManaPHP\Swoole\WorkersTrait;
 
 class RequestDurationCollector implements CollectorInterface
 {
+    use WorkersTrait;
+
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected WorkersInterface $workers;
 
     #[Autowired] protected array $buckets = ['0.1', '0.2', '0.4', '1', '3', '10'];
 
@@ -50,17 +51,14 @@ class RequestDurationCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $elapsed = $this->request->elapsed();
 
-            $arguments = [$handler, $elapsed];
-            $this->workers->task([$this, 'taskUpdateMetrics'], $arguments, 0);
+            $this->task(0)->taskUpdateMetrics($handler, $elapsed);
         }
     }
 
     public function export(): string
     {
-        if (($histograms = $this->workers->taskwait([$this, 'taskExport'], [], 1, 0)) === false) {
-            return '';
-        } else {
-            return $this->formatter->histogram('app_http_request_duration_seconds', $histograms, [], ['handler']);
-        }
+        $histograms = $this->taskwait(1.0, 0)->taskExport();
+
+        return $this->formatter->histogram('app_http_request_duration_seconds', $histograms, [], ['handler']);
     }
 }

@@ -7,21 +7,22 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
-use ManaPHP\Swoole\WorkersInterface;
+use ManaPHP\Swoole\WorkersTrait;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 
 class CoroutineStatsCollector implements CollectorInterface
 {
     use ContextTrait;
+    use WorkersTrait;
 
     #[Autowired] protected FormatterInterface $formatter;
-    #[Autowired] protected WorkersInterface $workers;
 
     public function taskExportRequest(int $cid, int $worker_id): void
     {
-        $arguments = [$cid, $this->workers->getWorkerId(), Coroutine::stats()];
-        $this->workers->sendMessage([$this, 'taskExportResponse'], $arguments, $worker_id);
+        $my_worker_id = $this->workers->getWorkerId();
+        $stats = Coroutine::stats();
+        $this->sendMessage($worker_id)->taskExportResponse($cid, $my_worker_id, $stats);
     }
 
     public function taskExportResponse(int $cid, $worker_id, array $stats): void
@@ -43,8 +44,7 @@ class CoroutineStatsCollector implements CollectorInterface
 
         for ($worker_id = 0; $worker_id < $worker_num; $worker_id++) {
             if ($this->workers->getWorkerId() !== $worker_id) {
-                $arguments = [Coroutine::getCid(), $this->workers->getWorkerId()];
-                $this->workers->sendMessage([$this, 'taskExportRequest'], $arguments, $worker_id);
+                $this->sendMessage($worker_id)->taskExportRequest(Coroutine::getCid(), $this->workers->getWorkerId());
             }
         }
 

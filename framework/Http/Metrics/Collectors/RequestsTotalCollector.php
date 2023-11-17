@@ -10,14 +10,15 @@ use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
-use ManaPHP\Swoole\WorkersInterface;
+use ManaPHP\Swoole\WorkersTrait;
 
 class RequestsTotalCollector implements CollectorInterface
 {
+    use WorkersTrait;
+
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected DispatcherInterface $dispatcher;
-    #[Autowired] protected WorkersInterface $workers;
 
     protected array $totals = [];
 
@@ -40,16 +41,13 @@ class RequestsTotalCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $code = $this->response->getStatusCode();
 
-            $arguments = [$code, $handler];
-            $this->workers->task([$this, 'taskUpdateMetrics'], $arguments, 0);
+            $this->task(0)->taskUpdateMetrics($code, $handler);
         }
     }
 
     public function export(): string
     {
-        if (($totals = $this->workers->taskwait([$this, 'taskExport'], [], 1, 0)) === false) {
-            return '';
-        }
+        $totals = $this->taskwait(1.0, 0)->taskExport();
 
         return $this->formatter->counter('app_http_requests_total', $totals, [], ['code', 'handler']);
     }
