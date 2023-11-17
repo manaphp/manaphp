@@ -9,7 +9,7 @@ use Swoole\Http\Server;
 #[Verbosity(Verbosity::HIGH)]
 class ServerWorkerStart
 {
-    public function __construct(public Server $server, public int $worker_id)
+    public function __construct(public Server $server, public int $worker_id, public int $worker_num)
     {
 
     }

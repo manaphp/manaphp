@@ -7,9 +7,9 @@ use ManaPHP\Eventing\Attribute\Verbosity;
 use Swoole\Http\Server;
 
 #[Verbosity(Verbosity::HIGH)]
-class ServerWorkerStop
+class ServerTaskerStart
 {
-    public function __construct(public Server $server, public int $worker_id, public int $worker_num)
+    public function __construct(public Server $server, public int $worker_id, public int $tasker_id)
     {
 
     }

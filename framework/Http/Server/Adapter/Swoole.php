@@ -28,6 +28,8 @@ use ManaPHP\Http\Server\Event\ServerReady;
 use ManaPHP\Http\Server\Event\ServerShutdown;
 use ManaPHP\Http\Server\Event\ServerStart;
 use ManaPHP\Http\Server\Event\ServerTask;
+use ManaPHP\Http\Server\Event\ServerTaskerStart;
+use ManaPHP\Http\Server\Event\ServerTaskerStop;
 use ManaPHP\Http\Server\Event\ServerWorkerError;
 use ManaPHP\Http\Server\Event\ServerWorkerExit;
 use ManaPHP\Http\Server\Event\ServerWorkerStart;
@@ -166,14 +168,19 @@ class Swoole extends AbstractServer
         } else {
             $tasker_id = $worker_id - $worker_num;
             @cli_set_process_title(sprintf('%s.swoole-worker.%d.%d', $this->app_id, $worker_id, $tasker_id));
+            $this->dispatchEvent(new ServerTaskerStart($server, $worker_id, $tasker_id));
         }
 
-        $this->dispatchEvent(new ServerWorkerStart($server, $worker_id));
+        $this->dispatchEvent(new ServerWorkerStart($server, $worker_id, $worker_num));
     }
 
     public function onWorkerStop(Server $server, int $worker_id): void
     {
-        $this->dispatchEvent(new ServerWorkerStop($server, $worker_id));
+        $worker_num = $server->setting['worker_num'];
+        if ($worker_id >= $worker_num) {
+            $this->dispatchEvent(new ServerTaskerStop($server, $worker_id, $worker_id - $worker_num));
+        }
+        $this->dispatchEvent(new ServerWorkerStop($server, $worker_id, $worker_num));
     }
 
     public function onWorkerExit(Server $server, int $worker_id): void
