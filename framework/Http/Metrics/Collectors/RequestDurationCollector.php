@@ -25,10 +25,10 @@ class RequestDurationCollector implements CollectorInterface
 
     protected array $histograms = [];
 
-    public function updateRequest(string $path, float $elapsed): void
+    public function updateRequest(string $handler, float $elapsed): void
     {
-        if (($histogram = $this->histograms[$path] ?? null) === null) {
-            $histogram = $this->histograms[$path] = new Histogram($this->buckets);
+        if (($histogram = $this->histograms[$handler] ?? null) === null) {
+            $histogram = $this->histograms[$handler] = new Histogram($this->buckets);
         }
 
         foreach ($this->buckets as $le) {
