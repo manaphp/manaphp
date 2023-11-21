@@ -6,7 +6,7 @@ namespace ManaPHP\Redis;
 /**
  * @mixin \Redis
  */
-interface RedisCacheInterface
+interface RedisCacheInterface extends TransientCopyable
 {
 
 }

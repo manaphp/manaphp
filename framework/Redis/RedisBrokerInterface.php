@@ -6,7 +6,7 @@ namespace ManaPHP\Redis;
 /**
  * @mixin \Redis
  */
-interface RedisBrokerInterface
+interface RedisBrokerInterface extends TransientCopyable
 {
 
 }
