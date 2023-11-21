@@ -27,7 +27,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Pooling\PoolsInterface;
-use ManaPHP\Pooling\Transient;
 use PDO;
 use PDOException;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -618,29 +617,15 @@ class Db implements DbInterface
         return $this->maker->make(Query::class, [$this])->from($table, $alias);
     }
 
-    public function getTransientWrapper(string $type = 'default'): Transient
+    public function getTransientCopy(?string $type = null): static
     {
-        return $this->pools->transient($this, $this->timeout, $type);
-    }
-
-    public function transientCall(object $instance, string $method, array $arguments): mixed
-    {
-        /** @var DbContext $context */
-        $context = $this->getContext();
-
-        if ($context->connection !== null) {
-            throw new MisuseException('');
+        if ($type === null) {
+            $type = $this->has_slave ? 'slave' : 'default';
         }
 
-        if (!$instance instanceof ConnectionInterface) {
-            throw new MisuseException('');
-        }
+        /** @var ConnectionInterface $connection */
+        $connection = $this->pools->pop($this, $this->timeout, $type);
 
-        $context->connection = $instance;
-        try {
-            return $this->{$method}(...$arguments);
-        } finally {
-            $context->connection = null;
-        }
+        return new TransientDb($this->pools, $this, $connection, $type);
     }
 }

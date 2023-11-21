@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Db;
 
-use ManaPHP\Pooling\Transientable;
 use PDO;
 
-interface DbInterface extends Transientable
+interface DbInterface
 {
     public function getPrefix(): string;
 
@@ -55,4 +54,6 @@ interface DbInterface extends Transientable
     public function buildSql(array $params): string;
 
     public function query(?string $table = null, ?string $alias = null): Query;
+
+    public function getTransientCopy(?string $type = null): static;
 }
