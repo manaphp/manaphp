@@ -105,13 +105,6 @@ class Pools implements PoolsInterface
         return new Proxy($this, $owner, $instance, $type);
     }
 
-    public function transient(Transientable $owner, ?float $timeout = null, string $type = 'default'): Transient
-    {
-        $instance = $this->pop($owner, $timeout, $type);
-
-        return new Transient($this, $owner, $instance, $type);
-    }
-
     public function isEmpty(object $owner, string $type = 'default'): bool
     {
         if (!$queue = $this->pools[$owner][$type] ?? null) {

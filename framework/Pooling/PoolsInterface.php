@@ -17,8 +17,6 @@ interface PoolsInterface
 
     public function get(object $owner, ?float $timeout = null, string $type = 'default'): Proxy;
 
-    public function transient(Transientable $owner, ?float $timeout = null, string $type = 'default'): Transient;
-
     public function exists(object $owner, string $type = 'default'): bool;
 
     public function size(object $owner, string $type = 'default'): int;
