@@ -10,4 +10,8 @@ interface ProcessInterface
     public function isEnabled(): bool;
 
     public function getNumberOfInstances(): int;
+
+    public function isEnableCoroutine(): bool;
+
+    public function getPipeType(): int;
 }

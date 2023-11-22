@@ -36,13 +36,18 @@ class Processes implements ProcessesInterface
     {
         $numberOfInstances = $process->getNumberOfInstances();
         for ($index = 0; $index < $numberOfInstances; $index++) {
-            $proc = new Process(function () use ($process, $index, $server) {
+            $proc = new Process(function (Process $proc) use ($process, $index, $server) {
                 \swoole_set_process_name($this->getProcessTitle($process, $index));
 
-                $this->eventDispatcher->dispatch(new ProcessHandling($server, $index));
+                $this->listenerProvider->add($process);
+
+                $this->eventDispatcher->dispatch(new ProcessHandling($server, $proc, $index));
                 $process->handle();
-                $this->eventDispatcher->dispatch(new ProcessHandled($server, $index));
-            });
+                $this->eventDispatcher->dispatch(new ProcessHandled($server, $proc, $index));
+            }, false,
+                $process->getPipeType(),
+                $process->isEnableCoroutine()
+            );
 
             $server->addProcess($proc);
         }
