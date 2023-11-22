@@ -7,28 +7,20 @@ use ManaPHP\Di\Attribute\Autowired;
 
 abstract class AbstractProcess implements ProcessInterface
 {
-    #[Autowired] protected int $number_of_instances = 1;
     #[Autowired] protected bool $enabled = true;
-    #[Autowired] protected bool $enable_coroutine = true;
-    #[Autowired] protected int $pipe_type = SOCK_DGRAM;
+    #[Autowired] protected array $settings = [];
 
     public function isEnabled(): bool
     {
         return $this->enabled;
     }
 
-    public function getNumberOfInstances(): int
+    public function getSettings(): array
     {
-        return $this->number_of_instances;
-    }
-
-    public function isEnableCoroutine(): bool
-    {
-        return $this->enable_coroutine;
-    }
-
-    public function getPipeType(): int
-    {
-        return $this->pipe_type;
+        return $this->settings + [
+                self::SETTINGS_NUMS             => 1,
+                self::SETTINGS_PIPE_TYPE        => SOCK_DGRAM,
+                self::SETTINGS_ENABLE_COROUTINE => true,
+            ];
     }
 }

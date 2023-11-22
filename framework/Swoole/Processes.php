@@ -34,8 +34,10 @@ class Processes implements ProcessesInterface
 
     protected function startProcess(Server $server, ProcessInterface $process)
     {
-        $numberOfInstances = $process->getNumberOfInstances();
-        for ($index = 0; $index < $numberOfInstances; $index++) {
+        $settings = $process->getSettings();
+
+        $nums = $settings[ProcessInterface::SETTINGS_NUMS] ?? 1;
+        for ($index = 0; $index < $nums; $index++) {
             $proc = new Process(function (Process $proc) use ($process, $index, $server) {
                 \swoole_set_process_name($this->getProcessTitle($process, $index));
 
@@ -45,8 +47,8 @@ class Processes implements ProcessesInterface
                 $process->handle();
                 $this->eventDispatcher->dispatch(new ProcessHandled($server, $proc, $index));
             }, false,
-                $process->getPipeType(),
-                $process->isEnableCoroutine()
+                $settings[ProcessInterface::SETTINGS_PIPE_TYPE] ?? SOCK_DGRAM,
+                $settings[ProcessInterface::SETTINGS_ENABLE_COROUTINE] ?? true
             );
 
             $server->addProcess($proc);
