@@ -8,7 +8,7 @@ use ManaPHP\Swoole\AbstractProcess;
 use ManaPHP\Swoole\Process\Attribute\Settings;
 use Psr\Log\LoggerInterface;
 
-#[Settings(10)]
+#[Settings(2)]
 class TestProcess extends AbstractProcess
 {
     #[Autowired] protected LoggerInterface $logger;
