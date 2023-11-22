@@ -240,7 +240,7 @@ class Swoole extends AbstractServer
 
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
-        $this->dispatchEvent(new ServerReady());
+        $this->dispatchEvent(new ServerReady($this->swoole));
         $prefix = $this->config->get(RouterInterface::class)['prefix'] ?? '';
         $prefix = ltrim($prefix, '?');
         /** @noinspection HttpUrlsUsage */
