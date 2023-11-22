@@ -5,8 +5,10 @@ namespace App\Processes;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Swoole\AbstractProcess;
+use ManaPHP\Swoole\Process\Attribute\Settings;
 use Psr\Log\LoggerInterface;
 
+#[Settings(10)]
 class TestProcess extends AbstractProcess
 {
     #[Autowired] protected LoggerInterface $logger;

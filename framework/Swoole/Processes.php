@@ -9,9 +9,12 @@ use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\EventDispatcherInterface;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Http\Server\Event\ServerReady;
+use ManaPHP\Swoole\Process\Attribute\Settings;
 use ManaPHP\Swoole\Process\Event\ProcessHandled;
 use ManaPHP\Swoole\Process\Event\ProcessHandling;
 use Psr\Container\ContainerInterface;
+use ReflectionAttribute;
+use ReflectionClass;
 use Swoole\Http\Server;
 use Swoole\Process;
 
@@ -34,10 +37,14 @@ class Processes implements ProcessesInterface
 
     protected function startProcess(Server $server, ProcessInterface $process)
     {
-        $settings = $process->getSettings();
+        $rClass = new ReflectionClass($process);
+        if (($attributes = $rClass->getAttributes(Settings::class, ReflectionAttribute::IS_INSTANCEOF)) !== []) {
+            $settings = $attributes[0]->newInstance();
+        } else {
+            $settings = new Settings();
+        }
 
-        $nums = $settings[ProcessInterface::SETTINGS_NUMS] ?? 1;
-        for ($index = 0; $index < $nums; $index++) {
+        for ($index = 0; $index < $settings->nums; $index++) {
             $proc = new Process(function (Process $proc) use ($process, $index, $server) {
                 \swoole_set_process_name($this->getProcessTitle($process, $index));
 
@@ -47,8 +54,8 @@ class Processes implements ProcessesInterface
                 $process->handle();
                 $this->eventDispatcher->dispatch(new ProcessHandled($server, $proc, $index));
             }, false,
-                $settings[ProcessInterface::SETTINGS_PIPE_TYPE] ?? SOCK_DGRAM,
-                $settings[ProcessInterface::SETTINGS_ENABLE_COROUTINE] ?? true
+                $settings->pipe_type,
+                $settings->enable_coroutine,
             );
 
             $server->addProcess($proc);
@@ -57,12 +64,14 @@ class Processes implements ProcessesInterface
 
     public function onServerReady(#[Event] ServerReady $event)
     {
-        foreach ($this->processes as $definition) {
-            /** @var ProcessInterface $process */
-            $process = $this->container->get($definition);
+        if (isset($event->server)) {
+            foreach ($this->processes as $definition) {
+                /** @var ProcessInterface $process */
+                $process = $this->container->get($definition);
 
-            if ($process->isEnabled()) {
-                $this->startProcess($event->server, $process);
+                if ($process->isEnabled()) {
+                    $this->startProcess($event->server, $process);
+                }
             }
         }
     }
