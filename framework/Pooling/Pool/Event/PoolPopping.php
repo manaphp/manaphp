@@ -24,6 +24,5 @@ class PoolPopping
              'type'  => $this->type
             ]
         );
-
     }
 }
