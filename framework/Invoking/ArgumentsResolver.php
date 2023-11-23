@@ -32,6 +32,10 @@ class ArgumentsResolver implements ArgumentsResolverInterface
     public function __construct()
     {
         foreach ($this->resolvers as $resolver) {
+            if ($resolver === '' || $resolver === null) {
+                continue;
+            }
+
             if (!str_contains($resolver, '\\')) {
                 $resolver = __NAMESPACE__ . '\\ValueResolver\\' . ucfirst($resolver);
             }

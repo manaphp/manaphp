@@ -31,7 +31,9 @@ abstract class AbstractHandler implements HandlerInterface
     public function __construct()
     {
         foreach ($this->middlewares as $middleware) {
-            $this->listenerProvider->add($middleware);
+            if ($middleware !== '' && $middleware !== null) {
+                $this->listenerProvider->add($middleware);
+            }
         }
     }
 

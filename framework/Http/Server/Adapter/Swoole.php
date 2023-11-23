@@ -299,9 +299,11 @@ class Swoole extends AbstractServer
         $this->dispatchEvent(new RequestResponsing($this->request, $this->response));
 
         foreach ($this->response->getAppenders() as $appender) {
-            /** @var string|AppenderInterface $appender */
-            $appender = $this->container->get($appender);
-            $appender->append($this->request, $this->response);
+            if ($appender !== '' && $appender !== null) {
+                /** @var string|AppenderInterface $appender */
+                $appender = $this->container->get($appender);
+                $appender->append($this->request, $this->response);
+            }
         }
 
         /** @var SwooleContext $context */

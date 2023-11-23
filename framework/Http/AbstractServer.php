@@ -35,9 +35,11 @@ abstract class AbstractServer implements ServerInterface
     protected function bootstrap(): void
     {
         foreach ($this->bootstrappers as $name) {
-            /** @var BootstrapperInterface $bootstrapper */
-            $bootstrapper = $this->container->get($name);
-            $bootstrapper->bootstrap();
+            if ($name !== '' && $name !== null) {
+                /** @var BootstrapperInterface $bootstrapper */
+                $bootstrapper = $this->container->get($name);
+                $bootstrapper->bootstrap();
+            }
         }
     }
 }

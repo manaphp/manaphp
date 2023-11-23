@@ -66,14 +66,12 @@ class Processes implements ProcessesInterface
     {
         if (isset($event->server)) {
             foreach ($this->processes as $definition) {
-                if ($definition === '' || $definition === null) {
-                    continue;
+                if ($definition !== '' && $definition !== null) {
+                    /** @var ProcessInterface $process */
+                    $process = $this->container->get($definition);
+
+                    $this->startProcess($event->server, $process);
                 }
-
-                /** @var ProcessInterface $process */
-                $process = $this->container->get($definition);
-
-                $this->startProcess($event->server, $process);
             }
         }
     }

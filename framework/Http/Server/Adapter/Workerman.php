@@ -131,9 +131,11 @@ class Workerman extends AbstractServer
         $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
 
         foreach ($this->response->getAppenders() as $appender) {
-            /** @var string|AppenderInterface $appender */
-            $appender = $this->container->get($appender);
-            $appender->append($this->request, $this->response);
+            if ($appender !== '' && $appender !== null) {
+                /** @var string|AppenderInterface $appender */
+                $appender = $this->container->get($appender);
+                $appender->append($this->request, $this->response);
+            }
         }
 
         Http::header('HTTP', true, $this->response->getStatusCode());

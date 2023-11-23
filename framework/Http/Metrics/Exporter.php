@@ -27,10 +27,12 @@ class Exporter implements ExporterInterface
     {
         $metrics = '';
         foreach ($this->collectors as $name) {
-            /** @var CollectorInterface $collector */
-            $collector = $this->container->get($name);
-            $m = $collector->export();
-            $metrics .= $m;
+            if ($name !== '' && $name !== null) {
+                /** @var CollectorInterface $collector */
+                $collector = $this->container->get($name);
+                $m = $collector->export();
+                $metrics .= $m;
+            }
         }
 
         return $this->response->setContent($metrics)->setContentType('text/plain; version=0.0.4; charset=utf-8');
