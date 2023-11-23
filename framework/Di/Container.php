@@ -244,31 +244,14 @@ class Container implements ContainerInterface
             if (($object = $this->instances[$name] ?? null) === null) {
                 $object = $this->makeInternal($name, [], $name);
             }
-            return $this->call([$object, '__invoke'], compact('parameters', 'id'));
+            $instance = $this->call([$object, '__invoke'], compact('parameters', 'id'));
         } else {
-            return $this->makeInternal($name, $parameters, $id);
-        }
-    }
-
-    protected function getInternal(string $id, mixed $definition): mixed
-    {
-        if (\is_string($definition)) {
-            $instance = $this->make($definition, [], $id);
-        } elseif (\is_object($definition)) {
-            return $definition;
-        } elseif (\is_array($definition)) {
-            if (($class = $definition['class'] ?? null) !== null) {
-                unset($definition['class']);
-            } else {
-                $class = $id;
-            }
-
-            $instance = $this->make($class, $definition, $id);
-        } else {
-            throw new Exception(sprintf('The definition of `%s` is not supported.', $id));
+            $instance = $this->makeInternal($name, $parameters, $id);
         }
 
-        $this->dispatchEvent(new SingletonCreated($id, $instance, $this->definitions));
+        if ($id !== null) {
+            $this->dispatchEvent(new SingletonCreated($id, $instance, $this->definitions));
+        }
 
         return $instance;
     }
@@ -277,39 +260,32 @@ class Container implements ContainerInterface
     {
         if (($instance = $this->instances[$id] ?? null) !== null) {
             return $instance;
-        }
-
-        if (($definition = $this->definitions[$id] ?? null) !== null) {
-            if (\is_string($definition) && str_ends_with($id, 'Interface') && str_ends_with($definition, 'Interface')) {
-                return $this->instances[$id] = $this->get($definition);
+        } elseif (($definition = $this->definitions[$id] ?? null) === null) {
+            if (\str_contains($id, '#')) {
+                throw new Exception(sprintf('The definition of `%s` is not found.', $id));
+            }
+            return $this->instances[$id] = $this->make($id, [], $id);
+        } elseif (\is_object($definition)) {
+            return $this->instances[$id] = $definition;
+        } elseif (\is_array($definition)) {
+            if (($class = $definition['class'] ?? null) !== null) {
+                unset($definition['class']);
+            } else {
+                $class = ($position = strpos($id, '#')) === false ? $id : \substr($id, 0, $position);
             }
 
-            for (; ;) {
-                if (\is_string($definition)) {
-                    if ($definition[0] === '#') {
-                        $definition = "$id$definition";
-                    }
-
-                    if (str_contains($definition, '#')) {
-                        if (($definition = $this->definitions[$definition] ?? null) === null) {
-                            throw new Exception(sprintf('The definition of `%s` is not found.', $id));
-                        }
-                    } else {
-                        if (($v = $this->definitions[$definition] ?? null) !== null) {
-                            $definition = $v;
-                        } else {
-                            break;
-                        }
-                    }
-                } else {
-                    break;
-                }
-            }
+            return $this->instances[$id] = $this->make($class, $definition, $id);
+        } elseif (!\is_string($definition)) {
+            throw new Exception(sprintf('The definition of `%s` is not supported.', $id));
+        } elseif ($definition[0] === '#') {
+            return $this->instances[$id] = $this->get("$id$definition");
+        } elseif (\str_contains($definition, '#')) {
+            return $this->instances[$id] = $this->get($definition);
+        } elseif (\interface_exists($definition) && \interface_exists($id)) {
+            return $this->instances[$id] = $this->get($definition);
         } else {
-            $definition = $id;
+            return $this->instances[$id] = $this->make($definition, [], $id);
         }
-
-        return $this->instances[$id] = $this->getInternal($id, $definition);
     }
 
     public function getDefinitions(): array
