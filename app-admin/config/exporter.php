@@ -14,6 +14,7 @@ return [
             'ManaPHP\Http\Metrics\Collectors\MemoryUsageCollector',
             'ManaPHP\Http\Metrics\Collectors\RedisCommandCollector',
             'ManaPHP\Http\Metrics\Collectors\SqlStatementCollector',
+            'ManaPHP\Http\Metrics\Collectors\RedisGetResponseSizeCollector',
         ],
     ],
 ];
