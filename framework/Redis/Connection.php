@@ -176,9 +176,11 @@ class Connection
     {
         $this->eventDispatcher->dispatch(new RedisCalling($this, $method, $arguments));
 
+        $start_time = \microtime(true);
         $return = $this->call($method, $arguments);
+        $elapsed = \microtime(true) - $start_time;
 
-        $this->eventDispatcher->dispatch(new RedisCalled($this, $method, $arguments, $return));
+        $this->eventDispatcher->dispatch(new RedisCalled($this, $method, $arguments, $elapsed, $return));
 
         return $return;
     }

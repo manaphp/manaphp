@@ -13,6 +13,7 @@ class RedisCalled
         public Connection $redis,
         public string $method,
         public array $arguments,
+        public float $elapsed,
         public mixed $return,
     ) {
 

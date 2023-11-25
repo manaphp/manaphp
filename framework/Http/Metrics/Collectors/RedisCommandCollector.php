@@ -12,7 +12,6 @@ use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Redis\Event\RedisCalled;
-use ManaPHP\Redis\Event\RedisCalling;
 use ManaPHP\Swoole\WorkersTrait;
 
 class RedisCommandCollector implements CollectorInterface
@@ -43,20 +42,12 @@ class RedisCommandCollector implements CollectorInterface
         return $this->histograms;
     }
 
-    public function onRedisCalling(#[Event] RedisCalling $event): void
-    {
-        /** @var RedisCommandCollectorContext $context */
-        $context = $this->getContext();
-        $context->command = strtolower($event->method);
-        $context->start_time = \microtime(true);
-    }
-
     public function onRedisCalled(#[Event] RedisCalled $event): void
     {
         /** @var RedisCommandCollectorContext $context */
         $context = $this->getContext();
 
-        $context->commands[] = [$context->command, \microtime(true) - $context->start_time];
+        $context->commands[] = [strtolower($event->method), $event->elapsed];
     }
 
     public function onRequestEnd(#[Event] RequestEnd $event): void
