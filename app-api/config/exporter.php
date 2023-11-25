@@ -15,6 +15,7 @@ return [
             'ManaPHP\Http\Metrics\Collectors\RedisCommandCollector',
             'ManaPHP\Http\Metrics\Collectors\SqlStatementCollector',
             'ManaPHP\Http\Metrics\Collectors\RedisGetResponseSizeCollector',
+            'ManaPHP\Http\Metrics\Collectors\RedisGetCommandDurationCollector',
         ],
     ],
 ];
