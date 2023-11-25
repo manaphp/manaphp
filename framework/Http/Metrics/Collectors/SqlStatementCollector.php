@@ -5,9 +5,7 @@ namespace ManaPHP\Http\Metrics\Collectors;
 
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuted;
-use ManaPHP\Db\Event\DbExecuting;
 use ManaPHP\Db\Event\DbQueried;
-use ManaPHP\Db\Event\DbQuerying;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\DispatcherInterface;
@@ -45,20 +43,12 @@ class SqlStatementCollector implements CollectorInterface
         return $this->histograms;
     }
 
-    public function onDbQueryingOrDbExecuting(#[Event] DbQuerying|DbExecuting $event): void
-    {
-        /** @var SqlStatementCollectorContext $context */
-        $context = $this->getContext();
-        $context->statement = $event instanceof DbExecuting ? $event->type : 'select';
-        $context->start_time = \microtime(true);
-    }
-
     public function onDbQueriedOrDbExecuted(#[Event] DbQueried|DbExecuted $event): void
     {
         /** @var SqlStatementCollectorContext $context */
         $context = $this->getContext();
 
-        $context->statements[] = [$context->statement, \microtime(true) - $context->start_time];
+        $context->statements[] = [$event instanceof DbExecuted ? $event->type : 'select', $event->elapsed];
     }
 
     public function onRequestEnd(#[Event] RequestEnd $event): void
