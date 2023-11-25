@@ -12,6 +12,7 @@ return [
             'ManaPHP\Http\Metrics\Collectors\CoroutineOptionsCollector',
             'ManaPHP\Http\Metrics\Collectors\ResponseSizeCollector',
             'ManaPHP\Http\Metrics\Collectors\MemoryUsageCollector',
+            'ManaPHP\Http\Metrics\Collectors\RedisCommandCollector'
         ],
     ],
 ];
