@@ -30,15 +30,7 @@ class RequestDurationCollector implements CollectorInterface
         if (($histogram = $this->histograms[$handler] ?? null) === null) {
             $histogram = $this->histograms[$handler] = new Histogram($this->buckets);
         }
-
-        foreach ($this->buckets as $le) {
-            if ($elapsed <= $le) {
-                $histogram->buckets[$le]++;
-            }
-        }
-
-        $histogram->sum += $elapsed;
-        $histogram->count++;
+        $histogram->update($elapsed);
     }
 
     public function getResponse(): array

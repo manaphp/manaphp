@@ -15,4 +15,16 @@ class Histogram
             $this->buckets[$bucket] = 0;
         }
     }
+
+    public function update(float $v): void
+    {
+        foreach ($this->buckets as $le => $_) {
+            if ($v <= $le) {
+                $this->buckets[$le]++;
+            }
+        }
+
+        $this->sum += $v;
+        $this->count++;
+    }
 }

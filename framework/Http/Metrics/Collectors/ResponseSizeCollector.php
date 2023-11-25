@@ -33,14 +33,7 @@ class ResponseSizeCollector implements CollectorInterface
             $histogram = $this->histograms[$handler] = new Histogram($this->buckets);
         }
 
-        foreach ($this->buckets as $bucket) {
-            if ($size <= $bucket) {
-                $histogram->buckets[$bucket]++;
-            }
-        }
-
-        $histogram->sum += $size;
-        $histogram->count++;
+        $histogram->update($size);
     }
 
     public function getResponse(): array
