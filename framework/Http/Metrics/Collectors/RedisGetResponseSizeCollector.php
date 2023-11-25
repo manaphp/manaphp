@@ -62,7 +62,9 @@ class RedisGetResponseSizeCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $context = $this->getContext();
 
-            $this->task($this->tasker_id)->updateRequest($handler, $context->commands);
+            if ($context->commands !== []) {
+                $this->task($this->tasker_id)->updateRequest($handler, $context->commands);
+            }
         }
     }
 

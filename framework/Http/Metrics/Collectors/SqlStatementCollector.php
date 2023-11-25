@@ -60,7 +60,9 @@ class SqlStatementCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $context = $this->getContext();
 
-            $this->task($this->tasker_id)->updateRequest($handler, $context->statements);
+            if ($context->statements !== []) {
+                $this->task($this->tasker_id)->updateRequest($handler, $context->statements);
+            }
         }
     }
 
