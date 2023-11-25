@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextTrait;
+use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\DispatcherInterface;
@@ -16,9 +16,9 @@ use ManaPHP\Swoole\WorkersTrait;
 
 class RedisGetCommandDurationCollector implements CollectorInterface
 {
-    use ContextTrait;
     use WorkersTrait;
 
+    #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
@@ -26,6 +26,11 @@ class RedisGetCommandDurationCollector implements CollectorInterface
     #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
+
+    public function getContext(int $cid = 0): RedisGetCommandDurationCollectorContext
+    {
+        return $this->contextor->getContext($this, $cid);
+    }
 
     public function updateRequest(string $handler, array $commands): void
     {
@@ -46,7 +51,6 @@ class RedisGetCommandDurationCollector implements CollectorInterface
     {
         $method = $event->method;
         if ($method === 'get' || $method === 'hGet') {
-            /** @var RedisGetCommandDurationCollectorContext $context */
             $context = $this->getContext();
 
             $context->commands[] = $event->elapsed;
@@ -56,7 +60,6 @@ class RedisGetCommandDurationCollector implements CollectorInterface
     public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         if (($handler = $this->dispatcher->getHandler()) !== null) {
-            /** @var RedisGetCommandDurationCollectorContext $context */
             $context = $this->getContext();
 
             $this->task($this->tasker_id)->updateRequest($handler, $context->commands);

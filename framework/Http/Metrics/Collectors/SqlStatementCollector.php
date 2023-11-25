@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextTrait;
+use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Db\Event\DbExecuted;
 use ManaPHP\Db\Event\DbQueried;
 use ManaPHP\Di\Attribute\Autowired;
@@ -17,9 +17,9 @@ use ManaPHP\Swoole\WorkersTrait;
 
 class SqlStatementCollector implements CollectorInterface
 {
-    use ContextTrait;
     use WorkersTrait;
 
+    #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
@@ -27,6 +27,11 @@ class SqlStatementCollector implements CollectorInterface
     #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
+
+    public function getContext(int $cid = 0): SqlStatementCollectorContext
+    {
+        return $this->contextor->getContext($this, $cid);
+    }
 
     public function updateRequest(string $handler, array $statements): void
     {
@@ -45,7 +50,6 @@ class SqlStatementCollector implements CollectorInterface
 
     public function onDbQueriedOrDbExecuted(#[Event] DbQueried|DbExecuted $event): void
     {
-        /** @var SqlStatementCollectorContext $context */
         $context = $this->getContext();
 
         $context->statements[] = [$event instanceof DbExecuted ? $event->type : 'select', $event->elapsed];
@@ -54,7 +58,6 @@ class SqlStatementCollector implements CollectorInterface
     public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         if (($handler = $this->dispatcher->getHandler()) !== null) {
-            /** @var SqlStatementCollectorContext $context */
             $context = $this->getContext();
 
             $this->task($this->tasker_id)->updateRequest($handler, $context->statements);

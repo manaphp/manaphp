@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextTrait;
+use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
@@ -13,10 +13,15 @@ use Swoole\Coroutine\Channel;
 
 class MemoryUsageCollector implements CollectorInterface
 {
-    use ContextTrait;
     use WorkersTrait;
 
+    #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
+
+    public function getContext(int $cid = 0): MemoryUsageCollectorContext
+    {
+        return $this->contextor->getContext($this, $cid);
+    }
 
     public function getWorkerRequest(int $cid, $worker_id): void
     {
@@ -27,7 +32,6 @@ class MemoryUsageCollector implements CollectorInterface
 
     public function getWorkerResponse(int $cid, int $worker_id, array $stats): void
     {
-        /** @var MemoryUsageCollectorContext $context */
         $context = $this->getContext($cid);
         $context->messages[$worker_id] = $stats;
         $context->channel->push(1);
@@ -40,7 +44,6 @@ class MemoryUsageCollector implements CollectorInterface
 
     public function export(): string
     {
-        /** @var MemoryUsageCollectorContext $context */
         $context = $this->getContext();
         $worker_num = $this->workers->getWorkerNum();
         $context->channel = new Channel($worker_num);

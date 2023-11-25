@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextTrait;
+use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\DispatcherInterface;
@@ -16,9 +16,9 @@ use ManaPHP\Swoole\WorkersTrait;
 
 class RedisGetResponseSizeCollector implements CollectorInterface
 {
-    use ContextTrait;
     use WorkersTrait;
 
+    #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
@@ -26,6 +26,11 @@ class RedisGetResponseSizeCollector implements CollectorInterface
     #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
+
+    public function getContext(int $cid = 0): RedisGetResponseSizeCollectorContext
+    {
+        return $this->contextor->getContext($this, $cid);
+    }
 
     public function updateRequest(string $handler, array $commands): void
     {
@@ -46,7 +51,6 @@ class RedisGetResponseSizeCollector implements CollectorInterface
     {
         $method = $event->method;
         if ($method === 'get' || $method === 'hGet') {
-            /** @var RedisGetResponseSizeCollectorContext $context */
             $context = $this->getContext();
 
             $context->commands[] = \is_string($event->return) ? \strlen($event->return) : 0;
@@ -56,7 +60,6 @@ class RedisGetResponseSizeCollector implements CollectorInterface
     public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         if (($handler = $this->dispatcher->getHandler()) !== null) {
-            /** @var RedisGetResponseSizeCollectorContext $context */
             $context = $this->getContext();
 
             $this->task($this->tasker_id)->updateRequest($handler, $context->commands);

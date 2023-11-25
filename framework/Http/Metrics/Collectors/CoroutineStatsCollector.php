@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextTrait;
+use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
@@ -13,10 +13,15 @@ use Swoole\Coroutine\Channel;
 
 class CoroutineStatsCollector implements CollectorInterface
 {
-    use ContextTrait;
     use WorkersTrait;
 
+    #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
+
+    public function getContext(int $cid = 0): CoroutineStatsCollectorContext
+    {
+        return $this->contextor->getContext($this, $cid);
+    }
 
     public function getRequest(int $cid, int $worker_id): void
     {
@@ -27,7 +32,6 @@ class CoroutineStatsCollector implements CollectorInterface
 
     public function getResponse(int $cid, $worker_id, array $stats): void
     {
-        /** @var CoroutineStatsCollectorContext $context */
         $context = $this->getContext($cid);
         $context->stats[$worker_id] = $stats;
         $context->channel->push(1);
@@ -35,7 +39,6 @@ class CoroutineStatsCollector implements CollectorInterface
 
     public function export(): string
     {
-        /** @var CoroutineStatsCollectorContext $context */
         $context = $this->getContext();
         $worker_num = $this->workers->getWorkerNum();
         $context->channel = new Channel($worker_num);
