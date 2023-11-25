@@ -12,7 +12,7 @@ use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersTrait;
 
-class RequestsTotalCollector implements CollectorInterface
+class HttpRequestsTotalCollector implements CollectorInterface
 {
     use WorkersTrait;
 

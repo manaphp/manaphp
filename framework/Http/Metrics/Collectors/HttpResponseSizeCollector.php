@@ -14,7 +14,7 @@ use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersTrait;
 
-class ResponseSizeCollector implements CollectorInterface
+class HttpResponseSizeCollector implements CollectorInterface
 {
     use WorkersTrait;
 

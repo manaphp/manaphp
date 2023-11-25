@@ -13,7 +13,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersTrait;
 
-class RequestDurationCollector implements CollectorInterface
+class HttpRequestDurationCollector implements CollectorInterface
 {
     use WorkersTrait;
 
