@@ -97,7 +97,7 @@
     <div class="tab-content">
         <div class="tab-pane" id="basic">
             <h4>Basic Information</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td style="width: 5%">#</td>
@@ -115,23 +115,30 @@
             </table>
         </div>
         <div class="tab-pane" id="dependencies">
-            <h4>Dependencies</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <h4>Dependencies({{Object.keys(dependency_values.filter(d=>is_show_dependency(d))).length}}) <label><input type="checkbox"
+                                                                                 v-model="dependency_non_singleton_only"><small>Non
+                Singleton Only</small>
+                </input></label> <label><input type="checkbox"
+                                              v-model="dependency_ignore_controller"><small> Ignore Controllers</small>
+                </input></label></h4>
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td width="5%">#</td>
                     <td width="5%">object_id</td>
-                    <td width="40%">name</td>
+                    <td width="40%">id</td>
                     <td>properties</td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item, name, index) in dependencies">
+                <tr v-for="(item, id, index) in dependencies"
+                    :class="{danger:item.instance_count>1 && typeof(item.properties)!=='string',info:typeof(item.properties)==='string'}"
+                    v-if="is_show_dependency(item)">
                     <td>{{index}}</td>
-                    <td>#{{item.object_id}}</td>
+                    <td :title="'instance_count: '+ item.instance_count">#{{item.object_id}}</td>
                     <td :title="item.class">
-                        <pre>{{name}}
-                            <div v-if="!name.startsWith(item.class)">=> {{item.class}}</div>
+                        <pre>{{id}}
+                            <div v-if="!id.startsWith(item.class)">=> {{item.class}}</div>
                         </pre>
                     </td>
                     <td :title="json_stringify(item.properties)">
@@ -142,24 +149,24 @@
             </table>
         </div>
         <div class="tab-pane" id="contexts">
-            <h4>Contexts</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <h4>Contexts({{Object.keys(dependency_values.filter(d => d.properties.context)).length}})</h4>
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td width="5%">#</td>
                     <td width="5%">object_id</td>
-                    <td width="40%">name</td>
+                    <td width="40%">id</td>
                     <td>contextors</td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item, name, index) in dependencies"
-                    v-if="item.properties.context && name!=='debugger'">
+                <tr v-for="(item, id, index) in dependencies"
+                    v-if="item.properties.context">
                     <td>{{index}}</td>
                     <td>#{{item.object_id}}</td>
                     <td :title="item.class">
-                        <pre>{{name}}
-                            <div v-if="!name.startsWith(item.class)">=> {{item.class}}</div>
+                        <pre>{{id}}
+                            <div v-if="!id.startsWith(item.class)">=> {{item.class}}</div>
                         </pre>
                     </td>
                     <td :title="json_stringify(item.properties.context)">
@@ -171,7 +178,7 @@
         </div>
         <div class="tab-pane" id="view">
             <h4>Renderer Files({{view.length}})</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td style="width: 5%">#</td>
@@ -191,8 +198,8 @@
             </table>
         </div>
         <div class="tab-pane" id="config">
-            <h4>Config</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <h4>Config({{Object.keys(dependencies['ManaPHP\\Di\\ConfigInterface'].properties.config).length}})</h4>
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td style="width: 5%">#</td>
@@ -213,7 +220,7 @@
         </div>
         <div class="tab-pane" id="global">
             <h4><span class="text-uppercase">{{global_type}}</span> Data</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td style="width: 5%">#</td>
@@ -231,12 +238,12 @@
             </table>
         </div>
         <div class="tab-pane" id="log">
-            <h4>Log Messages
+            <h4>Log Messages({{logger.log.length}})
                 <small><select v-model="logger.level" title="">
                     <option v-for="(intLevel,strLevel) in logger.levels" :value="intLevel">{{strLevel}}</option>
                 </select></small>
             </h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td>#</td>
@@ -260,8 +267,8 @@
             </table>
         </div>
         <div class="tab-pane" id="events">
-            <h4>Events</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <h4>Events({{events.length}})</h4>
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td>#</td>
@@ -281,11 +288,11 @@
             </table>
         </div>
         <div class="tab-pane" id="sql">
-            <h4>SQL Statements({{sql.count}})
-                <small><label><input type="checkbox" checked v-model="log_checked_executed">Executed</label></small>
+            <h4>SQL({{sql.count}})
+                <small><label><input type="checkbox" checked v-model="sql_executed"> Executed</label></small>
             </h4>
-            <div v-show="log_checked_executed">
-                <table class="table table-striped table-bordered table-condensed">
+            <div v-if="sql_executed">
+                <table class="table table-bordered table-condensed">
                     <thead>
                     <tr>
                         <td style="width: 50px">#</td>
@@ -304,8 +311,8 @@
                     </tbody>
                 </table>
             </div>
-            <div v-show="!log_checked_executed">
-                <table class="table table-striped table-bordered table-condensed">
+            <div v-else>
+                <table class="table table-bordered table-condensed">
                     <thead>
                     <tr>
                         <td style="width: 50px">#</td>
@@ -324,8 +331,8 @@
             </div>
         </div>
         <div class="tab-pane" id="mongodb">
-            <h4>Mongodb</h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <h4>Mongodb({{mongodb.length}})</h4>
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td>#</td>
@@ -351,7 +358,7 @@
                                                                                 v-model="included_files_application_only">
                 <small>Ignore Framework Files</small>
                 </input></label></h4>
-            <table class="table table-striped table-bordered table-condensed">
+            <table class="table table-bordered table-condensed">
                 <thead>
                 <tr>
                     <td style="width: 5%">#</td>
@@ -385,10 +392,17 @@
 
     let data = DEBUGGER_DATA;
 
-    data['included_files_application'] = [];
+    data.dependency_values = Object.values(data.dependencies);
+    for (let id in data.dependencies) {
+        let dependency = data.dependencies[id];
+        dependency.instance_count = (new Set(data.dependency_values.filter(d => d.class == dependency.class).map(d => (d.object_id)))).size
+    }
+
     data['included_files_application_only'] = true;
-    data['log_checked_executed'] = true;
+    data['sql_executed'] = true;
     data['global_type'] = 'request';
+    data['dependency_non_singleton_only'] = false;
+    data['dependency_ignore_controller'] = false;
 
     var app = new Vue({
         el: '#app',
@@ -398,7 +412,7 @@
                 if (data['included_files_application_only']) {
                     var computed = [];
                     for (var file of data['included_files']) {
-                        if (file.indexOf('ManaPHP') < 0 && file.indexOf('framework') < 0) {
+                        if (file.indexOf('/vendor/') < 0 && file.indexOf('framework') < 0) {
                             computed.push(file);
                         }
                     }
@@ -434,7 +448,11 @@
                 } else {
                     return str;
                 }
-            }
+            },
+            is_show_dependency: function (item) {
+                return (!this.dependency_non_singleton_only || (item.instance_count > 1 && typeof (item.properties) !== 'string'))
+                        && (!this.dependency_ignore_controller || !item.class.includes('Controllers'))
+            },
         }
     })
 </script>
