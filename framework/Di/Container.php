@@ -264,7 +264,14 @@ class Container implements ContainerInterface
             if (\str_contains($id, '#')) {
                 throw new Exception(sprintf('The definition of `%s` is not found.', $id));
             }
-            return $this->instances[$id] = $this->make($id, [], $id);
+
+            $instance = $this->make($id, [], $id);
+            if (class_exists($id, false) && \interface_exists($id . 'Interface', false)) {
+                unset($this->instances[$id]);
+                throw new MisuseException(sprintf('please autowire using %sInterface to replace %s.', $id, $id));
+            }
+
+            return $this->instances[$id] = $instance;
         } elseif (\is_object($definition)) {
             return $this->instances[$id] = $definition;
         } elseif (\is_array($definition)) {
@@ -277,11 +284,9 @@ class Container implements ContainerInterface
             return $this->instances[$id] = $this->make($class, $definition, $id);
         } elseif (!\is_string($definition)) {
             throw new Exception(sprintf('The definition of `%s` is not supported.', $id));
-        } elseif ($definition[0] === '#') {
-            return $this->instances[$id] = $this->get("$id$definition");
         } elseif (\str_contains($definition, '#')) {
-            return $this->instances[$id] = $this->get($definition);
-        } elseif (\interface_exists($definition) && \interface_exists($id)) {
+            return $this->instances[$id] = $this->get($definition[0] === '#' ? "$id$definition" : $definition);
+        } elseif (\interface_exists($definition)) {
             return $this->instances[$id] = $this->get($definition);
         } else {
             return $this->instances[$id] = $this->make($definition, [], $id);
