@@ -29,9 +29,9 @@ class RedisGetResponseSizeCollector implements CollectorInterface
 
     public function updateRequest(string $handler, array $commands): void
     {
-        foreach ($commands as list($command, $size)) {
-            if (($histogram = $this->histograms[$handler][$command] ?? null) === null) {
-                $histogram = $this->histograms[$handler][$command] = new Histogram($this->buckets);
+        foreach ($commands as $size) {
+            if (($histogram = $this->histograms[$handler] ?? null) === null) {
+                $histogram = $this->histograms[$handler] = new Histogram($this->buckets);
             }
             $histogram->update($size);
         }
@@ -49,7 +49,7 @@ class RedisGetResponseSizeCollector implements CollectorInterface
             /** @var RedisGetResponseSizeCollectorContext $context */
             $context = $this->getContext();
 
-            $context->commands[] = [strtolower($method), \is_string($event->return) ? \strlen($event->return) : 0];
+            $context->commands[] = \is_string($event->return) ? \strlen($event->return) : 0;
         }
     }
 
@@ -67,7 +67,7 @@ class RedisGetResponseSizeCollector implements CollectorInterface
     {
         $histograms = $this->task($this->tasker_id, 0.1)->getResponse();
 
-        return $this->formatter->histogram('app_redis_get_response_size_bytes', $histograms, [], ['handler', 'command']
+        return $this->formatter->histogram('app_redis_get_response_size_bytes', $histograms, [], ['handler']
         );
     }
 }
