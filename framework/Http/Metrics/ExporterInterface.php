@@ -8,5 +8,5 @@ use ManaPHP\Http\ResponseInterface;
 
 interface ExporterInterface extends BootstrapperInterface
 {
-    public function export(): ResponseInterface;
+    public function export(?array $collectors = null): ResponseInterface;
 }

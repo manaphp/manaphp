@@ -23,10 +23,10 @@ class Exporter implements ExporterInterface
         }
     }
 
-    public function export(): ResponseInterface
+    public function export(?array $collectors = null): ResponseInterface
     {
         $metrics = '';
-        foreach ($this->collectors as $name) {
+        foreach ($collectors ?? $this->collectors as $name) {
             if ($name !== '' && $name !== null) {
                 /** @var CollectorInterface $collector */
                 $collector = $this->container->get($name);
