@@ -24,6 +24,7 @@ class RedisCommandCollector implements CollectorInterface
     #[Autowired] protected DispatcherInterface $dispatcher;
 
     #[Autowired] protected array $buckets = ['0.001', '0.005', '0.01', '0.05', '0.1', '0.5', '1'];
+    #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
 
@@ -64,13 +65,13 @@ class RedisCommandCollector implements CollectorInterface
             /** @var RedisCommandCollectorContext $context */
             $context = $this->getContext();
 
-            $this->task(0)->updateRequest($handler, $context->commands);
+            $this->task($this->tasker_id)->updateRequest($handler, $context->commands);
         }
     }
 
     public function export(): string
     {
-        $histograms = $this->task(0, 1.0)->getResponse();
+        $histograms = $this->task($this->tasker_id, 0.1)->getResponse();
 
         return $this->formatter->histogram('app_redis_command_duration_seconds', $histograms, [], ['handler', 'command']
         );

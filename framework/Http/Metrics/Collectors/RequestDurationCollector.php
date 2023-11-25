@@ -22,6 +22,7 @@ class RequestDurationCollector implements CollectorInterface
     #[Autowired] protected RequestInterface $request;
 
     #[Autowired] protected array $buckets = ['0.1', '0.2', '0.4', '1', '3', '10'];
+    #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
 
@@ -43,13 +44,13 @@ class RequestDurationCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $elapsed = $this->request->elapsed();
 
-            $this->task(0)->updateRequest($handler, $elapsed);
+            $this->task($this->tasker_id)->updateRequest($handler, $elapsed);
         }
     }
 
     public function export(): string
     {
-        $histograms = $this->task(0, 1.0)->getResponse();
+        $histograms = $this->task($this->tasker_id, 0.1)->getResponse();
 
         return $this->formatter->histogram('app_http_request_duration_seconds', $histograms, [], ['handler']);
     }

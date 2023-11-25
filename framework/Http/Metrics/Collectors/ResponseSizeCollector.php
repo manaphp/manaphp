@@ -24,6 +24,7 @@ class ResponseSizeCollector implements CollectorInterface
     #[Autowired] protected ResponseInterface $response;
 
     #[Autowired] protected array $buckets = [1 << 10, 1 << 12, 1 << 14, 1 << 16, 1 << 18, 1 << 20];
+    #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
 
@@ -46,13 +47,13 @@ class ResponseSizeCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $size = $this->response->getContentLength();
 
-            $this->task(0)->updateRequest($handler, $size);
+            $this->task($this->tasker_id)->updateRequest($handler, $size);
         }
     }
 
     public function export(): string
     {
-        $histograms = $this->task(0, 1.0)->getResponse();
+        $histograms = $this->task($this->tasker_id, 0.1)->getResponse();
 
         return $this->formatter->histogram('app_http_response_size_bytes', $histograms, [], ['handler']);
     }

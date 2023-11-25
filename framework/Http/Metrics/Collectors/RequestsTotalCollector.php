@@ -20,6 +20,8 @@ class RequestsTotalCollector implements CollectorInterface
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
+    #[Autowired] protected int $tasker_id = 0;
+
     protected array $totals = [];
 
     public function updateRequest(int $code, string $handler): void
@@ -41,13 +43,13 @@ class RequestsTotalCollector implements CollectorInterface
         if (($handler = $this->dispatcher->getHandler()) !== null) {
             $code = $this->response->getStatusCode();
 
-            $this->task(0)->updateRequest($code, $handler);
+            $this->task($this->tasker_id)->updateRequest($code, $handler);
         }
     }
 
     public function export(): string
     {
-        $totals = $this->task(0, 1.0)->getResponse();
+        $totals = $this->task($this->tasker_id, 0.1)->getResponse();
 
         return $this->formatter->counter('app_http_requests_total', $totals, [], ['code', 'handler']);
     }
