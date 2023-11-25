@@ -364,11 +364,19 @@ class Debugger implements DebuggerInterface
         ];
         $data['mongodb'] = $context->mongodb;
 
+        $definitions = $this->container->getDefinitions();
         $dependencies = [];
-        foreach ($this->container->getInstances() as $name => $instance) {
-            $properties = $this->dumper->dump($instance);
+        foreach ($this->container->getInstances() as $id => $instance) {
+            if (($definition = $definitions[$id] ?? null) !== null
+                && \is_string($definition)
+                && \str_contains($definition, '#')
+            ) {
+                $properties = $definition;
+            } else {
+                $properties = $this->dumper->dump($instance);
+            }
 
-            $dependencies[$name] = ['class'      => $instance::class,
+            $dependencies[$id] = ['class'      => $instance::class,
                                     'object_id'  => spl_object_id($instance),
                                     'properties' => $properties];
         }
