@@ -31,6 +31,8 @@ class Exporter implements ExporterInterface
             'ManaPHP\Http\Metrics\Collectors\RedisGetCommandDurationCollector',
             'ManaPHP\Http\Metrics\Collectors\HttpExceptionsTotalCollector',
             'ManaPHP\Http\Metrics\Collectors\SqlTransactionDurationCollector',
+            'ManaPHP\Http\Metrics\Collectors\PoolPopDurationCollector',
+            'ManaPHP\Http\Metrics\Collectors\PoolsBusyTotalCollector',
         ];
 
     public function bootstrap(): void
