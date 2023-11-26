@@ -8,7 +8,7 @@ use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Swoole\WorkersInterface;
 
-class ServerSettingCollector implements CollectorInterface
+class ServerSettingsCollector implements CollectorInterface
 {
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected WorkersInterface $workers;
@@ -18,11 +18,11 @@ class ServerSettingCollector implements CollectorInterface
         $str = '';
         foreach ($this->workers->getServer()->setting as $name => $value) {
             if (\is_int($value) || \is_float($value)) {
-                $str .= $this->formatter->gauge('swoole_server_setting_' . $name, $value);
+                $str .= $this->formatter->gauge('swoole_server_settings_' . $name, $value);
             } elseif (\is_bool($value)) {
-                $str .= $this->formatter->gauge('swoole_server_setting_' . $name, (int)$value);
+                $str .= $this->formatter->gauge('swoole_server_settings_' . $name, (int)$value);
             } elseif (\is_string($value)) {
-                $str .= $this->formatter->gauge('swoole_server_setting_' . $name, 1, ['value' => $value]);
+                $str .= $this->formatter->gauge('swoole_server_settings_' . $name, 1, ['value' => $value]);
             }
         }
 
