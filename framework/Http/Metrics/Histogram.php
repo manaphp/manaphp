@@ -12,7 +12,7 @@ class Histogram
 
     public function __construct(array $buckets)
     {
-        if (count($buckets) === 2) {
+        if (count($buckets) === 2 && \is_int($buckets[1])) {
             list($start, $count) = $buckets;
 
             for ($i = 0; $i < $count; $i++) {
