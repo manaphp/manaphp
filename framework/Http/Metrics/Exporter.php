@@ -16,9 +16,10 @@ class Exporter implements ExporterInterface
 
     #[Autowired] protected array $collectors
         = [
+            'ManaPHP\Http\Metrics\Collectors\ServerSettingCollector',
+            'ManaPHP\Http\Metrics\Collectors\ServerStatsCollector',
             'ManaPHP\Http\Metrics\Collectors\HttpRequestDurationCollector',
             'ManaPHP\Http\Metrics\Collectors\HttpRequestsTotalCollector',
-            'ManaPHP\Http\Metrics\Collectors\ServerStatsCollector',
             'ManaPHP\Http\Metrics\Collectors\VersionCollector',
             'ManaPHP\Http\Metrics\Collectors\CoroutineStatsCollector',
             'ManaPHP\Http\Metrics\Collectors\CoroutineOptionsCollector',
