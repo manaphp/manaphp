@@ -23,7 +23,7 @@ class SqlStatementCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Autowired] protected array $buckets = ['0.001', '0.005', '0.01', '0.05', '0.1', '0.5', '1'];
+    #[Autowired] protected array $buckets = [0.002, 11];
     #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];

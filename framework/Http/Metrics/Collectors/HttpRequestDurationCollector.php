@@ -21,8 +21,7 @@ class HttpRequestDurationCollector implements CollectorInterface
     #[Autowired] protected DispatcherInterface $dispatcher;
     #[Autowired] protected RequestInterface $request;
 
-    #[Autowired] protected array $buckets
-        = ['0.008', '0.016', '0.032', '0.064', '0.128', '0.256', '0.512', '1.024', '2.048', '4.096', '8.192'];
+    #[Autowired] protected array $buckets = [0.008, 11];
     #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];

@@ -22,8 +22,7 @@ class RedisGetResponseSizeCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Autowired] protected array $buckets
-        = [1 << 10, 1 << 11, 1 << 12, 1 << 13, 1 << 14, 1 << 15, 1 << 16, 1 << 17, 1 << 18, 1 << 19, 1 << 20];
+    #[Autowired] protected array $buckets = [1024, 11];
     #[Autowired] protected int $tasker_id = 0;
     #[Autowired] protected ?string $ignored_keys;
 

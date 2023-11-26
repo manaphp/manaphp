@@ -22,8 +22,7 @@ class RedisGetCommandDurationCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Autowired] protected array $buckets
-        = ['0.001', '0.002', '0.004', '0.008', '0.016', '0.032', '0.064', '0.128', '0.256', '0.512', '1.024'];
+    #[Autowired] protected array $buckets = [0.001, 11];
     #[Autowired] protected int $tasker_id = 0;
     #[Autowired] protected ?string $ignored_keys;
 
