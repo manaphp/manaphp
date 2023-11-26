@@ -15,6 +15,7 @@ class PoolPopped implements Stringable
         public object $owner,
         public object $instance,
         public string $type,
+        public float $elapsed,
     ) {
 
     }
@@ -24,7 +25,8 @@ class PoolPopped implements Stringable
         return json_stringify(
             ['owner'    => $this->owner::class,
              'instance' => $this->instance::class . '#' . spl_object_id($this->instance),
-             'type'     => $this->type
+             'type'     => $this->type,
+             'elapsed'  => $this->elapsed,
             ]
         );
     }

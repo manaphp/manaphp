@@ -86,14 +86,18 @@ class Pools implements PoolsInterface
         }
 
         $this->eventDispatcher->dispatch(new PoolPopping($this, $owner, $type));
-
+        $start_time = \microtime(true);
         if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
-            $this->eventDispatcher->dispatch(new PoolPopped($this, $owner, $instance, $type));
+            $this->eventDispatcher->dispatch(
+                new PoolPopped($this, $owner, $instance, $type, \microtime(true) - $start_time)
+            );
             $capacity = $queue->capacity();
             throw new BusyException(['`{1}` pool of `{2}` is busy: capacity[{3}]', $type, $owner::class, $capacity]);
         }
 
-        $this->eventDispatcher->dispatch(new PoolPopped($this, $owner, $instance, $type));
+        $this->eventDispatcher->dispatch(
+            new PoolPopped($this, $owner, $instance, $type, \microtime(true) - $start_time)
+        );
 
         return $instance;
     }
