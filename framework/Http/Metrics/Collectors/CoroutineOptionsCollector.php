@@ -12,7 +12,7 @@ class CoroutineOptionsCollector implements CollectorInterface
 {
     #[Autowired] protected FormatterInterface $formatter;
 
-    public function export(): string
+    public function export(mixed $data): string
     {
         $str = '';
         foreach (Coroutine::getOptions() as $name => $value) {

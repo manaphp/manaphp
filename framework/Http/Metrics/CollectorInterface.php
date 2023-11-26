@@ -5,5 +5,5 @@ namespace ManaPHP\Http\Metrics;
 
 interface CollectorInterface
 {
-    public function export(): string;
+    public function export(mixed $data): string;
 }

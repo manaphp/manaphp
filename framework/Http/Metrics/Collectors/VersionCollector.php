@@ -15,7 +15,7 @@ class VersionCollector implements CollectorInterface
 
     #[Config] protected string $app_version = '';
 
-    public function export(): string
+    public function export(mixed $data): string
     {
         return $this->formatter->gauge(
             'app_version', 1,

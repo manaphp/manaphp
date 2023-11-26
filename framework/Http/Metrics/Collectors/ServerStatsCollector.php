@@ -13,7 +13,7 @@ class ServerStatsCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected WorkersInterface $workers;
 
-    public function export(): string
+    public function export(mixed $data): string
     {
         $stats = $this->workers->getServer()->stats();
         $types = [

@@ -9,23 +9,16 @@ use ManaPHP\Db\Event\DbCommit;
 use ManaPHP\Db\Event\DbRollback;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
-use ManaPHP\Http\Server\Event\RequestEnd;
-use ManaPHP\Swoole\WorkersTrait;
+use ManaPHP\Http\Metrics\SimpleCollectorInterface;
 
-class SqlTransactionDurationCollector implements CollectorInterface
+class SqlTransactionDurationCollector implements SimpleCollectorInterface
 {
-    use WorkersTrait;
-
     #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
-    #[Autowired] protected DispatcherInterface $dispatcher;
 
     #[Autowired] protected array $buckets = [0.008, 11];
-    #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
 
@@ -34,19 +27,23 @@ class SqlTransactionDurationCollector implements CollectorInterface
         return $this->contextor->getContext($this, $cid);
     }
 
-    public function updateRequest(string $handler, array $transactions): void
+    public function updating(?string $handler): ?array
     {
+        $context = $this->getContext();
+
+        return ($handler !== null && $context->transactions !== []) ? [$handler, $context->transactions] : null;
+    }
+
+    public function updated(array $data): void
+    {
+        list($handler, $transactions) = $data;
+
         foreach ($transactions as list($type, $elapsed)) {
             if (($histogram = $this->histograms[$handler][$type] ?? null) === null) {
                 $histogram = $this->histograms[$handler][$type] = new Histogram($this->buckets);
             }
             $histogram->update($elapsed);
         }
-    }
-
-    public function getResponse(): array
-    {
-        return $this->histograms;
     }
 
     public function onDbBegin(#[Event] DbBegin $event): void
@@ -67,23 +64,13 @@ class SqlTransactionDurationCollector implements CollectorInterface
         $context->transactions[] = ['rollback', \microtime(true) - $context->start_time];
     }
 
-    public function onRequestEnd(#[Event] RequestEnd $event): void
+    public function querying(): array
     {
-        if (($handler = $this->dispatcher->getHandler()) !== null) {
-            $context = $this->getContext();
-
-            if ($context->transactions !== []) {
-                $this->task($this->tasker_id)->updateRequest($handler, $context->transactions);
-            }
-        }
+        return $this->histograms;
     }
 
-    public function export(): string
+    public function export(mixed $data): string
     {
-        $histograms = $this->task($this->tasker_id, 0.1)->getResponse();
-
-        return $this->formatter->histogram('app_sql_transaction_duration_seconds', $histograms, [],
-            ['handler', 'type']
-        );
+        return $this->formatter->histogram('app_sql_transaction_duration_seconds', $data, [], ['handler', 'type']);
     }
 }

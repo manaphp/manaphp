@@ -13,7 +13,7 @@ class ServerSettingsCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected WorkersInterface $workers;
 
-    public function export(): string
+    public function export(mixed $data): string
     {
         $str = '';
         foreach ($this->workers->getServer()->setting as $name => $value) {

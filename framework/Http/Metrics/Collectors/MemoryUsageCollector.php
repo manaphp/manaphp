@@ -42,7 +42,7 @@ class MemoryUsageCollector implements CollectorInterface
         return [memory_get_usage(), memory_get_peak_usage()];
     }
 
-    public function export(): string
+    public function export(mixed $data): string
     {
         $context = $this->getContext();
         $worker_num = $this->workers->getWorkerNum();

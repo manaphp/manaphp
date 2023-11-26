@@ -6,21 +6,15 @@ namespace ManaPHP\Http\Metrics\Collectors;
 use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
-use ManaPHP\Http\Server\Event\RequestEnd;
+use ManaPHP\Http\Metrics\SimpleCollectorInterface;
 use ManaPHP\Pooling\Pool\Event\PoolBusy;
 use ManaPHP\Pooling\Pool\Event\PoolPopping;
-use ManaPHP\Swoole\WorkersTrait;
 
-class PoolsBusyTotalCollector implements CollectorInterface
+class PoolsBusyTotalCollector implements SimpleCollectorInterface
 {
-    use WorkersTrait;
-
     #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
-
-    #[Autowired] protected int $tasker_id = 0;
 
     protected array $busy_totals = [];
     protected array $pop_totals = [];
@@ -30,8 +24,21 @@ class PoolsBusyTotalCollector implements CollectorInterface
         return $this->contextor->getContext($this, $cid);
     }
 
-    public function updateRequest(array $busy_pops, array $attempted_pops): void
+    public function updating(?string $handler): ?array
     {
+        $context = $this->getContext();
+
+        if ($context->busy_totals !== [] || $context->pop_totals !== []) {
+            return [$context->busy_totals, $context->pop_totals];
+        } else {
+            return null;
+        }
+    }
+
+    public function updated(array $data): void
+    {
+        list($busy_pops, $pop_pops) = $data;
+
         foreach ($busy_pops as $owner => $owner_pops) {
             foreach ($owner_pops as $type => $count) {
                 if (!isset($this->busy_totals[$owner][$type])) {
@@ -42,7 +49,7 @@ class PoolsBusyTotalCollector implements CollectorInterface
             }
         }
 
-        foreach ($attempted_pops as $owner => $owner_pops) {
+        foreach ($pop_pops as $owner => $owner_pops) {
             foreach ($owner_pops as $type => $count) {
                 if (!isset($this->pop_totals[$owner][$type])) {
                     $this->pop_totals[$owner][$type] = $count;
@@ -51,11 +58,6 @@ class PoolsBusyTotalCollector implements CollectorInterface
                 }
             }
         }
-    }
-
-    public function getResponse(): array
-    {
-        return [$this->busy_totals, $this->pop_totals];
     }
 
     public function onPoolPopping(#[Event] PoolPopping $event): void
@@ -86,20 +88,16 @@ class PoolsBusyTotalCollector implements CollectorInterface
         }
     }
 
-    public function onRequestEnd(#[Event] RequestEnd $event): void
+    public function querying(): array
     {
-        $context = $this->getContext();
-
-        if ($context->busy_totals !== [] || $context->pop_totals !== []) {
-            $this->task($this->tasker_id)->updateRequest($context->busy_totals, $context->pop_totals);
-        }
+        return [$this->busy_totals, $this->pop_totals];
     }
 
-    public function export(): string
+    public function export(mixed $data): string
     {
-        list($busy_totals, $attempted_totals) = $this->task($this->tasker_id, 0.1)->getResponse();
+        list($busy_totals, $pop_totals) = $data;
 
         return $this->formatter->counter('app_pools_busy_total', $busy_totals, [], ['owner', 'type']) .
-            $this->formatter->counter('app_pools_pop_total', $attempted_totals, [], ['owner', 'type']);
+            $this->formatter->counter('app_pools_pop_total', $pop_totals, [], ['owner', 'type']);
     }
 }

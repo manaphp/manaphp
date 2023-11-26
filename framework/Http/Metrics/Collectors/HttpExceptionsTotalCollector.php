@@ -3,30 +3,38 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
+use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
-use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Metrics\SimpleCollectorInterface;
 use ManaPHP\Http\Server\Event\RequestException;
-use ManaPHP\Swoole\WorkersTrait;
 
-class HttpExceptionsTotalCollector implements CollectorInterface
+class HttpExceptionsTotalCollector implements SimpleCollectorInterface
 {
-    use WorkersTrait;
-
+    #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;
-    #[Autowired] protected ResponseInterface $response;
-    #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Autowired] protected int $tasker_id = 0;
     #[Autowired] protected array $ignored_exceptions = [];
 
     protected array $totals = [];
 
-    public function updateRequest(string $handler, string $exception): void
+    public function getContext(int $cid = 0): HttpExceptionsTotalCollectorContext
     {
+        return $this->contextor->getContext($this, $cid);
+    }
+
+    public function updating(?string $handler): ?array
+    {
+        $context = $this->getContext();
+
+        return ($handler !== null && isset($context->exception)) ? [$handler, $context->exception] : null;
+    }
+
+    public function updated(array $data): void
+    {
+        list($handler, $exception) = $data;
+
         if (!isset($this->totals[$handler][$exception])) {
             $this->totals[$handler][$exception] = 0;
         } else {
@@ -34,25 +42,23 @@ class HttpExceptionsTotalCollector implements CollectorInterface
         }
     }
 
-    public function getResponse(): array
+    public function onRequestException(#[Event] RequestException $event): void
+    {
+        $exception = \get_class($event->exception);
+
+        if (!\in_array($exception, $this->ignored_exceptions, true)) {
+            $context = $this->getContext();
+            $context->exception = $exception;
+        }
+    }
+
+    public function querying(): array
     {
         return $this->totals;
     }
 
-    public function onRequestException(#[Event] RequestException $event): void
+    public function export(mixed $data): string
     {
-        if (($handler = $this->dispatcher->getHandler()) !== null) {
-            $exception = \get_class($event->exception);
-            if (!\in_array($exception, $this->ignored_exceptions, true)) {
-                $this->task($this->tasker_id)->updateRequest($handler, $exception);
-            }
-        }
-    }
-
-    public function export(): string
-    {
-        $totals = $this->task($this->tasker_id, 0.1)->getResponse();
-
-        return $this->formatter->counter('app_http_exceptions_total', $totals, [], ['handler', 'exception']);
+        return $this->formatter->counter('app_http_exceptions_total', $data, [], ['handler', 'exception']);
     }
 }

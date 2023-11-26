@@ -37,7 +37,7 @@ class CoroutineStatsCollector implements CollectorInterface
         $context->channel->push(1);
     }
 
-    public function export(): string
+    public function export(mixed $data): string
     {
         $context = $this->getContext();
         $worker_num = $this->workers->getWorkerNum();

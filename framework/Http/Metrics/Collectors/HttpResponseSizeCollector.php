@@ -4,32 +4,31 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Metrics\Collectors;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
-use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\Metrics\SimpleCollectorInterface;
 use ManaPHP\Http\ResponseInterface;
-use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersTrait;
 
-class HttpResponseSizeCollector implements CollectorInterface
+class HttpResponseSizeCollector implements SimpleCollectorInterface
 {
     use WorkersTrait;
 
     #[Autowired] protected FormatterInterface $formatter;
-    #[Autowired] protected DispatcherInterface $dispatcher;
-    #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
 
     #[Autowired] protected array $buckets = [1024, 11];
-    #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
 
-    public function updateRequest(string $handler, int $size): void
+    public function updating(?string $handler): ?array
     {
+        return $handler ? [$handler, $this->response->getContentLength()] : null;
+    }
+
+    public function updated(array $data): void
+    {
+        list($handler, $size) = $data;
         if (($histogram = $this->histograms[$handler] ?? null) === null) {
             $histogram = $this->histograms[$handler] = new Histogram($this->buckets);
         }
@@ -37,24 +36,13 @@ class HttpResponseSizeCollector implements CollectorInterface
         $histogram->update($size);
     }
 
-    public function getResponse(): array
+    public function querying(): array
     {
         return $this->histograms;
     }
 
-    public function onRequestEnd(#[Event] RequestEnd $event): void
+    public function export(mixed $data): string
     {
-        if (($handler = $this->dispatcher->getHandler()) !== null) {
-            $size = $this->response->getContentLength();
-
-            $this->task($this->tasker_id)->updateRequest($handler, $size);
-        }
-    }
-
-    public function export(): string
-    {
-        $histograms = $this->task($this->tasker_id, 0.1)->getResponse();
-
-        return $this->formatter->histogram('app_http_response_size_bytes', $histograms, [], ['handler']);
+        return $this->formatter->histogram('app_http_response_size_bytes', $data, [], ['handler']);
     }
 }
