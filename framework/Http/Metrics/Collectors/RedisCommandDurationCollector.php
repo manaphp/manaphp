@@ -14,7 +14,7 @@ use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Redis\Event\RedisCalled;
 use ManaPHP\Swoole\WorkersTrait;
 
-class RedisCommandCollector implements CollectorInterface
+class RedisCommandDurationCollector implements CollectorInterface
 {
     use WorkersTrait;
 
@@ -28,7 +28,7 @@ class RedisCommandCollector implements CollectorInterface
 
     protected array $histograms = [];
 
-    public function getContext(int $cid = 0): RedisCommandCollectorContext
+    public function getContext(int $cid = 0): RedisCommandDurationCollectorContext
     {
         return $this->contextor->getContext($this, $cid);
     }

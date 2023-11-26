@@ -25,12 +25,12 @@ class Exporter implements ExporterInterface
             'ManaPHP\Http\Metrics\Collectors\CoroutineOptionsCollector',
             'ManaPHP\Http\Metrics\Collectors\HttpResponseSizeCollector',
             'ManaPHP\Http\Metrics\Collectors\MemoryUsageCollector',
-            'ManaPHP\Http\Metrics\Collectors\RedisCommandCollector',
-            'ManaPHP\Http\Metrics\Collectors\SqlStatementCollector',
+            'ManaPHP\Http\Metrics\Collectors\RedisCommandDurationCollector',
+            'ManaPHP\Http\Metrics\Collectors\SqlStatementDurationCollector',
             'ManaPHP\Http\Metrics\Collectors\RedisGetResponseSizeCollector',
             'ManaPHP\Http\Metrics\Collectors\RedisGetCommandDurationCollector',
             'ManaPHP\Http\Metrics\Collectors\HttpExceptionsTotalCollector',
-            'ManaPHP\Http\Metrics\Collectors\SqlTransactionCollector',
+            'ManaPHP\Http\Metrics\Collectors\SqlTransactionDurationCollector',
         ];
 
     public function bootstrap(): void

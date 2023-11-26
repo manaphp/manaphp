@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-class SqlStatementCollectorContext
+class RedisCommandDurationCollectorContext
 {
-    public array $statements = [];
+    public array $commands = [];
 }

@@ -15,7 +15,7 @@ use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersTrait;
 
-class SqlStatementCollector implements CollectorInterface
+class SqlStatementDurationCollector implements CollectorInterface
 {
     use WorkersTrait;
 
@@ -28,7 +28,7 @@ class SqlStatementCollector implements CollectorInterface
 
     protected array $histograms = [];
 
-    public function getContext(int $cid = 0): SqlStatementCollectorContext
+    public function getContext(int $cid = 0): SqlStatementDurationCollectorContext
     {
         return $this->contextor->getContext($this, $cid);
     }
