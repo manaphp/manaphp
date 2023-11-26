@@ -24,6 +24,7 @@ class RedisCommandCollector implements CollectorInterface
 
     #[Autowired] protected array $buckets = ['0.001', '0.005', '0.01', '0.05', '0.1', '0.5', '1'];
     #[Autowired] protected int $tasker_id = 0;
+    #[Autowired] protected array $ignored_keys = [];
 
     protected array $histograms = [];
 
@@ -49,9 +50,14 @@ class RedisCommandCollector implements CollectorInterface
 
     public function onRedisCalled(#[Event] RedisCalled $event): void
     {
-        $context = $this->getContext();
+        if (($ignored_key = $this->ignored_keys[$event->method] ?? null) === null
+            || (\is_string($ignored_key) && \preg_match($ignored_key, $event->arguments[0]) !== 1)
+            || (\is_array($ignored_key) && \preg_match($ignored_key[0], $event->arguments[$ignored_key[1]]) !== 1)
+        ) {
+            $context = $this->getContext();
 
-        $context->commands[] = [strtolower($event->method), $event->elapsed];
+            $context->commands[] = [strtolower($event->method), $event->elapsed];
+        }
     }
 
     public function onRequestEnd(#[Event] RequestEnd $event): void

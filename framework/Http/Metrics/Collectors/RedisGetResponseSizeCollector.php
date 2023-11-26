@@ -24,6 +24,7 @@ class RedisGetResponseSizeCollector implements CollectorInterface
 
     #[Autowired] protected array $buckets = [1 << 8, 1 << 10, 1 << 12, 1 << 14, 1 << 16, 1 << 18, 1 << 20];
     #[Autowired] protected int $tasker_id = 0;
+    #[Autowired] protected ?string $ignored_keys;
 
     protected array $histograms = [];
 
@@ -51,9 +52,11 @@ class RedisGetResponseSizeCollector implements CollectorInterface
     {
         $method = $event->method;
         if ($method === 'get' || $method === 'hGet') {
-            $context = $this->getContext();
+            if ($this->ignored_keys === null || \preg_match($this->ignored_keys, $event->arguments[0]) !== 1) {
+                $context = $this->getContext();
 
-            $context->commands[] = \is_string($event->return) ? \strlen($event->return) : 0;
+                $context->commands[] = \is_string($event->return) ? \strlen($event->return) : 0;
+            }
         }
     }
 

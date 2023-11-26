@@ -21,6 +21,7 @@ class HttpExceptionsTotalCollector implements CollectorInterface
     #[Autowired] protected DispatcherInterface $dispatcher;
 
     #[Autowired] protected int $tasker_id = 0;
+    #[Autowired] protected array $ignored_exceptions = [];
 
     protected array $totals = [];
 
@@ -41,7 +42,10 @@ class HttpExceptionsTotalCollector implements CollectorInterface
     public function onRequestException(#[Event] RequestException $event): void
     {
         if (($handler = $this->dispatcher->getHandler()) !== null) {
-            $this->task($this->tasker_id)->updateRequest($handler, \get_class($event->exception));
+            $exception = \get_class($event->exception);
+            if (!\in_array($exception, $this->ignored_exceptions, true)) {
+                $this->task($this->tasker_id)->updateRequest($handler, $exception);
+            }
         }
     }
 

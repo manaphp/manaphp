@@ -24,6 +24,7 @@ class RedisGetCommandDurationCollector implements CollectorInterface
 
     #[Autowired] protected array $buckets = ['0.001', '0.005', '0.01', '0.05', '0.1', '0.5', '1'];
     #[Autowired] protected int $tasker_id = 0;
+    #[Autowired] protected ?string $ignored_keys;
 
     protected array $histograms = [];
 
@@ -51,9 +52,11 @@ class RedisGetCommandDurationCollector implements CollectorInterface
     {
         $method = $event->method;
         if ($method === 'get' || $method === 'hGet') {
-            $context = $this->getContext();
+            if ($this->ignored_keys === null || \preg_match($this->ignored_keys, $event->arguments[0]) !== 1) {
+                $context = $this->getContext();
 
-            $context->commands[] = $event->elapsed;
+                $context->commands[] = $event->elapsed;
+            }
         }
     }
 
