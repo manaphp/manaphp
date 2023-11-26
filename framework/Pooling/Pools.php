@@ -7,6 +7,7 @@ use ManaPHP\Coroutine\Channel;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Pooling\Pool\Event\PoolBusy;
 use ManaPHP\Pooling\Pool\Event\PoolPopped;
 use ManaPHP\Pooling\Pool\Event\PoolPopping;
 use ManaPHP\Pooling\Pool\Event\PoolPush;
@@ -92,6 +93,7 @@ class Pools implements PoolsInterface
                 new PoolPopped($this, $owner, $instance, $type, \microtime(true) - $start_time)
             );
             $capacity = $queue->capacity();
+            $this->eventDispatcher->dispatch(new PoolBusy($this, $owner, $type, $capacity, $timeout));
             throw new BusyException(['`{1}` pool of `{2}` is busy: capacity[{3}]', $type, $owner::class, $capacity]);
         }
 
