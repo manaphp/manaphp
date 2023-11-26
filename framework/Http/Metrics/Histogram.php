@@ -21,8 +21,8 @@ class Histogram
                 $this->buckets[is_float($le) ? (string)$le : $le] = 0;
             }
         } else {
-            $this->les = $buckets;
             foreach ($buckets as $bucket) {
+                $this->les[] = \is_string($bucket) ? (float)$bucket : $bucket;
                 $this->buckets[is_float($bucket) ? (string)$bucket : $bucket] = 0;
             }
         }
