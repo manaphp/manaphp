@@ -22,7 +22,8 @@ class RedisCommandCollector implements CollectorInterface
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Autowired] protected array $buckets = ['0.001', '0.005', '0.01', '0.05', '0.1', '0.5', '1'];
+    #[Autowired] protected array $buckets
+        = ['0.001', '0.002', '0.004', '0.008', '0.016', '0.032', '0.064', '0.128', '0.256', '0.512', '1.024'];
     #[Autowired] protected int $tasker_id = 0;
     #[Autowired] protected array $ignored_keys = [];
 

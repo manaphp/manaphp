@@ -23,7 +23,8 @@ class HttpResponseSizeCollector implements CollectorInterface
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
 
-    #[Autowired] protected array $buckets = [1 << 10, 1 << 12, 1 << 14, 1 << 16, 1 << 18, 1 << 20];
+    #[Autowired] protected array $buckets
+        = [1 << 10, 1 << 11, 1 << 12, 1 << 13, 1 << 14, 1 << 15, 1 << 16, 1 << 17, 1 << 18, 1 << 19, 1 << 20];
     #[Autowired] protected int $tasker_id = 0;
 
     protected array $histograms = [];
