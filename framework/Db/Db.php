@@ -437,13 +437,10 @@ class Db implements DbInterface
                 $context->connection = $connection;
                 $context->transaction_level++;
             } catch (PDOException $exception) {
+                $this->pools->push($this, $connection);
+
                 $message = 'beginTransaction failed: ' . $exception->getMessage();
                 throw new DbException($message, $exception->getCode(), $exception);
-            } finally {
-                /** @noinspection PhpConditionAlreadyCheckedInspection */
-                if ($context->connection !== null) {
-                    $this->pools->push($this, $connection);
-                }
             }
         } else {
             $context->transaction_level++;
