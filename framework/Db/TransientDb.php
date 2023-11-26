@@ -23,7 +23,7 @@ class TransientDb extends Db
         $this->context->connection = $connection;
     }
 
-    public function getContext(int $cid = 0): mixed
+    public function getContext(int $cid = 0): DbContext
     {
         return $this->context;
     }
