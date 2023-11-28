@@ -8,12 +8,9 @@ use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Http\ResponseInterface;
-use ManaPHP\Swoole\WorkersTrait;
 
 class HttpResponseSizeCollector implements WorkerCollectorInterface
 {
-    use WorkersTrait;
-
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected ResponseInterface $response;
 
