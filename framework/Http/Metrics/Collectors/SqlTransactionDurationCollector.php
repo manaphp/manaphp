@@ -11,9 +11,9 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
-use ManaPHP\Http\Metrics\SimpleCollectorInterface;
+use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 
-class SqlTransactionDurationCollector implements SimpleCollectorInterface
+class SqlTransactionDurationCollector implements WorkerCollectorInterface
 {
     #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;

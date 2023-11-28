@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics;
 
-interface SimpleCollectorInterface extends CollectorInterface
+interface WorkerCollectorInterface extends CollectorInterface
 {
     public function updating(?string $handler): ?array;
 

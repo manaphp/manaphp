@@ -5,10 +5,10 @@ namespace ManaPHP\Http\Metrics\Collectors;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Metrics\FormatterInterface;
-use ManaPHP\Http\Metrics\SimpleCollectorInterface;
+use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Http\ResponseInterface;
 
-class HttpRequestsTotalCollector implements SimpleCollectorInterface
+class HttpRequestsTotalCollector implements WorkerCollectorInterface
 {
     #[Autowired] protected FormatterInterface $formatter;
     #[Autowired] protected ResponseInterface $response;

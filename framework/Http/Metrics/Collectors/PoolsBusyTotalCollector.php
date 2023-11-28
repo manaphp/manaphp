@@ -7,11 +7,11 @@ use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Metrics\FormatterInterface;
-use ManaPHP\Http\Metrics\SimpleCollectorInterface;
+use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Pooling\Pool\Event\PoolBusy;
 use ManaPHP\Pooling\Pool\Event\PoolPopping;
 
-class PoolsBusyTotalCollector implements SimpleCollectorInterface
+class PoolsBusyTotalCollector implements WorkerCollectorInterface
 {
     #[Autowired] protected ContextorInterface $contextor;
     #[Autowired] protected FormatterInterface $formatter;

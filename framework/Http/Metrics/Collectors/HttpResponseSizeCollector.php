@@ -6,11 +6,11 @@ namespace ManaPHP\Http\Metrics\Collectors;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
-use ManaPHP\Http\Metrics\SimpleCollectorInterface;
+use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Swoole\WorkersTrait;
 
-class HttpResponseSizeCollector implements SimpleCollectorInterface
+class HttpResponseSizeCollector implements WorkerCollectorInterface
 {
     use WorkersTrait;
 

@@ -44,14 +44,14 @@ class Exporter implements ExporterInterface
 
     #[Autowired] protected int $tasker_id = 0;
 
-    protected array $simple_collectors = [];
+    protected array $worker_collectors = [];
 
     public function bootstrap(): void
     {
         foreach ($this->collectors as $name) {
             $collector = $this->container->get($name);
-            if ($collector instanceof SimpleCollectorInterface) {
-                $this->simple_collectors[] = $name;
+            if ($collector instanceof WorkerCollectorInterface) {
+                $this->worker_collectors[] = $name;
             }
         }
 
@@ -65,7 +65,7 @@ class Exporter implements ExporterInterface
     public function updated(array $data): void
     {
         foreach ($data as $name => $args) {
-            /** @var SimpleCollectorInterface $collector */
+            /** @var WorkerCollectorInterface $collector */
             $collector = $this->container->get($name);
             $collector->updated($args);
         }
@@ -74,8 +74,8 @@ class Exporter implements ExporterInterface
     public function querying(): array
     {
         $data = [];
-        foreach ($this->simple_collectors as $name) {
-            /** @var SimpleCollectorInterface $collector */
+        foreach ($this->worker_collectors as $name) {
+            /** @var WorkerCollectorInterface $collector */
             $collector = $this->container->get($name);
             $data[$name] = $collector->querying();
         }
@@ -90,7 +90,7 @@ class Exporter implements ExporterInterface
         $data = [];
         foreach ($this->collectors as $name) {
             $collector = $this->container->get($name);
-            if ($collector instanceof SimpleCollectorInterface) {
+            if ($collector instanceof WorkerCollectorInterface) {
                 if (($r = $collector->updating($handler)) !== null) {
                     $data[$name] = $r;
                 }
@@ -102,7 +102,7 @@ class Exporter implements ExporterInterface
 
     public function export(?array $collectors = null): ResponseInterface
     {
-        $simple_collectors = $this->task($this->tasker_id, 1.0)->querying();
+        $worker_collectors = $this->task($this->tasker_id, 1.0)->querying();
 
         $metrics = '';
         foreach ($collectors ?? $this->collectors as $name) {
@@ -110,7 +110,7 @@ class Exporter implements ExporterInterface
                 /** @var CollectorInterface $collector */
                 $collector = $this->container->get($name);
 
-                if (($data = $simple_collectors[$name] ?? null) === null) {
+                if (($data = $worker_collectors[$name] ?? null) === null) {
                     $m = $collector->export(null);
                 } else {
                     $m = $collector->export($data);
