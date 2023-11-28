@@ -20,6 +20,7 @@ class Exporter implements ExporterInterface
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected WorkersDataInterface $workersData;
 
     #[Autowired] protected array $collectors
         = [
@@ -45,6 +46,7 @@ class Exporter implements ExporterInterface
     #[Autowired] protected int $tasker_id = 0;
 
     protected array $worker_collectors = [];
+    protected array $workers_collectors = [];
 
     public function bootstrap(): void
     {
@@ -52,6 +54,8 @@ class Exporter implements ExporterInterface
             $collector = $this->container->get($name);
             if ($collector instanceof WorkerCollectorInterface) {
                 $this->worker_collectors[] = $name;
+            } elseif ($collector instanceof WorkersCollectorInterface) {
+                $this->workers_collectors[] = $name;
             }
         }
 
@@ -110,10 +114,13 @@ class Exporter implements ExporterInterface
                 /** @var CollectorInterface $collector */
                 $collector = $this->container->get($name);
 
-                if (($data = $worker_collectors[$name] ?? null) === null) {
-                    $m = $collector->export(null);
-                } else {
+                if (($data = $worker_collectors[$name] ?? null) !== null) {
                     $m = $collector->export($data);
+                } elseif (\in_array($name, $this->workers_collectors, true)) {
+                    $data = $this->workersData->get($name);
+                    $m = $collector->export($data);
+                } else {
+                    $m = $collector->export(null);
                 }
 
                 $metrics .= $m;
