@@ -93,10 +93,6 @@ class Workers implements WorkersInterface
     {
         $id = $this->getIdInContainer(\is_string($task[0]) ? $task[0] : \get_class($task[0]));
 
-        if (\interface_exists($interface = $id . 'Interface', false)) {
-            $id = $interface;
-        }
-
         $message = new PipeCallMessage($id, $task[1], $arguments);
 
         return $this->server->sendMessage($message, $dst_worker_id);
