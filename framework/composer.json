@@ -7,14 +7,17 @@
     "framework",
     "di",
     "yii2",
-    "laravel"
+    "laravel",
+    "hyperf"
   ],
   "homepage" : "https://github.com/manaphp/framework",
   "require" : {
-    "php" : ">=8.0.2",
+    "php" : ">=8.1",
+    "ext-json" : "*",
     "psr/container" : "~2.0.2",
     "psr/log" : "^2.0",
-    "psr/simple-cache" : "^3.0"
+    "psr/simple-cache" : "^3.0",
+    "psr/event-dispatcher" : "1.0.*"
   },
   "authors" : [
     {
