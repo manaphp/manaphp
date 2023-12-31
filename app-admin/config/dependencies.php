@@ -8,7 +8,6 @@ return [
     'ManaPHP\Http\SessionInterface'         => ['class'  => 'ManaPHP\Http\Session\Adapter\Redis',
                                                 'ttl'    => seconds('1d'),
                                                 'params' => ['path' => '/']],
-    'ManaPHP\Bos\ClientInterface'           => ['endpoint' => env('BOS_UPLOADER_ENDPOINT')],
     'ManaPHP\Http\RouterInterface'          => ['class'  => 'App\Router',
                                                 'prefix' => '',
     ],

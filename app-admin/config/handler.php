@@ -6,6 +6,7 @@ return [
         'class'       => 'ManaPHP\Mvc\Handler',
         'middlewares' => [
             \ManaPHP\Http\Middlewares\RequestIdMiddleware::class,
+            \ManaPHP\Http\Middlewares\VerbsMiddleware::class,
             \ManaPHP\Http\Middlewares\AuthorizationMiddleware::class,
         ],
     ],
