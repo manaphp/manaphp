@@ -6,6 +6,7 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
@@ -38,6 +39,10 @@ class Controllers implements ControllersInterface
 
     public function getActions($controller): array
     {
+        if (!\class_exists($controller)) {
+            throw new RuntimeException(\sprintf('%s class is not exists', $controller));
+        }
+
         $actions = [];
         foreach (get_class_methods($controller) as $method) {
             if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
