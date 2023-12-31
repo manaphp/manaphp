@@ -136,7 +136,11 @@ class Debugger implements DebuggerInterface
             if (($data = $this->readData($match[1])) !== null) {
                 $ext = $match[2];
                 if ($ext === 'html') {
-                    $this->response->setContent(strtr(LocalFS::fileGet($this->template), ['DEBUGGER_DATA' => $data]));
+                    $json = \json_encode(
+                        json_parse($data),
+                        JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_PRETTY_PRINT
+                    );
+                    $this->response->setContent(strtr(LocalFS::fileGet($this->template), ['DEBUGGER_DATA' => $json]));
                 } elseif ($ext === 'txt') {
                     $this->response->setContent(json_stringify(json_parse($data), JSON_PRETTY_PRINT))
                         ->setContentType('text/plain;charset=UTF-8');
@@ -377,8 +381,8 @@ class Debugger implements DebuggerInterface
             }
 
             $dependencies[$id] = ['class'      => $instance::class,
-                                    'object_id'  => spl_object_id($instance),
-                                    'properties' => $properties];
+                                  'object_id'  => spl_object_id($instance),
+                                  'properties' => $properties];
         }
         $data['dependencies'] = $dependencies;
 
