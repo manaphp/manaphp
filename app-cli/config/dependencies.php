@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 return [
-    'ManaPHP\Db\DbInterface'       => ['class' => 'ManaPHP\Data\Db', 'uri' => env('DB_URL')],
-    'ManaPHP\Redis\RedisInterface' => ['uri' => env('REDIS_URL')],
-    'Psr\Log\LoggerInterface'      => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
-                                       'level' => env('LOGGER_LEVEL', 'info')],
+    'Psr\Log\LoggerInterface'          => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
+                                           'level' => env('LOGGER_LEVEL', 'info')],
+    'ManaPHP\Security\CryptInterface'  => ['master_key' => 'dev'],
+    'ManaPHP\Eventing\TracerInterface' => ['verbosity' => \ManaPHP\Eventing\Attribute\Verbosity::HIGH],
 ];
