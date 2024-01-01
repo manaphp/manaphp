@@ -23,7 +23,7 @@ class MenuController extends Controller
         foreach ($menu as &$group) {
             $group['icon'] ??= 'el-icon-caret-right';
             foreach ($group['items'] as &$item) {
-                $item['icon'] ??= '';
+                $item['icon'] ??= 'el-icon-arrow-right';
             }
         }
 
