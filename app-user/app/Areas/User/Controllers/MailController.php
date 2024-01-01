@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Areas\Admin\Controllers;
+namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;

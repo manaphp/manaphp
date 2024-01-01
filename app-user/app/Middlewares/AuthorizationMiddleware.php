@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Filters;
+namespace App\Middlewares;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
@@ -14,7 +14,7 @@ use ManaPHP\Http\Server\Event\RequestAuthorizing;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 use ManaPHP\Identifying\IdentityInterface;
 
-class AuthorizationFilter
+class AuthorizationMiddleware
 {
     #[Autowired] protected AuthorizationInterface $authorization;
     #[Autowired] protected IdentityInterface $identity;

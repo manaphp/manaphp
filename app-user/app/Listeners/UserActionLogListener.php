@@ -6,6 +6,7 @@ namespace App\Listeners;
 use App\Models\UserActionLog;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Http\CookiesInterface;
@@ -17,10 +18,10 @@ class UserActionLogListener
 {
     use ContextTrait;
 
-    protected IdentityInterface $identity;
-    protected RequestInterface $request;
-    protected CookiesInterface $cookies;
-    protected DispatcherInterface $dispatcher;
+    #[Autowired] protected IdentityInterface $identity;
+    #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected CookiesInterface $cookies;
+    #[Autowired] protected DispatcherInterface $dispatcher;
 
     protected function getTag(): int
     {
@@ -65,7 +66,7 @@ class UserActionLogListener
         $userActionLog->client_ip = $this->request->ip();
         $userActionLog->method = $this->request->method();
         $userActionLog->url = $this->request->path();
-        $userActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
+        $userActionLog->tag = $this->getTag() & 0xFFFFFFFF;
         $userActionLog->data = json_stringify($data);
         $userActionLog->handler = $this->dispatcher->getHandler();
         $userActionLog->client_udid = $this->cookies->get('CLIENT_UDID');

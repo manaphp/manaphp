@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use ManaPHP\Identifying\IdentityInterface;
+use ManaPHP\Invoking\ArgumentResolvable;
 use ManaPHP\Model\Event\ModelCreating;
 use ManaPHP\Model\Event\ModelUpdating;
 use ManaPHP\Validating\Constraint\Attribute\Account;
@@ -10,31 +12,38 @@ use ManaPHP\Validating\Constraint\Attribute\Constant;
 use ManaPHP\Validating\Constraint\Attribute\Email;
 use ManaPHP\Validating\Constraint\Attribute\Immutable;
 use ManaPHP\Validating\Constraint\Attribute\Length;
-use ManaPHP\Validating\Constraint\Attribute\Lowercase;
 use ManaPHP\Validating\Constraint\Attribute\Unique;
+use Psr\Container\ContainerInterface;
 
-class User extends Model
+class User extends Model implements ArgumentResolvable
 {
-    const STATUS_INIT = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_LOCKED = 2;
+    public const STATUS_INIT = 0;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_LOCKED = 2;
 
-    public $user_id;
-    #[Length(4, 16), Account, Immutable]
-    public $user_name;
+    public int $user_id;
+    #[Length(4, 16), Account, Immutable, Unique]
+    public string $user_name;
     #[Constant]
-    public $status;
-    #[Email, Lowercase, Unique]
-    public $email;
-    public $salt;
-    public $password;
-    public $login_ip;
-    public $login_time;
-    public $session_id;
-    public $creator_name;
-    public $updator_name;
-    public $created_time;
-    public $updated_time;
+    public int $status;
+    #[Email, Unique]
+    public string $email;
+    public string $salt;
+    #[Length(6, 16)]
+    public string $password;
+    public string $login_ip;
+    public int $login_time;
+    public string $session_id;
+    public string $creator_name;
+    public string $updator_name;
+    public int $created_time;
+    public int $updated_time;
+
+    public static function argumentResolve(ContainerInterface $container): mixed
+    {
+        $identity = $container->get(IdentityInterface::class);
+        return static::get($identity->getId());
+    }
 
     public function hashPassword(string $password): string
     {

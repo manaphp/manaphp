@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-class UserActionLog extends Model
+class AdminActionLog extends Model
 {
     public int $id;
-    public int $user_id;
-    public string $user_name;
+    public int $admin_id;
+    public string $admin_name;
     public string $method;
     public string $handler;
     public int $tag;

@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection ALL */
+declare(strict_types=1);
 
 namespace App\Areas\User\Controllers;
 
@@ -10,7 +11,6 @@ use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\InputInterface;
 
 #[Authorize('*')]
 class SessionController extends Controller
@@ -31,7 +31,7 @@ class SessionController extends Controller
         return $this->view->setVar('user_name', $this->cookies->get('user_name'));
     }
 
-    public function loginAction(InputInterface $input, string $code)
+    public function loginAction(string $code, string $user_name, string $password)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
@@ -43,8 +43,8 @@ class SessionController extends Controller
             $this->session->remove('captcha');
         }
 
-        $user = User::first(['user_name' => $input->string('user_name')]);
-        if (!$user || !$user->verifyPassword($input->string('password'))) {
+        $user = User::first(['user_name' => $user_name]);
+        if (!$user || !$user->verifyPassword($password)) {
             return '账号或密码不正确';
         }
 
@@ -77,6 +77,8 @@ class SessionController extends Controller
         $adminLoginLog->user_agent = \substr($this->request->header('user-agent'), 0, 255);
 
         $adminLoginLog->create();
+
+        return 0;
     }
 
     public function logoutAction()

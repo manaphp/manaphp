@@ -49,8 +49,8 @@ axios.interceptors.response.use(function (res) {
         }
 
         if (res.data.code === 0) {
-            if (res.data.message) {
-                vm.$message({type: 'success', duration: 1000, message: res.data.message});
+            if (res.data.msg) {
+                vm.$message({type: 'success', duration: 1000, message: res.data.msg});
             } else if (res.config.method !== 'get') {
                 vm.$message({type: 'success', duration: 1000, message: '操作成功'});
             }
@@ -74,7 +74,7 @@ axios.interceptors.response.use(function (res) {
         if (error.response.status) {
             switch (error.response.status) {
                 case 400:
-                    alert(error.response.data.message);
+                    alert(error.response.data.msg);
                     break;
                 case 401:
                     window.location.href = '/login';
@@ -114,8 +114,8 @@ Vue.prototype.ajax_get = function (url, data, success) {
                 }
                 success.bind(this)(res.data.data);
             }
-        } else if (res.data.message) {
-            this.$alert(res.data.message);
+        } else if (res.data.msg) {
+            this.$alert(res.data.msg);
         }
         return res;
     });
@@ -137,8 +137,8 @@ Vue.prototype.ajax_post = function (url, data, success) {
             success.bind(this)(res.data.data);
         }
 
-        if (res.data.message !== '') {
-            this.$alert(res.data.message);
+        if (res.data.msg !== '') {
+            this.$alert(res.data.msg);
         }
         return res
     });
@@ -192,7 +192,6 @@ Vue.component('date-picker', {
     start-placeholder="开始日期" end-placeholder="结束日期" 
     value-format="yyyy-MM-dd" 
     size="small"
-    style="width: 215px"
     :picker-options="pickerOptions" @change="change">
 </el-date-picker>`,
     methods: {
@@ -491,24 +490,24 @@ Vue.component('show-create', {
 
 Vue.component('show-edit', {
     props: ['row'],
-    template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary"><slot>编辑</slot></el-button>`
+    template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary" icon="el-icon-edit" title="编辑"></el-button>`
 });
 
 Vue.component('show-delete', {
     props: ['row'],
-    template: '<el-button @click="$root.do_delete(row)" size="mini" type="danger"><slot>删除</slot></el-button>'
+    template: '<el-button @click="$root.do_delete(row)" size="mini" type="danger" icon="el-icon-delete" title="删除"></el-button>'
 });
 
 Vue.component('show-detail', {
     props: ['row', 'link'],
-    template: '<el-button @click="$root.show_detail(row,link)" size="mini" type="info"><slot>详情</slot></el-button>'
+    template: '<el-button @click="$root.show_detail(row,link)" size="mini" type="info" icon="el-icon-more" title="详情"></el-button>'
 });
 
 Vue.component('show-enable', {
     props: ['row'],
     template: `
-<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini" type="danger">禁用</el-button>
-<el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini" type="warning">启用</el-button>`
+<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini" type="danger" icon="el-icon-lock" title="禁用"></el-button>
+<el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini" type="warning" icon="el-icon-unlock" title="启用"></el-button>`
 });
 
 Vue.component('create-dialog', {
@@ -561,7 +560,7 @@ Vue.component('selector', {
     props: ['value', 'data', 'disabled'],
     template: `
 <span>
-    <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled">
+    <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled" v-bind="$attrs">
         <el-option v-for="item in extract_ill(data)" :key="item.id" :label="item.label" :value="String(item.id)"></el-option>
     </el-select>
 </span>`,
@@ -659,7 +658,7 @@ Vue.component('create-select', {
     props: ['label', 'prop', 'data', 'disabled'],
     template: `
 <el-form-item :label="(label||$root.label[prop]||prop)+':'">
-    <selector v-model="$root.create[prop]" :data="data" :disabled="disabled"></selector>
+    <selector v-model="$root.create[prop]" :data="data" :disabled="disabled" v-bind="$attrs"></selector>
 </el-form-item>`
 });
 
@@ -755,11 +754,11 @@ Vue.component('result-id', {
 
 Vue.component('result-account', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="100"></el-table-column>`
 });
 
 Vue.component('result-email', {
-    template: `<el-table-column prop="email" label="邮箱" with="200" show-overflow-tooltip></el-table-column>`
+    template: `<el-table-column prop="email" label="邮箱" with="250" show-overflow-tooltip></el-table-column>`
 });
 
 Vue.component('result-ip', {
@@ -777,7 +776,7 @@ Vue.component('result-enabled', {
 
 Vue.component('result-timestamp', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="$root.fDate" width="150"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="$root.fDate" width="123"></el-table-column>`
 });
 
 Vue.component('result-column', {
@@ -927,7 +926,7 @@ App = Vue.extend({
 
             return this.$axios.get(document.location.href).then((res) => {
                 if (res.data.code !== 0) {
-                    this.$alert(res.data.message);
+                    this.$alert(res.data.msg);
                 } else {
                     this.response = res.data.data;
                 }

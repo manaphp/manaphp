@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\User\Controllers;
 
@@ -25,7 +26,7 @@ class ActionLogController extends Controller
     {
         return UserActionLog::select()
             ->where(['user_id' => $this->identity->getId()])
-            ->whereCriteria($this->request->all(), ['path', 'client_ip', 'created_time@=', 'tag'])
+            ->whereCriteria($this->request->all(), ['handler', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
             ->paginate($page, $size);
     }
