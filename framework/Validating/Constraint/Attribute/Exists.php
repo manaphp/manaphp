@@ -45,7 +45,7 @@ class Exists extends AbstractConstraint
 
         try {
             $className::get($value);
-        } catch (Exception $exception) {
+        } catch (Exception) {
             return false;
         }
 

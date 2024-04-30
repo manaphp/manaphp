@@ -35,7 +35,7 @@ class PoolPopDurationCollector implements WorkerCollectorInterface
 
     public function updated(mixed $data): void
     {
-        list ($handler, $pops) = $data;
+        list (, $pops) = $data;
 
         foreach ($pops as list($owner, $type, $elapsed)) {
             if (($histogram = $this->histograms[$owner][$type] ?? null) === null) {
