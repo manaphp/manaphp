@@ -88,7 +88,7 @@ class Exporter implements ExporterInterface
         return $data;
     }
 
-    public function onRequestEnd(#[Event] RequestEnd $event)
+    public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         $handler = $this->dispatcher->getHandler();
 

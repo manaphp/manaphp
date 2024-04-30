@@ -39,7 +39,7 @@ class Processes implements ProcessesInterface
         return sprintf('%s.%s.%d', $this->app_id, $name, $index);
     }
 
-    protected function startProcess(Server $server, ProcessInterface $process)
+    protected function startProcess(Server $server, ProcessInterface $process): void
     {
         $rClass = new ReflectionClass($process);
         if (($attributes = $rClass->getAttributes(Settings::class, ReflectionAttribute::IS_INSTANCEOF)) !== []) {
@@ -66,7 +66,7 @@ class Processes implements ProcessesInterface
         }
     }
 
-    public function onServerReady(#[Event] ServerReady $event)
+    public function onServerReady(#[Event] ServerReady $event): void
     {
         if (isset($event->server)) {
             foreach ($this->processes as $definition) {
