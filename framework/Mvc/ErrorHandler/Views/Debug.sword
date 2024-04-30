@@ -5,7 +5,7 @@
 ?>
         <!--suppress HtmlDeprecatedAttribute -->
 <br>
-<table class="error" dir="ldr" border="1" cellspacing="0" cellpadding="1">
+<table class="error" dir="ltr" border="1" cellspacing="0" cellpadding="1">
     <tr>
         <th align="left" bgcolor="#f57900" colspan="3"><span
                     style="background-color: #cc0000; color: #fce94f; font-size: x-large;">( ! ) </span>
