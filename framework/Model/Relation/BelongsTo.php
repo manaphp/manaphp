@@ -8,6 +8,7 @@ use ManaPHP\Model\AbstractRelation;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\QueryInterface;
+use function is_string;
 
 class BelongsTo extends AbstractRelation
 {
@@ -18,7 +19,7 @@ class BelongsTo extends AbstractRelation
     {
         $models = Container::get(ModelsInterface::class);
 
-        if (\is_string($self)) {
+        if (is_string($self)) {
             $this->selfModel = $self;
             $this->selfField = $models->getReferencedKey($thatModel);
         } else {

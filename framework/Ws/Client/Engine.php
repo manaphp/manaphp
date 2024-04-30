@@ -6,6 +6,9 @@ namespace ManaPHP\Ws\Client;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Ws\ClientInterface;
+use function chr;
+use function ord;
+use function strlen;
 
 class Engine implements EngineInterface
 {
@@ -119,7 +122,7 @@ class Engine implements EngineInterface
     protected function sendInternal(mixed $socket, string $data, ?float $timeout = null): void
     {
         $send_length = 0;
-        $data_length = \strlen($data);
+        $data_length = strlen($data);
         $end_time = microtime(true) + ($timeout ?: $this->timeout);
 
         $read = null;
@@ -150,9 +153,9 @@ class Engine implements EngineInterface
 
     public function send(int $op_code, string $data, ?float $timeout = null): void
     {
-        $str = \chr(0x80 | $op_code);
+        $str = chr(0x80 | $op_code);
 
-        $data_len = \strlen($data);
+        $data_len = strlen($data);
 
         $mask_bit = $this->masking ? 0x80 : 0x00;
         if ($data_len <= 125) {
@@ -169,7 +172,7 @@ class Engine implements EngineInterface
 
             for ($i = 0; $i < $data_len; $i++) {
                 $chr = $data[$i];
-                $str .= \chr(\ord($key[$i % 4]) ^ \ord($chr));
+                $str .= chr(ord($key[$i % 4]) ^ ord($chr));
             }
         } else {
             $str .= $data;
@@ -188,7 +191,7 @@ class Engine implements EngineInterface
         $write = null;
         $except = null;
 
-        while (($left = 2 - \strlen($buf)) > 0) {
+        while (($left = 2 - strlen($buf)) > 0) {
             $read = [$socket];
             if (stream_select($read, $write, $except, 0, 10000) <= 0) {
                 if (microtime(true) > $end_time) {
@@ -209,7 +212,7 @@ class Engine implements EngineInterface
             $buf .= $r;
         }
 
-        $byte1 = \ord($buf[1]);
+        $byte1 = ord($buf[1]);
 
         if ($byte1 & 0x80) {
             throw new ProtocolException('Mask not support');
@@ -226,7 +229,7 @@ class Engine implements EngineInterface
         }
 
         $start_time = microtime(true);
-        while (($left = $header_len - \strlen($buf)) > 0) {
+        while (($left = $header_len - strlen($buf)) > 0) {
             $read = [$socket];
             if (stream_select($read, $write, $except, 0, 10000) <= 0) {
                 if (microtime(true) > $end_time) {
@@ -255,9 +258,9 @@ class Engine implements EngineInterface
             $payload_len = unpack('J', substr($buf, 2, 8))[1];
         }
 
-        $payload = \strlen($buf) > $header_len ? substr($buf, $header_len, $payload_len) : '';
+        $payload = strlen($buf) > $header_len ? substr($buf, $header_len, $payload_len) : '';
 
-        while (($left = $payload_len - \strlen($payload)) > 0) {
+        while (($left = $payload_len - strlen($payload)) > 0) {
             $read = [$socket];
             if (stream_select($read, $write, $except, 0, 10000) <= 0) {
                 if (microtime(true) > $end_time) {
@@ -282,7 +285,7 @@ class Engine implements EngineInterface
             }
         }
 
-        $byte0 = \ord($buf[0]);
+        $byte0 = ord($buf[0]);
 
         $op_code = $byte0 & 0x0F;
         return new Message($op_code, $payload, round(microtime(true) - $start_time, 3));

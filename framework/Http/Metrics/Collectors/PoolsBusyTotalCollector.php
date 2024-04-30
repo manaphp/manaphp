@@ -10,6 +10,7 @@ use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Pooling\Pool\Event\PoolBusy;
 use ManaPHP\Pooling\Pool\Event\PoolPopping;
+use function get_class;
 
 class PoolsBusyTotalCollector implements WorkerCollectorInterface
 {
@@ -64,7 +65,7 @@ class PoolsBusyTotalCollector implements WorkerCollectorInterface
     {
         $context = $this->getContext();
 
-        $owner = \get_class($event->owner);
+        $owner = get_class($event->owner);
         $type = $event->type;
 
         if (isset($context->pop_totals[$owner][$type])) {
@@ -78,7 +79,7 @@ class PoolsBusyTotalCollector implements WorkerCollectorInterface
     {
         $context = $this->getContext();
 
-        $owner = \get_class($event->owner);
+        $owner = get_class($event->owner);
         $type = $event->type;
 
         if (isset($context->busy_totals[$owner][$type])) {

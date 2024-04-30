@@ -14,6 +14,7 @@ use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
+use function strlen;
 
 class RateLimitMiddleware
 {
@@ -65,7 +66,7 @@ class RateLimitMiddleware
             if ($pos = strpos($v, '/')) {
                 $limit = (int)substr($v, 0, $pos);
                 $right = substr($v, $pos + 1);
-                $period = seconds(\strlen($right) === 1 ? "1$right" : $right);
+                $period = seconds(strlen($right) === 1 ? "1$right" : $right);
             } else {
                 $limit = (int)$v;
                 $period = 60;

@@ -12,6 +12,7 @@ use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
+use function microtime;
 
 class SqlTransactionDurationCollector implements WorkerCollectorInterface
 {
@@ -49,19 +50,19 @@ class SqlTransactionDurationCollector implements WorkerCollectorInterface
     public function onDbBegin(#[Event] DbBegin $event): void
     {
         $context = $this->getContext();
-        $context->start_time = \microtime(true);
+        $context->start_time = microtime(true);
     }
 
     public function onDbCommit(#[Event] DbCommit $event): void
     {
         $context = $this->getContext();
-        $context->transactions[] = ['commit', \microtime(true) - $context->start_time];
+        $context->transactions[] = ['commit', microtime(true) - $context->start_time];
     }
 
     public function onDbRollback(#[Event] DbRollback $event): void
     {
         $context = $this->getContext();
-        $context->transactions[] = ['rollback', \microtime(true) - $context->start_time];
+        $context->transactions[] = ['rollback', microtime(true) - $context->start_time];
     }
 
     public function querying(): array

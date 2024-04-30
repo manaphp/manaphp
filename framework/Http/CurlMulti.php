@@ -12,6 +12,12 @@ use ManaPHP\Http\CurlMulti\Error;
 use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
 use Psr\Log\LoggerInterface;
+use function count;
+use function dirname;
+use function is_array;
+use function is_callable;
+use function is_int;
+use function is_string;
 
 class CurlMulti implements CurlMultiInterface, Countable
 {
@@ -79,9 +85,9 @@ class CurlMulti implements CurlMultiInterface, Countable
 
     public function add(string|array|Request $request, ?callable $callbacks = null): static
     {
-        if (\is_string($request)) {
+        if (is_string($request)) {
             $request = $this->maker->make('ManaPHP\Http\CurlMulti\Request', [$request, $callbacks]);
-        } elseif (\is_array($request)) {
+        } elseif (is_array($request)) {
             if (isset($request[1])) {
                 foreach ($request as $r) {
                     $this->add($r, $callbacks);
@@ -92,7 +98,7 @@ class CurlMulti implements CurlMultiInterface, Countable
             }
         }
 
-        if (\is_array($request->url)) {
+        if (is_array($request->url)) {
             $queries = $request->url;
             unset($queries[0]);
             $url = $request->url[0];
@@ -107,7 +113,7 @@ class CurlMulti implements CurlMultiInterface, Countable
         $headers = $request->headers;
         $options = $request->options;
 
-        if (\is_array($request->body)) {
+        if (is_array($request->body)) {
             if (isset($headers['Content-Type']) && str_contains($headers['Content-Type'], '/json')) {
                 $request->body = json_stringify($request->body);
             } else {
@@ -137,7 +143,7 @@ class CurlMulti implements CurlMultiInterface, Countable
         if ($headers) {
             $tr = [];
             foreach ($headers as $k => $v) {
-                if (\is_int($k)) {
+                if (is_int($k)) {
                     $tr[] = $v;
                 } else {
                     $tr[] = $k . ': ' . $v;
@@ -179,7 +185,7 @@ class CurlMulti implements CurlMultiInterface, Countable
         }
 
         foreach ($options as $k => $v) {
-            if (\is_int($v)) {
+            if (is_int($v)) {
                 curl_setopt($curl, $k, $v);
             }
         }
@@ -196,7 +202,7 @@ class CurlMulti implements CurlMultiInterface, Countable
     public function download(string|array $url, string $target, ?callable $callback = null): static
     {
         if (!LocalFS::fileExists($target)) {
-            LocalFS::dirCreate(\dirname($target));
+            LocalFS::dirCreate(dirname($target));
 
             $request = $this->maker->make('ManaPHP\Http\CurlMulti\Request', [$url, $callback]);
 
@@ -248,9 +254,9 @@ class CurlMulti implements CurlMultiInterface, Countable
                     $callbacks = $request->callbacks;
                     if ($callbacks === null) {
                         $this->onSuccess($response);
-                    } elseif (\is_callable($callbacks)) {
+                    } elseif (is_callable($callbacks)) {
                         $callbacks($response);
-                    } elseif (\is_array($callbacks)) {
+                    } elseif (is_array($callbacks)) {
                         if (isset($callbacks['success'])) {
                             $callbacks['success']($response);
                         } else {
@@ -272,7 +278,7 @@ class CurlMulti implements CurlMultiInterface, Countable
 
                     $callbacks = $request->callbacks;
 
-                    if (\is_array($callbacks) && isset($callbacks['error'])) {
+                    if (is_array($callbacks) && isset($callbacks['error'])) {
                         $callbacks['error']($error);
                     } else {
                         $this->onError($error);
@@ -300,6 +306,6 @@ class CurlMulti implements CurlMultiInterface, Countable
 
     public function count(): int
     {
-        return \count($this->requests);
+        return count($this->requests);
     }
 }

@@ -10,6 +10,7 @@ use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
 use PDO;
+use function count;
 
 class Mssql extends AbstractConnection
 {
@@ -61,15 +62,15 @@ class Mssql extends AbstractConnection
     {
         $parts = explode('.', $table);
 
-        if (\count($parts) === 1) {
+        if (count($parts) === 1) {
             $fields = $this->query("exec sp_pkeys '$parts[0]'");
         } else {
             $fields = $this->query("exec sp_pkeys @table_name ='$parts[1]', @table_owner ='$parts[0]'");
         }
 
-        $primaryKeys = \count($fields) === 1 ? [$fields[0]['COLUMN_NAME']] : [];
+        $primaryKeys = count($fields) === 1 ? [$fields[0]['COLUMN_NAME']] : [];
 
-        if (\count($parts) === 1) {
+        if (count($parts) === 1) {
             $fields = $this->query("exec sp_columns '$parts[0]'");
         } else {
             $fields = $this->query("exec sp_columns @table_name ='$parts[1]', @table_owner ='$parts[0]'");

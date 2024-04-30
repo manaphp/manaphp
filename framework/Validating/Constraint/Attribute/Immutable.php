@@ -8,6 +8,7 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function sprintf;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Immutable extends AbstractConstraint
@@ -17,7 +18,7 @@ class Immutable extends AbstractConstraint
         /** @var ModelInterface $source */
         $source = $validation->source;
         if (!$source instanceof ModelInterface) {
-            throw new MisuseException(\sprintf('%s is not a model', $source::class));
+            throw new MisuseException(sprintf('%s is not a model', $source::class));
         }
 
         $field = $validation->field;

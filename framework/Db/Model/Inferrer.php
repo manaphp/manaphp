@@ -7,6 +7,8 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ThoseInterface;
+use function count;
+use function in_array;
 
 class Inferrer implements InferrerInterface
 {
@@ -22,14 +24,14 @@ class Inferrer implements InferrerInterface
     {
         $fields = $this->models->getFields($model);
 
-        if (\in_array('id', $fields, true)) {
+        if (in_array('id', $fields, true)) {
             return 'id';
         }
 
         $prefix = lcfirst(($pos = strrpos($model, '\\')) === false ? $model : substr($model, $pos + 1));
-        if (\in_array($tryField = $prefix . '_id', $fields, true)) {
+        if (in_array($tryField = $prefix . '_id', $fields, true)) {
             return $tryField;
-        } elseif (\in_array($tryField = $prefix . 'Id', $fields, true)) {
+        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
@@ -41,9 +43,9 @@ class Inferrer implements InferrerInterface
         }
 
         $prefix = (($pos = strpos($table, '.')) ? substr($table, $pos + 1) : $table);
-        if (\in_array($tryField = $prefix . '_id', $fields, true)) {
+        if (in_array($tryField = $prefix . '_id', $fields, true)) {
             return $tryField;
-        } elseif (\in_array($tryField = $prefix . 'Id', $fields, true)) {
+        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
@@ -57,7 +59,7 @@ class Inferrer implements InferrerInterface
                 return $this->primaryKey[$model] = $primaryKey;
             } else {
                 $primaryKeys = $this->metadata->getPrimaryKeyAttributes($model);
-                if (\count($primaryKeys) !== 1) {
+                if (count($primaryKeys) !== 1) {
                     throw new NotSupportedException('only support one primary key');
                 }
                 $primaryKey = $primaryKeys[0];

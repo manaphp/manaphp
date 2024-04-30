@@ -17,6 +17,9 @@ use Throwable;
 use Workerman\Connection\ConnectionInterface;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
+use function dirname;
+use function is_string;
+use function strlen;
 
 class Workerman extends AbstractServer
 {
@@ -33,7 +36,7 @@ class Workerman extends AbstractServer
     {
         $script_filename = get_included_files()[0];
         $this->_SERVER = [
-            'DOCUMENT_ROOT'   => \dirname($script_filename),
+            'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
             'SERVER_ADDR'     => $this->host,
@@ -120,10 +123,10 @@ class Workerman extends AbstractServer
 
     public function send(): void
     {
-        if (!\is_string($this->response->getContent()) && !$this->response->hasFile()) {
+        if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
             $this->eventDispatcher->dispatch(new ResponseStringify($this->response));
 
-            if (!\is_string($content = $this->response->getContent())) {
+            if (!is_string($content = $this->response->getContent())) {
                 $this->response->setContent(json_stringify($content));
             }
         }
@@ -163,7 +166,7 @@ class Workerman extends AbstractServer
         if ($this->response->getStatusCode() === 304) {
             $context->connection->close('');
         } elseif ($this->request->method() === 'HEAD') {
-            Http::header('Content-Length: ' . \strlen($content));
+            Http::header('Content-Length: ' . strlen($content));
             $context->connection->close('');
         } else {
             $context->connection->close($content);

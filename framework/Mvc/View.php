@@ -15,6 +15,7 @@ use ManaPHP\Mvc\View\Event\ViewRendering;
 use ManaPHP\Rendering\RendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function is_string;
 
 class View implements ViewInterface
 {
@@ -307,7 +308,7 @@ class View implements ViewInterface
         $widgetInstance = $this->container->get($widgetClassName);
         $vars = $widgetInstance->run($options);
 
-        if (\is_string($vars)) {
+        if (is_string($vars)) {
             echo $vars;
         } else {
             $this->renderer->render($view, $vars, true);

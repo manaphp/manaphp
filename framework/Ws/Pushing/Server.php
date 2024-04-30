@@ -12,6 +12,8 @@ use ManaPHP\Ws\Pushing\Server\Event\ServerPushing;
 use ManaPHP\Ws\ServerInterface as WsServerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use function count;
+use function strlen;
 
 class Server implements ServerInterface
 {
@@ -63,28 +65,28 @@ class Server implements ServerInterface
 
         if (($id = $this->identity->isGuest() ? 0 : $this->identity->getId()) !== 0) {
             unset($this->ids[$id][$fd]);
-            if (\count($this->ids[$id]) === 0) {
+            if (count($this->ids[$id]) === 0) {
                 unset($this->ids[$id]);
             }
         }
 
         if (($name = $this->identity->isGuest() ? '' : $this->identity->getName()) !== '') {
             unset($this->names[$name][$fd]);
-            if (\count($this->names[$name]) === 0) {
+            if (count($this->names[$name]) === 0) {
                 unset($this->names[$name]);
             }
         }
 
         if (($room = $this->request->input('room_id', '')) !== '') {
             unset($this->rooms[$room][$fd]);
-            if (\count($this->rooms[$room]) === 0) {
+            if (count($this->rooms[$room]) === 0) {
                 unset($this->rooms[$room]);
             }
         }
 
         foreach ($this->identity->getRoles() as $role) {
             unset($this->roles[$role][$fd]);
-            if (\count($this->roles[$role]) === 0) {
+            if (count($this->roles[$role]) === 0) {
                 unset($this->roles[$role]);
             }
         }
@@ -183,7 +185,7 @@ class Server implements ServerInterface
                 $prefix = $this->prefix . $this->endpoint;
                 $this->pubSub->psubscribe(
                     ["$prefix:*"], function ($channel, $message) use ($prefix) {
-                    list($type, $receivers) = explode(':', substr($channel, \strlen($prefix) + 1), 2);
+                    list($type, $receivers) = explode(':', substr($channel, strlen($prefix) + 1), 2);
 
                     if ($type !== null && $receivers !== null) {
                         $receivers = explode(',', $receivers);

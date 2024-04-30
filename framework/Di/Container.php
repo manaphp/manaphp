@@ -14,6 +14,13 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
+use function array_key_exists;
+use function interface_exists;
+use function is_array;
+use function is_object;
+use function is_string;
+use function str_contains;
+use function substr;
 
 class Container implements ContainerInterface
 {
@@ -46,7 +53,7 @@ class Container implements ContainerInterface
 
         if ($definition instanceof Pool) {
             foreach ($definition->pool as $name => $def) {
-                if (\is_string($def) && $def[0] === '#') {
+                if (is_string($def) && $def[0] === '#') {
                     $def = "$id$def";
                 }
 
@@ -74,7 +81,7 @@ class Container implements ContainerInterface
     {
         $name = $property->getName();
 
-        if (($value = $parameters[$name] ?? null) === null || \is_string($value)) {
+        if (($value = $parameters[$name] ?? null) === null || is_string($value)) {
             if (($rType = $property->getType()) === null) {
                 throw new Exception(sprintf('The type of `%s::%s` is missing.', $object::class, $name));
             }
@@ -85,7 +92,7 @@ class Container implements ContainerInterface
                 $type = $rType->getName();
 
                 if ($value !== null) {
-                    if (\is_string($value)) {
+                    if (is_string($value)) {
                         $value = $this->get($value[0] === '#' ? "$type$value" : $value);
                     }
                 } else {
@@ -120,7 +127,7 @@ class Container implements ContainerInterface
     {
         $name = $property->getName();
 
-        if (\array_key_exists($name, $parameters)) {
+        if (array_key_exists($name, $parameters)) {
             if (!$property->isPublic()) {
                 $property->setAccessible(true);
             }
@@ -134,7 +141,7 @@ class Container implements ContainerInterface
     {
         $name = $property->getName();
 
-        if (\array_key_exists($name, $parameters)) {
+        if (array_key_exists($name, $parameters)) {
             if (!$property->isPublic()) {
                 $property->setAccessible(true);
             }
@@ -214,7 +221,7 @@ class Container implements ContainerInterface
 
     public function make(string $name, array $parameters = [], string $id = null): mixed
     {
-        while (\is_string($definition = $this->definitions[$name] ?? null) && !str_contains($definition, '#')) {
+        while (is_string($definition = $this->definitions[$name] ?? null) && !str_contains($definition, '#')) {
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $name = $definition;
         }
@@ -260,32 +267,32 @@ class Container implements ContainerInterface
         if (($instance = $this->instances[$id] ?? null) !== null) {
             return $instance;
         } elseif (($definition = $this->definitions[$id] ?? null) === null) {
-            if (\str_contains($id, '#')) {
+            if (str_contains($id, '#')) {
                 throw new Exception(sprintf('The definition of `%s` is not found.', $id));
             }
 
             $instance = $this->make($id, [], $id);
-            if (class_exists($id, false) && \interface_exists($id . 'Interface', false)) {
+            if (class_exists($id, false) && interface_exists($id . 'Interface', false)) {
                 unset($this->instances[$id]);
                 throw new MisuseException(sprintf('please autowire using %sInterface to replace %s.', $id, $id));
             }
 
             return $this->instances[$id] = $instance;
-        } elseif (\is_object($definition)) {
+        } elseif (is_object($definition)) {
             return $this->instances[$id] = $definition;
-        } elseif (\is_array($definition)) {
+        } elseif (is_array($definition)) {
             if (($class = $definition['class'] ?? null) !== null) {
                 unset($definition['class']);
             } else {
-                $class = ($position = strpos($id, '#')) === false ? $id : \substr($id, 0, $position);
+                $class = ($position = strpos($id, '#')) === false ? $id : substr($id, 0, $position);
             }
 
             return $this->instances[$id] = $this->make($class, $definition, $id);
-        } elseif (!\is_string($definition)) {
+        } elseif (!is_string($definition)) {
             throw new Exception(sprintf('The definition of `%s` is not supported.', $id));
-        } elseif (\str_contains($definition, '#')) {
+        } elseif (str_contains($definition, '#')) {
             return $this->instances[$id] = $this->get($definition[0] === '#' ? "$id$definition" : $definition);
-        } elseif (\interface_exists($definition)) {
+        } elseif (interface_exists($definition)) {
             return $this->instances[$id] = $this->get($definition);
         } else {
             return $this->instances[$id] = $this->make($definition, [], $id);
@@ -323,7 +330,7 @@ class Container implements ContainerInterface
 
     public function call(callable $callable, array $parameters = []): mixed
     {
-        if (\is_array($callable)) {
+        if (is_array($callable)) {
             $rFunction = new ReflectionMethod($callable[0], $callable[1]);
         } else {
             $rFunction = new ReflectionFunction($callable);
@@ -336,22 +343,22 @@ class Container implements ContainerInterface
             $rType = $rParameter->getType();
             $type = ($rType instanceof ReflectionNamedType && !$rType->isBuiltin()) ? $rType->getName() : null;
 
-            if (\array_key_exists($position, $parameters)) {
+            if (array_key_exists($position, $parameters)) {
                 $value = $parameters[$position];
-            } elseif (\array_key_exists($name, $parameters)) {
+            } elseif (array_key_exists($name, $parameters)) {
                 $value = $parameters[$name];
             } elseif ($rParameter->isDefaultValueAvailable()) {
                 $value = $rParameter->getDefaultValue();
             } elseif ($type !== null) {
                 $value = $parameters[$type] ?? $type;
             } else {
-                $signature = \is_array($callable)
+                $signature = is_array($callable)
                     ? $callable[0]::class . '::' . $callable[1]
                     : $rFunction->getName();
                 throw new Exception(sprintf('Cannot autowire argument `$%s` of method %s().', $name, $signature));
             }
 
-            if ($type !== null && \is_string($value)) {
+            if ($type !== null && is_string($value)) {
                 $value = $this->get($value[0] === '#' ? "$type$value" : $value);
             }
 

@@ -11,6 +11,10 @@ use DOMNode;
 use DOMText;
 use IteratorAggregate;
 use Traversable;
+use function array_slice;
+use function count;
+use function in_array;
+use function is_string;
 
 class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 {
@@ -64,7 +68,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function add(string|SelectorList $selectors): static
     {
-        if (\is_string($selectors)) {
+        if (is_string($selectors)) {
             $selectors = (new Selector($this->document))->find($selectors);
         }
 
@@ -106,10 +110,10 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         }
 
         if ($index < 0) {
-            $index = \count($this->nodes) + $index;
+            $index = count($this->nodes) + $index;
         }
 
-        if ($index < 0 || $index >= \count($this->nodes)) {
+        if ($index < 0 || $index >= count($this->nodes)) {
             return new SelectorList($this, []);
         } else {
             $keys = array_keys($this->nodes);
@@ -138,7 +142,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function first(): ?Selector
     {
-        return \count($this->nodes) > 0 ? new Selector($this->document, current($this->nodes)) : null;
+        return count($this->nodes) > 0 ? new Selector($this->document, current($this->nodes)) : null;
     }
 
     public function has(string $css): static
@@ -211,7 +215,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function slice(int $offset, ?int $length = null): static
     {
-        $nodes = \array_slice($this->nodes, $offset, $length);
+        $nodes = array_slice($this->nodes, $offset, $length);
         return new SelectorList($this, $nodes);
     }
 
@@ -239,7 +243,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         foreach ($this->nodes as $node_0) {
             foreach ($query->css($css, $node_0) as $node) {
                 foreach ($node->attributes as $attribute) {
-                    if (!$attr || \in_array($attribute->name, $attr, true)) {
+                    if (!$attr || in_array($attribute->name, $attr, true)) {
                         $node->removeAttribute($attribute->name);
                     }
                 }
@@ -251,7 +255,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function retainAttr(string $css, string|array $attr): static
     {
-        if (\is_string($attr)) {
+        if (is_string($attr)) {
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -260,7 +264,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         foreach ($this->nodes as $node_0) {
             foreach ($query->css($css, $node_0) as $node) {
                 foreach ($node->attributes as $attribute) {
-                    if (!\in_array($attribute->name, $attr, true)) {
+                    if (!in_array($attribute->name, $attr, true)) {
                         $node->removeAttribute($attribute->name);
                     }
                 }
@@ -477,7 +481,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function count(): int
     {
-        return \count($this->nodes);
+        return count($this->nodes);
     }
 
     public function offsetSet(mixed $offset, mixed $value): void

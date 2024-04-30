@@ -8,6 +8,8 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function is_int;
+use function sprintf;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Unique extends AbstractConstraint
@@ -23,12 +25,12 @@ class Unique extends AbstractConstraint
         $source = $validation->source;
 
         if (!$source instanceof ModelInterface) {
-            throw new MisuseException(\sprintf('%s is not a model', $source::class));
+            throw new MisuseException(sprintf('%s is not a model', $source::class));
         }
 
         $filters = [$validation->field => $validation->value];
         foreach ($this->filters as $key => $value) {
-            if (\is_int($key)) {
+            if (is_int($key)) {
                 $filters[$value] = $source->$value;
             } else {
                 $filters[$key] = $value;

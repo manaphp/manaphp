@@ -17,6 +17,8 @@ use ManaPHP\Model\Attribute\Table;
 use ManaPHP\Validating\ConstraintInterface;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionProperty;
+use function in_array;
 
 class Models implements ModelsInterface
 {
@@ -189,14 +191,14 @@ class Models implements ModelsInterface
             $guarded = $attribute->fields;
             $fillable = [];
             foreach ($this->getFields($model) as $field) {
-                if (!\in_array($field, $guarded, true)) {
+                if (!in_array($field, $guarded, true)) {
                     $fillable[] = $field;
                 }
             }
         } else {
             $fillable = [];
             $rClass = new ReflectionClass($model);
-            foreach ($rClass->getProperties(\ReflectionProperty::IS_PUBLIC) as $rProperty) {
+            foreach ($rClass->getProperties(ReflectionProperty::IS_PUBLIC) as $rProperty) {
                 if ($rProperty->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
                     $fillable[] = $rProperty->getName();
                 }

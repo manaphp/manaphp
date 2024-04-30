@@ -5,6 +5,7 @@ namespace ManaPHP\Redis;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Pooling\PoolsInterface;
+use function is_object;
 
 class Redis implements RedisInterface
 {
@@ -49,7 +50,7 @@ class Redis implements RedisInterface
                 $this->pools->push($this, $connection);
             }
 
-            if (\is_object($return)) {
+            if (is_object($return)) {
                 throw new CallInPoolException($method);
             }
         }

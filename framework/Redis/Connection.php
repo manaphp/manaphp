@@ -16,6 +16,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Redis;
 use RedisCluster;
 use RedisException;
+use function in_array;
+use function microtime;
 
 class Connection
 {
@@ -156,7 +158,7 @@ class Connection
         $redis = $this->getConnect();
 
         $read_timeout = null;
-        if (\in_array($name, ['subscribe', 'psubscribe'], true)) {
+        if (in_array($name, ['subscribe', 'psubscribe'], true)) {
             $read_timeout = $redis->getOption(Redis::OPT_READ_TIMEOUT);
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
         }
@@ -176,9 +178,9 @@ class Connection
     {
         $this->eventDispatcher->dispatch(new RedisCalling($this, $method, $arguments));
 
-        $start_time = \microtime(true);
+        $start_time = microtime(true);
         $return = $this->call($method, $arguments);
-        $elapsed = \microtime(true) - $start_time;
+        $elapsed = microtime(true) - $start_time;
 
         $this->eventDispatcher->dispatch(new RedisCalled($this, $method, $arguments, $elapsed, $return));
 

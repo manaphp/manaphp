@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Controller\Attribute;
 
 use Attribute;
+use function in_array;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class Authorize
@@ -17,7 +18,7 @@ class Authorize
 
     public function isAllowed(array $roles): ?bool
     {
-        if (\in_array('admin', $roles, true)) {
+        if (in_array('admin', $roles, true)) {
             return true;
         } elseif ($this->role === null) {
             return null;
@@ -27,7 +28,7 @@ class Authorize
             if ($this->role === 'user') {
                 return true;
             } else {
-                return \in_array($this->role, $roles, true);
+                return in_array($this->role, $roles, true);
             }
         }
 

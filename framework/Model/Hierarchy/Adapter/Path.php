@@ -6,6 +6,8 @@ namespace ManaPHP\Model\Hierarchy\Adapter;
 use ManaPHP\Helper\Str;
 use ManaPHP\Model\Hierarchy\Exception as HierarchyException;
 use ManaPHP\Query\QueryInterface;
+use function count;
+use function strlen;
 
 /**
  * @method static QueryInterface query()
@@ -34,7 +36,7 @@ trait Path
         }
 
         $current_length = 0;
-        $code_length = \strlen($code);
+        $code_length = strlen($code);
         foreach (static::getHierarchyLengths() as $i => $length) {
             $current_length += $length;
             if ($current_length === $code_length) {
@@ -47,7 +49,7 @@ trait Path
 
     public static function getHierarchyMaxLevel(): int
     {
-        return \count(static::getHierarchyLengths());
+        return count(static::getHierarchyLengths());
     }
 
     public static function getHierarchyMaxLength(): int
@@ -93,7 +95,7 @@ trait Path
         }
 
         $current_length = 0;
-        $code_length = \strlen($code);
+        $code_length = strlen($code);
         foreach (static::getHierarchyLengths() as $length) {
             if ($current_length + $length === $code_length) {
                 return $current_length;
@@ -119,7 +121,7 @@ trait Path
     {
         $parents = [''];
 
-        $node_length = \strlen($code);
+        $node_length = strlen($code);
         $current_length = 0;
 
         foreach (static::getHierarchyLengths() as $length) {
@@ -155,7 +157,7 @@ trait Path
 
         $parent = static::getHierarchyParent($code);
         $hierarchyField = static::getHierarchyField();
-        return static::query()->whereStartsWith($hierarchyField, $parent, \strlen($code))->values($hierarchyField);
+        return static::query()->whereStartsWith($hierarchyField, $parent, strlen($code))->values($hierarchyField);
     }
 
     public static function getHierarchyChildLength(string $code): int
@@ -166,11 +168,11 @@ trait Path
         }
 
         $current_length = 0;
-        $code_length = \strlen($code);
+        $code_length = strlen($code);
         foreach ($lengths as $i => $length) {
             $current_length += $length;
             if ($current_length === $code_length) {
-                if ($i >= \count($lengths) - 1) {
+                if ($i >= count($lengths) - 1) {
                     return -1;
                 } else {
                     return $current_length + $lengths[$i + 1];
@@ -195,7 +197,7 @@ trait Path
 
         $base = static::getHierarchyBase();
 
-        $self_length = \strlen($code) - $parent_length;
+        $self_length = strlen($code) - $parent_length;
         $sub_node = substr($code, $parent_length, $self_length);
         $next_node_int = (int)base_convert($sub_node, $base, 10) + 1;
         /** @noinspection PowerOperatorCanBeUsedInspection */
@@ -218,7 +220,7 @@ trait Path
 
         $max = static::query()->whereStartsWith($hierarchyField, $code, $child_length)->max($hierarchyField);
         if ($max === null) {
-            return $code . str_pad('', $child_length - \strlen($code) - 1, '0') . '1';
+            return $code . str_pad('', $child_length - strlen($code) - 1, '0') . '1';
         } else {
             return static::calcHierarchyNextChild($max);
         }

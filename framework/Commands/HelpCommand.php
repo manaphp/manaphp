@@ -14,6 +14,9 @@ use ManaPHP\Version;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionMethod;
+use function count;
+use function is_string;
+use function strlen;
 
 class HelpCommand extends Command
 {
@@ -34,7 +37,7 @@ class HelpCommand extends Command
         $builtin_commands = [];
         $app_commands = [];
         foreach ($this->commands->getCommands() as $name => $definition) {
-            if (\is_string($definition)) {
+            if (is_string($definition)) {
                 if (str_starts_with($definition, 'App\\')) {
                     $app_commands[$name] = $definition;
                 } else {
@@ -208,7 +211,7 @@ class HelpCommand extends Command
             }
 
             $parts = preg_split('#\s+#', $line, 4);
-            if (\count($parts) < 3 || $parts[0] !== '@param') {
+            if (count($parts) < 3 || $parts[0] !== '@param') {
                 continue;
             }
             $name = substr($parts[2], 1);
@@ -249,7 +252,7 @@ class HelpCommand extends Command
 
             $width = 1;
             foreach ($options as $name => $description) {
-                $width = max($width, \strlen($name) + 2 + (isset($shortNames[$name]) ? 4 : 0));
+                $width = max($width, strlen($name) + 2 + (isset($shortNames[$name]) ? 4 : 0));
             }
             $this->console->writeLn('  Options:');
 

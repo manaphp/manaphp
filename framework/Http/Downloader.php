@@ -6,6 +6,11 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
+use function count;
+use function dirname;
+use function is_float;
+use function is_int;
+use function is_string;
 
 class Downloader implements DownloaderInterface
 {
@@ -15,11 +20,11 @@ class Downloader implements DownloaderInterface
 
     public function download(array $files, mixed $options = []): array
     {
-        if (\is_int($options)) {
+        if (is_int($options)) {
             $options = ['concurrent' => $options];
-        } elseif (\is_float($options)) {
+        } elseif (is_float($options)) {
             $options = ['timeout' => $options];
-        } elseif (\is_string($options)) {
+        } elseif (is_string($options)) {
             $options = [preg_match('#^https?://#', $options) ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
         }
 
@@ -51,7 +56,7 @@ class Downloader implements DownloaderInterface
         curl_setopt($template, CURLOPT_SSL_VERIFYPEER, false);
 
         foreach ($options as $k => $v) {
-            if (\is_int($k)) {
+            if (is_int($k)) {
                 curl_setopt($template, $k, $v);
             }
         }
@@ -61,7 +66,7 @@ class Downloader implements DownloaderInterface
             if (is_file($file)) {
                 unset($files[$url]);
             } else {
-                LocalFS::dirCreate(\dirname($file));
+                LocalFS::dirCreate(dirname($file));
                 $files[$url] = $file;
             }
         }
@@ -70,7 +75,7 @@ class Downloader implements DownloaderInterface
         $failed = [];
         do {
             foreach ($files as $url => $file) {
-                if (\count($handles) === $concurrent) {
+                if (count($handles) === $concurrent) {
                     break;
                 }
                 $curl = curl_copy_handle($template);

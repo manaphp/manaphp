@@ -8,6 +8,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
+use function dirname;
 
 class File implements FileInterface, JsonSerializable
 {
@@ -76,7 +77,7 @@ class File implements FileInterface, JsonSerializable
             }
         }
 
-        LocalFS::dirCreate(\dirname($dst));
+        LocalFS::dirCreate(dirname($dst));
 
         if (PHP_SAPI === 'cli') {
             LocalFS::fileMove($this->file['tmp_name'], $this->alias->resolve($dst));

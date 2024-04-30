@@ -5,6 +5,7 @@ namespace ManaPHP\Model\Attribute;
 
 use Attribute;
 use ManaPHP\Helper\Str;
+use function is_int;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class ColumnMap
@@ -43,7 +44,7 @@ class ColumnMap
         }
 
         foreach ($this->map as $k => $v) {
-            if (\is_int($k)) {
+            if (is_int($k)) {
                 unset($map[$v]);
             } else {
                 $map[$k] = $v;

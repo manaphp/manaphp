@@ -12,6 +12,8 @@ use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Validating\Constraint\Attribute\Required;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionParameter;
+use function is_int;
+use function is_string;
 
 class Model implements ObjectValueResolverInterface
 {
@@ -30,7 +32,7 @@ class Model implements ObjectValueResolverInterface
             $this->validator->validateValue($primaryKey, null, [new Required()]);
         }
 
-        if (!\is_int($id) && !\is_string($id)) {
+        if (!is_int($id) && !is_string($id)) {
             throw new BadRequestException('id is invalid.');
         }
 

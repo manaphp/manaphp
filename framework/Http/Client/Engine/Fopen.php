@@ -10,6 +10,8 @@ use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
+use function is_int;
+use function is_string;
 
 class Fopen implements EngineInterface
 {
@@ -42,11 +44,11 @@ class Fopen implements EngineInterface
 
         $headers = [];
         foreach ($request->headers as $name => $value) {
-            $headers[] = \is_int($name) ? $value : "$name: $value";
+            $headers[] = is_int($name) ? $value : "$name: $value";
         }
         $http['header'] = $headers;
 
-        if (\is_string($body)) {
+        if (is_string($body)) {
             $http['content'] = $body;
         }
 

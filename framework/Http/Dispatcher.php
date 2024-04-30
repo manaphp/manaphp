@@ -18,6 +18,8 @@ use ManaPHP\Http\Server\Event\RequestValidated;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function is_int;
+use function is_string;
 
 class Dispatcher implements DispatcherInterface
 {
@@ -152,12 +154,12 @@ class Dispatcher implements DispatcherInterface
         $globals = $this->request->getContext();
 
         foreach ($params as $k => $v) {
-            if (\is_string($k)) {
+            if (is_string($k)) {
                 $globals->_REQUEST[$k] = $v;
             }
         }
 
-        if (($id = $params[0] ?? null) !== null && (\is_int($id) || \is_string($id))) {
+        if (($id = $params[0] ?? null) !== null && (is_int($id) || is_string($id))) {
             $globals->_REQUEST['id'] = $id;
         }
 

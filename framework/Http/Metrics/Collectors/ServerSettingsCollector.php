@@ -7,6 +7,10 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Metrics\CollectorInterface;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Swoole\WorkersInterface;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_string;
 
 class ServerSettingsCollector implements CollectorInterface
 {
@@ -17,11 +21,11 @@ class ServerSettingsCollector implements CollectorInterface
     {
         $str = '';
         foreach ($this->workers->getServer()->setting as $name => $value) {
-            if (\is_int($value) || \is_float($value)) {
+            if (is_int($value) || is_float($value)) {
                 $str .= $this->formatter->gauge('swoole_server_settings_' . $name, $value);
-            } elseif (\is_bool($value)) {
+            } elseif (is_bool($value)) {
                 $str .= $this->formatter->gauge('swoole_server_settings_' . $name, (int)$value);
-            } elseif (\is_string($value)) {
+            } elseif (is_string($value)) {
                 $str .= $this->formatter->gauge('swoole_server_settings_' . $name, 1, ['value' => $value]);
             }
         }

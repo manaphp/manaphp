@@ -8,6 +8,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Model\ModelsInterface;
 use ReflectionProperty;
+use function in_array;
 
 class ViewCommand extends Command
 {
@@ -127,7 +128,7 @@ HTML;
             return false;
         }
 
-        return \in_array($field, ['updated_time', 'created_time', 'deleted_time'], true);
+        return in_array($field, ['updated_time', 'created_time', 'deleted_time'], true);
     }
 
     /**
@@ -158,7 +159,7 @@ HTML;
                 $content .= PHP_EOL . <<<HTML
     <result-ip prop="$field"></result-ip>
 HTML;
-            } elseif (\in_array($field, ['admin_name', 'user_name', 'updator_name', 'creator_name'], true)) {
+            } elseif (in_array($field, ['admin_name', 'user_name', 'updator_name', 'creator_name'], true)) {
                 $content .= PHP_EOL . <<<HTML
     <result-account prop="$field"></result-account>
 HTML;

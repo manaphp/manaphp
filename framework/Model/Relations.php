@@ -13,6 +13,10 @@ use ManaPHP\Model\Relation\HasManyOthers;
 use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Model\Relation\HasOne;
 use ManaPHP\Query\QueryInterface;
+use function is_array;
+use function is_callable;
+use function is_string;
+use function strlen;
 
 class Relations implements RelationsInterface
 {
@@ -28,7 +32,7 @@ class Relations implements RelationsInterface
 
     protected function pluralToSingular(string $str): ?string
     {
-        if ($str[\strlen($str) - 1] !== 's') {
+        if ($str[strlen($str) - 1] !== 's') {
             return null;
         }
 
@@ -102,8 +106,8 @@ class Relations implements RelationsInterface
                 return new HasManyToMany($selfModel, $thatModel, $pivotModel);
             }
 
-            $selfLen = \strlen($selfPlain);
-            $thatLen = \strlen($thatPlain);
+            $selfLen = strlen($selfPlain);
+            $thatLen = strlen($thatPlain);
             if ($selfLen > $thatLen) {
                 $pos = strpos($selfPlain, $thatPlain);
                 if ($pos === 0 || $pos + $thatLen === $selfLen) {
@@ -127,7 +131,7 @@ class Relations implements RelationsInterface
 
     protected function isPlural(string $str): bool
     {
-        return $str[\strlen($str) - 1] === 's';
+        return $str[strlen($str) - 1] === 's';
     }
 
     public function get(string $model, string $name): ?RelationInterface
@@ -152,11 +156,11 @@ class Relations implements RelationsInterface
 
         if ($data === null) {
             null;
-        } elseif (\is_string($data)) {
+        } elseif (is_string($data)) {
             $query->select(preg_split('#[,\s]+#', $data, -1, PREG_SPLIT_NO_EMPTY));
-        } elseif (\is_array($data)) {
+        } elseif (is_array($data)) {
             $query->select($data);
-        } elseif (\is_callable($data)) {
+        } elseif (is_callable($data)) {
             $data($query);
         } else {
             throw new InvalidValueException(['`{with}` with is invalid', 'with' => $name]);
@@ -168,7 +172,7 @@ class Relations implements RelationsInterface
     public function earlyLoad(string $model, array $r, array $withs): array
     {
         foreach ($withs as $k => $v) {
-            $name = \is_string($k) ? $k : $v;
+            $name = is_string($k) ? $k : $v;
             if ($pos = strpos($name, '.')) {
                 $child_name = substr($name, $pos + 1);
                 $name = substr($name, 0, $pos);
@@ -182,7 +186,7 @@ class Relations implements RelationsInterface
 
             $query = $v instanceof QueryInterface
                 ? $v
-                : $this->getQuery($model, $name, \is_string($k) ? $v : null);
+                : $this->getQuery($model, $name, is_string($k) ? $v : null);
 
             if ($child_name) {
                 $query->with([$child_name]);

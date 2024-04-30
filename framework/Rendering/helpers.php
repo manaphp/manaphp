@@ -7,7 +7,7 @@ use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\UrlInterface;
 use ManaPHP\Mvc\View\AssetInterface;
 
-if (!\function_exists('attr_nv')) {
+if (!function_exists('attr_nv')) {
     function attr_nv(string $name, string $default = ''): string
     {
         $input = Container::get(InputInterface::class);
@@ -15,7 +15,7 @@ if (!\function_exists('attr_nv')) {
     }
 }
 
-if (!\function_exists('attr_inv')) {
+if (!function_exists('attr_inv')) {
     function attr_inv(string $name, string $default = ''): string
     {
         if ($pos = strpos($name, '[')) {
@@ -30,21 +30,21 @@ if (!\function_exists('attr_inv')) {
     }
 }
 
-if (!\function_exists('action')) {
+if (!function_exists('action')) {
     function action(string|array $args = [], bool|string $scheme = false): string
     {
         return Container::get(RouterInterface::class)->createUrl($args, $scheme);
     }
 }
 
-if (!\function_exists('url')) {
+if (!function_exists('url')) {
     function url(string|array $args, bool|string $scheme = false): string
     {
         return Container::get(UrlInterface::class)->get($args, $scheme);
     }
 }
 
-if (!\function_exists('asset')) {
+if (!function_exists('asset')) {
     function asset(string $path): string
     {
         return Container::get(AssetInterface::class)->get($path);

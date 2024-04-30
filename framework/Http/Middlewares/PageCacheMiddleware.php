@@ -16,6 +16,9 @@ use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionMethod;
+use function in_array;
+use function is_array;
+use function is_int;
 
 class PageCacheMiddleware
 {
@@ -50,7 +53,7 @@ class PageCacheMiddleware
 
     public function onReady(#[Event] RequestReady $event): void
     {
-        if (!\in_array($this->request->method(), ['GET', 'POST', 'HEAD'], true)) {
+        if (!in_array($this->request->method(), ['GET', 'POST', 'HEAD'], true)) {
             return;
         }
 
@@ -75,10 +78,10 @@ class PageCacheMiddleware
         $key = null;
         if ($pageCache->key !== null) {
             $key = $pageCache->key;
-            if (\is_array($key)) {
+            if (is_array($key)) {
                 $params = [];
                 foreach ((array)$pageCache['key'] as $k => $v) {
-                    if (\is_int($k)) {
+                    if (is_int($k)) {
                         $param_name = $v;
                         $param_value = $this->request->input($param_name, '');
                     } else {

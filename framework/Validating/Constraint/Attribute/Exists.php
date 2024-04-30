@@ -11,6 +11,8 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function get_class;
+use function sprintf;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Exists extends AbstractConstraint
@@ -18,7 +20,7 @@ class Exists extends AbstractConstraint
     public function validate(Validation $validation): bool
     {
         if (!$validation->source instanceof ModelInterface) {
-            throw new MisuseException(\sprintf('%s is not a model', \get_class($validation->source)));
+            throw new MisuseException(sprintf('%s is not a model', get_class($validation->source)));
         }
 
         $value = $validation->value;

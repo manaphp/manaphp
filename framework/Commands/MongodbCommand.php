@@ -14,6 +14,11 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Mongodb\MongodbConnectorInterface;
 use ManaPHP\Mongodb\MongodbInterface;
 use Psr\Container\ContainerInterface;
+use function count;
+use function dirname;
+use function gettype;
+use function in_array;
+use function is_object;
 
 class MongodbCommand extends Command
 {
@@ -81,7 +86,7 @@ class MongodbCommand extends Command
             $defaultDb = $mongodb->getDb();
             $dbs = $defaultDb ? [$defaultDb] : $mongodb->listDatabases();
             foreach ($dbs as $cdb) {
-                if (\in_array($cdb, ['admin', 'local'], true) || ($db && !\in_array($cdb, $db, true))) {
+                if (in_array($cdb, ['admin', 'local'], true) || ($db && !in_array($cdb, $db, true))) {
                     continue;
                 }
 
@@ -131,7 +136,7 @@ class MongodbCommand extends Command
         $fieldTypes = [];
         foreach ($docs as $doc) {
             foreach ($doc as $field => $value) {
-                $fieldTypes[$field][\gettype($value)] = 1;
+                $fieldTypes[$field][gettype($value)] = 1;
             }
         }
 
@@ -141,7 +146,7 @@ class MongodbCommand extends Command
             if (isset($types['object'])) {
                 $r[$field] = 'objectid';
             } else {
-                if (\count($types) !== 1) {
+                if (count($types) !== 1) {
                     ksort($types);
                 }
                 $r[$field] = implode('|', array_keys($types));
@@ -242,7 +247,7 @@ class MongodbCommand extends Command
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $db) {
-                if (\in_array($db, ['admin', 'local'], true)) {
+                if (in_array($db, ['admin', 'local'], true)) {
                     continue;
                 }
 
@@ -253,7 +258,7 @@ class MongodbCommand extends Command
 
                     $fileName = "@runtime/mongodb_csv/$db/$collection.csv";
 
-                    LocalFS::dirCreate(\dirname($fileName));
+                    LocalFS::dirCreate(dirname($fileName));
 
                     $file = fopen($this->alias->resolve($fileName), 'wb');
 
@@ -266,7 +271,7 @@ class MongodbCommand extends Command
                     if ($docs) {
                         $columns = [];
                         foreach ($docs[0] as $k => $v) {
-                            if ($k === '_id' && \is_object($v)) {
+                            if ($k === '_id' && is_object($v)) {
                                 continue;
                             }
                             $columns[] = $k;
@@ -277,11 +282,11 @@ class MongodbCommand extends Command
 
                     $linesCount = 0;
                     $startTime = microtime(true);
-                    if (\count($docs) !== 0) {
+                    if (count($docs) !== 0) {
                         foreach ($docs as $doc) {
                             $line = [];
                             foreach ($doc as $k => $v) {
-                                if ($k === '_id' && \is_object($v)) {
+                                if ($k === '_id' && is_object($v)) {
                                     continue;
                                 }
                                 $line[] = $v;
@@ -322,7 +327,7 @@ class MongodbCommand extends Command
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $cdb) {
-                if ($db && !\in_array($cdb, $db, true)) {
+                if ($db && !in_array($cdb, $db, true)) {
                     continue;
                 }
 

@@ -10,6 +10,7 @@ use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ReflectionMethod;
+use function in_array;
 
 class VerbsMiddleware
 {
@@ -24,7 +25,7 @@ class VerbsMiddleware
         if (($attribute = $rm->getAttributes(AcceptVerbs::class)[0] ?? null) !== null) {
             $request_method = $this->request->method();
             $acceptVerbs = $attribute->newInstance();
-            if (!\in_array($request_method, $acceptVerbs->verbs, true)) {
+            if (!in_array($request_method, $acceptVerbs->verbs, true)) {
                 throw new MethodNotAllowedHttpException($acceptVerbs->verbs);
             }
         }

@@ -10,6 +10,8 @@ use ManaPHP\Model\AbstractRelation;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\QueryInterface;
+use function count;
+use function in_array;
 
 class HasManyOthers extends AbstractRelation
 {
@@ -32,14 +34,14 @@ class HasManyOthers extends AbstractRelation
                 continue;
             }
 
-            if (\in_array($field, ['updator_id', 'creator_id'], true)) {
+            if (in_array($field, ['updator_id', 'creator_id'], true)) {
                 continue;
             }
 
             $keys[] = $field;
         }
 
-        if (\count($keys) === 1) {
+        if (count($keys) === 1) {
             $selfFilter = $keys[0];
         } else {
             throw new MisuseException('$thisValue must be not null');

@@ -41,6 +41,10 @@ use Swoole\Http\Response;
 use Swoole\Http\Server;
 use Swoole\Runtime;
 use Throwable;
+use function dirname;
+use function in_array;
+use function is_string;
+use function strlen;
 
 class Swoole extends AbstractServer
 {
@@ -61,7 +65,7 @@ class Swoole extends AbstractServer
     public function __construct()
     {
         $script_filename = get_included_files()[0];
-        $document_root = \dirname($script_filename);
+        $document_root = dirname($script_filename);
         $_SERVER['DOCUMENT_ROOT'] = $document_root;
 
         $this->_SERVER = [
@@ -112,7 +116,7 @@ class Swoole extends AbstractServer
         unset($_server['SERVER_SOFTWARE']);
 
         foreach ($request->header ?: [] as $k => $v) {
-            if (\in_array($k, ['content-type', 'content-length'], true)) {
+            if (in_array($k, ['content-type', 'content-length'], true)) {
                 $_server[strtoupper(strtr($k, '-', '_'))] = $v;
             } else {
                 $_server['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
@@ -289,9 +293,9 @@ class Swoole extends AbstractServer
 
     public function send(): void
     {
-        if (!\is_string($this->response->getContent()) && !$this->response->hasFile()) {
+        if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
             $this->dispatchEvent(new ResponseStringify($this->response));
-            if (!\is_string($content = $this->response->getContent())) {
+            if (!is_string($content = $this->response->getContent())) {
                 $this->response->setContent(json_stringify($content));
             }
         }
@@ -336,7 +340,7 @@ class Swoole extends AbstractServer
         if ($this->response->getStatusCode() === 304) {
             $response->end('');
         } elseif ($this->request->method() === 'HEAD') {
-            $response->header('Content-Length', (string)\strlen($content), false);
+            $response->header('Content-Length', (string)strlen($content), false);
             $response->end('');
         } elseif ($file = $this->response->getFile()) {
             $response->sendfile($this->alias->resolve($file));

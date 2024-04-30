@@ -9,6 +9,8 @@ use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Http\Server\Event\RequestException;
+use function get_class;
+use function in_array;
 
 class HttpExceptionsTotalCollector implements WorkerCollectorInterface
 {
@@ -44,9 +46,9 @@ class HttpExceptionsTotalCollector implements WorkerCollectorInterface
 
     public function onRequestException(#[Event] RequestException $event): void
     {
-        $exception = \get_class($event->exception);
+        $exception = get_class($event->exception);
 
-        if (!\in_array($exception, $this->ignored_exceptions, true)) {
+        if (!in_array($exception, $this->ignored_exceptions, true)) {
             $context = $this->getContext();
             $context->exception = $exception;
         }

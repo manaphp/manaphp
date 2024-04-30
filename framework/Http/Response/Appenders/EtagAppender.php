@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
+use function in_array;
 
 class EtagAppender implements AppenderInterface
 {
@@ -14,7 +15,7 @@ class EtagAppender implements AppenderInterface
 
     public function append(RequestInterface $request, ResponseInterface $response): void
     {
-        if ($response->getStatusCode() !== 200 || !\in_array($request->method(), ['GET', 'HEAD'], true)) {
+        if ($response->getStatusCode() !== 200 || !in_array($request->method(), ['GET', 'HEAD'], true)) {
             return;
         }
 

@@ -6,6 +6,7 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 use Attribute;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function mb_strlen;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Length extends AbstractConstraint
@@ -17,7 +18,7 @@ class Length extends AbstractConstraint
 
     public function validate(Validation $validation): bool
     {
-        $length = \mb_strlen($validation->value);
+        $length = mb_strlen($validation->value);
 
         if ($this->max === null) {
             return $length === $this->min;

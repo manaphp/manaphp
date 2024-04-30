@@ -8,6 +8,10 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
+use function array_slice;
+use function count;
+use function is_int;
+use function is_string;
 
 class Collection implements JsonSerializable, Countable, IteratorAggregate, ArrayAccess
 {
@@ -135,12 +139,12 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
 
     public function slice(int $offset, ?int $length = null, bool $preserve_keys = false): static
     {
-        return new static(\array_slice($this->items, $offset, $length, $preserve_keys));
+        return new static(array_slice($this->items, $offset, $length, $preserve_keys));
     }
 
     public function skip(int $count, bool $preserve_keys = false): static
     {
-        return new static(\array_slice($this->items, $count, null, $preserve_keys));
+        return new static(array_slice($this->items, $count, null, $preserve_keys));
     }
 
     public function chunk(int $size, bool $preserve_keys = false): static
@@ -173,7 +177,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
     {
         $normalized_sorts = [];
         foreach ($sorts as $key => $value) {
-            if (\is_int($key)) {
+            if (is_int($key)) {
                 $normalized_sorts[$value] = SORT_ASC;
             } else {
                 if ($value === SORT_ASC || $value === SORT_DESC) {
@@ -193,7 +197,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
                 $left_value = $left[$field];
                 $right_value = $right[$field];
 
-                $cmp = \is_string($left_value) ? strcmp($left_value, $right_value) : $left_value - $right_value;
+                $cmp = is_string($left_value) ? strcmp($left_value, $right_value) : $left_value - $right_value;
                 if ($cmp > 0) {
                     return $sort === SORT_ASC ? 1 : -1;
                 } elseif ($cmp < 0) {
@@ -215,7 +219,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
 
     public function count(): int
     {
-        return \count($this->items);
+        return count($this->items);
     }
 
     public function getIterator(): ArrayIterator

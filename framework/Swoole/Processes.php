@@ -17,6 +17,10 @@ use ReflectionAttribute;
 use ReflectionClass;
 use Swoole\Http\Server;
 use Swoole\Process;
+use function lcfirst;
+use function preg_match;
+use function sprintf;
+use function swoole_set_process_name;
 
 class Processes implements ProcessesInterface
 {
@@ -30,9 +34,9 @@ class Processes implements ProcessesInterface
 
     protected function getProcessTitle(ProcessInterface $process, int $index): string
     {
-        \preg_match('#\w+$#', $process::class, $match);
-        $name = \lcfirst($match[0]);
-        return \sprintf('%s.%s.%d', $this->app_id, $name, $index);
+        preg_match('#\w+$#', $process::class, $match);
+        $name = lcfirst($match[0]);
+        return sprintf('%s.%s.%d', $this->app_id, $name, $index);
     }
 
     protected function startProcess(Server $server, ProcessInterface $process)
@@ -46,7 +50,7 @@ class Processes implements ProcessesInterface
 
         for ($index = 0; $index < $settings->nums; $index++) {
             $proc = new Process(function (Process $proc) use ($process, $index, $server) {
-                \swoole_set_process_name($this->getProcessTitle($process, $index));
+                swoole_set_process_name($this->getProcessTitle($process, $index));
 
                 $this->listenerProvider->add($process);
 

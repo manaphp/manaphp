@@ -13,7 +13,7 @@ use ManaPHP\Http\RouterInterface;
 use ManaPHP\I18n\TranslatorInterface;
 use ManaPHP\Token\ScopedJwtInterface;
 
-if (!\function_exists('json_parse')) {
+if (!function_exists('json_parse')) {
     function json_parse(string $str): mixed
     {
         /** @noinspection NotOptimalIfConditionsInspection */
@@ -25,7 +25,7 @@ if (!\function_exists('json_parse')) {
     }
 }
 
-if (!\function_exists('json_stringify')) {
+if (!function_exists('json_stringify')) {
     function json_stringify(mixed $json, int $options = 0): string
     {
         $options |= JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE;
@@ -39,7 +39,7 @@ if (!\function_exists('json_stringify')) {
     }
 }
 
-if (!\function_exists('xml_decode')) {
+if (!function_exists('xml_decode')) {
     function xml_decode(string $xml): ?array
     {
         if (($ret = @simplexml_load_string($xml, null, LIBXML_NOCDATA | LIBXML_NOBLANKS)) === false) {
@@ -49,7 +49,7 @@ if (!\function_exists('xml_decode')) {
         $ret = (array)$ret;
 
         foreach ($ret as $value) {
-            if (!\is_scalar($value) && $value !== null) {
+            if (!is_scalar($value) && $value !== null) {
                 /** @noinspection JsonEncodingApiUsageInspection */
                 return json_decode(json_encode($ret), true);
             }
@@ -59,77 +59,77 @@ if (!\function_exists('xml_decode')) {
     }
 }
 
-if (!\function_exists('container')) {
+if (!function_exists('container')) {
     function container(string $id): mixed
     {
         return Container::get($id);
     }
 }
 
-if (!\function_exists('make')) {
+if (!function_exists('make')) {
     function make(string $name, array $parameters = []): mixed
     {
         return Container::make($name, $parameters);
     }
 }
 
-if (!\function_exists('env')) {
+if (!function_exists('env')) {
     function env(string $key, mixed $default = null): mixed
     {
         return Container::get(EnvInterface::class)->get($key, $default);
     }
 }
 
-if (!\function_exists('config_get')) {
+if (!function_exists('config_get')) {
     function config_get(string $name, mixed $default = null): mixed
     {
         return Container::get(ConfigInterface::class)->get($name, $default);
     }
 }
 
-if (!\function_exists('dd')) {
+if (!function_exists('dd')) {
     function dd(mixed $message): void
     {
         Container::get(DataDumpInterface::class)->output($message);
     }
 }
 
-if (!\function_exists('path')) {
+if (!function_exists('path')) {
     function path(string $path): string
     {
         return Container::get(AliasInterface::class)->resolve($path);
     }
 }
 
-if (!\function_exists('jwt_encode')) {
+if (!function_exists('jwt_encode')) {
     function jwt_encode(array $claims, int $ttl, string $scope): string
     {
         return Container::get(ScopedJwtInterface::class)->encode($claims, $ttl, $scope);
     }
 }
 
-if (!\function_exists('jwt_decode')) {
+if (!function_exists('jwt_decode')) {
     function jwt_decode(string $token, string $scope, bool $verify = true): array
     {
         return Container::get(ScopedJwtInterface::class)->decode($token, $scope, $verify);
     }
 }
 
-if (!\function_exists('jwt_verify')) {
+if (!function_exists('jwt_verify')) {
     function jwt_verify(string $token, string $scope): void
     {
         Container::get(ScopedJwtInterface::class)->verify($token, $scope);
     }
 }
 
-if (!\function_exists('abort')) {
+if (!function_exists('abort')) {
     function abort(): void
     {
         throw new AbortException();
     }
 }
 
-if (!\function_exists('seconds')) {
+if (!function_exists('seconds')) {
     function seconds(string $str): int
     {
         if (preg_match('#^([\d.]+)([smhdMy]?)$#', $str, $match)) {
@@ -143,38 +143,38 @@ if (!\function_exists('seconds')) {
     }
 }
 
-if (!\function_exists('e')) {
+if (!function_exists('e')) {
     function e(string $value, bool $doubleEncode = true): string
     {
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
     }
 }
 
-if (!\function_exists('t')) {
+if (!function_exists('t')) {
     function t(string $id, array $bind = []): string
     {
         return Container::get(TranslatorInterface::class)->translate($id, $bind);
     }
 }
 
-if (!\function_exists('base_url')) {
+if (!function_exists('base_url')) {
     function base_url(): string
     {
         return Container::get(RouterInterface::class)->getPrefix();
     }
 }
 
-if (!\function_exists('console_log')) {
+if (!function_exists('console_log')) {
     function console_log(string $level, mixed $message): void
     {
-        if (\is_array($message)) {
+        if (is_array($message)) {
             $message = sprintf(...$message);
         }
         echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
     }
 }
 
-if (!\function_exists('apcu_remember')) {
+if (!function_exists('apcu_remember')) {
     function apcu_remember(string $key, int $ttl, callable $callback): mixed
     {
         $value = apcu_fetch($key, $success);

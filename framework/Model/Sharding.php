@@ -5,6 +5,8 @@ namespace ManaPHP\Model;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
+use function count;
+use function strlen;
 
 class Sharding implements ShardingInterface
 {
@@ -20,12 +22,12 @@ class Sharding implements ShardingInterface
     public function getUniqueShard(string $model, array|ModelInterface $context): array
     {
         $shards = $this->getMultipleShards($model, $context);
-        if (\count($shards) !== 1) {
+        if (count($shards) !== 1) {
             throw new ShardingTooManyException(['too many dbs: `{dbs}`', 'dbs' => array_keys($shards)]);
         }
 
         $tables = current($shards);
-        if (\count($tables) !== 1) {
+        if (count($tables) !== 1) {
             throw new ShardingTooManyException(['too many tables: `{tables}`', 'tables' => $tables]);
         }
 
@@ -37,7 +39,7 @@ class Sharding implements ShardingInterface
         $connection = $this->models->getConnection($model);
         $table = $this->models->getTable($model);
 
-        if (strcspn($connection, ':,') === \strlen($connection) && strcspn($table, ':,') === \strlen($table)) {
+        if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
             return [$connection => [$table]];
         } else {
             return \ManaPHP\Helper\Sharding::multiple($connection, $table, $context);
@@ -49,7 +51,7 @@ class Sharding implements ShardingInterface
         $connection = $this->models->getConnection($model);
         $table = $this->models->getTable($model);
 
-        if (strcspn($connection, ':,') === \strlen($connection) && strcspn($table, ':,') === \strlen($table)) {
+        if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
             return [$connection => [$table]];
         } else {
             return \ManaPHP\Helper\Sharding::all($connection, $table);

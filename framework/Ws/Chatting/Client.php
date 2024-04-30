@@ -7,6 +7,8 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Messaging\PubSubInterface;
 use ManaPHP\Ws\Chatting\Client\Event\ChatClientPush;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function is_array;
+use function is_string;
 
 class Client implements ClientInterface
 {
@@ -18,11 +20,11 @@ class Client implements ClientInterface
 
     protected function push(string $type, string $room, string|array $receivers, string|array $message): void
     {
-        if (!\is_string($message)) {
+        if (!is_string($message)) {
             $message = json_stringify($message);
         }
 
-        if (\is_array($receivers)) {
+        if (is_array($receivers)) {
             $receivers = implode(',', $receivers);
         }
 

@@ -8,6 +8,7 @@ use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\Identity;
 use ManaPHP\Token\ScopedJwtInterface;
+use function count;
 
 class Jwt extends Identity
 {
@@ -23,7 +24,7 @@ class Jwt extends Identity
     {
         if (($token = $this->request->header('authorization')) !== null) {
             $parts = explode(' ', $token, 2);
-            if ($parts[0] === 'Bearer' && \count($parts) === 2) {
+            if ($parts[0] === 'Bearer' && count($parts) === 2) {
                 return $parts[1];
             }
         } elseif (($token = $this->request->input('access_token')) !== null) {

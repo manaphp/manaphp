@@ -15,6 +15,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionParameter;
 use ReflectionProperty;
+use function is_subclass_of;
 
 class Form implements ObjectValueResolverInterface
 {
@@ -23,7 +24,7 @@ class Form implements ObjectValueResolverInterface
 
     public function resolve(ReflectionParameter $parameter, ?string $type, string $name): mixed
     {
-        if (!\is_subclass_of($type, FormInterface::class)) {
+        if (!is_subclass_of($type, FormInterface::class)) {
             return null;
         }
 

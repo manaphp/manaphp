@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
+use function function_exists;
+use function is_string;
+
 class Ip
 {
     public static function contains(string|array $haystack, string $needle, bool $cidr_only = false): bool
     {
-        if (\is_string($haystack)) {
+        if (is_string($haystack)) {
             if ($needle === $haystack || $haystack === '*') {
                 return true;
             } elseif ($haystack === '') {
@@ -70,7 +73,7 @@ class Ip
 
     public static function local(): string
     {
-        if (\function_exists('swoole_get_local_ip')) {
+        if (function_exists('swoole_get_local_ip')) {
             $ips = swoole_get_local_ip();
             if (!$ips) {
                 return '127.0.0.1';

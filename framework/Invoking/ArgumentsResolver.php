@@ -10,6 +10,8 @@ use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 use ReflectionParameter;
+use function array_fill;
+use function is_subclass_of;
 
 class ArgumentsResolver implements ArgumentsResolverInterface
 {
@@ -82,7 +84,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
             return [];
         }
 
-        $args = \array_fill(0, $numOfParameters, null);
+        $args = array_fill(0, $numOfParameters, null);
 
         $rParameters = $rMethod->getParameters();
 
@@ -92,7 +94,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
                 $numOfObjects++;
                 $name = $rParameter->getName();
                 $type = $rType->getName();
-                if (\is_subclass_of($type, ArgumentResolvable::class)) {
+                if (is_subclass_of($type, ArgumentResolvable::class)) {
                     $args[$i] = $type::argumentResolve($this->container);
                 } else {
                     $args[$i] = $this->resolveObjectValue($rParameter, $type, $name) ?? $this->container->get($type);

@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics;
 
+use function is_int;
+use function is_string;
+
 class Histogram
 {
     protected array $les = [];
@@ -12,7 +15,7 @@ class Histogram
 
     public function __construct(array $buckets)
     {
-        if (count($buckets) === 2 && \is_int($buckets[1])) {
+        if (count($buckets) === 2 && is_int($buckets[1])) {
             list($start, $count) = $buckets;
 
             for ($i = 0; $i < $count; $i++) {
@@ -22,7 +25,7 @@ class Histogram
             }
         } else {
             foreach ($buckets as $le) {
-                $this->les[] = \is_string($le) ? (float)$le : $le;
+                $this->les[] = is_string($le) ? (float)$le : $le;
                 $this->buckets[is_float($le) ? (string)$le : $le] = 0;
             }
         }

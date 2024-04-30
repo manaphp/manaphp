@@ -8,6 +8,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use Psr\Log\LoggerInterface;
 use Throwable;
+use function substr;
 
 class AccessLog implements AccessLogInterface
 {
@@ -57,7 +58,7 @@ time=$time_iso8601
                 return $this->default_value;
             }
         } elseif (str_starts_with($name, 'http_')) {
-            return (string)$this->request->header(\substr($name, 5), $this->default_value);
+            return (string)$this->request->header(substr($name, 5), $this->default_value);
         } elseif (str_starts_with($name, 'cookie_')) {
             return $this->cookies->get(substr($name, 7), $this->default_value);
         } elseif (str_starts_with($name, 'arg_')) {

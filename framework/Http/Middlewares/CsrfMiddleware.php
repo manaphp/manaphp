@@ -11,6 +11,7 @@ use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Mvc\ViewInterface;
 use ManaPHP\Rest\Controller as RestController;
+use function in_array;
 
 class CsrfMiddleware
 {
@@ -40,7 +41,7 @@ class CsrfMiddleware
         }
 
         if ($domains = $this->domains) {
-            if (\in_array($origin_domain, $domains, true)) {
+            if (in_array($origin_domain, $domains, true)) {
                 return true;
             }
 

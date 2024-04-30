@@ -8,6 +8,12 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
+use function count;
+use function in_array;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
 
 class Env implements EnvInterface, JsonSerializable
 {
@@ -25,7 +31,7 @@ class Env implements EnvInterface, JsonSerializable
 
         $lines = file($file, FILE_IGNORE_NEW_LINES);
 
-        $count = \count($lines);
+        $count = count($lines);
         /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $count; $i++) {
             $line = trim($lines[$i]);
@@ -43,7 +49,7 @@ class Env implements EnvInterface, JsonSerializable
                 $parts = explode('=', $line, 2);
             }
 
-            if (\count($parts) !== 2) {
+            if (count($parts) !== 2) {
                 throw new InvalidValueException(['has no = character, invalid line: `{line}`', 'line' => $line]);
             }
             list($name, $value) = $parts;
@@ -100,11 +106,11 @@ class Env implements EnvInterface, JsonSerializable
             return $default;
         }
 
-        if (\is_array($default)) {
-            if (\is_array($value)) {
+        if (is_array($default)) {
+            if (is_array($value)) {
                 return $value;
             } elseif ($value !== '' && $value[0] === '{') {
-                if (\is_array($r = json_parse($value))) {
+                if (is_array($r = json_parse($value))) {
                     return $r;
                 } else {
                     throw new InvalidValueException(['the value of `{1}` key is not valid json format array', $key]);
@@ -112,16 +118,16 @@ class Env implements EnvInterface, JsonSerializable
             } else {
                 return preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
             }
-        } elseif (\is_int($default)) {
+        } elseif (is_int($default)) {
             return (int)$value;
-        } elseif (\is_float($default)) {
+        } elseif (is_float($default)) {
             return (float)$value;
-        } elseif (\is_bool($default)) {
-            if (\is_bool($value)) {
+        } elseif (is_bool($default)) {
+            if (is_bool($value)) {
                 return $value;
-            } elseif (\in_array(strtolower($value), ['1', 'on', 'true'], true)) {
+            } elseif (in_array(strtolower($value), ['1', 'on', 'true'], true)) {
                 return true;
-            } elseif (\in_array(strtolower($value), ['0', 'off', 'false'], true)) {
+            } elseif (in_array(strtolower($value), ['0', 'off', 'false'], true)) {
                 return false;
             } else {
                 throw new InvalidArgumentException(['`{1}` key value is not a valid bool value: {2}', $key, $value]);

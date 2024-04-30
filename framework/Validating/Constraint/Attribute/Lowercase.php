@@ -6,6 +6,7 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 use Attribute;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function strtolower;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Lowercase extends AbstractConstraint
@@ -18,10 +19,10 @@ class Lowercase extends AbstractConstraint
     public function validate(Validation $validation): bool
     {
         if ($this->sanitize) {
-            $validation->value = \strtolower($validation->value);
+            $validation->value = strtolower($validation->value);
             return true;
         } else {
-            return $validation->value === \strtolower($validation->value);
+            return $validation->value === strtolower($validation->value);
         }
     }
 }

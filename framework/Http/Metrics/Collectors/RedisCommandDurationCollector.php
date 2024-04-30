@@ -10,6 +10,9 @@ use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Redis\Event\RedisCalled;
+use function is_array;
+use function is_string;
+use function preg_match;
 
 class RedisCommandDurationCollector implements WorkerCollectorInterface
 {
@@ -47,8 +50,8 @@ class RedisCommandDurationCollector implements WorkerCollectorInterface
     public function onRedisCalled(#[Event] RedisCalled $event): void
     {
         if (($ignored_key = $this->ignored_keys[$event->method] ?? null) === null
-            || (\is_string($ignored_key) && \preg_match($ignored_key, $event->arguments[0]) !== 1)
-            || (\is_array($ignored_key) && \preg_match($ignored_key[0], $event->arguments[$ignored_key[1]]) !== 1)
+            || (is_string($ignored_key) && preg_match($ignored_key, $event->arguments[0]) !== 1)
+            || (is_array($ignored_key) && preg_match($ignored_key[0], $event->arguments[$ignored_key[1]]) !== 1)
         ) {
             $context = $this->getContext();
 

@@ -16,6 +16,7 @@ use ManaPHP\Model\Event\ModelUpdated;
 use ManaPHP\Model\Event\ModelUpdating;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ShardingInterface;
+use function array_key_exists;
 
 class Model extends AbstractModel implements ModelInterface
 {
@@ -58,7 +59,7 @@ class Model extends AbstractModel implements ModelInterface
         }
 
         foreach ($models->getColumnMap(static::class) as $propery => $column) {
-            if (\array_key_exists($propery, $fieldValues)) {
+            if (array_key_exists($propery, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$propery];
                 unset($fieldValues[$propery]);
             }
@@ -136,7 +137,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $columnMap = $models->getColumnMap(static::class);
         foreach ($columnMap as $property => $column) {
-            if (\array_key_exists($property, $fieldValues)) {
+            if (array_key_exists($property, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$property];
                 unset($fieldValues[$property]);
             }

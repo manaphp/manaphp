@@ -6,6 +6,8 @@ namespace ManaPHP\Http\Server\Event;
 use JsonSerializable;
 use ManaPHP\Eventing\Attribute\Verbosity;
 use Swoole\Http\Server;
+use function get_class;
+use function is_object;
 
 #[Verbosity(Verbosity::MEDIUM)]
 class ServerPipeMessage implements JsonSerializable
@@ -17,7 +19,7 @@ class ServerPipeMessage implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        $type = \is_object($this->message) ? \get_class($this->message) : 'message';
+        $type = is_object($this->message) ? get_class($this->message) : 'message';
 
         return [
             $type           => $this->message,

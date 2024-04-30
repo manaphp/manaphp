@@ -9,6 +9,8 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Cli\OptionsInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\ClientInterface;
+use function count;
+use function strlen;
 
 class DateCommand extends Command
 {
@@ -115,7 +117,7 @@ class DateCommand extends Command
     public function setAction(string $date = '', string $time = ''): int
     {
         $arguments = explode(' ', $this->options->get(''));
-        if (\count($arguments) === 1) {
+        if (count($arguments) === 1) {
             $argument = $arguments[0];
             if ($argument[0] === 't') {
                 $date = '';
@@ -150,7 +152,7 @@ class DateCommand extends Command
 
         $parts = explode('-', $date);
 
-        $year = substr(date('Y'), 0, 4 - \strlen($parts[0])) . $parts[0];
+        $year = substr(date('Y'), 0, 4 - strlen($parts[0])) . $parts[0];
         $month = str_pad($parts[1], 2, '0', STR_PAD_LEFT);
         $day = str_pad($parts[2], 2, '0', STR_PAD_LEFT);
 

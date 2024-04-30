@@ -11,6 +11,13 @@ use ReflectionClass;
 use Stringable;
 use Throwable;
 use function getenv;
+use function is_array;
+use function is_float;
+use function is_int;
+use function is_object;
+use function is_scalar;
+use function is_string;
+use function strlen;
 
 class Console implements ConsoleInterface
 {
@@ -90,7 +97,7 @@ class Console implements ConsoleInterface
             }
         }
 
-        return $c . $text . "\033[0m" . str_repeat(' ', max($width - \strlen($text), 0));
+        return $c . $text . "\033[0m" . str_repeat(' ', max($width - strlen($text), 0));
     }
 
     protected function interpolateMessage(string $message, array $context): string
@@ -102,17 +109,17 @@ class Console implements ConsoleInterface
                 continue;
             }
 
-            if (\is_string($val)) {
+            if (is_string($val)) {
                 null;
             } elseif ($val instanceof Stringable) {
                 $val = (string)$val;
-            } elseif (\is_scalar($val)) {
+            } elseif (is_scalar($val)) {
                 $val = json_stringify($val);
             } elseif ($val instanceof JsonSerializable) {
                 $val = json_stringify($val);
-            } elseif (\is_array($val)) {
+            } elseif (is_array($val)) {
                 $val = json_stringify($val);
-            } elseif (\is_object($val)) {
+            } elseif (is_object($val)) {
                 $val = json_stringify((array)$val);
             } else {
                 continue;
@@ -125,7 +132,7 @@ class Console implements ConsoleInterface
 
     public function write(string|Stringable $message, array $context = [], int $options = 0): void
     {
-        if (\is_string($message)) {
+        if (is_string($message)) {
             if ($context !== [] && str_contains($message, '{')) {
                 $message = $this->interpolateMessage($message, $context);
             }
@@ -228,7 +235,7 @@ class Console implements ConsoleInterface
     public function progress(string|Stringable $message, mixed $value = null): void
     {
         if ($value !== null) {
-            if (\is_int($value) || \is_float($value)) {
+            if (is_int($value) || is_float($value)) {
                 $percent = sprintf('%2.2f', $value) . '%';
             } else {
                 $percent = $value;

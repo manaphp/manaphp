@@ -10,6 +10,7 @@ use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
+use function is_int;
 
 class Curl implements EngineInterface
 {
@@ -125,7 +126,7 @@ class Curl implements EngineInterface
 
             $headers = [];
             foreach ($request->headers as $name => $value) {
-                $headers[] = \is_int($name) ? $value : "$name: $value";
+                $headers[] = is_int($name) ? $value : "$name: $value";
             }
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 

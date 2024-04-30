@@ -16,6 +16,12 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function count;
+use function gettype;
+use function is_array;
+use function is_bool;
+use function is_int;
+use function is_scalar;
 
 abstract class AbstractConnection implements ConnectionInterface
 {
@@ -106,7 +112,7 @@ abstract class AbstractConnection implements ConnectionInterface
     protected function getPrepared(string $sql): PDOStatement
     {
         if (!isset($this->prepared[$sql])) {
-            if (\count($this->prepared) > 8) {
+            if (count($this->prepared) > 8) {
                 array_shift($this->prepared);
             }
             return $this->prepared[$sql] = @$this->getPdo()->prepare($sql);
@@ -120,21 +126,21 @@ abstract class AbstractConnection implements ConnectionInterface
 
         $tr = [];
         foreach ($bind as $parameter => $value) {
-            if (\is_bool($value)) {
+            if (is_bool($value)) {
                 $value = (int)$value;
-            } elseif (\is_scalar($value) || $value === null) {
+            } elseif (is_scalar($value) || $value === null) {
                 null;
-            } elseif (\is_array($value)) {
+            } elseif (is_array($value)) {
                 $value = json_stringify($value);
             } elseif ($value instanceof JsonSerializable) {
                 $value = json_stringify($value);
             } else {
-                $type = \gettype($value);
+                $type = gettype($value);
                 throw new NotSupportedException(['The `{1}` type of `{2}` parameter is not support', $parameter, $type]
                 );
             }
 
-            if (\is_int($parameter)) {
+            if (is_int($parameter)) {
                 $tr[$parameter + 1] = $value;
             } else {
                 $tr[$parameter[0] === ':' ? $parameter : ':' . $parameter] = $value;

@@ -18,6 +18,13 @@ use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Mongodb\Model\InferrerInterface;
 use MongoDB\BSON\ObjectId;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_object;
+use function is_scalar;
+use function is_string;
+use function strlen;
 
 class Model extends AbstractModel
 {
@@ -51,15 +58,15 @@ class Model extends AbstractModel
         }
 
         if ($type === 'string') {
-            return \is_string($value) ? $value : (string)$value;
+            return is_string($value) ? $value : (string)$value;
         } elseif ($type === 'int') {
-            return \is_int($value) ? $value : (int)$value;
+            return is_int($value) ? $value : (int)$value;
         } elseif ($type === 'float') {
-            return \is_float($value) ? $value : (float)$value;
+            return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
-            return \is_scalar($value) ? new ObjectID($value) : $value;
+            return is_scalar($value) ? new ObjectID($value) : $value;
         } elseif ($type === 'bool') {
-            return \is_bool($value) ? $value : (bool)$value;
+            return is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {
             return (array)$value;
         } else {
@@ -89,7 +96,7 @@ class Model extends AbstractModel
         $this->validate($models->getFillable(static::class));
 
         if ($this->_id) {
-            if (\is_string($this->_id) && \strlen($this->_id) === 24) {
+            if (is_string($this->_id) && strlen($this->_id) === 24) {
                 $this->_id = new ObjectID($this->_id);
             }
         } else {
@@ -103,7 +110,7 @@ class Model extends AbstractModel
             }
 
             if (isset($this->$field)) {
-                if (\is_scalar($this->$field)) {
+                if (is_scalar($this->$field)) {
                     $this->$field = $this->normalizeValue($type, $this->$field);
                 }
             } else {
@@ -242,7 +249,7 @@ class Model extends AbstractModel
         $data = parent::__debugInfo();
         if (!isset($data['_id'])) {
             unset($data['_id']);
-        } elseif (\is_object($data['_id'])) {
+        } elseif (is_object($data['_id'])) {
             $data['_id'] = (string)$data['_id'];
         }
 

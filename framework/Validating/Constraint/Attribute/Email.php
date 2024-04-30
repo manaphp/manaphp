@@ -6,6 +6,7 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 use Attribute;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function strtolower;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Email extends AbstractConstraint
@@ -16,7 +17,7 @@ class Email extends AbstractConstraint
             return false;
         }
 
-        $validation->value = \strtolower($validation->value);
+        $validation->value = strtolower($validation->value);
 
         return true;
     }

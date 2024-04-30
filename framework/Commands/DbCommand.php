@@ -17,6 +17,9 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Model\Attribute\ColumnMap;
 use ManaPHP\Model\Attribute\Connection;
 use ManaPHP\Model\Attribute\PrimaryKey;
+use function count;
+use function dirname;
+use function in_array;
 
 class DbCommand extends Command
 {
@@ -93,7 +96,7 @@ class DbCommand extends Command
         if (!isset($this->tableConstants[$connection])) {
             $db = $this->connector->get($connection);
             $metadata_table = 'metadata_constant';
-            if (!\in_array($metadata_table, $db->getTables(), true)) {
+            if (!in_array($metadata_table, $db->getTables(), true)) {
                 $this->tableConstants[$connection] = [];
             } else {
                 $metadata_table = $db->getPrefix() . $metadata_table;
@@ -189,7 +192,7 @@ class DbCommand extends Command
         }
 
         $primaryKeys = $metadata[Db::METADATA_PRIMARY_KEY];
-        if ($primaryKey = \count($primaryKeys) === 1 ? $primaryKeys[0] : null) {
+        if ($primaryKey = count($primaryKeys) === 1 ? $primaryKeys[0] : null) {
             if ($primaryKey !== 'id' && $primaryKey !== $table . '_id' && $primaryKey !== $table . 'Id') {
                 $uses[] = PrimaryKey::class;
                 $attributes[] = "#[PrimaryKey('$primaryKey')]";
@@ -313,7 +316,7 @@ class DbCommand extends Command
                 $columns = (array)$db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
                 $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
                 foreach ($columns as $i => $column) {
-                    if (\in_array($column, $primaryKey, true)) {
+                    if (in_array($column, $primaryKey, true)) {
                         $columns[$i] = $this->console->colorize($column, Console::FC_RED);
                     }
                 }
@@ -332,7 +335,7 @@ class DbCommand extends Command
         $areas = [];
         foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
             $area = basename($item);
-            if (!\in_array($area, ['Api', 'Admin', 'User'], true)) {
+            if (!in_array($area, ['Api', 'Admin', 'User'], true)) {
                 $areas[] = $area;
             }
         }
@@ -354,13 +357,13 @@ class DbCommand extends Command
     ): void {
         if ($connection) {
             $db = $this->connector->get($connection);
-            if (!\in_array($table, $db->getTables(), true)) {
+            if (!in_array($table, $db->getTables(), true)) {
                 throw new Exception(['`{table}` is not exists', 'table' => $table]);
             }
         } else {
             foreach ($this->getConnections() as $s) {
                 $db = $this->connector->get($s);
-                if (\in_array($table, $db->getTables(), true)) {
+                if (in_array($table, $db->getTables(), true)) {
                     $connection = $s;
                     break;
                 }
@@ -401,7 +404,7 @@ class DbCommand extends Command
                 $fileName = "@runtime/db_models/$plainClass.php";
                 if (($pos = strpos($table, '_')) !== false) {
                     $area = Str::pascalize(substr($table, 0, $pos));
-                    if (\in_array($area, $areas, true)) {
+                    if (in_array($area, $areas, true)) {
                         $plainClass = Str::pascalize(substr($table, $pos + 1));
                         $class = 'App\\Areas\\Models\\' . Str::pascalize(substr($table, $pos));
                         $fileName = "@runtime/db_models/Areas/$area/$plainClass.php";
@@ -459,7 +462,7 @@ class DbCommand extends Command
             foreach ($this->getTables($connection, $table_pattern) as $table) {
                 $fileName = "@runtime/db_json/$connection/$table.json";
 
-                LocalFS::dirCreate(\dirname($fileName));
+                LocalFS::dirCreate(dirname($fileName));
                 $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
                 $file = fopen($this->alias->resolve($fileName), 'wb');
@@ -472,7 +475,7 @@ class DbCommand extends Command
 
                 $elapsed = microtime(true) - $startTime;
                 $this->console->writeLn(
-                    sprintf('write to `%s` success: `%d` `[%.3f]`', $fileName, \count($rows), $elapsed)
+                    sprintf('write to `%s` success: `%d` `[%.3f]`', $fileName, count($rows), $elapsed)
                 );
             }
         }
@@ -494,7 +497,7 @@ class DbCommand extends Command
             foreach ($this->getTables($connection, $table_pattern) as $table) {
 
                 $fileName = "@runtime/db_csv/$connection/$table.csv";
-                LocalFS::dirCreate(\dirname($fileName));
+                LocalFS::dirCreate(dirname($fileName));
                 $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
 
@@ -514,7 +517,7 @@ class DbCommand extends Command
                 }
                 fclose($file);
 
-                $count = \count($rows);
+                $count = count($rows);
                 $elapsed = microtime(true) - $startTime;
                 $this->console->writeLn(
                     sprintf(' `%s` imported to `%s`:%d [%.3f]', $table, $fileName, $count, $elapsed)

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Client;
 
 use JsonSerializable;
+use function count;
+use function is_array;
 
 class Request implements JsonSerializable
 {
@@ -20,8 +22,8 @@ class Request implements JsonSerializable
     ) {
         $this->method = $method;
 
-        if (\is_array($url)) {
-            if (\count($url) > 1) {
+        if (is_array($url)) {
+            if (count($url) > 1) {
                 $uri = $url[0];
                 unset($url[0]);
                 $url = $uri . (str_contains($uri, '?') ? '&' : '?') . http_build_query($url);
@@ -61,7 +63,7 @@ class Request implements JsonSerializable
 
     public function hasFile(): bool
     {
-        if (!\is_array($this->body) || isset($this->headers['Content-Type'])) {
+        if (!is_array($this->body) || isset($this->headers['Content-Type'])) {
             return false;
         }
 

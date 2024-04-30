@@ -7,6 +7,7 @@ use DateInterval;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Redis\RedisCacheInterface;
 use Psr\SimpleCache\CacheInterface;
+use function count;
 
 class SimpleCache implements CacheInterface
 {
@@ -86,7 +87,7 @@ class SimpleCache implements CacheInterface
             $keys2[] = $this->prefix . $key;
         }
 
-        if (\count($keys2) !== 0) {
+        if (count($keys2) !== 0) {
             $this->redisCache->del($keys2);
         }
 

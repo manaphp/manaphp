@@ -6,6 +6,8 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 use Attribute;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function is_string;
+use function str_ends_with;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class EndsWith extends AbstractConstraint
@@ -17,11 +19,11 @@ class EndsWith extends AbstractConstraint
 
     public function validate(Validation $validation): bool
     {
-        if (\is_string($this->needles)) {
-            return \str_ends_with($validation->value, $this->needles);
+        if (is_string($this->needles)) {
+            return str_ends_with($validation->value, $this->needles);
         } else {
             foreach ($this->needles as $needle) {
-                if (\str_ends_with($validation->value, $needle)) {
+                if (str_ends_with($validation->value, $needle)) {
                     return true;
                 }
             }

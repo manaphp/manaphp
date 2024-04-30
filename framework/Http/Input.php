@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Validating\Constraint\Attribute\Required;
 use ManaPHP\Validating\Constraint\Attribute\Type;
 use ManaPHP\Validating\ValidatorInterface;
+use function array_unshift;
 
 class Input implements InputInterface
 {
@@ -37,7 +38,7 @@ class Input implements InputInterface
         if (($value = $this->request->input($name, $default)) === null) {
             return $this->validator->validateValue($name, null, [new Required()]);
         } else {
-            \array_unshift($constraints, new Type($type));
+            array_unshift($constraints, new Type($type));
 
             return $this->validator->validateValue($name, $value, $constraints);
         }

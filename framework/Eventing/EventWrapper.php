@@ -5,6 +5,7 @@ namespace ManaPHP\Eventing;
 
 use JsonSerializable;
 use Stringable;
+use function is_object;
 
 class EventWrapper implements JsonSerializable, Stringable
 {
@@ -31,7 +32,7 @@ class EventWrapper implements JsonSerializable, Stringable
                 }
             } else {
                 foreach (get_object_vars($event) as $key => $val) {
-                    if (\is_object($val)) {
+                    if (is_object($val)) {
                         continue;
                     }
 

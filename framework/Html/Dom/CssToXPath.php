@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Html\Dom;
 
+use function count;
+
 class CssToXPath
 {
     public function transform(string $path): string
@@ -90,7 +92,7 @@ class CssToXPath
             }
         }
 
-        if (1 === \count($paths)) {
+        if (1 === count($paths)) {
             return $paths[0];
         }
         return implode('|', $paths);

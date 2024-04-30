@@ -10,6 +10,9 @@ use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
 use PDO;
+use function count;
+use function is_int;
+use function is_string;
 
 class Mysql extends AbstractConnection
 {
@@ -163,7 +166,7 @@ class Mysql extends AbstractConnection
     {
         $parts = explode('.', str_replace('[]`', '', $table));
 
-        if (\count($parts) === 2) {
+        if (count($parts) === 2) {
             $sql
                 = /**@lang text */
                 'SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES`'
@@ -253,7 +256,7 @@ class Mysql extends AbstractConnection
         foreach ($records as $record) {
             $row = [];
             foreach ($record as $value) {
-                $row[] = \is_string($value) ? $pdo->quote($value) : $value;
+                $row[] = is_string($value) ? $pdo->quote($value) : $value;
             }
 
             $rows[] = '(' . implode(',', $row) . ')';
@@ -282,12 +285,12 @@ class Mysql extends AbstractConnection
         $bind = $insertFieldValues;
         $updates = [];
         foreach ($updateFieldValues as $k => $v) {
-            $field = \is_string($k) ? $k : $v;
+            $field = is_string($k) ? $k : $v;
             if ($primaryKey === $field) {
                 continue;
             }
 
-            if (\is_int($k)) {
+            if (is_int($k)) {
                 $updates[] = "[$field]=:{$field}_dku";
                 $bind["{$field}_dku"] = $insertFieldValues[$field];
             } elseif ($v instanceof SqlFragmentable) {

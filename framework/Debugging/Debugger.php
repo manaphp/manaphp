@@ -42,6 +42,13 @@ use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use ManaPHP\Version;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use function dirname;
+use function in_array;
+use function ini_get;
+use function is_array;
+use function is_object;
+use function is_string;
+use function str_contains;
 
 class Debugger implements DebuggerInterface
 {
@@ -82,7 +89,7 @@ class Debugger implements DebuggerInterface
 
     public function bootstrap(): void
     {
-        if ($this->enabled ?? \in_array($this->app_env, ['dev', 'test'], true)) {
+        if ($this->enabled ?? in_array($this->app_env, ['dev', 'test'], true)) {
             $this->listenerProvider->on(ServerReady::class, [$this, 'onServerReady']);
         }
     }
@@ -100,7 +107,7 @@ class Debugger implements DebuggerInterface
             $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : null;
         }
 
-        return \is_string($content) ? gzdecode($content) : $content;
+        return is_string($content) ? gzdecode($content) : $content;
     }
 
     protected function writeData(string $key, array $data): void
@@ -177,7 +184,7 @@ class Debugger implements DebuggerInterface
     public function onResponseStringify(#[Event] ResponseStringify $event): void
     {
         if ($this->tail) {
-            if (\is_array($content = $this->response->getContent())) {
+            if (is_array($content = $this->response->getContent())) {
                 $content['debugger'] = $this->response->getHeader('X-Debugger-Link');
                 $this->response->setContent($content);
             }
@@ -270,13 +277,13 @@ class Debugger implements DebuggerInterface
 
         $vars = $event->vars;
         foreach ($vars as $k => $v) {
-            if (\is_object($v) && !$v instanceof ModelInterface && class_implements($v) !== []) {
+            if (is_object($v) && !$v instanceof ModelInterface && class_implements($v) !== []) {
                 unset($vars[$k]);
             }
         }
 
         $file = $event->file;
-        $base_name = basename(\dirname($file)) . '/' . basename($file);
+        $base_name = basename(dirname($file)) . '/' . basename($file);
         $context->view[] = ['file' => $file, 'vars' => $vars, 'base_name' => $base_name];
     }
 
@@ -343,8 +350,8 @@ class Debugger implements DebuggerInterface
             'sapi'               => PHP_SAPI,
             'loaded_ini'         => php_ini_loaded_file(),
             'loaded_extensions'  => implode(', ', $loaded_extensions),
-            'opcache.enable'     => \ini_get('opcache.enable'),
-            'opcache.enable_cli' => \ini_get('opcache.enable_cli'),
+            'opcache.enable'     => ini_get('opcache.enable'),
+            'opcache.enable_cli' => ini_get('opcache.enable_cli'),
         ];
     }
 
@@ -368,8 +375,8 @@ class Debugger implements DebuggerInterface
         $dependencies = [];
         foreach ($this->container->getInstances() as $id => $instance) {
             if (($definition = $definitions[$id] ?? null) !== null
-                && \is_string($definition)
-                && \str_contains($definition, '#')
+                && is_string($definition)
+                && str_contains($definition, '#')
             ) {
                 $properties = $definition;
             } else {

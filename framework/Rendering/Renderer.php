@@ -13,6 +13,7 @@ use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function dirname;
 
 class Renderer implements RendererInterface
 {
@@ -58,7 +59,7 @@ class Renderer implements RendererInterface
         }
 
         if (!str_contains($template, '/')) {
-            $template = \dirname(end($context->templates)) . '/' . $template;
+            $template = dirname(end($context->templates)) . '/' . $template;
         }
 
         $template = $this->alias->resolve($template);
@@ -148,7 +149,7 @@ class Renderer implements RendererInterface
         }
 
         if (!str_contains($template, '/')) {
-            $template = \dirname(end($context->templates)) . '/' . $template;
+            $template = dirname(end($context->templates)) . '/' . $template;
         }
 
         $template = $this->alias->resolve($template);

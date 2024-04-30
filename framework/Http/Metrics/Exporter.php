@@ -11,6 +11,7 @@ use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Swoole\WorkersTrait;
 use Psr\Container\ContainerInterface;
+use function in_array;
 
 class Exporter implements ExporterInterface
 {
@@ -116,7 +117,7 @@ class Exporter implements ExporterInterface
 
                 if (($data = $worker_collectors[$name] ?? null) !== null) {
                     $m = $collector->export($data);
-                } elseif (\in_array($name, $this->workers_collectors, true)) {
+                } elseif (in_array($name, $this->workers_collectors, true)) {
                     $data = $this->workersData->get($name);
                     $m = $collector->export($data);
                 } else {

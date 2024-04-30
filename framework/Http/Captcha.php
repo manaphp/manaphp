@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\Captcha\Adapter\Gd;
 use ManaPHP\Http\Captcha\Adapter\Imagick;
+use function extension_loaded;
 
 class Captcha
 {
@@ -14,7 +15,7 @@ class Captcha
 
     public function __invoke(array $parameters, ?string $id): mixed
     {
-        if (\extension_loaded('imagick')) {
+        if (extension_loaded('imagick')) {
             return $this->maker->make(Imagick::class, $parameters, $id);
         } else {
             return $this->maker->make(Gd::class, $parameters, $id);

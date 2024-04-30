@@ -7,6 +7,8 @@ use JsonSerializable;
 use ManaPHP\Helper\Container;
 use ManaPHP\Mailing\MailerInterface;
 use ManaPHP\Rendering\RendererInterface;
+use function is_array;
+use function is_string;
 
 class Message implements JsonSerializable
 {
@@ -68,7 +70,7 @@ class Message implements JsonSerializable
 
     public function setFrom(string|array $from): static
     {
-        $this->from = \is_string($from) ? explode(',', $from) : $from;
+        $this->from = is_string($from) ? explode(',', $from) : $from;
 
         return $this;
     }
@@ -80,7 +82,7 @@ class Message implements JsonSerializable
 
     public function setTo(string|array $to): static
     {
-        $this->to = \is_string($to) ? explode(',', $to) : $to;
+        $this->to = is_string($to) ? explode(',', $to) : $to;
 
         return $this;
     }
@@ -92,7 +94,7 @@ class Message implements JsonSerializable
 
     public function setReplyTo(string|array $replyTo): static
     {
-        $this->replay_to = \is_string($replyTo) ? explode(',', $replyTo) : $replyTo;
+        $this->replay_to = is_string($replyTo) ? explode(',', $replyTo) : $replyTo;
 
         return $this;
     }
@@ -104,7 +106,7 @@ class Message implements JsonSerializable
 
     public function setCc(string|array $cc): static
     {
-        $this->cc = \is_string($cc) ? explode(',', $cc) : $cc;
+        $this->cc = is_string($cc) ? explode(',', $cc) : $cc;
 
         return $this;
     }
@@ -116,7 +118,7 @@ class Message implements JsonSerializable
 
     public function setBcc(string|array $bcc): static
     {
-        $this->bcc = \is_string($bcc) ? explode(',', $bcc) : $bcc;
+        $this->bcc = is_string($bcc) ? explode(',', $bcc) : $bcc;
 
         return $this;
     }
@@ -162,7 +164,7 @@ class Message implements JsonSerializable
 
     public function setHtmlBody(string|array $body): static
     {
-        if (\is_array($body)) {
+        if (is_array($body)) {
             $template = $body[0];
 
             $vars = $body;

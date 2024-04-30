@@ -10,6 +10,9 @@ use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Redis\Event\RedisCalled;
+use function is_string;
+use function preg_match;
+use function strlen;
 
 class RedisGetResponseSizeCollector implements WorkerCollectorInterface
 {
@@ -49,10 +52,10 @@ class RedisGetResponseSizeCollector implements WorkerCollectorInterface
     {
         $method = $event->method;
         if ($method === 'get' || $method === 'hGet') {
-            if ($this->ignored_keys === null || \preg_match($this->ignored_keys, $event->arguments[0]) !== 1) {
+            if ($this->ignored_keys === null || preg_match($this->ignored_keys, $event->arguments[0]) !== 1) {
                 $context = $this->getContext();
 
-                $context->commands[] = \is_string($event->return) ? \strlen($event->return) : 0;
+                $context->commands[] = is_string($event->return) ? strlen($event->return) : 0;
             }
         }
     }

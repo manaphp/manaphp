@@ -13,6 +13,7 @@ use Swoole\Coroutine;
 use Swoole\Event;
 use Swoole\Runtime;
 use Throwable;
+use function array_slice;
 
 class Server implements ServerInterface
 {
@@ -42,7 +43,7 @@ class Server implements ServerInterface
      */
     public function handle(): void
     {
-        $args = implode(' ', \array_slice($GLOBALS['argv'], 1));
+        $args = implode(' ', array_slice($GLOBALS['argv'], 1));
         $this->logger->info('command line: {0}', [basename($GLOBALS['argv'][0]) . ' ' . $args]);
 
         try {

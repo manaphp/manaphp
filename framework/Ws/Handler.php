@@ -19,6 +19,9 @@ use ManaPHP\Ws\Server\Event\Close;
 use ManaPHP\Ws\Server\Event\Open;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
+use function is_array;
+use function is_int;
+use function is_string;
 
 class Handler implements HandlerInterface
 {
@@ -60,11 +63,11 @@ class Handler implements HandlerInterface
 
             if ($returnValue === null || $returnValue instanceof Response) {
                 null;
-            } elseif (\is_string($returnValue)) {
+            } elseif (is_string($returnValue)) {
                 $this->response->json(['code' => $returnValue, 'msg' => '']);
-            } elseif (\is_array($returnValue)) {
+            } elseif (is_array($returnValue)) {
                 $this->response->json(['code' => 0, 'msg' => '', 'data' => $returnValue]);
-            } elseif (\is_int($returnValue)) {
+            } elseif (is_int($returnValue)) {
                 $this->response->json(['code' => $returnValue, 'msg' => '']);
             } else {
                 $this->response->json($returnValue);

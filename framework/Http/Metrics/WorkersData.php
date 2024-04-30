@@ -9,6 +9,7 @@ use ManaPHP\Swoole\WorkersTrait;
 use Psr\Container\ContainerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
+use function count;
 
 class WorkersData implements WorkersDataInterface
 {
@@ -65,7 +66,7 @@ class WorkersData implements WorkersDataInterface
                 break;
             }
             $context->channel->pop($timeout);
-        } while (\count($context->data) < $worker_num);
+        } while (count($context->data) < $worker_num);
 
         ksort($context->data);
 

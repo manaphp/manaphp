@@ -13,6 +13,8 @@ use ManaPHP\Pooling\Pool\Event\PoolPopping;
 use ManaPHP\Pooling\Pool\Event\PoolPush;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use WeakMap;
+use function is_array;
+use function microtime;
 
 class Pools implements PoolsInterface
 {
@@ -58,7 +60,7 @@ class Pools implements PoolsInterface
             }
         }
 
-        if (\is_array($sample)) {
+        if (is_array($sample)) {
             $sample = $this->maker->make($sample[0], $sample[1] ?? []);
         }
 
@@ -87,10 +89,10 @@ class Pools implements PoolsInterface
         }
 
         $this->eventDispatcher->dispatch(new PoolPopping($this, $owner, $type));
-        $start_time = \microtime(true);
+        $start_time = microtime(true);
         if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
             $this->eventDispatcher->dispatch(
-                new PoolPopped($this, $owner, $instance, $type, \microtime(true) - $start_time)
+                new PoolPopped($this, $owner, $instance, $type, microtime(true) - $start_time)
             );
             $capacity = $queue->capacity();
             $this->eventDispatcher->dispatch(new PoolBusy($this, $owner, $type, $capacity, $timeout));
@@ -98,7 +100,7 @@ class Pools implements PoolsInterface
         }
 
         $this->eventDispatcher->dispatch(
-            new PoolPopped($this, $owner, $instance, $type, \microtime(true) - $start_time)
+            new PoolPopped($this, $owner, $instance, $type, microtime(true) - $start_time)
         );
 
         return $instance;

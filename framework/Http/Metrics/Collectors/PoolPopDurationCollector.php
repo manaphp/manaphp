@@ -10,6 +10,7 @@ use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 use ManaPHP\Pooling\Pool\Event\PoolPopped;
+use function get_class;
 
 class PoolPopDurationCollector implements WorkerCollectorInterface
 {
@@ -48,7 +49,7 @@ class PoolPopDurationCollector implements WorkerCollectorInterface
     {
         $context = $this->getContext();
 
-        $context->pops[] = [\get_class($event->owner), $event->type, $event->elapsed];
+        $context->pops[] = [get_class($event->owner), $event->type, $event->elapsed];
     }
 
     public function querying(): array

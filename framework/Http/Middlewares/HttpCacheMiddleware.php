@@ -12,6 +12,8 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ReflectionMethod;
+use function in_array;
+use function is_int;
 
 class HttpCacheMiddleware
 {
@@ -34,7 +36,7 @@ class HttpCacheMiddleware
 
     public function onResponding(#[Event] RequestResponsing $event): void
     {
-        if ($this->response->getStatusCode() !== 200 || !\in_array($this->request->method(), ['GET', 'HEAD'], true)) {
+        if ($this->response->getStatusCode() !== 200 || !in_array($this->request->method(), ['GET', 'HEAD'], true)) {
             return;
         }
 
@@ -55,7 +57,7 @@ class HttpCacheMiddleware
         }
 
         foreach ($httpCache->headers as $k => $v) {
-            if (\is_int($k)) {
+            if (is_int($k)) {
                 if ($v === 'etag' || $v === 'ETag') {
                     if (($etag = $this->response->getHeader('ETag', '')) === '') {
                         $etag = md5($this->response->getContent());

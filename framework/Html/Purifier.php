@@ -8,6 +8,8 @@ use DOMElement;
 use DOMNode;
 use Exception;
 use ManaPHP\Di\Attribute\Autowired;
+use function in_array;
+use function is_string;
 
 class Purifier implements PurifierInterface
 {
@@ -28,7 +30,7 @@ class Purifier implements PurifierInterface
                 continue;
             }
 
-            if (!\in_array($node->nodeType, $types, true)) {
+            if (!in_array($node->nodeType, $types, true)) {
                 $node->parentNode->removeChild($node);
                 continue;
             }
@@ -66,7 +68,7 @@ class Purifier implements PurifierInterface
                         $r = $filter($tag, $attributeName, $attributeValue);
                         if ($r === false) {
                             $node->removeAttributeNode($attributeNode);
-                        } elseif (\is_string($r)) {
+                        } elseif (is_string($r)) {
                             $node->setAttribute($attributeName, $r);
                         }
                     }

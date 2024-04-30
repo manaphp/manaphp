@@ -7,6 +7,8 @@ use Attribute;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
 use ReflectionClass;
+use function str_starts_with;
+use function strtoupper;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Constant extends AbstractConstraint
@@ -20,10 +22,10 @@ class Constant extends AbstractConstraint
     {
         $rClass = new ReflectionClass($validation->source);
 
-        $prefix = \strtoupper($this->name ?? $validation->field) . '_';
+        $prefix = strtoupper($this->name ?? $validation->field) . '_';
 
         foreach ($rClass->getConstants() as $name => $value) {
-            if (!\str_starts_with($name, $prefix)) {
+            if (!str_starts_with($name, $prefix)) {
                 continue;
             }
 

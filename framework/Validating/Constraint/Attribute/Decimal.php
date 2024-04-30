@@ -6,6 +6,9 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 use Attribute;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
+use function explode;
+use function str_contains;
+use function strlen;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Decimal extends AbstractConstraint
@@ -19,9 +22,9 @@ class Decimal extends AbstractConstraint
     {
         $value = (string)$validation->value;
 
-        if (\str_contains($value, '.')) {
-            list(, $d) = \explode('.', $value, 2);
-            if (\strlen($d) > $this->D) {
+        if (str_contains($value, '.')) {
+            list(, $d) = explode('.', $value, 2);
+            if (strlen($d) > $this->D) {
                 return false;
             }
         }

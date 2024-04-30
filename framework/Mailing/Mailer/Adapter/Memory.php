@@ -5,6 +5,7 @@ namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Message;
+use function count;
 
 class Memory extends AbstractMailer
 {
@@ -19,6 +20,6 @@ class Memory extends AbstractMailer
     {
         $this->message = $message;
 
-        return \count($message->getTo()) + \count($message->getCc()) + \count($message->getBcc());
+        return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
     }
 }

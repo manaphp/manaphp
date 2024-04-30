@@ -8,6 +8,7 @@ use ManaPHP\Model\AbstractRelation;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\QueryInterface;
+use function is_string;
 
 class HasOne extends AbstractRelation
 {
@@ -21,7 +22,7 @@ class HasOne extends AbstractRelation
         $this->selfModel = $selfModel;
         $this->selfField = $models->getPrimaryKey($selfModel);
 
-        if (\is_string($that)) {
+        if (is_string($that)) {
             $this->thatModel = $that;
             $this->thatField = $models->getReferencedKey($selfModel);
         } else {

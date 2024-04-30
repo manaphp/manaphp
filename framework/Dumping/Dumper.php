@@ -8,6 +8,10 @@ use ManaPHP\Di\Attribute\Autowired;
 use ReflectionClass;
 use ReflectionNamedType;
 use WeakMap;
+use function is_array;
+use function is_object;
+use function is_string;
+use function strlen;
 
 class Dumper implements DumperInterface
 {
@@ -45,7 +49,7 @@ class Dumper implements DumperInterface
                     $map[$k::class] = $v;
                 }
                 $value = $map;
-            } elseif (\is_object($value)) {
+            } elseif (is_object($value)) {
                 continue;
             }
 
@@ -66,13 +70,13 @@ class Dumper implements DumperInterface
                 $value = (array)$value;
             }
 
-            if (\is_string($value)) {
-                if (\strlen($value) > 128) {
+            if (is_string($value)) {
+                if (strlen($value) > 128) {
                     $value = substr($value, 0, 128) . '...';
                 }
-            } elseif (\is_object($value)) {
+            } elseif (is_object($value)) {
                 $value = class_implements($value) === [] ? $value : ($value::class . '::$object');
-            } elseif (\is_array($value)) {
+            } elseif (is_array($value)) {
                 $value = $this->normalize($value);
             }
             $properties[$name] = $value;

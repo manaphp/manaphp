@@ -5,6 +5,9 @@ namespace ManaPHP\Helper;
 
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use function chr;
+use function ord;
+use function strlen;
 
 class Str
 {
@@ -45,14 +48,14 @@ class Str
 
             $bytes = random_bytes($length);
             for ($i = 0; $i < $length; $i++) {
-                $r = \ord($bytes[$i]) % $base;
+                $r = ord($bytes[$i]) % $base;
 
                 if ($r < 10) {
-                    $str .= \chr(\ord('0') + $r);
+                    $str .= chr(ord('0') + $r);
                 } elseif ($r < 36) {
-                    $str .= \chr(\ord('a') + $r - 10);
+                    $str .= chr(ord('a') + $r - 10);
                 } else {
-                    $str .= \chr(\ord('A') + $r - 36);
+                    $str .= chr(ord('A') + $r - 36);
                 }
             }
             return $str;
@@ -78,7 +81,7 @@ class Str
 
     public static function singular(string $str): string
     {
-        if ($str[\strlen($str) - 1] === 's') {
+        if ($str[strlen($str) - 1] === 's') {
             //https://github.com/UlvHare/PHPixie-demo/blob/d000d8f11e6ab7c522feeb4457da5a802ca3e0bc/vendor/phpixie/orm/src/PHPixie/ORM/Configs/Inflector.php
             if (preg_match('#^(.*?us)$|(.*?[sxz])es$|(.*?[^aeioudgkprt]h)es$#', $str, $match)) {
                 foreach ($match as $i => $word) {

@@ -12,6 +12,11 @@ use ManaPHP\Http\Request\File;
 use ManaPHP\Http\Request\FileInterface;
 use ManaPHP\Http\Request\Proxy;
 use ManaPHP\Validating\ValidatorInterface;
+use function count;
+use function in_array;
+use function is_array;
+use function is_int;
+use function strtoupper;
 
 class Request implements RequestInterface, JsonSerializable
 {
@@ -40,7 +45,7 @@ class Request implements RequestInterface, JsonSerializable
         $context = $this->getContext();
 
         if (!$POST
-            && (isset($SERVER['REQUEST_METHOD']) && !\in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+            && (isset($SERVER['REQUEST_METHOD']) && !in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
         ) {
             if (isset($SERVER['CONTENT_TYPE'])
                 && str_contains($SERVER['CONTENT_TYPE'], 'application/json')
@@ -50,7 +55,7 @@ class Request implements RequestInterface, JsonSerializable
                 parse_str($RAW_BODY, $POST);
             }
 
-            if (!\is_array($POST)) {
+            if (!is_array($POST)) {
                 $POST = [];
             }
         }
@@ -89,7 +94,7 @@ class Request implements RequestInterface, JsonSerializable
         $data = [];
 
         foreach ($this->all() as $name => $val) {
-            if (\in_array($name, $names, true)) {
+            if (in_array($name, $names, true)) {
                 $data[$name] = $val;
             }
         }
@@ -102,7 +107,7 @@ class Request implements RequestInterface, JsonSerializable
         $data = [];
 
         foreach ($this->all() as $name => $val) {
-            if (!\in_array($name, $names, true)) {
+            if (!in_array($name, $names, true)) {
                 $data[$name] = $val;
             }
         }
@@ -141,7 +146,7 @@ class Request implements RequestInterface, JsonSerializable
 
     public function header(string $name, mixed $default = null): mixed
     {
-        return $this->server('HTTP_' . strtr(\strtoupper($name), '-', '_'), $default);
+        return $this->server('HTTP_' . strtr(strtoupper($name), '-', '_'), $default);
     }
 
     public function server(?string $name = null, mixed $default = null): mixed
@@ -186,7 +191,7 @@ class Request implements RequestInterface, JsonSerializable
                         $r[] = $this->maker->make(File::class, [$file]);
                     }
                 }
-            } elseif (\is_int($files['error'])) {
+            } elseif (is_int($files['error'])) {
                 $file = $files;
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $file['key'] = $key;
@@ -194,7 +199,7 @@ class Request implements RequestInterface, JsonSerializable
                     $r[] = $this->maker->make(File::class, [$file]);
                 }
             } else {
-                $countFiles = \count($files['error']);
+                $countFiles = count($files['error']);
                 for ($i = 0; $i < $countFiles; $i++) {
                     if (!$onlySuccessful || $files['error'][$i] === UPLOAD_ERR_OK) {
                         $file = [

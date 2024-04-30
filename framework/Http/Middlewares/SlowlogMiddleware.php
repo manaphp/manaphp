@@ -11,6 +11,7 @@ use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
+use function is_string;
 
 class SlowlogMiddleware
 {
@@ -28,7 +29,7 @@ class SlowlogMiddleware
     {
         $elapsed = round($elapsed, 3);
 
-        if (!\is_string($message)) {
+        if (!is_string($message)) {
             $message = json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         }
 

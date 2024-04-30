@@ -14,6 +14,7 @@ use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\WriteResult;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function is_bool;
 
 class Connection implements ConnectionInterface
 {
@@ -183,7 +184,7 @@ class Connection implements ConnectionInterface
 
     public function fetchAll(string $namespace, array $filter = [], array $options = [], bool $secondaryPreferred = true
     ): array {
-        if (\is_bool($secondaryPreferred)) {
+        if (is_bool($secondaryPreferred)) {
             if ($secondaryPreferred) {
                 $readPreference = new ReadPreference(ReadPreference::RP_SECONDARY_PREFERRED);
             } else {

@@ -6,6 +6,8 @@ namespace ManaPHP\Http\Server\Event;
 use JsonSerializable;
 use ManaPHP\Eventing\Attribute\Verbosity;
 use Swoole\Http\Server;
+use function get_class;
+use function is_object;
 
 #[Verbosity(Verbosity::MEDIUM)]
 class ServerDispatchedTask implements JsonSerializable
@@ -21,7 +23,7 @@ class ServerDispatchedTask implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        $type = \is_object($this->data) ? \get_class($this->data) : 'data';
+        $type = is_object($this->data) ? get_class($this->data) : 'data';
 
         return [
             $type           => $this->data,

@@ -10,6 +10,8 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function count;
+use function is_int;
 
 class Handler implements HandlerInterface
 {
@@ -89,7 +91,7 @@ class Handler implements HandlerInterface
                 }
             }
 
-            if (\count($methods) === 1) {
+            if (count($methods) === 1) {
                 return $methods[0];
             }
         }
@@ -124,7 +126,7 @@ class Handler implements HandlerInterface
         $this->eventDispatcher->dispatch(new CliInvoked($this, $instance, $method, $action, $return));
         if ($return === null) {
             return 0;
-        } elseif (\is_int($return)) {
+        } elseif (is_int($return)) {
             return $return;
         } else {
             return $this->console->error($return);

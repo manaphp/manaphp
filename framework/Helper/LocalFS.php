@@ -7,6 +7,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\RuntimeException;
+use function dirname;
 
 class LocalFS
 {
@@ -63,7 +64,7 @@ class LocalFS
     {
         $file = self::$alias->resolve($file);
 
-        self::dirCreateInternal(\dirname($file));
+        self::dirCreateInternal(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
             $error = error_get_last()['message'] ?? '';
             throw new RuntimeException(['write `{1}` file failed: {2}', $file, $error]);
@@ -73,7 +74,7 @@ class LocalFS
     public static function fileAppend(string $file, string $data): void
     {
         $file = self::$alias->resolve($file);
-        self::dirCreateInternal(\dirname($file));
+        self::dirCreateInternal(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
             $error = error_get_last()['message'] ?? '';
@@ -94,7 +95,7 @@ class LocalFS
             throw new RuntimeException(['move `{1}` to `{2}` failed: file exists already', $src, $dst]);
         }
 
-        if (!is_dir($dir = \dirname($dst))) {
+        if (!is_dir($dir = dirname($dst))) {
             self::dirCreateInternal($dir);
         }
 
@@ -114,7 +115,7 @@ class LocalFS
         $dst = self::$alias->resolve($dst);
 
         if ($overwrite || !is_file($dst)) {
-            self::dirCreateInternal(\dirname($dst));
+            self::dirCreateInternal(dirname($dst));
 
             if (!copy($src, $dst)) {
                 $error = error_get_last()['message'] ?? '';
@@ -186,7 +187,7 @@ class LocalFS
             throw new RuntimeException(['move `{1}` to `{2}` failed: directory is exists already', $src, $dst]);
         }
 
-        if (!is_dir($dir = \dirname($dst))) {
+        if (!is_dir($dir = dirname($dst))) {
             self::dirCreateInternal($dir);
         }
 
@@ -239,7 +240,7 @@ class LocalFS
         $pattern = self::$alias->resolve($pattern);
 
         if (str_starts_with($pattern, 'phar://')) {
-            $dir = \dirname($pattern);
+            $dir = dirname($pattern);
 
             if (!self::dirExists($dir)) {
                 return [];

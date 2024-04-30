@@ -5,6 +5,7 @@ namespace ManaPHP\Di\Event;
 
 use JsonSerializable;
 use ManaPHP\Eventing\Attribute\Verbosity;
+use function get_class;
 
 #[Verbosity(Verbosity::HIGH)]
 class SingletonCreated implements JsonSerializable
@@ -18,7 +19,7 @@ class SingletonCreated implements JsonSerializable
     {
         return [
             'id'       => $this->id,
-            'instance' => \get_class($this->instance),
+            'instance' => get_class($this->instance),
         ];
     }
 }

@@ -14,6 +14,7 @@ use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Model\ModelInterface;
 use ReflectionClass;
 use ReflectionMethod;
+use function in_array;
 
 class Authorization implements AuthorizationInterface
 {
@@ -75,7 +76,7 @@ class Authorization implements AuthorizationInterface
             foreach ($this->controllers->getActions($controller) as $action) {
                 $permission = $this->controllers->getPath($controller, $action);
 
-                if (\in_array($permission, $granted, true)) {
+                if (in_array($permission, $granted, true)) {
                     $permissions[] = $permission;
                 } else {
                     $rMethod = new ReflectionMethod($controller, $action . 'Action');
@@ -91,7 +92,7 @@ class Authorization implements AuthorizationInterface
                         } elseif (str_starts_with($authorize->role, '@')) {
                             $refer = substr($authorize->role, 1);
                             $refer_permission = $this->controllers->getPath($controller, $refer);
-                            if (\in_array($refer_permission, $granted, true)) {
+                            if (in_array($refer_permission, $granted, true)) {
                                 $permissions[] = $permission;
                             } else {
                                 $method = Str::camelize($refer) . 'Action';
@@ -186,7 +187,7 @@ class Authorization implements AuthorizationInterface
     {
         $roles = $roles ?? $this->identity->getRoles();
 
-        if (\in_array('admin', $roles, true)) {
+        if (in_array('admin', $roles, true)) {
             return true;
         }
 

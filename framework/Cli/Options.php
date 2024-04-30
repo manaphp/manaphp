@@ -5,6 +5,7 @@ namespace ManaPHP\Cli;
 
 use JsonSerializable;
 use Stringable;
+use function strlen;
 
 class Options implements OptionsInterface, JsonSerializable, Stringable
 {
@@ -33,7 +34,7 @@ class Options implements OptionsInterface, JsonSerializable, Stringable
             if ($option === '--') {
                 $this->options[''] = implode(' ', $argv);
                 break;
-            } elseif (str_starts_with($option, '--') || \strlen($option) === 2) {
+            } elseif (str_starts_with($option, '--') || strlen($option) === 2) {
                 if ($argv === []) {
                     $value = '';
                 } elseif ($argv[0] !== '-' && str_starts_with($argv[0], '-')) {

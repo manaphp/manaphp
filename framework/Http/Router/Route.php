@@ -5,6 +5,10 @@ namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Helper\Str;
+use function count;
+use function in_array;
+use function is_array;
+use function is_string;
 
 class Route implements RouteInterface
 {
@@ -75,7 +79,7 @@ class Route implements RouteInterface
     {
         $routePaths = [];
 
-        if (\is_string($paths)) {
+        if (is_string($paths)) {
             if (($pos = strpos($paths, '::')) !== false) {
                 $routePaths['controller'] = substr($paths, 0, $pos);
                 $routePaths['action'] = substr($paths, $pos + 2);
@@ -84,7 +88,7 @@ class Route implements RouteInterface
                 $routePaths['action'] = substr($paths, $pos + 1);
             } elseif (str_starts_with($paths, '/')) {
                 $parts = explode('/', substr($paths, 1));
-                if (\count($parts) === 3) {
+                if (count($parts) === 3) {
                     $routePaths['area'] = $parts[0];
                     $routePaths['controller'] = $parts[1];
                     $routePaths['action'] = $parts[2] === '' ? 'index' : $parts[2];
@@ -96,7 +100,7 @@ class Route implements RouteInterface
                 $routePaths['controller'] = $paths;
                 $routePaths['action'] = 'index';
             }
-        } elseif (\is_array($paths)) {
+        } elseif (is_array($paths)) {
             if (isset($paths['area'])) {
                 $routePaths['area'] = $paths['area'];
             }
@@ -119,7 +123,7 @@ class Route implements RouteInterface
 
             $params = [];
             foreach ($paths as $k => $v) {
-                if (\is_string($k) && !\in_array($k, ['area', 'controller', 'action'], true)) {
+                if (is_string($k) && !in_array($k, ['area', 'controller', 'action'], true)) {
                     $params[$k] = $v;
                 }
             }
@@ -159,11 +163,11 @@ class Route implements RouteInterface
         $methods = $this->methods;
         if ($methods === [] || $methods === 'REST') {
             null;
-        } elseif (\is_string($methods)) {
+        } elseif (is_string($methods)) {
             if ($methods !== $method) {
                 return null;
             }
-        } elseif (!\in_array($method, $methods, true)) {
+        } elseif (!in_array($method, $methods, true)) {
             return null;
         }
 
@@ -181,9 +185,9 @@ class Route implements RouteInterface
                 $parts = $this->paths;
 
                 foreach ($matches as $k => $v) {
-                    if (\is_string($k)) {
+                    if (is_string($k)) {
                         if (str_contains($v, '_')
-                            && \in_array($k, ['area', 'controller', 'action'], true)
+                            && in_array($k, ['area', 'controller', 'action'], true)
                             && preg_match('#_$|_\w$|_\w_#', $v) === 1
                         ) {
                             return null;

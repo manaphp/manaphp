@@ -5,6 +5,8 @@ namespace ManaPHP\Token;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Security\CryptInterface;
+use function count;
+use function is_array;
 
 class Jwt implements JwtInterface
 {
@@ -46,7 +48,7 @@ class Jwt implements JwtInterface
         }
 
         $parts = explode('.', $token, 5);
-        if (\count($parts) !== 3) {
+        if (count($parts) !== 3) {
             throw new MalformedException('The JWT must have three dots');
         }
 
@@ -54,7 +56,7 @@ class Jwt implements JwtInterface
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
         /** @noinspection JsonEncodingApiUsageInspection */
-        if (!\is_array($claims = json_decode($this->base64UrlDecode($payload), true))) {
+        if (!is_array($claims = json_decode($this->base64UrlDecode($payload), true))) {
             throw new MalformedException('payload is not array.');
         }
 

@@ -8,6 +8,8 @@ use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Messaging\PubSubInterface;
 use ManaPHP\Ws\Pushing\Client\Event\PushClientPush;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function is_array;
+use function is_string;
 
 class Client implements ClientInterface
 {
@@ -19,11 +21,11 @@ class Client implements ClientInterface
 
     protected function push(string $type, int|string|array $receivers, string|array $message, ?string $endpoint): void
     {
-        if (\is_array($receivers)) {
+        if (is_array($receivers)) {
             $receivers = implode(',', $receivers);
         }
 
-        if (!\is_string($message)) {
+        if (!is_string($message)) {
             $message = json_stringify($message);
         }
 

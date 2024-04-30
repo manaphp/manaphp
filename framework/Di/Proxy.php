@@ -5,6 +5,7 @@ namespace ManaPHP\Di;
 
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
+use function call_user_func_array;
 
 class Proxy implements Lazy
 {
@@ -56,6 +57,6 @@ class Proxy implements Lazy
         }
         $this->property->setValue($this->object, $target);
 
-        return \call_user_func_array([$target, $name], $args);
+        return call_user_func_array([$target, $name], $args);
     }
 }

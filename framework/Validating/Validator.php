@@ -8,6 +8,8 @@ use ManaPHP\Di\Lazy;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\I18n\LocaleInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
+use function is_array;
+use function preg_replace_callback;
 
 class Validator implements ValidatorInterface
 {
@@ -44,7 +46,7 @@ class Validator implements ValidatorInterface
             $validation->field = $field;
             $validation->value = $source[$field] ?? null;
 
-            foreach (\is_array($field_constraints) ? $field_constraints : [$field_constraints] as $constraint) {
+            foreach (is_array($field_constraints) ? $field_constraints : [$field_constraints] as $constraint) {
                 if (!$validation->validate($constraint)) {
                     break;
                 }
@@ -79,7 +81,7 @@ class Validator implements ValidatorInterface
 
     public function formatMessage(string $message, array $placeholders = []): string
     {
-        return \preg_replace_callback('#:(\w+)#', static function ($match) use ($placeholders) {
+        return preg_replace_callback('#:(\w+)#', static function ($match) use ($placeholders) {
             $name = $match[1];
             return $placeholders[$name] ?? $match[0];
         }, $this->getTemplate($message));

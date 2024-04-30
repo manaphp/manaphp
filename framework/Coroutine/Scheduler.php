@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Throwable;
+use function count;
 
 class Scheduler implements SchedulerInterface
 {
@@ -39,7 +40,7 @@ class Scheduler implements SchedulerInterface
         $returns = [];
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            $tasks_count = \count($this->tasks);
+            $tasks_count = count($this->tasks);
 
             $channel = new Channel($tasks_count);
 

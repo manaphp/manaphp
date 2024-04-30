@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Message;
+use function count;
 
 class File extends AbstractMailer
 {
@@ -26,6 +27,6 @@ class File extends AbstractMailer
 
         LocalFS::fileAppend($this->file ?? '@runtime/mailer/file_' . date('ymd') . '.log', $data);
 
-        return \count($message->getTo()) + \count($message->getCc()) + \count($message->getBcc());
+        return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
     }
 }

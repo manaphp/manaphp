@@ -8,6 +8,8 @@ use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 use ManaPHP\Exception\MisuseException;
+use function is_array;
+use function is_int;
 
 class Query
 {
@@ -26,10 +28,10 @@ class Query
 
     public function xpath(string|array $expression, ?DOMNode $context = null): DOMNodeList
     {
-        if (\is_array($expression)) {
+        if (is_array($expression)) {
             $tr = [];
             foreach ($expression as $k => $v) {
-                $tr['$' . $k] = \is_int($v) ? $v : "'$v'";
+                $tr['$' . $k] = is_int($v) ? $v : "'$v'";
             }
 
             $expression = strtr($expression[0], $tr);

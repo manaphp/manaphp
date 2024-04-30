@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use Stringable;
+use function is_array;
+use function is_string;
 
 class Exception extends \Exception
 {
@@ -11,13 +13,13 @@ class Exception extends \Exception
 
     public function __construct(string|Stringable|array $message = '', int $code = 0, \Exception $previous = null)
     {
-        if (\is_array($message)) {
+        if (is_array($message)) {
             $replaces = [];
 
             preg_match_all('#{(\w+)}#', $message[0], $matches);
             foreach ($matches[1] as $key) {
                 if (($val = $message[$key] ?? null) !== null) {
-                    if (\is_string($val)) {
+                    if (is_string($val)) {
                         null;
                     } elseif ($val instanceof Stringable) {
                         $val = (string)$val;

@@ -14,6 +14,10 @@ use ManaPHP\Swoole\Workers\TaskCallMessage;
 use ManaPHP\Swoole\Workers\TaskWaitCallMessage;
 use Psr\Container\ContainerInterface;
 use Swoole\Server;
+use function get_class;
+use function get_parent_class;
+use function interface_exists;
+use function is_string;
 
 class Workers implements WorkersInterface
 {
@@ -62,12 +66,12 @@ class Workers implements WorkersInterface
 
     protected function getIdInContainer(string $class): string
     {
-        if (\interface_exists($interface = $class . 'Interface', false)) {
+        if (interface_exists($interface = $class . 'Interface', false)) {
             return $interface;
         }
 
-        foreach (\get_parent_class($class) ?: [] as $parent) {
-            if (\interface_exists($interface = $parent . 'Interface', false)) {
+        foreach (get_parent_class($class) ?: [] as $parent) {
+            if (interface_exists($interface = $parent . 'Interface', false)) {
                 return $interface;
             }
         }
@@ -77,7 +81,7 @@ class Workers implements WorkersInterface
 
     public function task(array|callable $task, array $arguments, int $task_worker_id, float $timeout = null): mixed
     {
-        $id = $this->getIdInContainer(\is_string($task[0]) ? $task[0] : \get_class($task[0]));
+        $id = $this->getIdInContainer(is_string($task[0]) ? $task[0] : get_class($task[0]));
 
         if ($timeout === null) {
             $data = new TaskCallMessage($id, $task[1], $arguments);
@@ -91,7 +95,7 @@ class Workers implements WorkersInterface
 
     public function sendMessage(array|callable $task, array $arguments, int $dst_worker_id): bool
     {
-        $id = $this->getIdInContainer(\is_string($task[0]) ? $task[0] : \get_class($task[0]));
+        $id = $this->getIdInContainer(is_string($task[0]) ? $task[0] : get_class($task[0]));
 
         $message = new PipeCallMessage($id, $task[1], $arguments);
 

@@ -9,6 +9,7 @@ use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
 use ManaPHP\Http\Server\Event\RequestEnd;
+use function dirname;
 
 class XdebugTracer implements XdebugTracerInterface
 {
@@ -33,7 +34,7 @@ class XdebugTracer implements XdebugTracerInterface
     public function onRequestBegin(#[Event] RequestBegin $event): void
     {
         $file = $this->alias->resolve('@runtime/backtrace/trace_{ymd_His}_{8}.log');
-        $dir = \dirname($file);
+        $dir = dirname($file);
         if (!is_dir($dir)) {
             /** @noinspection MkdirRaceConditionInspection */
             @mkdir($dir, 0777, true);

@@ -10,6 +10,8 @@ use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
 use ManaPHP\Http\Server\Event\ServerReady;
 use ManaPHP\Http\Server\StaticHandlerInterface;
+use function extension_loaded;
+use function ini_get;
 
 class Php extends AbstractServer
 {
@@ -42,7 +44,7 @@ class Php extends AbstractServer
                 putenv("PHP_CLI_SERVER_WORKERS=$worker_num");
             }
 
-            $e = \extension_loaded('yasd') && \ini_get('opcache.optimization_level') === '0' ? '-e' : '';
+            $e = extension_loaded('yasd') && ini_get('opcache.optimization_level') === '0' ? '-e' : '';
             $index = @get_included_files()[0];
             $cmd = PHP_BINARY . " $e -S $this->host:$this->port -t $public_dir  $index";
             console_log('info', $cmd);
