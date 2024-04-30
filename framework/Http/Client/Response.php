@@ -36,13 +36,13 @@ class Response implements JsonSerializable, Stringable
                 break;
             }
         }
-        $this->content_type = $content_type;
+        $this->content_type = $content_type ?? '';
 
         $http_code = null;
         if ($headers && preg_match('#\d{3}#', $headers[0], $match)) {
             $http_code = (int)$match[0];
         }
-        $this->http_code = $http_code;
+        $this->http_code = $http_code ?? 200;
 
         if ($body !== '') {
             $content_encoding = null;
