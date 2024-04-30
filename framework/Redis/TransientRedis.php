@@ -20,6 +20,7 @@ class TransientRedis extends Redis
         $this->connection = $connection;
     }
 
+    /** @noinspection MagicMethodsValidityInspection */
     public function __destruct()
     {
         $this->pools->push($this->owner, $this->connection);
