@@ -90,7 +90,7 @@ class Gd extends AbstractImage
         $green = ($background >> 8) & 0xFF;
         $blue = $background & 0xFF;
         $transparent = imagecolorallocatealpha($this->image, $red, $green, $blue, (int)($alpha * 127));
-        $image = imagerotate($this->image, 360 - $degrees, $transparent, true);
+        $image = imagerotate($this->image, 360 - $degrees, $transparent);
         imagealphablending($image, false);
         imagesavealpha($image, true);
 
