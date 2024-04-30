@@ -108,7 +108,6 @@ class Container implements ContainerInterface
             if (!$property->isPublic()) {
                 $property->setAccessible(true);
             }
-            /** @noinspection PhpRedundantOptionalArgumentInspection */
             $property->setValue($object, null);
         } else {
             throw new Exception(

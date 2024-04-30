@@ -29,7 +29,6 @@ class DebuggerCommand extends Command
         $key = "__debugger:$app_id:*";
         $this->console->writeLn('subscribe to ' . $key);
 
-        /** @noinspection PhpParamsInspection */
         $this->redisCache->psubscribe(
             [$key], function ($redis, $pattern, $channel, $msg) use ($path, $ip) {
             list(, , $_ip, $_path) = explode(':', $channel);

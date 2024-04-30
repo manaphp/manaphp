@@ -12,7 +12,6 @@ class PubSub implements PubSubInterface
 
     public function subscribe(array $channels, callable $callback): void
     {
-        /** @noinspection PhpParamsInspection */
         $this->redisBroker->subscribe(
             $channels, static function ($redis, $channel, $msg) use ($callback) {
             $callback($channel, $msg);
@@ -22,7 +21,6 @@ class PubSub implements PubSubInterface
 
     public function psubscribe(array $patterns, callable $callback): void
     {
-        /** @noinspection PhpParamsInspection */
         $this->redisBroker->psubscribe(
             $patterns, static function ($redis, $pattern, $channel, $msg) use ($callback) {
             $callback($channel, $msg);

@@ -1,7 +1,6 @@
 <?php /** @noinspection RegExpSimplifiable */
 /** @noinspection HttpUrlsUsage */
 /** @noinspection HttpUrlsUsage */
-/** @noinspection PhpMissingReturnTypeInspection */
 /** @noinspection NotOptimalRegularExpressionsInspection */
 /** @noinspection SpellCheckingInspection */
 /** @noinspection NotOptimalIfConditionsInspection */

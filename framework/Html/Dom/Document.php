@@ -182,7 +182,6 @@ class Document
                 if ($item->nodeName === 'a') {
                     $item->setAttribute('href', $this->absolutizeUrl($item->getAttribute('href')));
                 } else {
-                    /** @noinspection PhpParamsInspection */
                     $this->absolutizeAHref(null, $item);
                 }
             }
