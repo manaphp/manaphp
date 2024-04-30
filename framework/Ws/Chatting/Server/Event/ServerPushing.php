@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Ws\Chatting\Server;
+namespace ManaPHP\Ws\Chatting\Server\Event;
 
 use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Ws\Chatting\ServerInterface;
