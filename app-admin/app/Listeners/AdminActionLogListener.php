@@ -9,6 +9,7 @@ use ManaPHP\Db\Event\DbExecuting;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\CookiesInterface;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
@@ -25,6 +26,8 @@ class AdminActionLogListener
 
     public function onDbExecuting(#[Event] DbExecuting $event): void
     {
+        SuppressWarnings::unused($event);
+
         /** @var AdminActionLogListenerContext $context */
         $context = $this->getContext();
 

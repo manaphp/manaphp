@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\Attribute\Verbosity;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
 use ManaPHP\Redis\Event\RedisCalled;
@@ -117,7 +118,7 @@ class Tracer implements TracerInterface
 
     public function onLoggerLog(#[Event] LoggerLog $event): void
     {
-        null;
+        SuppressWarnings::unused($event);
     }
 
     public function onRedisCalling(#[Event] RedisCalling $event): void

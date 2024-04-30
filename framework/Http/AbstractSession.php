@@ -11,6 +11,7 @@ use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Http\Session\Event\SessionCreate;
 use ManaPHP\Http\Session\Event\SessionDestroy;
@@ -94,6 +95,8 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
 
     public function onRequestResponding(#[Event] RequestResponsing $event): void
     {
+        SuppressWarnings::unused($event);
+
         /** @var AbstractSessionContext $context */
         $context = $this->getContext();
 

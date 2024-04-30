@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
@@ -24,6 +25,8 @@ class CorsMiddleware
 
     public function onBegin(#[Event] RequestBegin $event): void
     {
+        SuppressWarnings::unused($event);
+
         $origin = $this->request->origin();
         $host = $this->request->header('host');
 

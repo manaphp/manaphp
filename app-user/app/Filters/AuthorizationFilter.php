@@ -6,6 +6,7 @@ namespace App\Filters;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\ForbiddenException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
@@ -24,6 +25,8 @@ class AuthorizationFilter
 
     public function onAuthorizing(#[Event] RequestAuthorizing $event): void
     {
+        SuppressWarnings::unused($event);
+
         if ($this->authorization->isAllowed($this->dispatcher->getAction())) {
             return;
         }

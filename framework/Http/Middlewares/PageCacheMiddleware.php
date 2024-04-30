@@ -8,6 +8,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Controller\Attribute\PageCache as PageCacheAttribute;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
@@ -156,6 +157,8 @@ class PageCacheMiddleware
 
     public function onResponding(#[Event] RequestResponsing $event): void
     {
+        SuppressWarnings::unused($event);
+
         /** @var PageCacheMiddlewareContext $context */
         $context = $this->getContext();
 

@@ -9,6 +9,7 @@ use ManaPHP\Db\Event\DbCommit;
 use ManaPHP\Db\Event\DbRollback;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Metrics\FormatterInterface;
 use ManaPHP\Http\Metrics\Histogram;
 use ManaPHP\Http\Metrics\WorkerCollectorInterface;
@@ -49,18 +50,24 @@ class SqlTransactionDurationCollector implements WorkerCollectorInterface
 
     public function onDbBegin(#[Event] DbBegin $event): void
     {
+        SuppressWarnings::unused($event);
+
         $context = $this->getContext();
         $context->start_time = microtime(true);
     }
 
     public function onDbCommit(#[Event] DbCommit $event): void
     {
+        SuppressWarnings::unused($event);
+
         $context = $this->getContext();
         $context->transactions[] = ['commit', microtime(true) - $context->start_time];
     }
 
     public function onDbRollback(#[Event] DbRollback $event): void
     {
+        SuppressWarnings::unused($event);
+
         $context = $this->getContext();
         $context->transactions[] = ['rollback', microtime(true) - $context->start_time];
     }

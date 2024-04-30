@@ -6,6 +6,7 @@ namespace ManaPHP\Http\Middlewares;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Controller\Attribute\HttpCache as HttpCacheAttribute;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
@@ -36,6 +37,8 @@ class HttpCacheMiddleware
 
     public function onResponding(#[Event] RequestResponsing $event): void
     {
+        SuppressWarnings::unused($event);
+
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->method(), ['GET', 'HEAD'], true)) {
             return;
         }

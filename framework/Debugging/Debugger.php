@@ -23,6 +23,7 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
@@ -133,6 +134,8 @@ class Debugger implements DebuggerInterface
 
     public function onRequestBegin(#[Event] RequestBegin $event): void
     {
+        SuppressWarnings::unused($event);
+
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
@@ -173,6 +176,8 @@ class Debugger implements DebuggerInterface
 
     public function onRequestEnd(#[Event] RequestEnd $event): void
     {
+        SuppressWarnings::unused($event);
+
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
@@ -183,6 +188,8 @@ class Debugger implements DebuggerInterface
 
     public function onResponseStringify(#[Event] ResponseStringify $event): void
     {
+        SuppressWarnings::unused($event);
+
         if ($this->tail) {
             if (is_array($content = $this->response->getContent())) {
                 $content['debugger'] = $this->response->getHeader('X-Debugger-Link');

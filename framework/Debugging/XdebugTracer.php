@@ -7,6 +7,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Server\Event\RequestBegin;
 use ManaPHP\Http\Server\Event\RequestEnd;
 use function dirname;
@@ -33,6 +34,8 @@ class XdebugTracer implements XdebugTracerInterface
 
     public function onRequestBegin(#[Event] RequestBegin $event): void
     {
+        SuppressWarnings::unused($event);
+
         $file = $this->alias->resolve('@runtime/backtrace/trace_{ymd_His}_{8}.log');
         $dir = dirname($file);
         if (!is_dir($dir)) {
@@ -46,6 +49,8 @@ class XdebugTracer implements XdebugTracerInterface
 
     public function onRequestEnd(#[Event] RequestEnd $event): void
     {
+        SuppressWarnings::unused($event);
+
         /** @noinspection ForgottenDebugOutputInspection */
         @xdebug_stop_trace();
     }

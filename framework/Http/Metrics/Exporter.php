@@ -6,6 +6,7 @@ namespace ManaPHP\Http\Metrics;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
@@ -90,6 +91,8 @@ class Exporter implements ExporterInterface
 
     public function onRequestEnd(#[Event] RequestEnd $event): void
     {
+        SuppressWarnings::unused($event);
+
         $handler = $this->dispatcher->getHandler();
 
         $data = [];

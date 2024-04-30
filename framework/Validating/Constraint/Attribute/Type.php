@@ -5,6 +5,7 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 
 use Attribute;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
 use function in_array;
@@ -122,6 +123,8 @@ class Type extends AbstractConstraint
 
     public function validateMixed(Validation $validation): bool
     {
+        SuppressWarnings::unused($validation);
+
         return true;
     }
 
