@@ -10,7 +10,7 @@ class EventDispatcher implements EventDispatcherInterface
 {
     #[Autowired] protected ListenerProviderInterface|Lazy $listenerProvider;
 
-    public function dispatch(object $event)
+    public function dispatch(object $event): void
     {
         foreach ($this->listenerProvider->getListenersForPeeker() as $listeners) {
             foreach ($listeners as $listener) {
