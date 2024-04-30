@@ -128,7 +128,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
 
             $this->eventDispatcher->dispatch(new SessionCreate($this, $context, $session_id));
         } elseif ($context->is_dirty) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($this->lazy) {
             if (isset($context->_SESSION['__T']) && time() - $context->_SESSION['__T'] < $this->lazy) {
                 return;

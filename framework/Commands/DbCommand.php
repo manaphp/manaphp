@@ -14,6 +14,7 @@ use ManaPHP\Di\ConfigInterface;
 use ManaPHP\Di\Pool;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Model\Attribute\ColumnMap;
 use ManaPHP\Model\Attribute\Connection;
 use ManaPHP\Model\Attribute\PrimaryKey;
@@ -170,7 +171,7 @@ class DbCommand extends Command
         $namespace = substr($class, 0, $pos);
 
         if ($constants = $this->getConstantsByDb($connection, $table)) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($constants = $this->getConstantsByFile($plainClass)) {
             $constants = '    ' . $constants;
         }
@@ -270,7 +271,7 @@ class DbCommand extends Command
         $modelName = $rootNamespace . '\\' . $plainClass;
 
         if ($constants = $this->getConstantsByDb($connection, $table)) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($constants = $this->getConstantsByFile($plainClass)) {
             $constants = '    ' . $constants;
         }

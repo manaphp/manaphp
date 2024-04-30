@@ -6,6 +6,7 @@ namespace ManaPHP\Http;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Action\InvokerInterface;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
@@ -101,7 +102,7 @@ class Dispatcher implements DispatcherInterface
 
             if ($area !== '' && $area !== null) {
                 if ($area === 'Index' && $path === '/') {
-                    null;
+                    SuppressWarnings::noop();
                 } else {
                     $path = '/' . Str::snakelize($area) . $path;
                 }

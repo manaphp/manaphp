@@ -13,6 +13,7 @@ use ManaPHP\Di\Lazy;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Response\Appenders\RequestIdAppender;
 use ManaPHP\Http\Response\Appenders\ResponseTimeAppender;
 use ManaPHP\Http\Response\Appenders\RouteAppender;
@@ -322,7 +323,7 @@ class Response implements ResponseInterface
         $this->setStatus($status);
 
         if (is_array($content) || is_string($content)) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($content instanceof JsonSerializable) {
             $content = ['code' => $this->ok_code, 'msg' => '', 'data' => $content];
         }

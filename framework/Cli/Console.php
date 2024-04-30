@@ -5,6 +5,7 @@ namespace ManaPHP\Cli;
 
 use JsonSerializable;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Helper\SuppressWarnings;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use ReflectionClass;
@@ -110,7 +111,7 @@ class Console implements ConsoleInterface
             }
 
             if (is_string($val)) {
-                null;
+                SuppressWarnings::noop();
             } elseif ($val instanceof Stringable) {
                 $val = (string)$val;
             } elseif (is_scalar($val)) {

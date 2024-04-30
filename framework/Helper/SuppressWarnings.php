@@ -9,4 +9,9 @@ class SuppressWarnings
     {
 
     }
+
+    public static function noop(): void
+    {
+
+    }
 }

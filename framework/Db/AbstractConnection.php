@@ -12,6 +12,7 @@ use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\SuppressWarnings;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -129,7 +130,7 @@ abstract class AbstractConnection implements ConnectionInterface
             if (is_bool($value)) {
                 $value = (int)$value;
             } elseif (is_scalar($value) || $value === null) {
-                null;
+                SuppressWarnings::noop();
             } elseif (is_array($value)) {
                 $value = json_stringify($value);
             } elseif ($value instanceof JsonSerializable) {

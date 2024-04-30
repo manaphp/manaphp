@@ -6,6 +6,7 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\SuppressWarnings;
 use function count;
 use function dirname;
 use function is_float;
@@ -93,7 +94,7 @@ class Downloader implements DownloaderInterface
 
             $running = 0;
             while (curl_multi_exec($mh, $running) === CURLM_CALL_MULTI_PERFORM) {
-                null;
+                SuppressWarnings::noop();
             }
 
             usleep(100);

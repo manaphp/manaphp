@@ -8,6 +8,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\Logger\Log;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -76,7 +77,7 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
             }
 
             if (is_string($val)) {
-                null;
+                SuppressWarnings::noop();
             } elseif ($val instanceof Stringable) {
                 $val = (string)$val;
             } elseif (is_scalar($val)) {

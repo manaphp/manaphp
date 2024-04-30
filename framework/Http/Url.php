@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Helper\SuppressWarnings;
 use function is_string;
 
 class Url implements UrlInterface
@@ -36,7 +37,7 @@ class Url implements UrlInterface
             } elseif ($url[0] === '/') {
                 $url = $this->router->getPrefix() . $url;
             } elseif (parse_url($url, PHP_URL_SCHEME)) {
-                null;
+                SuppressWarnings::noop();
             } else {
                 return $this->router->createUrl($args, $scheme);
             }

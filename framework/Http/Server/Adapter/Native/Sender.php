@@ -6,6 +6,7 @@ namespace ManaPHP\Http\Server\Adapter\Native;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
@@ -75,7 +76,7 @@ class Sender implements SenderInterface
 
         $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($this->request->method() === 'HEAD') {
             header('Content-Length: ' . strlen($content));
         } elseif ($file = $this->response->getFile()) {

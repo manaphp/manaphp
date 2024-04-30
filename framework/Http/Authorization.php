@@ -8,6 +8,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 use ManaPHP\Identifying\IdentityInterface;
@@ -88,7 +89,7 @@ class Authorization implements AuthorizationInterface
                     if ($attribute !== null) {
                         $authorize = $attribute->newInstance();
                         if ($authorize->role === null) {
-                            null;
+                            SuppressWarnings::noop();
                         } elseif (str_starts_with($authorize->role, '@')) {
                             $refer = substr($authorize->role, 1);
                             $refer_permission = $this->controllers->getPath($controller, $refer);

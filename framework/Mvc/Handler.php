@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\AbstractHandler;
 use ManaPHP\Http\Response;
 use Throwable;
@@ -22,7 +23,7 @@ class Handler extends AbstractHandler
         } elseif (is_array($actionReturnValue)) {
             $this->response->json(['code' => 0, 'msg' => '', 'data' => $actionReturnValue]);
         } elseif ($actionReturnValue instanceof Response) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($actionReturnValue instanceof View) {
             $this->response->setContent($actionReturnValue->render());
             if (($maxAge = $actionReturnValue->getMaxAge()) > 0) {

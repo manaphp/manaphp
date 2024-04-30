@@ -8,6 +8,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\CurlMulti\Error;
 use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
@@ -219,7 +220,7 @@ class CurlMulti implements CurlMultiInterface, Countable
         while ($this->requests) {
             $running = 0;
             while (curl_multi_exec($this->mh, $running) === CURLM_CALL_MULTI_PERFORM) {
-                null;
+                SuppressWarnings::noop();
             }
             curl_multi_select($this->mh);
 

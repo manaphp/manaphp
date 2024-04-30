@@ -8,6 +8,7 @@ use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Ws\HandlerInterface;
 use ManaPHP\Ws\Server\Event\ServerStart;
@@ -151,7 +152,7 @@ class Swoole implements ServerInterface
             $this->request->set('fd', $fd);
             $this->wsHandler->onOpen($fd);
         } finally {
-            null;
+            SuppressWarnings::noop();
         }
 
         $context = new ArrayObject();
@@ -195,7 +196,7 @@ class Swoole implements ServerInterface
         try {
             $this->wsHandler->onClose($fd);
         } finally {
-            null;
+            SuppressWarnings::noop();
         }
     }
 

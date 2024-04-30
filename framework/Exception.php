@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use ManaPHP\Helper\SuppressWarnings;
 use Stringable;
 use function is_array;
 use function is_string;
@@ -20,7 +21,7 @@ class Exception extends \Exception
             foreach ($matches[1] as $key) {
                 if (($val = $message[$key] ?? null) !== null) {
                     if (is_string($val)) {
-                        null;
+                        SuppressWarnings::noop();
                     } elseif ($val instanceof Stringable) {
                         $val = (string)$val;
                     } else {

@@ -5,6 +5,7 @@ namespace ManaPHP\Model\Attribute;
 
 use Attribute;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use function is_int;
 
 #[Attribute(Attribute::TARGET_CLASS)]
@@ -26,7 +27,7 @@ class ColumnMap
     {
         $map = [];
         if ($this->strategy === null) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($this->strategy === self::STRATEGY_SNAKE_CASE) {
             foreach ($fields as $field) {
                 $column = Str::snakelize($field);

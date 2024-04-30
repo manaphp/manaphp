@@ -8,6 +8,7 @@ use JsonSerializable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Helper\SuppressWarnings;
 use Throwable;
 use function count;
 use function dirname;
@@ -119,7 +120,7 @@ class DataDump implements DataDumpInterface
             } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif (is_string($v)) {
-                null;
+                SuppressWarnings::noop();
             } elseif ($v === null || is_scalar($v)) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } else {

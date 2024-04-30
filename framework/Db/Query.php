@@ -9,6 +9,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Query\AbstractQuery;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -803,7 +804,7 @@ class Query extends AbstractQuery
                 $agg = strtoupper($match[0]);
                 $aggs[$k] = $agg;
                 if (in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'], true)) {
-                    null;
+                    SuppressWarnings::noop();
                 } elseif ($agg === 'AVG') {
                     $sum = $k . '_sum';
                     $this->aggregate[$sum] ??= 'SUM(' . substr($v, 4);

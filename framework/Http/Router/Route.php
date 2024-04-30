@@ -5,6 +5,7 @@ namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use function count;
 use function in_array;
 use function is_array;
@@ -162,7 +163,7 @@ class Route implements RouteInterface
 
         $methods = $this->methods;
         if ($methods === [] || $methods === 'REST') {
-            null;
+            SuppressWarnings::noop();
         } elseif (is_string($methods)) {
             if ($methods !== $method) {
                 return null;

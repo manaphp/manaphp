@@ -5,6 +5,7 @@ namespace ManaPHP\Ws;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\ResponseInterface;
@@ -62,7 +63,7 @@ class Handler implements HandlerInterface
             );
 
             if ($returnValue === null || $returnValue instanceof Response) {
-                null;
+                SuppressWarnings::noop();
             } elseif (is_string($returnValue)) {
                 $this->response->json(['code' => $returnValue, 'msg' => '']);
             } elseif (is_array($returnValue)) {
@@ -79,7 +80,7 @@ class Handler implements HandlerInterface
                 $this->eventDispatcher->dispatch(new Close($fd));
             }
         } catch (AbortException $exception) {
-            null;
+            SuppressWarnings::noop();
         } catch (Throwable $throwable) {
             $this->errorHandler->handle($throwable);
         }

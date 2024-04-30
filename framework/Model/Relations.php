@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Model\Relation\BelongsTo;
 use ManaPHP\Model\Relation\HasMany;
 use ManaPHP\Model\Relation\HasManyOthers;
@@ -155,7 +156,7 @@ class Relations implements RelationsInterface
         $query = $relation->getThatQuery();
 
         if ($data === null) {
-            null;
+            SuppressWarnings::noop();
         } elseif (is_string($data)) {
             $query->select(preg_split('#[,\s]+#', $data, -1, PREG_SPLIT_NO_EMPTY));
         } elseif (is_array($data)) {

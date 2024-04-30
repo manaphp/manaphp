@@ -7,6 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\EventDispatcherInterface;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Http\Server\Event\RequestAuthenticated;
 use ManaPHP\Http\Server\Event\RequestAuthenticating;
@@ -63,7 +64,7 @@ abstract class AbstractHandler implements HandlerInterface
 
             $this->handleInternal($actionReturnValue);
         } catch (AbortException) {
-            null;
+            SuppressWarnings::noop();
         } catch (Throwable $exception) {
             $this->eventDispatcher->dispatch(new RequestException($exception));
             $this->handleError($exception);

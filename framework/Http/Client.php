@@ -6,6 +6,7 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NonCloneableException;
+use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ClientErrorException;
@@ -61,7 +62,7 @@ class Client implements ClientInterface
         $headers['User-Agent'] ??= $this->user_agent;
 
         if (isset($headers['X-Request-Id'])) {
-            null;//code completion
+            SuppressWarnings::noop();
         }
 
         foreach ($headers as $name => $value) {
@@ -153,7 +154,7 @@ class Client implements ClientInterface
         $http_code_class = substr((string)$http_code, 0, -2) * 100;
 
         if ($http_code_class === 200) {
-            null;
+            SuppressWarnings::noop();
         } elseif ($http_code_class === 300) {
             throw new RedirectionException($response->url, $response);
         } elseif ($http_code_class === 400) {
@@ -212,7 +213,7 @@ class Client implements ClientInterface
         $headers['Accept-Encoding'] ??= 'gzip, deflate';
 
         if (isset($headers['Accept-Charset'], $headers['Authorization'], $headers['Cache-Control'], $headers['Host'], $headers['Cookie'])) {
-            null;
+            SuppressWarnings::noop();
         }
 
         $response = $this->request($method, $url, $body, $headers, $options);
