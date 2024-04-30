@@ -111,7 +111,7 @@ class Container implements ContainerInterface
     {
         $rType = $property->getType();
 
-        if ($rType->allowsNull()) {
+        if ($rType !== null && $rType->allowsNull()) {
             if (!$property->isPublic()) {
                 $property->setAccessible(true);
             }

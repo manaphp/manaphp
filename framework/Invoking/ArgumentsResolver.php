@@ -120,7 +120,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
                 if ($validation->value === null) {
                     if ($rParameter->isDefaultValueAvailable()) {
                         $args[$i] = $rParameter->getDefaultValue();
-                    } elseif (!$rType->allowsNull()) {
+                    } elseif ($rType !== null && !$rType->allowsNull()) {
                         $validation->validate(new Required());
                     }
                     continue;
