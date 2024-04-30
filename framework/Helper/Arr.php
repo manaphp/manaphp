@@ -159,6 +159,7 @@ class Arr
         return $ar;
     }
 
+    /** @noinspection SpellCheckingInspection */
     public static function aggregate(array $rows, array $aggs, array $group = []): array
     {
         if (!$rows) {

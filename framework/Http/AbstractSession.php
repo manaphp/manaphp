@@ -39,6 +39,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
 
     #[Autowired] protected int $ttl = 3600;
     #[Autowired] protected int $lazy = 60;
+    /** @noinspection SpellCheckingInspection */
     #[Autowired] protected string $name = 'PHPSESSID';
     #[Autowired] protected string $serializer = 'json';
 
@@ -203,7 +204,8 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
             return $this->serialize($data);
         } elseif ($serializer === 'json') {
             return json_stringify($data);
-        } elseif ($serializer === 'igbinary') {
+        } /** @noinspection SpellCheckingInspection */
+        elseif ($serializer === 'igbinary') {
             return igbinary_serialize($data);
         } else {
             throw new NotSupportedException(['`{serializer}` serializer is not support', 'serializer' => $serializer]);
@@ -247,7 +249,8 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
             return unserialize($data, ['allowed_classes' => true]);
         } elseif ($serializer === 'json') {
             return json_parse($data);
-        } elseif ($serializer === 'igbinary') {
+        } /** @noinspection SpellCheckingInspection */
+        elseif ($serializer === 'igbinary') {
             return igbinary_unserialize($data);
         } else {
             throw new NotSupportedException(['`{serializer}` serializer is not support', 'serializer' => $serializer]);

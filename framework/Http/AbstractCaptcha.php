@@ -14,6 +14,7 @@ abstract class AbstractCaptcha implements CaptchaInterface
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected SessionInterface $session;
 
+    /** @noinspection SpellCheckingInspection */
     #[Autowired] protected string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
     #[Autowired] protected array $fonts
         = [

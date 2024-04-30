@@ -78,6 +78,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
         return new static(array_diff_key($this->items, $items));
     }
 
+    /** @noinspection SpellCheckingInspection */
     public function udiff(array $items, callable $callback): static
     {
         return new static(array_udiff($this->items, $items, $callback));
@@ -102,6 +103,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
         return new static($items);
     }
 
+    /** @noinspection SpellCheckingInspection */
     public function asort(int $sort_flags = SORT_REGULAR): static
     {
         $items = $this->items;
@@ -109,6 +111,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
         return new static($items);
     }
 
+    /** @noinspection SpellCheckingInspection */
     public function arsort(int $sort_flags = SORT_REGULAR): static
     {
         $items = $this->items;
@@ -123,6 +126,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
         return new static($items);
     }
 
+    /** @noinspection SpellCheckingInspection */
     public function uasort(callable $callback): static
     {
         $items = $this->items;

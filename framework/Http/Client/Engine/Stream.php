@@ -127,9 +127,9 @@ class Stream implements EngineInterface
     }
 
     /** @noinspection PhpUnusedLocalVariableInspection */
-    protected function recvHeader(mixed $stream, string $url, float $end_time): array
+    protected function receiveHeader(mixed $stream, string $url, float $end_time): array
     {
-        $recv = '';
+        $received = '';
         $write = null;
         $headers_end = null;
         while (true) {
@@ -146,20 +146,20 @@ class Stream implements EngineInterface
                 throw new TimeoutException($url);
             }
 
-            $recv .= $r;
+            $received .= $r;
 
-            if (($headers_end = strpos($recv, "\r\n\r\n")) !== false) {
+            if (($headers_end = strpos($received, "\r\n\r\n")) !== false) {
                 break;
             }
         }
 
-        $headers = explode("\r\n", substr($recv, 0, $headers_end));
-        $body = substr($recv, $headers_end + 4);
+        $headers = explode("\r\n", substr($received, 0, $headers_end));
+        $body = substr($received, $headers_end + 4);
 
         return [$headers, $body];
     }
 
-    protected function recvChunkedBody(mixed $stream, string $url, string $body, float $end_time): string
+    protected function receiveChunkedBody(mixed $stream, string $url, string $body, float $end_time): string
     {
         $chunked = $body;
         $body = '';
@@ -211,7 +211,7 @@ class Stream implements EngineInterface
         return '';
     }
 
-    protected function recvContentLengthBody(mixed $stream, string $url, string $body, int $length, float $end_time
+    protected function receiveContentLengthBody(mixed $stream, string $url, string $body, int $length, float $end_time
     ): string {
         $write = null;
         $except = null;
@@ -275,7 +275,7 @@ class Stream implements EngineInterface
         try {
             $success = false;
 
-            list($headers, $body) = $this->recvHeader($stream, $request->url, $end_time);
+            list($headers, $body) = $this->receiveHeader($stream, $request->url, $end_time);
 
             $content_length = null;
             $transfer_encoding = null;
@@ -288,9 +288,9 @@ class Stream implements EngineInterface
             }
 
             if ($transfer_encoding === 'chunked') {
-                $body = $this->recvChunkedBody($stream, $request->url, $body, $end_time);
+                $body = $this->receiveChunkedBody($stream, $request->url, $body, $end_time);
             } else {
-                $body = $this->recvContentLengthBody($stream, $request->url, $body, $content_length, $end_time);
+                $body = $this->receiveContentLengthBody($stream, $request->url, $body, $content_length, $end_time);
             }
 
             $request->process_time = round(microtime(true) - $start_time, 3);

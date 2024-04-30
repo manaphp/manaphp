@@ -11,11 +11,13 @@ use function strlen;
 
 class Str
 {
+    /** @noinspection SpellCheckingInspection */
     public static function snakelize(string $str): string
     {
         return strtolower(preg_replace('/[A-Z]/', '_$0', lcfirst($str)));
     }
 
+    /** @noinspection SpellCheckingInspection */
     public static function pascalize(string $str): string
     {
         if (str_contains($str, '_')) {
