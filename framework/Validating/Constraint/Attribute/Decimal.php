@@ -20,7 +20,7 @@ class Decimal extends AbstractConstraint
         $value = (string)$validation->value;
 
         if (\str_contains($value, '.')) {
-            list(, $d) = \explode($value, '.', 2);
+            list(, $d) = \explode('.', $value, 2);
             if (\strlen($d) > $this->D) {
                 return false;
             }
