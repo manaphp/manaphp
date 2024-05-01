@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics;
 
-use ManaPHP\Context\ContextorInterface;
+use ManaPHP\Context\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Swoole\WorkersTrait;
 use Psr\Container\ContainerInterface;
@@ -15,12 +15,12 @@ class WorkersData implements WorkersDataInterface
 {
     use WorkersTrait;
 
-    #[Autowired] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextManagerInterface $contextManager;
     #[Autowired] protected ContainerInterface $container;
 
     public function getContext(int $cid = 0): WorkersDataContext
     {
-        return $this->contextor->getContext($this, $cid);
+        return $this->contextManager->getContext($this, $cid);
     }
 
     public function getWorkerRequest(string $collector, int $cid, $worker_id): void

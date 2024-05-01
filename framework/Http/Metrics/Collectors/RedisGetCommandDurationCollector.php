@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextorInterface;
+use ManaPHP\Context\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Metrics\FormatterInterface;
@@ -14,7 +14,7 @@ use function preg_match;
 
 class RedisGetCommandDurationCollector implements WorkerCollectorInterface
 {
-    #[Autowired] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextManagerInterface $contextManager;
     #[Autowired] protected FormatterInterface $formatter;
 
     #[Autowired] protected array $buckets = [0.001, 11];
@@ -24,7 +24,7 @@ class RedisGetCommandDurationCollector implements WorkerCollectorInterface
 
     public function getContext(int $cid = 0): RedisGetCommandDurationCollectorContext
     {
-        return $this->contextor->getContext($this, $cid);
+        return $this->contextManager->getContext($this, $cid);
     }
 
     public function updating(?string $handler): ?array

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextorInterface;
+use ManaPHP\Context\ContextManagerInterface;
 use ManaPHP\Db\Event\DbExecuted;
 use ManaPHP\Db\Event\DbQueried;
 use ManaPHP\Di\Attribute\Autowired;
@@ -14,7 +14,7 @@ use ManaPHP\Http\Metrics\WorkerCollectorInterface;
 
 class SqlStatementDurationCollector implements WorkerCollectorInterface
 {
-    #[Autowired] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextManagerInterface $contextManager;
     #[Autowired] protected FormatterInterface $formatter;
 
     #[Autowired] protected array $buckets = [0.002, 11];
@@ -23,7 +23,7 @@ class SqlStatementDurationCollector implements WorkerCollectorInterface
 
     public function getContext(int $cid = 0): SqlStatementDurationCollectorContext
     {
-        return $this->contextor->getContext($this, $cid);
+        return $this->contextManager->getContext($this, $cid);
     }
 
     public function updating(?string $handler): ?array

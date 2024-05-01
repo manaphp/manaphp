@@ -5,7 +5,7 @@ namespace ManaPHP\Context;
 
 use Swoole\Coroutine;
 
-class Contextor implements ContextorInterface
+class ContextManager implements ContextManagerInterface
 {
     protected array $classes = [];
     protected array $contexts = [];

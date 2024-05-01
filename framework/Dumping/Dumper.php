@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Dumping;
 
-use ManaPHP\Context\ContextorInterface;
+use ManaPHP\Context\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -15,7 +15,7 @@ use function strlen;
 
 class Dumper implements DumperInterface
 {
-    #[Autowired] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextManagerInterface $contextManager;
 
     public function getProperties(object $object): array
     {
@@ -56,8 +56,8 @@ class Dumper implements DumperInterface
             $data[$name] = $value;
         }
 
-        if ($this->contextor->hasContext($object)) {
-            $data['context'] = (array)$this->contextor->getContext($object);
+        if ($this->contextManager->hasContext($object)) {
+            $data['context'] = (array)$this->contextManager->getContext($object);
         }
 
         return $data;

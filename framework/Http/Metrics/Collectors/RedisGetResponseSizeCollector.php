@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextorInterface;
+use ManaPHP\Context\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Metrics\FormatterInterface;
@@ -16,7 +16,7 @@ use function strlen;
 
 class RedisGetResponseSizeCollector implements WorkerCollectorInterface
 {
-    #[Autowired] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextManagerInterface $contextManager;
     #[Autowired] protected FormatterInterface $formatter;
 
     #[Autowired] protected array $buckets = [1024, 11];
@@ -26,7 +26,7 @@ class RedisGetResponseSizeCollector implements WorkerCollectorInterface
 
     public function getContext(int $cid = 0): RedisGetResponseSizeCollectorContext
     {
-        return $this->contextor->getContext($this, $cid);
+        return $this->contextManager->getContext($this, $cid);
     }
 
     public function updating(?string $handler): ?array

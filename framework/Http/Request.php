@@ -71,7 +71,7 @@ class Request implements RequestInterface, JsonSerializable
 
     public function getContext(int $cid = 0): RequestContext
     {
-        return $this->contextor->getContext($this, $cid);
+        return $this->contextManager->getContext($this, $cid);
     }
 
     public function rawBody(): string

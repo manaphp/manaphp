@@ -7,10 +7,10 @@ use ManaPHP\Di\Attribute\Autowired;
 
 trait ContextTrait
 {
-    #[Autowired] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextManagerInterface $contextManager;
 
     protected function getContext(int $cid = 0): mixed
     {
-        return $this->contextor->getContext($this, $cid);
+        return $this->contextManager->getContext($this, $cid);
     }
 }

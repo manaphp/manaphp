@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Context;
 
-interface ContextorInterface
+interface ContextManagerInterface
 {
     public function findContext(object $object): ?string;
 

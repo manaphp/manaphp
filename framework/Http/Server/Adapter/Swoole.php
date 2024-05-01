@@ -288,7 +288,7 @@ class Swoole extends AbstractServer
             }
         }
 
-        $this->contextor->resetContexts();
+        $this->contextManager->resetContexts();
     }
 
     public function send(): void

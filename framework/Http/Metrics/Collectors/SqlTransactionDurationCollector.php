@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Metrics\Collectors;
 
-use ManaPHP\Context\ContextorInterface;
+use ManaPHP\Context\ContextManagerInterface;
 use ManaPHP\Db\Event\DbBegin;
 use ManaPHP\Db\Event\DbCommit;
 use ManaPHP\Db\Event\DbRollback;
@@ -17,7 +17,7 @@ use function microtime;
 
 class SqlTransactionDurationCollector implements WorkerCollectorInterface
 {
-    #[Autowired] protected ContextorInterface $contextor;
+    #[Autowired] protected ContextManagerInterface $contextManager;
     #[Autowired] protected FormatterInterface $formatter;
 
     #[Autowired] protected array $buckets = [0.008, 11];
@@ -26,7 +26,7 @@ class SqlTransactionDurationCollector implements WorkerCollectorInterface
 
     public function getContext(int $cid = 0): SqlTransactionDurationCollectorContext
     {
-        return $this->contextor->getContext($this, $cid);
+        return $this->contextManager->getContext($this, $cid);
     }
 
     public function updating(?string $handler): ?array

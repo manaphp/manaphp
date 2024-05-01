@@ -114,7 +114,7 @@ class Workerman extends AbstractServer
             echo $str . PHP_EOL;
         }
 
-        $this->contextor->resetContexts();
+        $this->contextManager->resetContexts();
 
         if ($this->max_request && ++$this->request_count >= $this->max_request) {
             Worker::stopAll();
