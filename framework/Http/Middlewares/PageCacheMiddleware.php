@@ -13,7 +13,7 @@ use ManaPHP\Http\Controller\Attribute\PageCache as PageCacheAttribute;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestReady;
-use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\RequestResponding;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionMethod;
@@ -155,7 +155,7 @@ class PageCacheMiddleware
         throw new AbortException();
     }
 
-    public function onResponding(#[Event] RequestResponsing $event): void
+    public function onResponding(#[Event] RequestResponding $event): void
     {
         SuppressWarnings::unused($event);
 

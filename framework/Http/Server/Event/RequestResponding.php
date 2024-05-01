@@ -8,7 +8,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 
 #[Verbosity(Verbosity::HIGH)]
-class RequestResponsing
+class RequestResponding
 {
     public function __construct(public RequestInterface $request, public ResponseInterface $response)
     {

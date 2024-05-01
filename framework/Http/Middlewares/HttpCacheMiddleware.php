@@ -11,7 +11,7 @@ use ManaPHP\Http\Controller\Attribute\HttpCache as HttpCacheAttribute;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
-use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\RequestResponding;
 use ReflectionMethod;
 use function in_array;
 use function is_int;
@@ -35,7 +35,7 @@ class HttpCacheMiddleware
         }
     }
 
-    public function onResponding(#[Event] RequestResponsing $event): void
+    public function onResponding(#[Event] RequestResponding $event): void
     {
         SuppressWarnings::unused($event);
 

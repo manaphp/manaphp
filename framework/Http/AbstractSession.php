@@ -12,7 +12,7 @@ use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Helper\SuppressWarnings;
-use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\RequestResponding;
 use ManaPHP\Http\Session\Event\SessionCreate;
 use ManaPHP\Http\Session\Event\SessionDestroy;
 use ManaPHP\Http\Session\Event\SessionEnd;
@@ -94,7 +94,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         $this->eventDispatcher->dispatch(new SessionStart($this, $context, $session_id));
     }
 
-    public function onRequestResponding(#[Event] RequestResponsing $event): void
+    public function onRequestResponding(#[Event] RequestResponding $event): void
     {
         SuppressWarnings::unused($event);
 

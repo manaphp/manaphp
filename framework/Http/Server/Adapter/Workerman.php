@@ -10,7 +10,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
-use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\RequestResponding;
 use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Http\Server\Event\ServerReady;
 use Throwable;
@@ -131,7 +131,7 @@ class Workerman extends AbstractServer
             }
         }
 
-        $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
+        $this->eventDispatcher->dispatch(new RequestResponding($this->request, $this->response));
 
         foreach ($this->response->getAppenders() as $appender) {
             if ($appender !== '' && $appender !== null) {

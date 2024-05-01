@@ -14,7 +14,7 @@ use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
-use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\RequestResponding;
 use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Http\Server\Event\ServerBeforeShutdown;
 use ManaPHP\Http\Server\Event\ServerClose;
@@ -300,7 +300,7 @@ class Swoole extends AbstractServer
             }
         }
 
-        $this->dispatchEvent(new RequestResponsing($this->request, $this->response));
+        $this->dispatchEvent(new RequestResponding($this->request, $this->response));
 
         foreach ($this->response->getAppenders() as $appender) {
             if ($appender !== '' && $appender !== null) {

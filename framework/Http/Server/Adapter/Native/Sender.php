@@ -12,7 +12,7 @@ use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\Server\Event\RequestResponded;
-use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\RequestResponding;
 use ManaPHP\Http\Server\Event\ResponseStringify;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -41,7 +41,7 @@ class Sender implements SenderInterface
             }
         }
 
-        $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
+        $this->eventDispatcher->dispatch(new RequestResponding($this->request, $this->response));
 
         foreach ($this->response->getAppenders() as $appender) {
             if ($appender !== '' && $appender !== null) {
