@@ -181,7 +181,7 @@ class Engine implements EngineInterface
         $this->sendInternal($this->socket ?? $this->open(), $str, $timeout);
     }
 
-    public function recv(?float $timeout = null): Message
+    public function receive(?float $timeout = null): Message
     {
         $socket = $this->socket ?? $this->open();
 
@@ -202,7 +202,7 @@ class Engine implements EngineInterface
             }
 
             if (($r = fread($socket, $left)) === false) {
-                throw new DataTransferException('recv failed');
+                throw new DataTransferException('receive failed');
             }
 
             if ($r === '') {
@@ -271,7 +271,7 @@ class Engine implements EngineInterface
             }
 
             if (($r = fread($socket, $left)) === false) {
-                throw new DataTransferException('recv failed');
+                throw new DataTransferException('receive failed');
             }
 
             if ($r === '') {
@@ -291,7 +291,7 @@ class Engine implements EngineInterface
         return new Message($op_code, $payload, round(microtime(true) - $start_time, 3));
     }
 
-    public function isRecvReady(float $timeout): bool
+    public function isReceiveReady(float $timeout): bool
     {
         $socket = $this->socket ?? $this->open();
 

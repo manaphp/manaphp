@@ -11,9 +11,9 @@ interface EngineInterface
 
     public function send(int $op_code, string $data, float $timeout): void;
 
-    public function isRecvReady(float $timeout): bool;
+    public function isReceiveReady(float $timeout): bool;
 
-    public function recv(?float $timeout = null): Message;
+    public function receive(?float $timeout = null): Message;
 
     public function close(): void;
 }
