@@ -10,6 +10,7 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Event\RouterRouted;
 use ManaPHP\Http\Router\Event\RouterRouting;
+use ManaPHP\Http\Router\PathsNormalizerInterface;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -26,6 +27,7 @@ class Router implements RouterInterface
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected PathsNormalizerInterface $pathsNormalizer;
 
     #[Autowired] protected bool $case_sensitive = true;
     #[Autowired] protected string $prefix = '';
@@ -107,7 +109,8 @@ class Router implements RouterInterface
 
     protected function addRoute(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface
     {
-        $route = new Route($pattern, $paths, $methods, $this->case_sensitive);
+        $paths = $this->pathsNormalizer->normalize($paths);
+        $route = new Route($pattern, $paths, $methods,$this->case_sensitive);
         if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
             $this->simples[$methods][$pattern] = $route;
         } else {
