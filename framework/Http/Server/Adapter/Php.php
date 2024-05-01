@@ -44,9 +44,8 @@ class Php extends AbstractServer
                 putenv("PHP_CLI_SERVER_WORKERS=$worker_num");
             }
 
-            $e = extension_loaded('yasd') && ini_get('opcache.optimization_level') === '0' ? '-e' : '';
             $index = @get_included_files()[0];
-            $cmd = PHP_BINARY . " $e -S $this->host:$this->port -t $public_dir  $index";
+            $cmd = PHP_BINARY . " -S $this->host:$this->port -t $public_dir  $index";
             console_log('info', $cmd);
             $prefix = $this->router->getPrefix();
             console_log('info', "http://127.0.0.1:$this->port" . ($prefix ?: '/'));
