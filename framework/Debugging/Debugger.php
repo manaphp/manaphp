@@ -391,8 +391,8 @@ class Debugger implements DebuggerInterface
             }
 
             $dependencies[$id] = ['class'      => $instance::class,
-                                    'object_id'  => spl_object_id($instance),
-                                    'properties' => $properties];
+                                  'object_id'  => spl_object_id($instance),
+                                  'properties' => $properties];
         }
         $data['dependencies'] = $dependencies;
 

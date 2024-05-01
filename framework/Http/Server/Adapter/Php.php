@@ -10,8 +10,6 @@ use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
 use ManaPHP\Http\Server\Event\ServerReady;
 use ManaPHP\Http\Server\StaticHandlerInterface;
-use function extension_loaded;
-use function ini_get;
 
 class Php extends AbstractServer
 {
