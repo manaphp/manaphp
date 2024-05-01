@@ -142,7 +142,7 @@ class Mssql extends AbstractConnection
                     throw new PreconditionException('if use offset CLAUSE, must provide order CLAUSE.');
                 }
 
-                $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . ($params['order'] ?? 'rand()') . ') AS _row_number_';
+                $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . $params['order'] . ') AS _row_number_';
             }
         }
 
