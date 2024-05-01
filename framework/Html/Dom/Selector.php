@@ -55,7 +55,7 @@ class Selector
         return $this->css('descendant::' . ($css ?? '*'));
     }
 
-    public function has(string $css): SelectorList
+    public function has(?string $css): SelectorList
     {
         return $this->css('child::' . ($css ?? '*'));
     }

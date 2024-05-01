@@ -145,12 +145,12 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return count($this->nodes) > 0 ? new Selector($this->document, current($this->nodes)) : null;
     }
 
-    public function has(string $css): static
+    public function has(?string $css): static
     {
         return $this->css('child::' . ($css ?? '*'));
     }
 
-    public function is(string $css): bool
+    public function is(?string $css): bool
     {
         $r = $this->css('self::' . ($css ?? '*') . '[1]');
         return (bool)$r->nodes;
@@ -166,7 +166,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $this->css('following-sibling::' . ($css ?? '*'));
     }
 
-    public function not(string $css): static
+    public function not(?string $css): static
     {
         return $this->css('!self::' . ($css ?? '*'));
     }
