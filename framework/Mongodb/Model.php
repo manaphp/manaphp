@@ -247,9 +247,7 @@ class Model extends AbstractModel
     public function __debugInfo()
     {
         $data = parent::__debugInfo();
-        if (!isset($data['_id'])) {
-            unset($data['_id']);
-        } elseif (is_object($data['_id'])) {
+        if (isset($data['_id']) && is_object($data['_id'])) {
             $data['_id'] = (string)$data['_id'];
         }
 
