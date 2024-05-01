@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Model;
 
-use ManaPHP\Db\Model\InferrerInterface;
+use ManaPHP\Db\Model\InferenceInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Str;
 use ManaPHP\Model\Attribute\ColumnMap;
@@ -23,7 +23,7 @@ use function in_array;
 class Models implements ModelsInterface
 {
     #[Autowired] protected ThoseInterface $those;
-    #[Autowired] protected InferrerInterface $inferrer;
+    #[Autowired] protected InferenceInterface $inference;
 
     protected array $rClass = [];
     protected array $table = [];
@@ -100,7 +100,7 @@ class Models implements ModelsInterface
             /** @var PrimaryKey $attribute */
             return $attribute->name;
         } else {
-            return $this->inferrer->primaryKey($model);
+            return $this->inference->primaryKey($model);
         }
     }
 
@@ -149,7 +149,7 @@ class Models implements ModelsInterface
 
     protected function getFieldsInternal(string $model): array
     {
-        return $this->inferrer->fields($model);
+        return $this->inference->fields($model);
     }
 
     public function getFields(string $model): array

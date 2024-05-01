@@ -16,7 +16,7 @@ use ManaPHP\Model\Event\ModelUpdated;
 use ManaPHP\Model\Event\ModelUpdating;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\ShardingInterface;
-use ManaPHP\Mongodb\Model\InferrerInterface;
+use ManaPHP\Mongodb\Model\InferenceInterface;
 use MongoDB\BSON\ObjectId;
 use function is_bool;
 use function is_float;
@@ -43,7 +43,7 @@ class Model extends AbstractModel
      */
     public function fieldTypes(): array
     {
-        return Container::get(InferrerInterface::class)->fieldTypes(static::class);
+        return Container::get(InferenceInterface::class)->fieldTypes(static::class);
     }
 
     public function isAllowNullValue(): bool

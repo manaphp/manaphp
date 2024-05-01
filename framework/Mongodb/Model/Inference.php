@@ -15,7 +15,7 @@ use MongoDB\BSON\ObjectId;
 use function gettype;
 use function in_array;
 
-class Inferrer implements InferrerInterface
+class Inference implements InferenceInterface
 {
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected MongodbConnectorInterface $connector;

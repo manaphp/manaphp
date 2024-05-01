@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Db\Model;
 
-interface InferrerInterface
+interface InferenceInterface
 {
     public function primaryKey(string $model): string;
 
