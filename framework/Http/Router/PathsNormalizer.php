@@ -4,12 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Router;
 
 use function basename;
-use function is_array;
+use function explode;
 use function is_string;
 use function preg_match;
 use function str_contains;
-use function strpos;
-use function substr;
 use function substr_count;
 
 class PathsNormalizer implements PathsNormalizerInterface
@@ -18,19 +16,10 @@ class PathsNormalizer implements PathsNormalizerInterface
     {
         $routePaths = [];
 
-        if (is_string($paths)) {
-            if (($pos = strpos($paths, '::')) !== false) {
-                $routePaths['controller'] = substr($paths, 0, $pos);
-                $routePaths['action'] = substr($paths, $pos + 2);
-            } else {
-                $routePaths['controller'] = $paths;
-                $routePaths['action'] = 'index';
-            }
-        } elseif (is_array($paths)) {
-            list($controller, $action) = $paths;
-            $routePaths['controller'] = $controller;
-            $routePaths['action'] = basename($action, 'Action');
-        }
+        list($controller, $action) = is_string($paths) ? explode('::', $paths, 2) : $paths;
+
+        $routePaths['controller'] = $controller;
+        $routePaths['action'] = basename($action, 'Action');
 
         if (isset($routePaths['controller']) && str_contains($routePaths['controller'], '\\')) {
             $controller = strtr($routePaths['controller'], '\\', '/');

@@ -20,6 +20,6 @@ class Router extends \ManaPHP\Http\Router
         $this->addGet('/about', 'Index::about');
         $this->addGet('/about1', 'Index::about');
         $this->addGet('/about2', [IndexController::class, 'aboutAction']);
-        $this->addGet('/bench', BenchmarkController::class);
+        $this->addGet('/bench', [BenchmarkController::class, 'indexAction']);
     }
 }
