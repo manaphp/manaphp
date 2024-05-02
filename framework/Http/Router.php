@@ -16,7 +16,6 @@ use ManaPHP\Http\Router\RouteInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use function count;
 use function in_array;
-use function is_array;
 use function is_string;
 use function strlen;
 
@@ -52,7 +51,7 @@ class Router implements RouterInterface
     {
         if ($useDefaultRoutes) {
             $this->defaults = [
-                new Route('/(?:{controller}(?:/{action:\w+}(?:/{params})?)?)?')
+                new Route(null, '/(?:{controller}(?:/{action:\w+}(?:/{params})?)?)?')
             ];
         }
     }
@@ -107,12 +106,12 @@ class Router implements RouterInterface
         return $this->areas;
     }
 
-    protected function addRoute(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface
+    protected function addRoute(string $method, string $pattern, string|array $paths = []): RouteInterface
     {
         $paths = $this->pathsNormalizer->normalize($paths);
-        $route = new Route($pattern, $paths, $methods,$this->case_sensitive);
-        if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
-            $this->simples[$methods][$pattern] = $route;
+        $route = new Route($method, $pattern, $paths, $this->case_sensitive);
+        if ($method !== 'REST' && strpbrk($pattern, ':{') === false) {
+            $this->simples[$method][$pattern] = $route;
         } else {
             $this->regexes[] = $route;
         }
@@ -120,39 +119,39 @@ class Router implements RouterInterface
         return $route;
     }
 
-    public function add(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface
+    public function add(string $method, string $pattern, string|array $paths = []): RouteInterface
     {
-        return $this->addRoute($pattern, $paths, $methods);
+        return $this->addRoute($method, $pattern, $paths);
     }
 
     public function addGet(string $pattern, string|array $paths = []): RouteInterface
     {
-        return $this->addRoute($pattern, $paths, 'GET');
+        return $this->addRoute('GET', $pattern, $paths);
     }
 
     public function addPost(string $pattern, string|array $paths = []): RouteInterface
     {
-        return $this->addRoute($pattern, $paths, 'POST');
+        return $this->addRoute('POST', $pattern, $paths);
     }
 
     public function addPut(string $pattern, string|array $paths = []): RouteInterface
     {
-        return $this->addRoute($pattern, $paths, 'PUT');
+        return $this->addRoute('PUT', $pattern, $paths);
     }
 
     public function addPatch(string $pattern, string|array $paths = []): RouteInterface
     {
-        return $this->addRoute($pattern, $paths, 'PATCH');
+        return $this->addRoute('PATCH', $pattern, $paths);
     }
 
     public function addDelete(string $pattern, string|array $paths = []): RouteInterface
     {
-        return $this->addRoute($pattern, $paths, 'DELETE');
+        return $this->addRoute('DELETE', $pattern, $paths);
     }
 
     public function addHead(string $pattern, string|array $paths = []): RouteInterface
     {
-        return $this->addRoute($pattern, $paths, 'HEAD');
+        return $this->addRoute('HEAD', $pattern, $paths);
     }
 
     public function addRest(string $pattern, ?string $controller = null): RouteInterface
@@ -161,7 +160,7 @@ class Router implements RouterInterface
 
         if ($controller === null) {
             if (str_contains($pattern, '/:controller')) {
-                return $this->addRoute($pattern, [], 'REST');
+                return $this->addRoute('REST', $pattern);
             }
 
             if (!preg_match('#/(\w+)$#', $pattern, $match)) {

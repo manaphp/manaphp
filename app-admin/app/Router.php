@@ -13,7 +13,7 @@ class Router extends \ManaPHP\Http\Router
 
         $this->setAreas();
 
-        $this->add('/login', [SessionController::class, 'login']);
-        $this->add('/logout', [SessionController::class, 'logout']);
+        $this->addGet('/login', [SessionController::class, 'login']);
+        $this->addGet('/logout', [SessionController::class, 'logout']);
     }
 }

@@ -13,12 +13,12 @@ class Router extends \ManaPHP\Http\Router
         parent::__construct();
         $this->setAreas();
 
-        $this->add('/user/login', '/user/session/login');
-        $this->add('/admin/login', '/admin/session/login');
-        $this->add('/about', 'Index::about');
+        $this->addGet('/user/login', '/user/session/login');
+        $this->addGet('/admin/login', '/admin/session/login');
+        $this->addGet('/about', 'Index::about');
         $this->addGet('/about1', 'Index::about');
         $this->addGet('/about2', [IndexController::class, 'about']);
         $this->addGet('/about3', ['controller' => IndexController::class, 'action' => 'about']);
-        $this->add('/bench', BenchmarkController::class);
+        $this->addGet('/bench', BenchmarkController::class);
     }
 }

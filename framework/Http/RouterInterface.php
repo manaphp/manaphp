@@ -17,7 +17,7 @@ interface RouterInterface
 
     public function getAreas(): array;
 
-    public function add(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface;
+    public function add(string $method, string $pattern, string|array $paths = []): RouteInterface;
 
     public function addGet(string $pattern, string|array $paths = []): RouteInterface;
 

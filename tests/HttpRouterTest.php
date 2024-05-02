@@ -215,29 +215,29 @@ class MvcRouterTest extends TestCase
         );
 
         $router = new Router();
-        $router->add('/', 'index::index');
+        $router->addGet('/', 'index::index');
 
-        $router->add('/system/{controller}/a/{action}/{params}');
+        $router->addGet('/system/{controller}/a/{action}/{params}');
 
-        $router->add('/{language:[a-z]{2}}/{controller}');
+        $router->addGet('/{language:[a-z]{2}}/{controller}');
 
-        $router->add('/admin/{controller}/{action}/{id:int}');
+        $router->addGet('/admin/{controller}/{action}/{id:int}');
 
-        $router->add('/posts/{year:\d{4}}/{month:\d{2}}/{day:\d{2}}/{params}', 'posts::show');
+        $router->addGet('/posts/{year:\d{4}}/{month:\d{2}}/{day:\d{2}}/{params}', 'posts::show');
 
-        $router->add('/manual/{language:[a-z]{2}}/{file:[a-z\.]+}\.html', 'manual::show');
+        $router->addGet('/manual/{language:[a-z]{2}}/{file:[a-z\.]+}\.html', 'manual::show');
 
-        $router->add('/named-manual/{language:([a-z]{2})}/{file:[a-z\.]+}\.html', 'manual::show');
+        $router->addGet('/named-manual/{language:([a-z]{2})}/{file:[a-z\.]+}\.html', 'manual::show');
 
-        $router->add('/very/static/route', 'static::route');
+        $router->addGet('/very/static/route', 'static::route');
 
-        $router->add('/feed/{lang:[a-z]+}/blog/{blog:[a-z\-]+}\.{type:[a-z\-]+}', 'feed::get');
+        $router->addGet('/feed/{lang:[a-z]+}/blog/{blog:[a-z\-]+}\.{type:[a-z\-]+}', 'feed::get');
 
-        $router->add('/posts/{year:[0-9]+}/s/{title:[a-z\-]+}', 'posts::show');
+        $router->addGet('/posts/{year:[0-9]+}/s/{title:[a-z\-]+}', 'posts::show');
 
-        $router->add('/posts/delete/{id}', 'posts::delete');
+        $router->addGet('/posts/delete/{id}', 'posts::delete');
 
-        $router->add('/show/{id:video([0-9]+)}/{title:[a-z\-]+}', 'videos::show');
+        $router->addGet('/show/{id:video([0-9]+)}/{title:[a-z\-]+}', 'videos::show');
 
         foreach ($tests as $n => $test) {
             $this->assertTrue($router->match($test['uri'], 'GET'));
@@ -295,7 +295,7 @@ class MvcRouterTest extends TestCase
         );
 
         $router = new Router();
-        $router->add('/docs/index', 'documentation2::index');
+        $router->addGet('/docs/index', 'documentation2::index');
 
         $router->addPost('/docs/index', 'documentation3::index');
 
@@ -319,7 +319,7 @@ class MvcRouterTest extends TestCase
     {
         $router = new Router();
 
-        $router->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/{params}', 'posts::show');
+        $router->addGet('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/{params}', 'posts::show');
 
         $this->assertTrue($router->match('/news/2016/03/12/china', 'GET'));
         $this->assertEquals('posts', $router->getController());
@@ -353,9 +353,9 @@ class MvcRouterTest extends TestCase
             ),
         );
         $router = new Router();
-        $router->add('/some/{name}', 'c::a');
-        $router->add('/some/{name}/{id:[0-9]+}', 'c::a');
-        $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
+        $router->addGet('/some/{name}', 'c::a');
+        $router->addGet('/some/{name}/{id:[0-9]+}', 'c::a');
+        $router->addGet('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
             $this->assertTrue($router->match($test['uri'], $test['method'] ?: 'GET'));
@@ -393,7 +393,7 @@ class MvcRouterTest extends TestCase
     public function test_shortPaths_usage()
     {
         $router = new Router();
-        $router->add('/', 'user::list');
+        $router->addGet('/', 'user::list');
 
         $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('user', $router->getController());

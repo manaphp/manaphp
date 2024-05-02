@@ -5,7 +5,6 @@ namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Helper\Str;
-use ManaPHP\Helper\SuppressWarnings;
 use function in_array;
 use function is_string;
 
@@ -14,15 +13,14 @@ class Route implements RouteInterface
     protected string $pattern;
     protected string $compiled;
     protected array $paths;
-    protected string|array $methods;
+    protected ?string $method;
 
-    public function __construct(string $pattern, array $paths = [], string|array $methods = [],
-        bool $case_sensitive = true
+    public function __construct(?string $method, string $pattern, array $paths = [], bool $case_sensitive = true
     ) {
+        $this->method = $method;
         $this->pattern = $pattern;
         $this->compiled = $this->compilePattern($pattern, $case_sensitive);
         $this->paths = $paths;
-        $this->methods = $methods;
     }
 
     protected function compilePattern(string $pattern, bool $case_sensitive): string
@@ -78,14 +76,7 @@ class Route implements RouteInterface
     {
         $matches = [];
 
-        $methods = $this->methods;
-        if ($methods === [] || $methods === 'REST') {
-            SuppressWarnings::noop();
-        } elseif (is_string($methods)) {
-            if ($methods !== $method) {
-                return null;
-            }
-        } elseif (!in_array($method, $methods, true)) {
+        if ($method !== $this->method && $this->method !== null && $this->method !== 'REST') {
             return null;
         }
 
@@ -115,7 +106,7 @@ class Route implements RouteInterface
                     }
                 }
 
-                if ($this->methods === 'REST') {
+                if ($this->method === 'REST') {
                     $controller = $parts['controller'] ?? '';
                     if ($controller !== '' && str_contains($this->pattern, '/{controller}')) {
                         $parts['controller'] = Str::singular($controller);

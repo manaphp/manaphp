@@ -101,9 +101,9 @@ class HttpRouterRouteTest extends TestCase
             ),
         );
         $router = new Router();
-        $router->add('/some/{name}', 'c::a');
-        $router->add('/some/{name}/{id:[0-9]+}', 'c::a');
-        $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
+        $router->addGet('/some/{name}', 'c::a');
+        $router->addGet('/some/{name}/{id:[0-9]+}', 'c::a');
+        $router->addGet('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
             $this->assertTrue($router->match($test['uri'], 'GET'));
