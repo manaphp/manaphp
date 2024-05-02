@@ -6,7 +6,6 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Event\RouterRouted;
 use ManaPHP\Http\Router\Event\RouterRouting;
@@ -18,6 +17,7 @@ use function count;
 use function in_array;
 use function is_string;
 use function strlen;
+use function strpbrk;
 
 class Router implements RouterInterface
 {
@@ -110,7 +110,7 @@ class Router implements RouterInterface
     {
         $handler = $this->pathsNormalizer->normalize($handler);
         $route = new Route($method, $pattern, $handler, $this->case_sensitive);
-        if ($method !== 'REST' && strpbrk($pattern, ':{') === false) {
+        if (strpbrk($pattern, ':{') === false) {
             $this->literals[$method][$pattern] = $route;
         } else {
             $this->regexes[] = $route;
@@ -154,22 +154,14 @@ class Router implements RouterInterface
         return $this->addRoute('HEAD', $pattern, $handler);
     }
 
-    public function addRest(string $pattern, ?string $controller = null): RouteInterface
+    public function addRest(string $pattern, string $controller): RouteInterface
     {
         $pattern .= '(/{params:[-\w]+})?';
+        $paths = $this->pathsNormalizer->normalize($controller);
+        $route = new Route('REST', $pattern, $paths, $this->case_sensitive);
+        $this->regexes[] = $route;
 
-        if ($controller === null) {
-            if (str_contains($pattern, '/:controller')) {
-                return $this->addRoute('REST', $pattern, []);
-            }
-
-            if (!preg_match('#/(\w+)$#', $pattern, $match)) {
-                throw new MisuseException('must provide paths');
-            }
-            $controller = Str::singular($match[1]);
-        }
-
-        return $this->addRoute($pattern, $controller, 'REST');
+        return $route;
     }
 
     public function getRewriteUri(): string

@@ -31,7 +31,7 @@ interface RouterInterface
 
     public function addHead(string $pattern, string|array $handler): RouteInterface;
 
-    public function addRest(string $pattern, ?string $controller = null): RouteInterface;
+    public function addRest(string $pattern, string $controller): RouteInterface;
 
     public function match(?string $uri = null, ?string $method = null): bool;
 

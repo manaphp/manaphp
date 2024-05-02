@@ -16,10 +16,17 @@ class PathsNormalizer implements PathsNormalizerInterface
     {
         $routePaths = [];
 
+        if (is_string($paths)) {
+            if (str_contains($paths, '::')) {
+                $paths = explode('::', $paths, 2);
+            } else {
+                $paths = [$paths, null];
+            }
+        }
         list($controller, $action) = is_string($paths) ? explode('::', $paths, 2) : $paths;
 
         $routePaths['controller'] = $controller;
-        $routePaths['action'] = basename($action, 'Action');
+        $routePaths['action'] = $action === null ? null : basename($action, 'Action');
 
         if (isset($routePaths['controller']) && str_contains($routePaths['controller'], '\\')) {
             $controller = strtr($routePaths['controller'], '\\', '/');
