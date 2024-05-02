@@ -1,13 +1,13 @@
 <?php
+declare(strict_types=1);
 
-return [
-    'id'            => 'user',
-    'env'           => env('APP_ENV', 'prod'),
-    'debug'         => env('APP_DEBUG', false),
-    'timezone'      => 'Asia/Shanghai',
-    'aliases'       => [],
-    'factories'     => require __DIR__ . '/factories.php',
-    'dependencies'  => require __DIR__ . '/dependencies.php',
-    'bootstrappers' => require __DIR__ . '/bootstrappers.php',
-    'filters'       => require __DIR__ . '/filters.php',
-];
+return ['ManaPHP\Di\ConfigInterface' => [
+    'config' => [
+        'app_id'        => 'user',
+        'app_env'       => env('APP_ENV', 'prod'),
+        'app_debug'     => env('APP_DEBUG', false),
+        'timezone'      => 'Asia/Shanghai',
+        'aliases'       => [
+        ],
+    ],
+]];
