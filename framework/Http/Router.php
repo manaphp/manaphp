@@ -40,7 +40,7 @@ class Router implements RouterInterface
     /**
      * @var RouteInterface[][]
      */
-    protected array $simples = [];
+    protected array $literals = [];
 
     /**
      * @var RouteInterface[]
@@ -111,7 +111,7 @@ class Router implements RouterInterface
         $handler = $this->pathsNormalizer->normalize($handler);
         $route = new Route($method, $pattern, $handler, $this->case_sensitive);
         if ($method !== 'REST' && strpbrk($pattern, ':{') === false) {
-            $this->simples[$method][$pattern] = $route;
+            $this->literals[$method][$pattern] = $route;
         } else {
             $this->regexes[] = $route;
         }
@@ -257,7 +257,7 @@ class Router implements RouterInterface
         }
 
         $area = null;
-        $routes = $this->simples;
+        $routes = $this->literals;
         if ($handledUri === false) {
             $parts = null;
         } elseif (isset($routes[$method][$handledUri])) {
