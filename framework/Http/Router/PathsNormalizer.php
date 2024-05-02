@@ -29,7 +29,7 @@ class PathsNormalizer implements PathsNormalizerInterface
         } elseif (is_array($paths)) {
             list($controller, $action) = $paths;
             $routePaths['controller'] = $controller;
-            $routePaths['action'] = $action;
+            $routePaths['action'] = basename($action, 'Action');
         }
 
         if (isset($routePaths['controller']) && str_contains($routePaths['controller'], '\\')) {
