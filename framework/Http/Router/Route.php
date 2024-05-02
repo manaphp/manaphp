@@ -12,15 +12,15 @@ class Route implements RouteInterface
 {
     protected string $pattern;
     protected string $compiled;
-    protected array $paths;
+    protected array $handler;
     protected ?string $method;
 
-    public function __construct(?string $method, string $pattern, array $paths = [], bool $case_sensitive = true
+    public function __construct(?string $method, string $pattern, array $handler = [], bool $case_sensitive = true
     ) {
         $this->method = $method;
         $this->pattern = $pattern;
         $this->compiled = $this->compilePattern($pattern, $case_sensitive);
-        $this->paths = $paths;
+        $this->handler = $handler;
     }
 
     protected function compilePattern(string $pattern, bool $case_sensitive): string
@@ -82,7 +82,7 @@ class Route implements RouteInterface
 
         if ($this->compiled[0] !== '#') {
             if ($this->compiled === $uri) {
-                return $this->paths;
+                return $this->handler;
             } else {
                 return null;
             }
@@ -91,7 +91,7 @@ class Route implements RouteInterface
             if ($r === false) {
                 throw new InvalidFormatException(['`{1}` is invalid for `{2}`', $this->compiled, $this->pattern]);
             } elseif ($r === 1) {
-                $parts = $this->paths;
+                $parts = $this->handler;
 
                 foreach ($matches as $k => $v) {
                     if (is_string($k)) {

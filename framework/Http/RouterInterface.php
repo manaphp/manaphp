@@ -17,19 +17,19 @@ interface RouterInterface
 
     public function getAreas(): array;
 
-    public function add(string $method, string $pattern, string|array $paths = []): RouteInterface;
+    public function add(string $method, string $pattern, string|array $handler): RouteInterface;
 
-    public function addGet(string $pattern, string|array $paths = []): RouteInterface;
+    public function addGet(string $pattern, string|array $handler): RouteInterface;
 
-    public function addPost(string $pattern, string|array $paths = []): RouteInterface;
+    public function addPost(string $pattern, string|array $handler): RouteInterface;
 
-    public function addPut(string $pattern, string|array $paths = []): RouteInterface;
+    public function addPut(string $pattern, string|array $handler): RouteInterface;
 
-    public function addPatch(string $pattern, string|array $paths = []): RouteInterface;
+    public function addPatch(string $pattern, string|array $handler): RouteInterface;
 
-    public function addDelete(string $pattern, string|array $paths = []): RouteInterface;
+    public function addDelete(string $pattern, string|array $handler): RouteInterface;
 
-    public function addHead(string $pattern, string|array $paths = []): RouteInterface;
+    public function addHead(string $pattern, string|array $handler): RouteInterface;
 
     public function addRest(string $pattern, ?string $controller = null): RouteInterface;
 
