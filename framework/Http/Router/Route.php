@@ -13,9 +13,9 @@ class Route implements RouteInterface
     protected string $pattern;
     protected string $compiled;
     protected array $handler;
-    protected ?string $method;
+    protected string $method;
 
-    public function __construct(?string $method, string $pattern, array $handler = [], bool $case_sensitive = true
+    public function __construct(string $method, string $pattern, array $handler = [], bool $case_sensitive = true
     ) {
         $this->method = $method;
         $this->pattern = $pattern;
@@ -76,7 +76,7 @@ class Route implements RouteInterface
     {
         $matches = [];
 
-        if ($method !== $this->method && $this->method !== null && $this->method !== 'REST') {
+        if ($method !== $this->method && $this->method !== '*' && $this->method !== 'REST') {
             return null;
         }
 

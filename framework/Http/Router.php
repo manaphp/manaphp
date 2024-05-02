@@ -51,7 +51,7 @@ class Router implements RouterInterface
     {
         if ($useDefaultRoutes) {
             $this->defaults = [
-                new Route(null, '/(?:{controller}(?:/{action:\w+}(?:/{params})?)?)?')
+                new Route('*', '/(?:{controller}(?:/{action:\w+}(?:/{params})?)?)?')
             ];
         }
     }
