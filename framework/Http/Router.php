@@ -262,8 +262,6 @@ class Router implements RouterInterface
             $parts = null;
         } elseif (isset($routes[$method][$handledUri])) {
             $parts = $routes[$method][$handledUri]->match($handledUri, $method);
-        } elseif (isset($routes[''][$handledUri])) {
-            $parts = $routes[''][$handledUri]->match($handledUri, $method);
         } else {
             $parts = null;
             $routes = $this->regexes;
