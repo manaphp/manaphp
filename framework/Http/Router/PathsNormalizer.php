@@ -26,10 +26,7 @@ class PathsNormalizer implements PathsNormalizerInterface
             if (($pos = strpos($paths, '::')) !== false) {
                 $routePaths['controller'] = substr($paths, 0, $pos);
                 $routePaths['action'] = substr($paths, $pos + 2);
-            } elseif (($pos = strpos($paths, '@')) !== false) {
-                $routePaths['controller'] = basename(substr($paths, 0, $pos), 'Controller');
-                $routePaths['action'] = substr($paths, $pos + 1);
-            } elseif (str_starts_with($paths, '/')) {
+            }elseif (str_starts_with($paths, '/')) {
                 $parts = explode('/', substr($paths, 1));
                 if (count($parts) === 3) {
                     $routePaths['area'] = $parts[0];
