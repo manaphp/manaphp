@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Router;
 
 use function basename;
-use function in_array;
 use function is_array;
 use function is_string;
 use function preg_match;
@@ -28,36 +27,9 @@ class PathsNormalizer implements PathsNormalizerInterface
                 $routePaths['action'] = 'index';
             }
         } elseif (is_array($paths)) {
-            if (isset($paths['area'])) {
-                $routePaths['area'] = $paths['area'];
-            }
-
-            if (isset($paths['controller'])) {
-                $routePaths['controller'] = $paths['controller'];
-            } elseif (isset($paths[0])) {
-                $routePaths['controller'] = $paths[0];
-            } else {
-                $routePaths['controller'] = 'index';
-            }
-
-            if (isset($paths['action'])) {
-                $routePaths['action'] = $paths['action'];
-            } elseif (isset($paths[1])) {
-                $routePaths['action'] = $paths[1];
-            } else {
-                $routePaths['action'] = 'index';
-            }
-
-            $params = [];
-            foreach ($paths as $k => $v) {
-                if (is_string($k) && !in_array($k, ['area', 'controller', 'action'], true)) {
-                    $params[$k] = $v;
-                }
-            }
-
-            if ($params) {
-                $routePaths['params'] = $params;
-            }
+            list($controller, $action) = $paths;
+            $routePaths['controller'] = $controller;
+            $routePaths['action'] = $action;
         }
 
         if (isset($routePaths['controller']) && str_contains($routePaths['controller'], '\\')) {
