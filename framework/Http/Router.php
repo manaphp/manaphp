@@ -106,7 +106,7 @@ class Router implements RouterInterface
         return $this->areas;
     }
 
-    protected function addRoute(string $method, string $pattern, string|array $handler): RouteInterface
+    public function addWithMethod(string $method, string $pattern, string|array $handler): RouteInterface
     {
         $handler = $this->pathsNormalizer->normalize($handler);
         $route = new Route($method, $pattern, $handler, $this->case_sensitive);
@@ -119,39 +119,39 @@ class Router implements RouterInterface
         return $route;
     }
 
-    public function add(string $method, string $pattern, string|array $handler): RouteInterface
+    public function add(string $pattern, string|array $handler): RouteInterface
     {
-        return $this->addRoute($method, $pattern, $handler);
+        return $this->addWithMethod('*', $pattern, $handler);
     }
 
     public function addGet(string $pattern, string|array $handler): RouteInterface
     {
-        return $this->addRoute('GET', $pattern, $handler);
+        return $this->addWithMethod('GET', $pattern, $handler);
     }
 
     public function addPost(string $pattern, string|array $handler): RouteInterface
     {
-        return $this->addRoute('POST', $pattern, $handler);
+        return $this->addWithMethod('POST', $pattern, $handler);
     }
 
     public function addPut(string $pattern, string|array $handler): RouteInterface
     {
-        return $this->addRoute('PUT', $pattern, $handler);
+        return $this->addWithMethod('PUT', $pattern, $handler);
     }
 
     public function addPatch(string $pattern, string|array $handler): RouteInterface
     {
-        return $this->addRoute('PATCH', $pattern, $handler);
+        return $this->addWithMethod('PATCH', $pattern, $handler);
     }
 
     public function addDelete(string $pattern, string|array $handler): RouteInterface
     {
-        return $this->addRoute('DELETE', $pattern, $handler);
+        return $this->addWithMethod('DELETE', $pattern, $handler);
     }
 
     public function addHead(string $pattern, string|array $handler): RouteInterface
     {
-        return $this->addRoute('HEAD', $pattern, $handler);
+        return $this->addWithMethod('HEAD', $pattern, $handler);
     }
 
     public function addRest(string $pattern, string $controller): RouteInterface
