@@ -9,6 +9,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Mvc\Controller;
 use ManaPHP\Mvc\ViewInterface;
 use Psr\Container\ContainerInterface;
+use function basename;
 use function is_array;
 
 class Invoker implements InvokerInterface
@@ -23,7 +24,7 @@ class Invoker implements InvokerInterface
         $view = $this->container->get(ViewInterface::class);
 
         if ($this->request->method() === 'GET' && !$this->request->isAjax()) {
-            $method = $action . 'View';
+            $method = basename($action, 'Action') . 'View';
             if (method_exists($object, $method)) {
                 $arguments = $this->argumentsResolver->resolve($object, $method);
                 if (is_array($r = $object->$method(...$arguments))) {
@@ -38,7 +39,7 @@ class Invoker implements InvokerInterface
             }
         }
 
-        $method = $action . 'Action';
+        $method = $action;
         $arguments = $this->argumentsResolver->resolve($object, $method);
 
         return $object->$method(...$arguments);
@@ -46,7 +47,7 @@ class Invoker implements InvokerInterface
 
     protected function invokeRest(object $object, string $action)
     {
-        $method = $action . 'Action';
+        $method = $action;
         $arguments = $this->argumentsResolver->resolve($object, $method);
 
         return $object->$method(...$arguments);

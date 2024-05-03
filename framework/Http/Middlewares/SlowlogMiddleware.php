@@ -57,11 +57,10 @@ class SlowlogMiddleware
         }
 
         $dispatcher = $this->dispatcher;
-        $route = implode('::', [$dispatcher->getArea(), $dispatcher->getController(), $dispatcher->getAction()]);
 
         $message = [
             'method'   => $this->request->method(),
-            'route'    => $route,
+            'handler'    => $dispatcher->getHandler(),
             'url'      => $this->request->url(),
             '_REQUEST' => $this->request->all(),
             'elapsed'  => $elapsed,

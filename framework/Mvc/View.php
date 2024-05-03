@@ -16,6 +16,7 @@ use ManaPHP\Rendering\RendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use function is_string;
+use function preg_match;
 
 class View implements ViewInterface
 {
@@ -125,8 +126,9 @@ class View implements ViewInterface
         $context = $this->getContext();
 
         if ($context->layout === null) {
-            $controller = $this->dispatcher->getController();
-            if ($area = $this->dispatcher->getArea()) {
+            list($area, $controller) = $this->explodeHandler($this->dispatcher->getHandler());
+
+            if ($area !== null) {
                 if ($this->renderer->exists("@app/Areas/$area/Views/Layouts/$controller")) {
                     $layout = "@app/Areas/$area/Views/Layouts/$controller";
                 } elseif ($this->renderer->exists("@app/Areas/$area/Views/Layouts/Default")) {
@@ -145,9 +147,8 @@ class View implements ViewInterface
             $layout = $context->layout;
             if ($layout[0] !== '@') {
                 $layout = ucfirst($layout);
-                if (($area = $this->dispatcher->getArea())
-                    && $this->renderer->exists("@app/Areas/$area/Views/Layouts/$layout")
-                ) {
+                list($area) = $this->explodeHandler($this->dispatcher->getHandler());
+                if ($area !== null && $this->renderer->exists("@app/Areas/$area/Views/Layouts/$layout")) {
                     $layout = "@app/Areas/$area/Views/Layouts/$layout";
                 } else {
                     $layout = "@views/Layouts/$layout";
@@ -160,6 +161,22 @@ class View implements ViewInterface
         return $layout;
     }
 
+    protected function explodeHandler(string $handler): array
+    {
+        list($controllerClass, $action) = explode('::', $handler);
+        if (str_starts_with($controllerClass, 'App\\Controllers\\')) {
+            return [null,
+                    basename(substr($controllerClass, strrpos($controllerClass, '\\') + 1), 'Controller'),
+                    basename($action, 'Action')];
+        } elseif (preg_match("#^App\\\\Areas\\\\(\w+)\\\Controllers\\\\(\w+)Controller$#", $controllerClass, $match)
+            === 1
+        ) {
+            return [$match[1], $match[2], basename($action, 'Action')];
+        } else {
+            return [null, null, null];
+        }
+    }
+
     public function render(?string $template = null, array $vars = []): string
     {
         /** @var ViewContext $context */
@@ -170,8 +187,10 @@ class View implements ViewInterface
             $this->setMaxAge(0);
         }
 
+        list($area, $controller, $action1) = $this->explodeHandler($this->dispatcher->getHandler());
+
         if ($template === null) {
-            $action = $this->dispatcher->getAction();
+            $action = $action1;
         } elseif (str_contains($template, '/')) {
             $action = null;
         } else {
@@ -180,9 +199,6 @@ class View implements ViewInterface
         }
 
         if ($template === null) {
-            $area = $this->dispatcher->getArea();
-            $controller = $this->dispatcher->getController();
-
             if ($area) {
                 $dir = "@app/Areas/$area/Views/$controller";
             } else {
@@ -240,8 +256,10 @@ class View implements ViewInterface
 
     public function exists(?string $template = null): bool
     {
+        list($area, $controller, $action1) = $this->explodeHandler($this->dispatcher->getHandler());
+
         if ($template === null) {
-            $action = $this->dispatcher->getAction();
+            $action = $action1;
         } elseif (str_contains($template, '/')) {
             $action = null;
         } else {
@@ -250,9 +268,6 @@ class View implements ViewInterface
         }
 
         if ($template === null) {
-            $area = $this->dispatcher->getArea();
-            $controller = $this->dispatcher->getController();
-
             if ($area) {
                 $dir = "@app/Areas/$area/Views/$controller";
             } else {
@@ -281,7 +296,7 @@ class View implements ViewInterface
             );
         }
 
-        $area = $this->dispatcher->getArea();
+        list($area) = $this->explodeHandler($this->dispatcher->getHandler());
         if ($area && class_exists($widgetClassName = "App\\Areas\\$area\\Widgets\\{$widget}Widget")) {
             return $widgetClassName;
         }
@@ -299,8 +314,9 @@ class View implements ViewInterface
             throw new InvalidValueException(['`{1}` class is not exists', $widgetClassName]);
         }
 
-        if (str_contains($widgetClassName, '\\Areas\\')) {
-            $view = "@app/Areas/{$this->dispatcher->getArea()}/Views/Widgets/$widget";
+        if (preg_match('#App\\\\Areas\\\\(\w+)\\\\#', $widgetClassName, $match) === 1) {
+            $area = $match[1];
+            $view = "@app/Areas/$area/Views/Widgets/$widget";
         } else {
             $view = "@views/Widgets/$widget";
         }

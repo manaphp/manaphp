@@ -7,8 +7,6 @@ interface DispatcherInterface
 {
     public function getArea(): ?string;
 
-    public function getController(): ?string;
-
     public function getAction(): ?string;
 
     public function getParams(): array;
@@ -21,7 +19,7 @@ interface DispatcherInterface
 
     public function getControllerInstance(): ?object;
 
-    public function dispatch(?string $area, string $controller, string $action, array $params): mixed;
+    public function dispatch(string $handler, array $params): mixed;
 
     public function isInvoking(): bool;
 }

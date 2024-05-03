@@ -51,16 +51,13 @@ abstract class AbstractHandler implements HandlerInterface
             $this->eventDispatcher->dispatch(new RequestAuthenticating());
             $this->eventDispatcher->dispatch(new RequestAuthenticated());
 
-            if (!$this->router->match()) {
+            if (($matcher = $this->router->match()) === null) {
                 throw new NotFoundRouteException(
                     ['router does not have matched route for `{1}`', $this->router->getRewriteUri()]
                 );
             }
 
-            $actionReturnValue = $this->dispatcher->dispatch(
-                $this->router->getArea(), $this->router->getController(), $this->router->getAction(),
-                $this->router->getParams()
-            );
+            $actionReturnValue = $this->dispatcher->dispatch($matcher->getHandler(), $matcher->getParams());
 
             $this->handleInternal($actionReturnValue);
         } catch (AbortException) {

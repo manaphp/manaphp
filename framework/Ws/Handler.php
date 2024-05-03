@@ -51,15 +51,12 @@ class Handler implements HandlerInterface
                 $this->eventDispatcher->dispatch(new RequestAuthenticated());
             }
 
-            if (!$this->router->match()) {
+            if (($matcher = $this->router->match()) === null) {
                 throw new NotFoundRouteException(['router does not have matched route']);
             }
 
-            $this->router->setAction($event);
-
             $returnValue = $this->dispatcher->dispatch(
-                $this->router->getArea(), $this->router->getController(), $this->router->getAction(),
-                $this->router->getParams()
+                $matcher->getHandler(), $matcher->getParams()
             );
 
             if ($returnValue === null || $returnValue instanceof Response) {

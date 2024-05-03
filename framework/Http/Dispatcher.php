@@ -5,8 +5,6 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Helper\Str;
-use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Action\InvokerInterface;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
@@ -19,8 +17,9 @@ use ManaPHP\Http\Server\Event\RequestValidated;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use function is_int;
+use function explode;
 use function is_string;
+use function preg_match;
 
 class Dispatcher implements DispatcherInterface
 {
@@ -33,10 +32,11 @@ class Dispatcher implements DispatcherInterface
 
     public function getArea(): ?string
     {
-        /** @var DispatcherContext $context */
-        $context = $this->getContext();
-
-        return $context->area;
+        if (preg_match('#\\\\Areas\\\\(\w+)\\\\Controllers\\\\#', $this->getController() ?? '', $match) === 1) {
+            return $match[1];
+        } else {
+            return null;
+        }
     }
 
     public function getController(): ?string
@@ -85,41 +85,13 @@ class Dispatcher implements DispatcherInterface
         /** @var DispatcherContext $context */
         $context = $this->getContext();
 
-        if ($context->path === null) {
-            $area = $context->area;
-            $controller = $context->controller;
-            $action = $context->action;
-
-            if ($controller === null || $action === null) {
-                return null;
-            }
-
-            if ($action === 'index') {
-                $path = $controller === 'Index' ? '/' : '/' . Str::snakelize($controller);
-            } else {
-                $path = '/' . Str::snakelize($controller) . '/' . Str::snakelize($action);
-            }
-
-            if ($area !== '' && $area !== null) {
-                if ($area === 'Index' && $path === '/') {
-                    SuppressWarnings::noop();
-                } else {
-                    $path = '/' . Str::snakelize($area) . $path;
-                }
-            }
-
-            $context->path = $path;
-        }
-
-        return $context->path;
+        return $context->handler;
     }
 
     public function invokeAction(object $controller, string $action): mixed
     {
-        $method = $action . 'Action';
-
-        if (!method_exists($controller, $method)) {
-            throw new NotFoundActionException(['`{1}::{2}` method does not exist', $controller::class, $method]);
+        if (!method_exists($controller, $action)) {
+            throw new NotFoundActionException(['`{1}::{2}` method does not exist', $controller::class, $action]);
         }
 
         $this->eventDispatcher->dispatch(new RequestAuthorizing($this, $controller, $action));
@@ -147,10 +119,13 @@ class Dispatcher implements DispatcherInterface
         return $return;
     }
 
-    public function dispatch(?string $area, string $controller, string $action, array $params): mixed
+    public function dispatch(string $handler, array $params): mixed
     {
         /** @var DispatcherContext $context */
         $context = $this->getContext();
+
+        $context->handler = $handler;
+        $context->params = $params;
 
         $globals = $this->request->getContext();
 
@@ -159,35 +134,16 @@ class Dispatcher implements DispatcherInterface
                 $globals->_REQUEST[$k] = $v;
             }
         }
+        list($controller, $action) = explode('::', $handler);
 
-        if (($id = $params[0] ?? null) !== null && (is_int($id) || is_string($id))) {
-            $globals->_REQUEST['id'] = $id;
-        }
-
-        if ($area) {
-            $area = str_contains($area, '_') ? Str::pascalize($area) : ucfirst($area);
-            $context->area = $area;
-        }
-
-        $controller = str_contains($controller, '_') ? Str::pascalize($controller) : ucfirst($controller);
         $context->controller = $controller;
-
-        $action = str_contains($action, '_') ? Str::camelize($action) : $action;
         $context->action = $action;
 
-        $context->params = $params;
-
-        if ($area) {
-            $controllerClassName = "App\\Areas\\$area\\Controllers\\{$controller}Controller";
-        } else {
-            $controllerClassName = "App\\Controllers\\{$controller}Controller";
+        if (!class_exists($controller)) {
+            throw new NotFoundControllerException(['`{1}` class cannot be loaded', $controller]);
         }
 
-        if (!class_exists($controllerClassName)) {
-            throw new NotFoundControllerException(['`{1}` class cannot be loaded', $controllerClassName]);
-        }
-
-        $controllerInstance = $this->container->get($controllerClassName);
+        $controllerInstance = $this->container->get($controller);
         $context->controllerInstance = $controllerInstance;
 
         return $this->invokeAction($controllerInstance, $action);

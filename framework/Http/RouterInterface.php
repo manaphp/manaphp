@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Http\Router\MatcherInterface;
 use ManaPHP\Http\Router\RouteInterface;
 
 interface RouterInterface
@@ -31,29 +32,9 @@ interface RouterInterface
 
     public function addRest(string $pattern, string $controller): RouteInterface;
 
-    public function match(?string $uri = null, ?string $method = null): bool;
+    public function match(?string $uri = null, ?string $method = null): ?MatcherInterface;
 
     public function getRewriteUri(): string;
-
-    public function getArea(): ?string;
-
-    public function setArea(string $area): static;
-
-    public function getController(): ?string;
-
-    public function setController(string $controller): static;
-
-    public function getAction(): ?string;
-
-    public function setAction(string $action): static;
-
-    public function getParams(): array;
-
-    public function setParams(array $params): static;
-
-    public function wasMatched(): bool;
-
-    public function setMatched(bool $matched): static;
 
     public function createUrl(string|array $args, bool|string $scheme = false): string;
 }

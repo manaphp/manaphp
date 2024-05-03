@@ -148,7 +148,7 @@ class Authorization implements AuthorizationInterface
 
     protected function getAuthorize(string $controller, string $action): ?Authorize
     {
-        $rMethod = new ReflectionMethod($controller, $action . 'Action');
+        $rMethod = new ReflectionMethod($controller, $action);
 
         if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) === null) {
             $rClass = new ReflectionClass($controller);
