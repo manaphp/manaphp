@@ -16,9 +16,10 @@ class PatternCompiler implements PatternCompilerInterface
     #[Autowired] protected bool $case_sensitive = true;
     #[Autowired] protected array $snippets
         = [
-            '{controller}' => '{controller:[a-zA-Z][-\w]*}',
-            '{action}'     => '{action:[a-zA-Z][-\w]*}',
-            '{id}'         => '{id:[^/]+}',
+            '{controller}' => '{controller:[a-zA-Z][-\w]*[^_-]}',
+            '{action}'     => '{action:[a-zA-Z][-\w]*[^_-]}',
+            '{id}'         => '{id:\d+}',
+            ':var}'        => ':[a-zA-Z][-\w]*[^_-]}',
             ':int}'        => ':\d+}',
             ':uuid}'       => ':[A-Fa-f0-9]{8}(-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}}',
         ];
