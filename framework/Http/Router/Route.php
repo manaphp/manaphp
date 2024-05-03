@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
-use ManaPHP\Helper\Str;
 use function in_array;
 use function is_string;
 use function preg_match_all;
@@ -90,12 +89,7 @@ class Route implements RouteInterface
             }
 
             if ($this->method === 'REST') {
-                $controller = $parts['controller'] ?? '';
-                if ($controller !== '' && str_contains($this->pattern, '/{controller}')) {
-                    $parts['controller'] = Str::singular($controller);
-                }
-
-                if (isset($matches['params'])) {
+                if (isset($matches['id'])) {
                     $m2a = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
                 } else {
                     $m2a = ['GET' => 'index', 'POST' => 'create'];
