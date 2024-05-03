@@ -9,8 +9,9 @@ class Router extends \ManaPHP\Http\Router
 {
     public function __construct()
     {
-        parent::__construct(true);
         $this->addGet('/', 'index::hello');
+        $this->add('/{controller}', 'App\Controllers\{controller}Controller::indexAction');
+        $this->add('/{controller}/{action}', 'App\Controllers\{controller}Controller::{action}Action');
         $this->addGet('/time/current', [TimeController::class, 'currentAction']);
     }
 }

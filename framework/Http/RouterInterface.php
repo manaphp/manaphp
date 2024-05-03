@@ -13,10 +13,6 @@ interface RouterInterface
 
     public function getPrefix(): string;
 
-    public function setAreas(?array $areas = null): static;
-
-    public function getAreas(): array;
-
     public function addWithMethod(string $method, string $pattern, string|array $handler): RouteInterface;
 
     public function add(string $pattern, string|array $handler): RouteInterface;

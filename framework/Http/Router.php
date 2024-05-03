@@ -6,7 +6,6 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Event\RouterRouted;
 use ManaPHP\Http\Router\Event\RouterRouting;
 use ManaPHP\Http\Router\PathsNormalizerInterface;
@@ -14,7 +13,6 @@ use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use function count;
-use function in_array;
 use function is_string;
 use function strlen;
 use function strpbrk;
@@ -30,12 +28,6 @@ class Router implements RouterInterface
 
     #[Autowired] protected bool $case_sensitive = true;
     #[Autowired] protected string $prefix = '';
-    #[Autowired] protected array $areas = [];
-
-    /**
-     * @var RouteInterface[]
-     */
-    protected array $defaults = [];
 
     /**
      * @var RouteInterface[][]
@@ -46,15 +38,6 @@ class Router implements RouterInterface
      * @var RouteInterface[]
      */
     protected array $regexes = [];
-
-    public function __construct(bool $useDefaultRoutes = true)
-    {
-        if ($useDefaultRoutes) {
-            $this->defaults = [
-                new Route('*', '/(?:{controller}(?:/{action:\w+}(?:/{params})?)?)?')
-            ];
-        }
-    }
 
     public function isCaseSensitive(): bool
     {
@@ -82,28 +65,6 @@ class Router implements RouterInterface
         } else {
             return $prefix;
         }
-    }
-
-    public function setAreas(?array $areas = null): static
-    {
-        if ($areas === null) {
-            $areas = [];
-            foreach (glob($this->alias->resolve('@app/Areas/*'), GLOB_ONLYDIR) as $dir) {
-                $dir = substr($dir, strrpos($dir, '/') + 1);
-                if (preg_match('#^[A-Z]\w+$#', $dir)) {
-                    $areas[] = $dir;
-                }
-            }
-        }
-
-        $this->areas = $areas;
-
-        return $this;
-    }
-
-    public function getAreas(): array
-    {
-        return $this->areas;
     }
 
     public function addWithMethod(string $method, string $pattern, string|array $handler): RouteInterface
@@ -181,44 +142,6 @@ class Router implements RouterInterface
         return $url;
     }
 
-    protected function matchDefaultRoutes(string $uri, string $method): ?array
-    {
-        $handledUri = $uri;
-
-        $area = null;
-        if ($handledUri !== '/' && $this->areas) {
-            if (($pos = strpos($handledUri, '/', 1)) !== false) {
-                $area = Str::pascalize(substr($handledUri, 1, $pos - 1));
-                if (in_array($area, $this->areas, true)) {
-                    $handledUri = substr($handledUri, $pos);
-                } else {
-                    $area = null;
-                }
-            } else {
-                $area = Str::pascalize(substr($handledUri, 1));
-                if (in_array($area, $this->areas, true)) {
-                    $handledUri = '/';
-                } else {
-                    $area = null;
-                }
-            }
-        }
-
-        $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
-
-        for ($i = count($this->defaults) - 1; $i >= 0; $i--) {
-            $route = $this->defaults[$i];
-            if (($parts = $route->match($handledUri, $method)) !== null) {
-                if ($area !== null) {
-                    $parts['area'] = $area;
-                }
-                return $parts;
-            }
-        }
-
-        return null;
-    }
-
     public function match(?string $uri = null, ?string $method = null): bool
     {
         /** @var RouterContext $context */
@@ -248,7 +171,6 @@ class Router implements RouterInterface
             $handledUri = $uri;
         }
 
-        $area = null;
         $routes = $this->literals;
         if ($handledUri === false) {
             $parts = null;
@@ -260,23 +182,8 @@ class Router implements RouterInterface
             for ($i = count($routes) - 1; $i >= 0; $i--) {
                 $route = $routes[$i];
                 if (($parts = $route->match($handledUri, $method)) !== null) {
-                    if ($handledUri !== '/' && $this->areas) {
-                        if (($pos = strpos($handledUri, '/', 1)) === false) {
-                            $area = Str::pascalize(substr($handledUri, 1));
-                        } else {
-                            $area = Str::pascalize(substr($handledUri, 1, $pos - 1));
-                        }
-
-                        if (!in_array($area, $this->areas, true)) {
-                            $area = null;
-                        }
-                    }
                     break;
                 }
-            }
-
-            if ($parts === null) {
-                $parts = $this->matchDefaultRoutes($handledUri, $method);
             }
         }
 
@@ -288,9 +195,7 @@ class Router implements RouterInterface
 
         $context->matched = true;
 
-        if ($area) {
-            $context->area = $area;
-        } elseif (isset($parts['area'])) {
+        if (isset($parts['area'])) {
             $context->area = $parts['area'];
         }
 
