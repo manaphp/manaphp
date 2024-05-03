@@ -9,6 +9,7 @@ use ManaPHP\Http\Router\Event\RouterRouted;
 use ManaPHP\Http\Router\Event\RouterRouting;
 use ManaPHP\Http\Router\Matcher;
 use ManaPHP\Http\Router\MatcherInterface;
+use ManaPHP\Http\Router\PatternCompilerInterface;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -28,8 +29,8 @@ class Router implements RouterInterface
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected RequestInterface $request;
+    #[Autowired] protected PatternCompilerInterface $patternCompiler;
 
-    #[Autowired] protected bool $case_sensitive = true;
     #[Autowired] protected string $prefix = '';
 
     /**
@@ -41,11 +42,6 @@ class Router implements RouterInterface
      * @var RouteInterface[]
      */
     protected array $regexes = [];
-
-    public function isCaseSensitive(): bool
-    {
-        return $this->case_sensitive;
-    }
 
     public function setPrefix(string $prefix): static
     {
@@ -75,7 +71,9 @@ class Router implements RouterInterface
         if (is_array($handler)) {
             $handler = implode('::', $handler);
         }
-        $route = new Route($method, $pattern, $handler, $this->case_sensitive);
+
+        $compiled = $this->patternCompiler->compile($pattern);
+        $route = new Route($method, $pattern, $compiled, $handler);
         if (strpbrk($pattern, ':{') === false) {
             $this->literals[$method][$pattern] = $handler;
         } else {
@@ -121,7 +119,8 @@ class Router implements RouterInterface
     public function addRest(string $pattern, string $controller): void
     {
         $pattern .= '(/{id:[-\w]+})?';
-        $route = new Route('REST', $pattern, $controller . '::{action}Action', $this->case_sensitive);
+        $compiled = $this->patternCompiler->compile($pattern);
+        $route = new Route('REST', $pattern, $compiled, $controller . '::{action}Action');
         $this->regexes[] = $route;
     }
 

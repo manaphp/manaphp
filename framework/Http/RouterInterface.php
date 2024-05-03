@@ -7,8 +7,6 @@ use ManaPHP\Http\Router\MatcherInterface;
 
 interface RouterInterface
 {
-    public function isCaseSensitive(): bool;
-
     public function setPrefix(string $prefix): static;
 
     public function getPrefix(): string;
