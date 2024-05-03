@@ -4,15 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Router;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Attribute\Config;
 use function explode;
 use function preg_match;
 use function preg_match_all;
 use function preg_replace;
+use function sprintf;
 use function str_contains;
 use function str_replace;
 
 class PatternCompiler implements PatternCompilerInterface
 {
+    #[Config] protected string $app_env;
+
     #[Autowired] protected bool $case_sensitive = true;
     #[Autowired] protected array $snippets
         = [
@@ -64,6 +68,12 @@ class PatternCompiler implements PatternCompilerInterface
             $pattern = (string)preg_replace('#@([\d,]+)@#', '{\1}', $pattern);
         }
 
-        return '#^' . $pattern . '$#' . ($this->case_sensitive ? '' : 'i');
+        $compiled = '#^' . $pattern . '$#' . ($this->case_sensitive ? '' : 'i');
+
+        if ($this->app_env === 'dev' && preg_match($compiled, '') === false) {
+            throw new PatternInvalidException(sprintf('`%s` is not a valid pattern', $pattern));
+        }
+
+        return $compiled;
     }
 }

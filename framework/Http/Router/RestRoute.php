@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Router;
 
-use ManaPHP\Exception\InvalidFormatException;
 use function is_string;
+use function preg_match;
 
 class RestRoute implements RouteInterface
 {
@@ -21,10 +21,7 @@ class RestRoute implements RouteInterface
 
     public function match(string $uri, string $method = 'GET'): ?MatcherInterface
     {
-        $r = preg_match($this->compiled, $uri, $matches);
-        if ($r === false) {
-            throw new InvalidFormatException(['`{1}` is invalid', $this->compiled]);
-        } elseif ($r === 1) {
+        if ((preg_match($this->compiled, $uri, $matches)) === 1) {
             $params = [];
             foreach ($matches as $k => $v) {
                 if (is_string($k)) {
@@ -37,15 +34,15 @@ class RestRoute implements RouteInterface
             } else {
                 $m2a = ['GET' => 'index', 'POST' => 'create'];
             }
+
             if (isset($m2a[$method])) {
                 $params['action'] = $m2a[$method];
+                return new Matcher($this->handler, $params);
             } else {
                 return null;
             }
         } else {
             return null;
         }
-
-        return new Matcher($this->handler, $params);
     }
 }
