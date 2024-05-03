@@ -135,7 +135,7 @@ class Authorization implements AuthorizationInterface
             }
 
             if ($roleModel) {
-                $permissions = $roleModel::value(['role_name' => $role], 'permissions');
+                $permissions = $roleModel::valueOrDefault(['role_name' => $role], 'permissions', '');
             } else {
                 $permissions = ',' . implode(',', $this->buildAllowed($role)) . ',';
             }
