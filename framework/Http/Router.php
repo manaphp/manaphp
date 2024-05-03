@@ -5,17 +5,17 @@ namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Event\RouterRouted;
 use ManaPHP\Http\Router\Event\RouterRouting;
 use ManaPHP\Http\Router\Matcher;
 use ManaPHP\Http\Router\MatcherInterface;
-use ManaPHP\Http\Router\PathsNormalizerInterface;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use function count;
 use function http_build_query;
+use function implode;
+use function is_array;
 use function is_string;
 use function parse_str;
 use function strlen;
@@ -28,7 +28,6 @@ class Router implements RouterInterface
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected RequestInterface $request;
-    #[Autowired] protected PathsNormalizerInterface $pathsNormalizer;
 
     #[Autowired] protected bool $case_sensitive = true;
     #[Autowired] protected string $prefix = '';
@@ -73,7 +72,9 @@ class Router implements RouterInterface
 
     public function addWithMethod(string $method, string $pattern, string|array $handler): RouteInterface
     {
-        $handler = $this->pathsNormalizer->normalize($handler);
+        if (is_array($handler)) {
+            $handler = implode('::', $handler);
+        }
         $route = new Route($method, $pattern, $handler, $this->case_sensitive);
         if (strpbrk($pattern, ':{') === false) {
             $this->literals[$method][$pattern] = $route;
@@ -122,8 +123,7 @@ class Router implements RouterInterface
     public function addRest(string $pattern, string $controller): RouteInterface
     {
         $pattern .= '(/{id:[-\w]+})?';
-        $paths = $this->pathsNormalizer->normalize($controller);
-        $route = new Route('REST', $pattern, $paths, $this->case_sensitive);
+        $route = new Route('REST', $pattern, $controller . '::{action}Action', $this->case_sensitive);
         $this->regexes[] = $route;
 
         return $route;
@@ -167,43 +167,21 @@ class Router implements RouterInterface
         }
 
         if ($handledUri === false) {
-            $parts = null;
+            $matcher = null;
         } elseif (($route = $this->literals[$method][$handledUri] ?? $this->literals['*'][$handledUri] ?? null)
             !== null
         ) {
-            $parts = $route->match($handledUri, $method);
+            $matcher = $route->match($handledUri, $method);
         } else {
-            $parts = null;
+            $matcher = null;
             for ($i = count($this->regexes) - 1; $i >= 0; $i--) {
                 $route = $this->regexes[$i];
-                if (($parts = $route->match($handledUri, $method)) !== null) {
+                if (($matcher = $route->match($handledUri, $method)) !== null) {
                     break;
                 }
             }
         }
 
-        if ($parts === null) {
-            $this->eventDispatcher->dispatch(new RouterRouted($this, null));
-
-            return null;
-        }
-
-        if (isset($parts['area'])) {
-            $area = Str::pascalize($parts['area']);
-        } else {
-            $area = null;
-        }
-
-        $controller = Str::pascalize($parts['controller']);
-        $action = Str::camelize($parts['action']);
-
-        if (isset($parts['area'])) {
-            $handler = "App\\Areas\\$area\Controllers\\{$controller}Controller::{$action}Action";
-        } else {
-            $handler = "App\\Controllers\\{$controller}Controller::{$action}Action";
-        }
-
-        $matcher = new Matcher($handler, $parts['params'] ?? []);
         $this->eventDispatcher->dispatch(new RouterRouted($this, $matcher));
 
         return $matcher;

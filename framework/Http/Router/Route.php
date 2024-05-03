@@ -7,15 +7,18 @@ use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Helper\Str;
 use function in_array;
 use function is_string;
+use function preg_match_all;
+use function preg_replace_callback;
+use function str_contains;
 
 class Route implements RouteInterface
 {
     protected string $pattern;
     protected string $compiled;
-    protected array $handler;
+    protected string $handler;
     protected string $method;
 
-    public function __construct(string $method, string $pattern, array $handler = [], bool $case_sensitive = true
+    public function __construct(string $method, string $pattern, string $handler, bool $case_sensitive = true
     ) {
         $this->method = $method;
         $this->pattern = $pattern;
@@ -61,7 +64,7 @@ class Route implements RouteInterface
         return '#^' . $pattern . '$#' . ($case_sensitive ? '' : 'i');
     }
 
-    public function match(string $uri, string $method = 'GET'): ?array
+    public function match(string $uri, string $method = 'GET'): ?MatcherInterface
     {
         $matches = [];
 
@@ -71,7 +74,7 @@ class Route implements RouteInterface
 
         if ($this->compiled[0] !== '#') {
             if ($this->compiled === $uri) {
-                return $this->handler;
+                return new Matcher($this->handler, []);
             } else {
                 return null;
             }
@@ -80,8 +83,7 @@ class Route implements RouteInterface
             if ($r === false) {
                 throw new InvalidFormatException(['`{1}` is invalid for `{2}`', $this->compiled, $this->pattern]);
             } elseif ($r === 1) {
-                $parts = $this->handler;
-
+                $parts = [];
                 foreach ($matches as $k => $v) {
                     if (is_string($k)) {
                         if (str_contains($v, '_')
@@ -127,21 +129,17 @@ class Route implements RouteInterface
             $parts['action'] = $m2a[$method];
         }
 
-        $r = [];
-        $r['controller'] = $parts['controller'] ?? 'index';
-        if (isset($parts['area'])) {
-            $r['area'] = $parts['area'];
+        $handler = $this->handler;
+        if (str_contains($handler, '{')) {
+            $handler = preg_replace_callback('#{([^}]+)}#', static function ($match) use (&$parts) {
+                $name = $match[1];
+                $value = $parts[$name];
+
+                unset($parts[$name]);
+                return $name === 'action' ? Str::camelize($value) : Str::pascalize($value);
+            }, $handler);
         }
 
-        $r['action'] = $parts['action'] ?? 'index';
-        $params = $parts['params'] ?? '';
-
-        unset($parts['area'], $parts['controller'], $parts['action'], $parts['params']);
-        if ($params) {
-            $parts[0] = $params;
-        }
-        $r['params'] = $parts;
-
-        return $r;
+        return new Matcher($handler, $parts);
     }
 }
