@@ -4,11 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
-use function in_array;
 use function is_string;
-use function str_contains;
 
-class Route implements RouteInterface
+class RegexRoute implements RouteInterface
 {
     protected string $pattern;
     protected string $compiled;
@@ -25,9 +23,7 @@ class Route implements RouteInterface
 
     public function match(string $uri, string $method = 'GET'): ?MatcherInterface
     {
-        $matches = [];
-
-        if ($method !== $this->method && $this->method !== '*' && $this->method !== 'REST') {
+        if ($method !== $this->method && $this->method !== '*') {
             return null;
         }
 
@@ -41,23 +37,9 @@ class Route implements RouteInterface
                     $params[$k] = $v;
                 }
             }
-
-            if ($this->method === 'REST') {
-                if (isset($matches['id'])) {
-                    $m2a = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
-                } else {
-                    $m2a = ['GET' => 'index', 'POST' => 'create'];
-                }
-                if (isset($m2a[$method])) {
-                    $params['action'] = $m2a[$method];
-                } else {
-                    return null;
-                }
-            }
+            return new Matcher($this->handler, $params);
         } else {
             return null;
         }
-
-        return new Matcher($this->handler, $params);
     }
 }

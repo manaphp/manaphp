@@ -10,7 +10,8 @@ use ManaPHP\Http\Router\Event\RouterRouting;
 use ManaPHP\Http\Router\Matcher;
 use ManaPHP\Http\Router\MatcherInterface;
 use ManaPHP\Http\Router\PatternCompilerInterface;
-use ManaPHP\Http\Router\Route;
+use ManaPHP\Http\Router\RegexRoute;
+use ManaPHP\Http\Router\RestRoute;
 use ManaPHP\Http\Router\RouteInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use function count;
@@ -34,14 +35,14 @@ class Router implements RouterInterface
     #[Autowired] protected string $prefix = '';
 
     /**
-     * @var RouteInterface[][]
+     * @var string[][]
      */
     protected array $literals = [];
 
     /**
      * @var RouteInterface[]
      */
-    protected array $regexes = [];
+    protected array $dynamics = [];
 
     public function setPrefix(string $prefix): static
     {
@@ -73,11 +74,11 @@ class Router implements RouterInterface
         }
 
         $compiled = $this->patternCompiler->compile($pattern);
-        $route = new Route($method, $pattern, $compiled, $handler);
+        $route = new RegexRoute($method, $pattern, $compiled, $handler);
         if (!str_contains($pattern, '{')) {
             $this->literals[$method][$pattern] = $handler;
         } else {
-            $this->regexes[] = $route;
+            $this->dynamics[] = $route;
         }
     }
 
@@ -120,8 +121,8 @@ class Router implements RouterInterface
     {
         $pattern .= '(/{id:[-\w]+})?';
         $compiled = $this->patternCompiler->compile($pattern);
-        $route = new Route('REST', $pattern, $compiled, $controller . '::{action}Action');
-        $this->regexes[] = $route;
+        $route = new RestRoute($pattern, $compiled, $controller . '::{action}Action');
+        $this->dynamics[] = $route;
     }
 
     public function getRewriteUri(): string
@@ -169,8 +170,8 @@ class Router implements RouterInterface
             $matcher = new Matcher($handler, []);
         } else {
             $matcher = null;
-            for ($i = count($this->regexes) - 1; $i >= 0; $i--) {
-                $route = $this->regexes[$i];
+            for ($i = count($this->dynamics) - 1; $i >= 0; $i--) {
+                $route = $this->dynamics[$i];
                 if (($matcher = $route->match($handledUri, $method)) !== null) {
                     break;
                 }
