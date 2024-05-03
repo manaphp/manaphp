@@ -7,6 +7,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Router\Event\RouterRouted;
 use ManaPHP\Http\Router\Event\RouterRouting;
+use ManaPHP\Http\Router\Matcher;
 use ManaPHP\Http\Router\MatcherInterface;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
@@ -76,7 +77,7 @@ class Router implements RouterInterface
         }
         $route = new Route($method, $pattern, $handler, $this->case_sensitive);
         if (strpbrk($pattern, ':{') === false) {
-            $this->literals[$method][$pattern] = $route;
+            $this->literals[$method][$pattern] = $handler;
         } else {
             $this->regexes[] = $route;
         }
@@ -163,10 +164,10 @@ class Router implements RouterInterface
 
         if ($handledUri === false) {
             $matcher = null;
-        } elseif (($route = $this->literals[$method][$handledUri] ?? $this->literals['*'][$handledUri] ?? null)
+        } elseif (($handler = $this->literals[$method][$handledUri] ?? $this->literals['*'][$handledUri] ?? null)
             !== null
         ) {
-            $matcher = $route->match($handledUri, $method);
+            $matcher = new Matcher($handler, []);
         } else {
             $matcher = null;
             for ($i = count($this->regexes) - 1; $i >= 0; $i--) {
