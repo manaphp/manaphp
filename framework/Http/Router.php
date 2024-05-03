@@ -171,16 +171,16 @@ class Router implements RouterInterface
             $handledUri = $uri;
         }
 
-        $routes = $this->literals;
         if ($handledUri === false) {
             $parts = null;
-        } elseif (isset($routes[$method][$handledUri])) {
-            $parts = $routes[$method][$handledUri]->match($handledUri, $method);
+        } elseif (($route = $this->literals[$method][$handledUri] ?? $this->literals['*'][$handledUri] ?? null)
+            !== null
+        ) {
+            $parts = $route->match($handledUri, $method);
         } else {
             $parts = null;
-            $routes = $this->regexes;
-            for ($i = count($routes) - 1; $i >= 0; $i--) {
-                $route = $routes[$i];
+            for ($i = count($this->regexes) - 1; $i >= 0; $i--) {
+                $route = $this->regexes[$i];
                 if (($parts = $route->match($handledUri, $method)) !== null) {
                     break;
                 }
