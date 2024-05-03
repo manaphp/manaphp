@@ -118,16 +118,6 @@ class Route implements RouteInterface
             }
         }
 
-        if (isset($parts['action']) && preg_match('#^\d#', $parts['action'])) {
-            $parts['params'] = $parts['action'];
-
-            $m2a = ['GET' => 'detail', 'POST' => 'edit', 'DELETE' => 'delete'];
-            if (!isset($m2a[$method])) {
-                return null;
-            }
-            $parts['action'] = $m2a[$method];
-        }
-
         return new Matcher($this->handler, $parts);
     }
 }
