@@ -7,7 +7,6 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Router\Event\RouterRouted;
 use ManaPHP\Http\Router\Event\RouterRouting;
-use ManaPHP\Http\Router\Matcher;
 use ManaPHP\Http\Router\MatcherInterface;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
@@ -70,7 +69,7 @@ class Router implements RouterInterface
         }
     }
 
-    public function addWithMethod(string $method, string $pattern, string|array $handler): RouteInterface
+    public function addWithMethod(string $method, string $pattern, string|array $handler): void
     {
         if (is_array($handler)) {
             $handler = implode('::', $handler);
@@ -81,52 +80,48 @@ class Router implements RouterInterface
         } else {
             $this->regexes[] = $route;
         }
-
-        return $route;
     }
 
-    public function add(string $pattern, string|array $handler): RouteInterface
+    public function add(string $pattern, string|array $handler): void
     {
-        return $this->addWithMethod('*', $pattern, $handler);
+        $this->addWithMethod('*', $pattern, $handler);
     }
 
-    public function addGet(string $pattern, string|array $handler): RouteInterface
+    public function addGet(string $pattern, string|array $handler): void
     {
-        return $this->addWithMethod('GET', $pattern, $handler);
+        $this->addWithMethod('GET', $pattern, $handler);
     }
 
-    public function addPost(string $pattern, string|array $handler): RouteInterface
+    public function addPost(string $pattern, string|array $handler): void
     {
-        return $this->addWithMethod('POST', $pattern, $handler);
+        $this->addWithMethod('POST', $pattern, $handler);
     }
 
-    public function addPut(string $pattern, string|array $handler): RouteInterface
+    public function addPut(string $pattern, string|array $handler): void
     {
-        return $this->addWithMethod('PUT', $pattern, $handler);
+        $this->addWithMethod('PUT', $pattern, $handler);
     }
 
-    public function addPatch(string $pattern, string|array $handler): RouteInterface
+    public function addPatch(string $pattern, string|array $handler): void
     {
-        return $this->addWithMethod('PATCH', $pattern, $handler);
+        $this->addWithMethod('PATCH', $pattern, $handler);
     }
 
-    public function addDelete(string $pattern, string|array $handler): RouteInterface
+    public function addDelete(string $pattern, string|array $handler): void
     {
-        return $this->addWithMethod('DELETE', $pattern, $handler);
+        $this->addWithMethod('DELETE', $pattern, $handler);
     }
 
-    public function addHead(string $pattern, string|array $handler): RouteInterface
+    public function addHead(string $pattern, string|array $handler): void
     {
-        return $this->addWithMethod('HEAD', $pattern, $handler);
+        $this->addWithMethod('HEAD', $pattern, $handler);
     }
 
-    public function addRest(string $pattern, string $controller): RouteInterface
+    public function addRest(string $pattern, string $controller): void
     {
         $pattern .= '(/{id:[-\w]+})?';
         $route = new Route('REST', $pattern, $controller . '::{action}Action', $this->case_sensitive);
         $this->regexes[] = $route;
-
-        return $route;
     }
 
     public function getRewriteUri(): string
