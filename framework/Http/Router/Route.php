@@ -8,7 +8,6 @@ use ManaPHP\Helper\Str;
 use function in_array;
 use function is_string;
 use function preg_match_all;
-use function preg_replace_callback;
 use function str_contains;
 
 class Route implements RouteInterface
@@ -129,17 +128,6 @@ class Route implements RouteInterface
             $parts['action'] = $m2a[$method];
         }
 
-        $handler = $this->handler;
-        if (str_contains($handler, '{')) {
-            $handler = preg_replace_callback('#{([^}]+)}#', static function ($match) use (&$parts) {
-                $name = $match[1];
-                $value = $parts[$name];
-
-                unset($parts[$name]);
-                return $name === 'action' ? Str::camelize($value) : Str::pascalize($value);
-            }, $handler);
-        }
-
-        return new Matcher($handler, $parts);
+        return new Matcher($this->handler, $parts);
     }
 }
