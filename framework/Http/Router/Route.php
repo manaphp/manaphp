@@ -35,17 +35,10 @@ class Route implements RouteInterface
         if ($r === false) {
             throw new InvalidFormatException(['`{1}` is invalid', $this->compiled]);
         } elseif ($r === 1) {
-            $parts = [];
+            $params = [];
             foreach ($matches as $k => $v) {
                 if (is_string($k)) {
-                    if (str_contains($v, '_')
-                        && in_array($k, ['area', 'controller', 'action'], true)
-                        && preg_match('#_$|_\w$|_\w_#', $v) === 1
-                    ) {
-                        return null;
-                    }
-
-                    $parts[$k] = $v;
+                    $params[$k] = $v;
                 }
             }
 
@@ -56,7 +49,7 @@ class Route implements RouteInterface
                     $m2a = ['GET' => 'index', 'POST' => 'create'];
                 }
                 if (isset($m2a[$method])) {
-                    $parts['action'] = $m2a[$method];
+                    $params['action'] = $m2a[$method];
                 } else {
                     return null;
                 }
@@ -65,6 +58,6 @@ class Route implements RouteInterface
             return null;
         }
 
-        return new Matcher($this->handler, $parts);
+        return new Matcher($this->handler, $params);
     }
 }
