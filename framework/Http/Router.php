@@ -300,9 +300,6 @@ class Router implements RouterInterface
 
     public function createUrl(string|array $args, bool|string $scheme = false): string
     {
-        /** @var RouterContext $context */
-        $context = $this->getContext();
-
         if (is_string($args)) {
             if (($pos = strpos($args, '?')) !== false) {
                 $path = substr($args, 0, $pos);
@@ -317,31 +314,7 @@ class Router implements RouterInterface
             $params = $args;
         }
 
-        $area = $context->area;
-        $controller = $context->controller;
-        if ($path === '') {
-            $action = $context->action;
-            $ca = $area ? "$area/$controller/$action" : "$controller/$action";
-        } elseif (!str_contains($path, '/')) {
-            $ca = $area ? "$area/$controller/$path" : "$controller/$path";
-        } elseif ($path === '/') {
-            $ca = '';
-        } elseif ($path[0] === '/') {
-            $ca = substr($path, 1);
-        } elseif ($area) {
-            $ca = $area . '/' . $path;
-        } else {
-            $ca = rtrim($path, '/');
-        }
-
-        while (($pos = strrpos($ca, '/index')) !== false && $pos + 6 === strlen($ca)) {
-            $ca = substr($ca, 0, $pos);
-        }
-
-        $url = $this->getPrefix() . '/' . lcfirst($ca);
-        if ($url !== '/') {
-            $url = rtrim($url, '/');
-        }
+        $url = $this->getPrefix() . $path;
 
         if ($params !== []) {
             $fragment = null;
