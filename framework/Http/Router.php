@@ -117,7 +117,7 @@ class Router implements RouterInterface
 
     public function addRest(string $pattern, string $controller): RouteInterface
     {
-        $pattern .= '(/{params:[-\w]+})?';
+        $pattern .= '(/{id:[-\w]+})?';
         $paths = $this->pathsNormalizer->normalize($controller);
         $route = new Route('REST', $pattern, $paths, $this->case_sensitive);
         $this->regexes[] = $route;

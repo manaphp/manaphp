@@ -36,8 +36,6 @@ class Route implements RouteInterface
             ':controller'  => '{controller:[a-zA-Z]\w*}',
             '{action}'     => '{action:[a-zA-Z]\w*}',
             ':action'      => '{action:[a-zA-Z]\w*}',
-            '{params}'     => '{params:.*}',
-            ':params'      => '{params:.*}',
             '{id}'         => '{id:[^/]+}',
             ':id'          => '{id:[^/]+}',
             ':int}'        => ':\d+}',

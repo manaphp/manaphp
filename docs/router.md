@@ -53,7 +53,6 @@
 |----------------------|:----------------------------|:-------------------------------------------------------------------------------------------|
 | `/:controller` | `/([a-z0-9_-]+)`      | Matches a valid controller name with alpha-numeric characters only                                     |
 | `/:action`     | `/([a-z0-9_-]+)`      | Matches a valid action name with alpha-numeric characters only                                         |
-| `/:params`     | `(/.*)*`              | Matches a list of optional words separated by slashes. Only use this placeholder at the end of a route |
 | `/:int`        | `/([0-9]+)`           | Matches an integer parameter                                                                           |
     
 控制器名称是camelized，这意味着删除了字符`_`，下一个字符是大写的。例如，blog_comment转换为BlogComment。
