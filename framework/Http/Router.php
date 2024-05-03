@@ -19,8 +19,8 @@ use function implode;
 use function is_array;
 use function is_string;
 use function parse_str;
+use function str_contains;
 use function strlen;
-use function strpbrk;
 use function strpos;
 use function substr;
 
@@ -74,7 +74,7 @@ class Router implements RouterInterface
 
         $compiled = $this->patternCompiler->compile($pattern);
         $route = new Route($method, $pattern, $compiled, $handler);
-        if (strpbrk($pattern, ':{') === false) {
+        if (!str_contains($pattern, '{')) {
             $this->literals[$method][$pattern] = $handler;
         } else {
             $this->regexes[] = $route;

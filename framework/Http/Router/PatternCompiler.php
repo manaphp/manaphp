@@ -8,8 +8,8 @@ use function explode;
 use function preg_match;
 use function preg_match_all;
 use function preg_replace;
+use function str_contains;
 use function str_replace;
-use function strpbrk;
 
 class PatternCompiler implements PatternCompilerInterface
 {
@@ -17,7 +17,7 @@ class PatternCompiler implements PatternCompilerInterface
 
     public function compile(string $pattern): string
     {
-        if (strpbrk($pattern, ':{') === false) {
+        if (!str_contains($pattern, '{')) {
             return $pattern;
         }
 
