@@ -71,51 +71,43 @@ class Route implements RouteInterface
             return null;
         }
 
-        if ($this->compiled[0] !== '#') {
-            if ($this->compiled === $uri) {
-                return new Matcher($this->handler, []);
-            } else {
-                return null;
-            }
-        } else {
-            $r = preg_match($this->compiled, $uri, $matches);
-            if ($r === false) {
-                throw new InvalidFormatException(['`{1}` is invalid for `{2}`', $this->compiled, $this->pattern]);
-            } elseif ($r === 1) {
-                $parts = [];
-                foreach ($matches as $k => $v) {
-                    if (is_string($k)) {
-                        if (str_contains($v, '_')
-                            && in_array($k, ['area', 'controller', 'action'], true)
-                            && preg_match('#_$|_\w$|_\w_#', $v) === 1
-                        ) {
-                            return null;
-                        }
-
-                        $parts[$k] = $v;
-                    }
-                }
-
-                if ($this->method === 'REST') {
-                    $controller = $parts['controller'] ?? '';
-                    if ($controller !== '' && str_contains($this->pattern, '/{controller}')) {
-                        $parts['controller'] = Str::singular($controller);
-                    }
-
-                    if (isset($matches['params'])) {
-                        $m2a = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
-                    } else {
-                        $m2a = ['GET' => 'index', 'POST' => 'create'];
-                    }
-                    if (isset($m2a[$method])) {
-                        $parts['action'] = $m2a[$method];
-                    } else {
+        $r = preg_match($this->compiled, $uri, $matches);
+        if ($r === false) {
+            throw new InvalidFormatException(['`{1}` is invalid for `{2}`', $this->compiled, $this->pattern]);
+        } elseif ($r === 1) {
+            $parts = [];
+            foreach ($matches as $k => $v) {
+                if (is_string($k)) {
+                    if (str_contains($v, '_')
+                        && in_array($k, ['area', 'controller', 'action'], true)
+                        && preg_match('#_$|_\w$|_\w_#', $v) === 1
+                    ) {
                         return null;
                     }
+
+                    $parts[$k] = $v;
                 }
-            } else {
-                return null;
             }
+
+            if ($this->method === 'REST') {
+                $controller = $parts['controller'] ?? '';
+                if ($controller !== '' && str_contains($this->pattern, '/{controller}')) {
+                    $parts['controller'] = Str::singular($controller);
+                }
+
+                if (isset($matches['params'])) {
+                    $m2a = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
+                } else {
+                    $m2a = ['GET' => 'index', 'POST' => 'create'];
+                }
+                if (isset($m2a[$method])) {
+                    $parts['action'] = $m2a[$method];
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return null;
         }
 
         return new Matcher($this->handler, $parts);
