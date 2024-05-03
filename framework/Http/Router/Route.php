@@ -30,22 +30,13 @@ class Route implements RouteInterface
         }
 
         $tr = [
-            '{area}'       => '{area:[a-zA-Z]\w*}',
-            ':area'        => '{area:[a-zA-Z]\w*}',
             '{controller}' => '{controller:[a-zA-Z]\w*}',
-            ':controller'  => '{controller:[a-zA-Z]\w*}',
             '{action}'     => '{action:[a-zA-Z]\w*}',
-            ':action'      => '{action:[a-zA-Z]\w*}',
             '{id}'         => '{id:[^/]+}',
-            ':id'          => '{id:[^/]+}',
             ':int}'        => ':\d+}',
             ':uuid}'       => ':[A-Fa-f0-9]{8}(-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}}',
         ];
         $pattern = strtr($pattern, $tr);
-
-        if (str_contains($pattern, '/:')) {
-            $pattern = preg_replace('#/:(\w+)#', '/{\1}', $pattern);
-        }
 
         $need_restore_token = false;
 
