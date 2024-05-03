@@ -6,8 +6,11 @@ namespace ManaPHP\Helper;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use function chr;
+use function lcfirst;
 use function ord;
+use function preg_replace_callback;
 use function strlen;
+use function ucfirst;
 
 class Str
 {
@@ -20,13 +23,11 @@ class Str
     /** @noinspection SpellCheckingInspection */
     public static function pascalize(string $str): string
     {
-        if (str_contains($str, '_')) {
-            return str_replace('_', '', ucwords($str, '_'));
-        } elseif (str_contains($str, '-')) {
-            return str_replace('-', '', ucwords($str, '-'));
-        } else {
-            return ucfirst($str);
-        }
+        $str = preg_replace_callback('#[-_]([A-Za-z])#', static function ($match) {
+            return ucfirst($match[1]);
+        }, $str);
+
+        return ucfirst($str);
     }
 
     public static function random(int $length, int $base = 62): string
@@ -78,7 +79,11 @@ class Str
 
     public static function camelize(string $str): string
     {
-        return lcfirst(self::pascalize($str));
+        $str = preg_replace_callback('#[-_]([A-Za-z])#', static function ($match) {
+            return ucfirst($match[1]);
+        }, $str);
+
+        return lcfirst($str);
     }
 
     public static function singular(string $str): string
