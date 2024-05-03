@@ -27,6 +27,8 @@ interface RouterInterface
 
     public function addHead(string $pattern, string|array $handler): void;
 
+    public function addOptions(string $pattern, string|array $handler): void;
+
     public function addRest(string $pattern, string $controller): void;
 
     public function match(?string $uri = null, ?string $method = null): ?MatcherInterface;

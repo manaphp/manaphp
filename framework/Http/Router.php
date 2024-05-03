@@ -117,6 +117,11 @@ class Router implements RouterInterface
         $this->addWithMethod('HEAD', $pattern, $handler);
     }
 
+    public function addOptions(string $pattern, string|array $handler): void
+    {
+        $this->addWithMethod('OPTIONS', $pattern, $handler);
+    }
+
     public function addRest(string $pattern, string $controller): void
     {
         $pattern .= '(/{id:[-\w]+})?';
