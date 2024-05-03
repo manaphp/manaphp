@@ -16,13 +16,25 @@ class PatternCompiler implements PatternCompilerInterface
     #[Autowired] protected bool $case_sensitive = true;
     #[Autowired] protected array $snippets
         = [
-            '{controller}' => '{controller:[a-zA-Z][-\w]*[^_-]}',
-            '{action}'     => '{action:[a-zA-Z][-\w]*[^_-]}',
+            '{controller}' => '{controller:var}',
+            '{action}'     => '{action:var}',
             '{id}'         => '{id:\d+}',
             ':var}'        => ':[a-zA-Z][-\w]*[^_-]}',
             ':int}'        => ':\d+}',
             ':uuid}'       => ':[A-Fa-f0-9]{8}(-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}}',
         ];
+
+    public function __construct()
+    {
+        foreach ($this->snippets as $key => $value) {
+            if (preg_match('#:\w+}#', $value, $match) === 1) {
+                $var = $match[0];
+                if (($val = $this->snippets[$var] ?? null) !== null) {
+                    $this->snippets[$key] = str_replace($var, $val, $value);
+                }
+            }
+        }
+    }
 
     public function compile(string $pattern): string
     {
