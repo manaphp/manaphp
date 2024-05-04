@@ -102,7 +102,7 @@ class SessionController extends Controller
     }
 
     #[Authorize('user')]
-    #[GetMapping]
+    #[GetMapping(['/logout', '/admin/session/logout'])]
     public function logoutAction()
     {
         $this->session->destroy();

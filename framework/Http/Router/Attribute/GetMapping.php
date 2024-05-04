@@ -8,10 +8,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 class GetMapping extends Mapping
 {
-    public function __construct(?string $path = null)
+    public function getMethod(): string
     {
-        parent::__construct($path);
-
-        $this->method = 'GET';
+        return 'GET';
     }
 }

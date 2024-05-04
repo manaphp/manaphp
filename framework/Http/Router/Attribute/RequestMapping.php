@@ -8,4 +8,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 class RequestMapping extends Mapping
 {
+    public function getMethod(): string
+    {
+        return '*';
+    }
 }

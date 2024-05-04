@@ -12,6 +12,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use function basename;
+use function is_array;
 use function str_contains;
 use function str_ends_with;
 use function str_starts_with;
@@ -55,17 +56,19 @@ class MappingScanner implements MappingScannerInterface
             foreach ($attributes as $attribute) {
                 /** @var Mapping $mapping */
                 $mapping = $attribute->newInstance();
-                $path = $mapping->path;
-                if ($path === null) {
-                    $pattern = $prefix . '/' . basename($method, 'Action');
-                } elseif ($path === '') {
-                    $pattern = $prefix;
-                } elseif (str_starts_with($path, '/')) {
-                    $pattern = $path;
-                } else {
-                    $pattern = $prefix . '/' . $path;
+
+                foreach (is_array($mapping->path) ? $mapping->path : [$mapping->path] as $item) {
+                    if ($item === null) {
+                        $pattern = $prefix . '/' . basename($method, 'Action');
+                    } elseif ($item === '') {
+                        $pattern = $prefix;
+                    } elseif (str_starts_with($item, '/')) {
+                        $pattern = $item;
+                    } else {
+                        $pattern = $prefix . '/' . $item;
+                    }
+                    $this->router->addWithMethod($mapping->getMethod(), $pattern, $controller . '::' . $method);
                 }
-                $this->router->addWithMethod($mapping->method, $pattern, $controller . '::' . $method);
             }
         }
     }
