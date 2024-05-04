@@ -21,8 +21,6 @@ interface ViewInterface
 
     public function hasVar(string $name): bool;
 
-    public function exists(?string $template = null): bool;
-
     public function render(?string $template = null, array $vars = []): string;
 
     public function widget(string $widget, array $options = []): void;

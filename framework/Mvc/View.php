@@ -216,41 +216,6 @@ class View implements ViewInterface
         );
     }
 
-    public function exists(?string $template = null): bool
-    {
-        list($area, $controller, $action1) = $this->explodeHandler($this->dispatcher->getHandler());
-
-        if ($template === null) {
-            $action = $action1;
-        } elseif (str_contains($template, '/')) {
-            $action = null;
-        } else {
-            $action = $template;
-            $template = null;
-        }
-
-        if ($template === null) {
-            if ($area) {
-                $dir = "@app/Areas/$area/Views/$controller";
-            } else {
-                $dir = "@views/$controller";
-            }
-
-            $this->dirs[$dir] ??= LocalFS::dirExists($dir);
-
-            if ($this->dirs[$dir]) {
-                $template = $dir . '/' . ucfirst($action);
-            } elseif ($action === 'index') {
-                $template = $dir;
-            } else {
-                return false;
-            }
-        }
-
-        return $this->exists[$template] ??
-            ($this->exists[$template] = $this->renderer->exists($template));
-    }
-
     public function getWidgetClassName(string $widget): ?string
     {
         if (str_contains($widget, '/')) {

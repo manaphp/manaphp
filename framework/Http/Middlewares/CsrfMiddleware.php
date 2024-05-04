@@ -9,8 +9,11 @@ use ManaPHP\Http\Middlewares\CsrfMiddleware\AttackDetectedException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\Controller as MvcController;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Mvc\ViewInterface;
 use ManaPHP\Rest\Controller as RestController;
+use ReflectionAttribute;
+use ReflectionMethod;
 use function in_array;
 
 class CsrfMiddleware
@@ -78,11 +81,11 @@ class CsrfMiddleware
                 return;
             }
 
-            if ($controller instanceof MvcController
-                && !$this->request->isAjax()
-                && $this->view->exists()
-            ) {
-                return;
+            if ($controller instanceof MvcController && !$this->request->isAjax()) {
+                $rMethod = new ReflectionMethod($controller, $event->action);
+                if ($rMethod->getAttributes(ViewGetMapping::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
+                    return;
+                }
             }
         }
 
