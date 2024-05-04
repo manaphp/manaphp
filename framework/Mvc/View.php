@@ -30,6 +30,7 @@ class View implements ViewInterface
 
     #[Autowired] protected int $max_age = 0;
     #[Autowired] protected bool $autofix_url = true;
+    #[Autowired] protected ?string $layout = '@views/Layouts/Default';
 
     protected array $dirs = [];
     protected array $exists = [];
@@ -120,47 +121,6 @@ class View implements ViewInterface
         return isset($context->_vars[$name]);
     }
 
-    protected function getLayout(): ?string
-    {
-        /** @var ViewContext $context */
-        $context = $this->getContext();
-
-        if ($context->layout === null) {
-            list($area, $controller) = $this->explodeHandler($this->dispatcher->getHandler());
-
-            if ($area !== null) {
-                if ($this->renderer->exists("@app/Areas/$area/Views/Layouts/$controller")) {
-                    $layout = "@app/Areas/$area/Views/Layouts/$controller";
-                } elseif ($this->renderer->exists("@app/Areas/$area/Views/Layouts/Default")) {
-                    $layout = "@app/Areas/$area/Views/Layouts/Default";
-                } else {
-                    $layout = '@views/Layouts/Default';
-                }
-            } else {
-                if ($this->renderer->exists("@views/Layouts/$controller")) {
-                    $layout = "@views/Layouts/$controller";
-                } else {
-                    $layout = '@views/Layouts/Default';
-                }
-            }
-        } elseif ($context->layout !== '') {
-            $layout = $context->layout;
-            if ($layout[0] !== '@') {
-                $layout = ucfirst($layout);
-                list($area) = $this->explodeHandler($this->dispatcher->getHandler());
-                if ($area !== null && $this->renderer->exists("@app/Areas/$area/Views/Layouts/$layout")) {
-                    $layout = "@app/Areas/$area/Views/Layouts/$layout";
-                } else {
-                    $layout = "@views/Layouts/$layout";
-                }
-            }
-        } else {
-            $layout = null;
-        }
-
-        return $layout;
-    }
-
     protected function explodeHandler(string $handler): array
     {
         list($controllerClass, $action) = explode('::', $handler);
@@ -222,8 +182,10 @@ class View implements ViewInterface
         try {
             $context->content = $this->renderer->render($template, $context->vars);
 
-            if (($layout = $this->getLayout()) !== null) {
-                $context->content = $this->renderer->render($layout, $context->vars);
+            if ($context->layout === null) {
+                $context->content = $this->renderer->render($this->layout, $context->vars);
+            } elseif ($context->layout !== '') {
+                $context->content = $this->renderer->render($context->layout, $context->vars);
             }
         } finally {
             $this->renderer->unlock();
