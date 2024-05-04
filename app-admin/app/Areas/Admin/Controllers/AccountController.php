@@ -12,6 +12,7 @@ use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
+use ManaPHP\Mvc\View\Attribute\View;
 
 #[Authorize('admin')]
 #[RequestMapping('/admin/account')]
@@ -25,6 +26,7 @@ class AccountController extends Controller
         return $this->captcha->generate();
     }
 
+    #[View]
     #[GetMapping, PostMapping]
     public function registerAction(string $code, string $password)
     {

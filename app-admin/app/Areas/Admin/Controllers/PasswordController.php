@@ -14,6 +14,7 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
+use ManaPHP\Mvc\View\Attribute\View;
 use ManaPHP\Mvc\ViewInterface;
 
 #[Authorize('*')]
@@ -32,13 +33,17 @@ class PasswordController extends Controller
         return $this->captcha->generate();
     }
 
-    public function forgetView()
+    public function forgetVars(): array
     {
-        $this->view->setVar('redirect', $this->request->input('redirect', $this->router->createUrl('/')));
+        $vars = [];
 
-        return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
+        $vars['redirect'] = $this->request->input('redirect', $this->router->createUrl('/'));
+        $vars['admin_name'] = $this->cookies->get('admin_name');
+
+        return $vars;
     }
 
+    #[View(vars: 'forgetVars')]
     #[GetMapping, PostMapping]
     public function forgetAction(string $admin_name, string $email)
     {
@@ -60,23 +65,21 @@ class PasswordController extends Controller
         return $this->response->json(['code' => 0, 'msg' => '重置密码连接已经发送到您的邮箱']);
     }
 
-    public function resetView(string $token)
+    public function resetVars(string $token): array
     {
         try {
             $claims = jwt_decode($token, 'admin.password.forget');
         } catch (Exception $exception) {
-            return $this->view->setVars(['expired' => true, 'token' => $token]);
+            return ['expired' => true, 'token' => $token];
         }
 
-        return $this->view->setVars(
-            [
-                'expired'    => false,
+        return ['expired'    => false,
                 'admin_name' => $claims['admin_name'],
                 'token'      => $token,
-            ]
-        );
+        ];
     }
 
+    #[View(vars: 'resetVars')]
     #[GetMapping, PostMapping]
     public function resetAction(string $token, string $password)
     {
@@ -96,6 +99,7 @@ class PasswordController extends Controller
     }
 
     #[Authorize('user')]
+    #[View]
     #[GetMapping, PostMapping]
     public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {

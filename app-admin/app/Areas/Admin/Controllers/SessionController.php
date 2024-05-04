@@ -17,6 +17,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
+use ManaPHP\Mvc\View\Attribute\View;
 
 #[Authorize('*')]
 #[RequestMapping('/admin/session')]
@@ -32,13 +33,17 @@ class SessionController extends Controller
         return $this->captcha->generate();
     }
 
-    public function loginView()
+    public function loginVars(): array
     {
-        $this->view->setVar('redirect', $this->request->input('redirect', $this->router->createUrl('/')));
+        $vars = [];
 
-        return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
+        $vars['redirect'] = $this->request->input('redirect', $this->router->createUrl('/'));
+        $vars['admin_name'] = $this->cookies->get('admin_name');
+
+        return $vars;
     }
 
+    #[View(vars: 'loginVars')]
     #[GetMapping('/login'), PostMapping('/login')]
     public function loginAction(string $code, string $admin_name, string $password)
     {

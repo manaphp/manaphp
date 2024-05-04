@@ -7,10 +7,11 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Mvc\Controller;
+use ManaPHP\Mvc\View\Attribute\View;
 use ManaPHP\Mvc\ViewInterface;
 use Psr\Container\ContainerInterface;
-use function basename;
-use function is_array;
+use ReflectionMethod;
+use function call_user_func;
 
 class Invoker implements InvokerInterface
 {
@@ -21,20 +22,17 @@ class Invoker implements InvokerInterface
 
     protected function invokeMvc($object, string $action): mixed
     {
-        $view = $this->container->get(ViewInterface::class);
-
         if ($this->request->method() === 'GET' && !$this->request->isAjax()) {
-            $method = basename($action, 'Action') . 'View';
-            if (method_exists($object, $method)) {
-                $arguments = $this->argumentsResolver->resolve($object, $method);
-                if (is_array($r = $object->$method(...$arguments))) {
-                    return $view->setVars($r);
-                } elseif ($r === null) {
-                    return $view;
-                } else {
-                    return $r;
+            $view = $this->container->get(ViewInterface::class);
+
+            $rMethod = new ReflectionMethod($object, $action);
+            $attributes = $rMethod->getAttributes(View::class, \ReflectionAttribute::IS_INSTANCEOF);
+            if ($attributes !== []) {
+                /** @var View $viewAttribute */
+                $viewAttribute = $attributes[0]->newInstance();
+                if ($viewAttribute->getVars() !== null) {
+                    $view->setVars(call_user_func([$object, $viewAttribute->getVars()]));
                 }
-            } elseif ($view->exists()) {
                 return $view;
             }
         }
