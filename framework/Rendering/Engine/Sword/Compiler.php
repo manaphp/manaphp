@@ -11,7 +11,6 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\RouterInterface;
-use ManaPHP\Http\UrlInterface;
 use function count;
 use function dirname;
 use function in_array;
@@ -21,7 +20,6 @@ use function strlen;
 class Compiler
 {
     #[Autowired] protected AliasInterface $alias;
-    #[Autowired] protected UrlInterface $url;
     #[Autowired] protected RouterInterface $router;
 
     #[Autowired] protected int $hash_length = 12;

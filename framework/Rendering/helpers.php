@@ -4,7 +4,6 @@ declare(strict_types=1);
 use ManaPHP\Helper\Container;
 use ManaPHP\Http\InputInterface;
 use ManaPHP\Http\RouterInterface;
-use ManaPHP\Http\UrlInterface;
 use ManaPHP\Mvc\View\AssetInterface;
 
 if (!function_exists('attr_nv')) {
@@ -40,7 +39,7 @@ if (!function_exists('action')) {
 if (!function_exists('url')) {
     function url(string|array $args, bool|string $scheme = false): string
     {
-        return Container::get(UrlInterface::class)->get($args, $scheme);
+        return Container::get(RouterInterface::class)->createUrl($args, $scheme);
     }
 }
 
