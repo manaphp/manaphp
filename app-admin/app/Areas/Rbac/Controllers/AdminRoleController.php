@@ -13,7 +13,7 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('@index')]
-#[RequestMapping('rbac/admin-role')]
+#[RequestMapping('/rbac/admin-role')]
 class AdminRoleController extends Controller
 {
     #[GetMapping('')]
