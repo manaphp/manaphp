@@ -19,7 +19,6 @@ use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use function explode;
 use function is_string;
-use function preg_match;
 
 class Dispatcher implements DispatcherInterface
 {
@@ -29,15 +28,6 @@ class Dispatcher implements DispatcherInterface
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected InvokerInterface $invoker;
-
-    public function getArea(): ?string
-    {
-        if (preg_match('#\\\\Areas\\\\(\w+)\\\\Controllers\\\\#', $this->getController() ?? '', $match) === 1) {
-            return $match[1];
-        } else {
-            return null;
-        }
-    }
 
     public function getController(): ?string
     {

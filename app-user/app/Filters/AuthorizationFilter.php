@@ -14,6 +14,7 @@ use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestAuthorizing;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 use ManaPHP\Identifying\IdentityInterface;
+use function str_contains;
 
 class AuthorizationFilter
 {
@@ -35,9 +36,9 @@ class AuthorizationFilter
             if ($this->request->isAjax()) {
                 throw new NoCredentialException('No Credential or Invalid Credential');
             } else {
-                $area = $this->dispatcher->getArea();
                 $redirect = $this->request->input('redirect', $this->request->url());
-                $login_url = $area === 'Admin' ? '/admin/login' : '/user/login';
+                $login_url = str_contains($this->dispatcher->getHandler(), '\\Areas\\Admin\\') ? '/admin/login'
+                    : '/user/login';
                 $this->response->redirect(["$login_url?redirect=$redirect"]);
             }
         } else {

@@ -14,6 +14,7 @@ use ManaPHP\Http\CookiesInterface;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
+use function str_contains;
 
 class AdminActionLogListener
 {
@@ -49,7 +50,7 @@ class AdminActionLogListener
         }
 
         if ($event instanceof UserActionLog) {
-            if ($this->dispatcher->isInvoking() || $this->dispatcher->getArea() === 'Admin') {
+            if ($this->dispatcher->isInvoking() || str_contains($this->dispatcher->getHandler(), '\\Areas\\Admin\\')) {
                 return;
             }
         }

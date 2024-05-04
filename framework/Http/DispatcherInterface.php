@@ -5,8 +5,6 @@ namespace ManaPHP\Http;
 
 interface DispatcherInterface
 {
-    public function getArea(): ?string;
-
     public function getAction(): ?string;
 
     public function getParams(): array;

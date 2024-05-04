@@ -16,6 +16,8 @@ use ManaPHP\Model\ModelInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use function in_array;
+use function preg_match;
+use function str_contains;
 
 class Authorization implements AuthorizationInterface
 {
@@ -194,10 +196,10 @@ class Authorization implements AuthorizationInterface
 
         if (str_contains($permission, '/')) {
             if (!str_starts_with($permission, '/')) {
-                if (($area = $this->dispatcher->getArea()) === null) {
+                if (preg_match('#\\\\Areas\\\\(\w+)\\\\#', $this->dispatcher->getHandler(), $match) !== 1) {
                     throw new MisuseException(['permission is not start with /: {1}', $permission]);
                 } else {
-                    $permission = Str::snakelize($area) . "/$permission";
+                    $permission = Str::snakelize($match[1]) . "/$permission";
                 }
             }
         } else {

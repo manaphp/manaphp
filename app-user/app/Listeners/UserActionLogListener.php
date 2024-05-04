@@ -12,6 +12,7 @@ use ManaPHP\Http\CookiesInterface;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
+use function str_contains;
 
 class UserActionLogListener
 {
@@ -46,7 +47,7 @@ class UserActionLogListener
         }
 
         if ($event instanceof DbExecuting) {
-            if (!$this->dispatcher->isInvoking() || $this->dispatcher->getArea() !== 'User') {
+            if (!$this->dispatcher->isInvoking() || !str_contains($this->dispatcher->getHandler(), '\\Areas\\User\\')) {
                 return;
             }
         }
