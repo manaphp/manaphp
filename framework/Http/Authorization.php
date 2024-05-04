@@ -203,12 +203,10 @@ class Authorization implements AuthorizationInterface
                 }
             }
         } else {
-            $controllerInstance = $this->dispatcher->getControllerInstance();
-            if ($controllerInstance === null) {
+            if (($controller = $this->dispatcher->getController()) === null) {
                 return false;
             }
 
-            $controller = $controllerInstance::class;
             $action = Str::camelize($permission);
             if (($authorize = $this->getAuthorize($controller, $action)) !== null) {
                 if (($allowed = $authorize->isAllowed($roles)) !== null) {

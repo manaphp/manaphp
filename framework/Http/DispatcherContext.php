@@ -9,6 +9,5 @@ class DispatcherContext
     public ?string $controller = null;
     public ?string $action = null;
     public array $params = [];
-    public ?object $controllerInstance = null;
     public bool $isInvoking = false;
 }

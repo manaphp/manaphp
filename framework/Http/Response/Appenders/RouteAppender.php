@@ -9,7 +9,6 @@ use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response\AppenderInterface;
 use ManaPHP\Http\ResponseInterface;
-use function is_object;
 
 class RouteAppender implements AppenderInterface
 {
@@ -22,13 +21,8 @@ class RouteAppender implements AppenderInterface
     public function append(RequestInterface $request, ResponseInterface $response): void
     {
         if ($this->enabled ?? $this->app_env === 'dev') {
-            $controller = $this->dispatcher->getControllerInstance();
-            $action = $this->dispatcher->getAction();
-
-            if (is_object($controller)) {
-                $response->setHeader(
-                    'X-Router-Route', $controller::class . '::' . $action . 'Action'
-                );
+            if (($handler = $this->dispatcher->getHandler()) !== null) {
+                $response->setHeader('X-Router-Route', $handler);
             }
         }
     }

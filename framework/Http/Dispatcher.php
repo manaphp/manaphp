@@ -133,18 +133,7 @@ class Dispatcher implements DispatcherInterface
             throw new NotFoundControllerException(['`{1}` class cannot be loaded', $controller]);
         }
 
-        $controllerInstance = $this->container->get($controller);
-        $context->controllerInstance = $controllerInstance;
-
-        return $this->invokeAction($controllerInstance, $action);
-    }
-
-    public function getControllerInstance(): ?object
-    {
-        /** @var DispatcherContext $context */
-        $context = $this->getContext();
-
-        return $context->controllerInstance;
+        return $this->invokeAction($this->container->get($controller), $action);
     }
 
     public function isInvoking(): bool

@@ -24,7 +24,7 @@ class HttpCacheMiddleware
 
     protected array $httpCaches = [];
 
-    protected function getHttpCache(object $controller, string $action): HttpCacheAttribute|false
+    protected function getHttpCache(string $controller, string $action): HttpCacheAttribute|false
     {
         $rMethod = new ReflectionMethod($controller, $action . 'Action');
 
@@ -43,14 +43,12 @@ class HttpCacheMiddleware
             return;
         }
 
-        $controller = $this->dispatcher->getControllerInstance();
-        $action = $this->dispatcher->getAction();
-
-        if ($controller === null || $action === null) {
+        if (($controller = $this->dispatcher->getController()) === null) {
             return;
         }
+        $action = $this->dispatcher->getAction();
 
-        $key = $controller::class . '::' . $action;
+        $key = $controller . '::' . $action;
         if (($httpCache = $this->httpCaches[$key] ?? null) === null) {
             $httpCache = $this->httpCaches[$key] = $this->getHttpCache($controller, $action);
         }

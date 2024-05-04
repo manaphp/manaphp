@@ -15,7 +15,7 @@ interface DispatcherInterface
 
     public function getHandler(): ?string;
 
-    public function getControllerInstance(): ?object;
+    public function getController(): ?string;
 
     public function dispatch(string $handler, array $params): mixed;
 
