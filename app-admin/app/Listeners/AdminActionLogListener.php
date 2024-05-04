@@ -81,7 +81,7 @@ class AdminActionLogListener
         $adminActionLog->url = $this->request->path();
         $adminActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
         $adminActionLog->data = json_stringify($data);
-        $adminActionLog->handler = $this->dispatcher->getHandler();
+        $adminActionLog->handler = (string)$this->dispatcher->getHandler();
         $adminActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
         $adminActionLog->create();
     }
