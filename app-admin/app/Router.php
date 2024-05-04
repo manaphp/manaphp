@@ -20,8 +20,8 @@ class Router extends \ManaPHP\Http\Router
 //            'App\Areas\{area}\Controllers\{controller}Controller::{action}Action'
 //        );
 
-        $this->add('/', [IndexController::class, 'indexAction']);
-        $this->add('/login', [SessionController::class, 'loginAction']);
+//        $this->add('/', [IndexController::class, 'indexAction']);
+//        $this->add('/login', [SessionController::class, 'loginAction']);
         $this->addGet('/logout', [SessionController::class, 'logoutAction']);
     }
 }

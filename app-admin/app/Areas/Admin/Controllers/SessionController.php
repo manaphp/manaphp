@@ -39,7 +39,7 @@ class SessionController extends Controller
         return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
     }
 
-    #[GetMapping, PostMapping]
+    #[GetMapping('/login'), PostMapping('/login')]
     public function loginAction(string $code, string $admin_name, string $password)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {
