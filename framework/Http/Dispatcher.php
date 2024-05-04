@@ -53,23 +53,6 @@ class Dispatcher implements DispatcherInterface
         return $context->params;
     }
 
-    public function getParam(int|string $name, mixed $default = null): mixed
-    {
-        /** @var DispatcherContext $context */
-        $context = $this->getContext();
-
-        $params = $context->params;
-        return $params[$name] ?? $default;
-    }
-
-    public function hasParam(string $name): bool
-    {
-        /** @var DispatcherContext $context */
-        $context = $this->getContext();
-
-        return isset($context->params[$name]);
-    }
-
     public function getHandler(): ?string
     {
         /** @var DispatcherContext $context */
