@@ -12,7 +12,6 @@ use ManaPHP\Mvc\ViewInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionAttribute;
 use ReflectionMethod;
-use function call_user_func;
 
 class Invoker implements InvokerInterface
 {
@@ -31,8 +30,8 @@ class Invoker implements InvokerInterface
             if ($attributes !== []) {
                 /** @var ViewGetMapping $viewGetMapping */
                 $viewGetMapping = $attributes[0]->newInstance();
-                if ($viewGetMapping->getVars() !== null) {
-                    $view->setVars(call_user_func([$object, $viewGetMapping->getVars()]));
+                if (($method = $viewGetMapping->getVars()) !== null) {
+                    $view->setVars($object->$method());
                 }
                 return $view;
             }
