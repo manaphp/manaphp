@@ -10,6 +10,7 @@ use ManaPHP\Mvc\Controller;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Mvc\ViewInterface;
 use Psr\Container\ContainerInterface;
+use ReflectionAttribute;
 use ReflectionMethod;
 use function call_user_func;
 
@@ -26,7 +27,7 @@ class Invoker implements InvokerInterface
             $view = $this->container->get(ViewInterface::class);
 
             $rMethod = new ReflectionMethod($object, $action);
-            $attributes = $rMethod->getAttributes(ViewGetMapping::class, \ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $rMethod->getAttributes(ViewGetMapping::class, ReflectionAttribute::IS_INSTANCEOF);
             if ($attributes !== []) {
                 /** @var ViewGetMapping $viewGetMapping */
                 $viewGetMapping = $attributes[0]->newInstance();
