@@ -17,7 +17,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
 #[Authorize('*')]
 #[RequestMapping('/admin/session')]
@@ -43,8 +43,7 @@ class SessionController extends Controller
         return $vars;
     }
 
-    #[View(vars: 'loginVars')]
-    #[GetMapping('/login'), PostMapping('/login')]
+    #[ViewGetMapping('/login', vars: 'loginVars'), PostMapping('/login')]
     public function loginAction(string $code, string $admin_name, string $password)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {

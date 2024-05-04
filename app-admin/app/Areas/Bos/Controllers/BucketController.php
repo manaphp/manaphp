@@ -7,10 +7,9 @@ use App\Controllers\Controller;
 use ManaPHP\Bos\ClientInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
 #[Authorize('@index')]
 #[RequestMapping('/bos/bucket')]
@@ -18,8 +17,7 @@ class BucketController extends Controller
 {
     #[Autowired] protected ClientInterface $bosClient;
 
-    #[View]
-    #[GetMapping('')]
+    #[ViewGetMapping('')]
     public function indexAction()
     {
         return $this->bosClient->listBuckets();

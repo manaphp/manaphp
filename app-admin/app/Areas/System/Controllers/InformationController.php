@@ -5,9 +5,8 @@ namespace App\Areas\System\Controllers;
 
 use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Version;
 
 #[Authorize('@index')]
@@ -41,8 +40,7 @@ class InformationController extends Controller
         return ['data' => $data];
     }
 
-    #[View(vars: 'indexVars')]
-    #[GetMapping('')]
+    #[ViewGetMapping('', vars: 'indexVars')]
     public function indexAction()
     {
 

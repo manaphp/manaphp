@@ -6,17 +6,15 @@ namespace App\Areas\Menu\Controllers;
 use App\Areas\Menu\Models\Item;
 use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
 #[Authorize('@index')]
 #[RequestMapping('/menu/item')]
 class ItemController extends Controller
 {
-    #[View]
-    #[GetMapping('')]
+    #[ViewGetMapping('')]
     public function indexAction()
     {
         return Item::select()

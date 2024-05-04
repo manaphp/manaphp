@@ -14,7 +14,7 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Mvc\ViewInterface;
 
 #[Authorize('*')]
@@ -43,8 +43,7 @@ class PasswordController extends Controller
         return $vars;
     }
 
-    #[View(vars: 'forgetVars')]
-    #[GetMapping, PostMapping]
+    #[ViewGetMapping(vars: 'forgetVars'), PostMapping]
     public function forgetAction(string $admin_name, string $email)
     {
         $admin = Admin::first(['admin_name' => $admin_name]);
@@ -79,7 +78,7 @@ class PasswordController extends Controller
         ];
     }
 
-    #[View(vars: 'resetVars')]
+    #[ViewGetMapping(vars: 'resetVars')]
     #[GetMapping, PostMapping]
     public function resetAction(string $token, string $password)
     {
@@ -99,7 +98,7 @@ class PasswordController extends Controller
     }
 
     #[Authorize('user')]
-    #[View]
+    #[ViewGetMapping]
     #[GetMapping, PostMapping]
     public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {

@@ -10,7 +10,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Redis\RedisDbInterface;
 
 #[Authorize('@index')]
@@ -21,8 +21,7 @@ class DotenvController extends Controller
 
     public const REDIS_KEY = '.env';
 
-    #[View]
-    #[GetMapping('')]
+    #[ViewGetMapping('')]
     public function indexAction(string $app_id = '')
     {
         if ($app_id === '') {

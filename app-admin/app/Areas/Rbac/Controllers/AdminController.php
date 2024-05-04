@@ -12,15 +12,14 @@ use ManaPHP\Http\InputInterface;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Query\QueryInterface;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/admin')]
 class AdminController extends Controller
 {
-    #[View]
-    #[GetMapping('')]
+    #[ViewGetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         return Admin::select(

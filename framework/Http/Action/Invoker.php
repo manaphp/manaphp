@@ -7,7 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Mvc\Controller;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Mvc\ViewInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
@@ -26,12 +26,12 @@ class Invoker implements InvokerInterface
             $view = $this->container->get(ViewInterface::class);
 
             $rMethod = new ReflectionMethod($object, $action);
-            $attributes = $rMethod->getAttributes(View::class, \ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $rMethod->getAttributes(ViewGetMapping::class, \ReflectionAttribute::IS_INSTANCEOF);
             if ($attributes !== []) {
-                /** @var View $viewAttribute */
-                $viewAttribute = $attributes[0]->newInstance();
-                if ($viewAttribute->getVars() !== null) {
-                    $view->setVars(call_user_func([$object, $viewAttribute->getVars()]));
+                /** @var ViewGetMapping $viewGetMapping */
+                $viewGetMapping = $attributes[0]->newInstance();
+                if ($viewGetMapping->getVars() !== null) {
+                    $view->setVars(call_user_func([$object, $viewGetMapping->getVars()]));
                 }
                 return $view;
             }

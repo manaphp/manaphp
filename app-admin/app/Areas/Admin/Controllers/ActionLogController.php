@@ -8,14 +8,13 @@ use App\Models\AdminActionLog;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
 #[RequestMapping('/admin/action-log')]
 class ActionLogController extends Controller
 {
     #[Authorize]
-    #[View]
-    #[GetMapping('')]
+    #[ViewGetMapping('')]
     public function indexAction(int $page = 1, int $size = 10)
     {
         return AdminActionLog::select()
@@ -36,8 +35,7 @@ class ActionLogController extends Controller
     }
 
     #[Authorize('user')]
-    #[View]
-    #[GetMapping]
+    #[ViewGetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
         return AdminActionLog::select()

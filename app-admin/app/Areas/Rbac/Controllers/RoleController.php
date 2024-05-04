@@ -10,14 +10,13 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/role')]
 class RoleController extends Controller
 {
-    #[View]
-    #[GetMapping('')]
+    #[ViewGetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         return Role::select()

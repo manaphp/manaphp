@@ -14,7 +14,7 @@ use ManaPHP\Http\ControllersInterface;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Mvc\View\Attribute\View;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/permission')]
@@ -23,8 +23,7 @@ class PermissionController extends Controller
     #[Autowired] protected AuthorizationInterface $authorization;
     #[Autowired] protected ControllersInterface $controllers;
 
-    #[View]
-    #[GetMapping('')]
+    #[ViewGetMapping('')]
     public function indexAction()
     {
         return Permission::select()
