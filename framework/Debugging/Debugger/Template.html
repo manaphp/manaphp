@@ -75,6 +75,7 @@
         <li><a href="#basic" data-toggle="tab">Basic</a></li>
         <li><a href="#dependencies" data-toggle="tab">Dependencies</a></li>
         <li><a href="#contexts" data-toggle="tab">Contexts</a></li>
+        <li><a href="#router" data-toggle="tab">Router</a></li>
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Global <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li v-for="(value, name) in dependencies['ManaPHP\\Http\\RequestInterface'].properties.context"
@@ -172,6 +173,36 @@
                     <td :title="json_stringify(item.properties.context)">
                         <pre>{{item.properties.context|json 4}}</pre>
                     </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="router">
+            <h4>Router({{Object.keys(dependencies['ManaPHP\\Http\\RouterInterface'].properties.literals).length}})</h4>
+            <table class="table table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <td style="width: 5%">#</td>
+                    <td>method</td>
+                    <td>pattern</td>
+                    <td>handler</td>
+                </tr>
+                </thead>
+                <tbody>
+                <template
+                        v-for="(handlers,method) in dependencies['ManaPHP\\Http\\RouterInterface'].properties.literals">
+                    <tr v-for="(handler,id, index) in handlers">
+                        <td>{{index}}</td>
+                        <td>{{method}}</td>
+                        <td>{{id}}</td>
+                        <td>{{handler}}</td>
+                    </tr>
+                </template>
+                <tr v-for="(route,id) in dependencies['ManaPHP\\Http\\RouterInterface'].properties.dynamics">
+                    <td>{{id}}</td>
+                    <td>{{route.method}}</td>
+                    <td>{{route.pattern}}</td>
+                    <td>{{route.handler}}</td>
                 </tr>
                 </tbody>
             </table>
