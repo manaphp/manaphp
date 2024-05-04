@@ -67,7 +67,7 @@ class MappingScanner implements MappingScannerInterface
                     } else {
                         $pattern = $prefix . '/' . $item;
                     }
-                    $this->router->addWithMethod($mapping->getMethod(), $pattern, $controller . '::' . $method);
+                    $this->router->add($mapping->getMethod(), $pattern, $controller . '::' . $method);
                 }
             }
         }

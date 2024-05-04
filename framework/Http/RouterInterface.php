@@ -11,9 +11,9 @@ interface RouterInterface
 
     public function getPrefix(): string;
 
-    public function addWithMethod(string $method, string $pattern, string|array $handler): void;
+    public function add(string $method, string $pattern, string|array $handler): void;
 
-    public function add(string $pattern, string|array $handler): void;
+    public function addAny(string $pattern, string|array $handler): void;
 
     public function addGet(string $pattern, string|array $handler): void;
 

@@ -67,7 +67,7 @@ class Router implements RouterInterface
         }
     }
 
-    public function addWithMethod(string $method, string $pattern, string|array $handler): void
+    public function add(string $method, string $pattern, string|array $handler): void
     {
         if (is_array($handler)) {
             $handler = implode('::', $handler);
@@ -82,44 +82,44 @@ class Router implements RouterInterface
         }
     }
 
-    public function add(string $pattern, string|array $handler): void
+    public function addAny(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('*', $pattern, $handler);
+        $this->add('*', $pattern, $handler);
     }
 
     public function addGet(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('GET', $pattern, $handler);
+        $this->add('GET', $pattern, $handler);
     }
 
     public function addPost(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('POST', $pattern, $handler);
+        $this->add('POST', $pattern, $handler);
     }
 
     public function addPut(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('PUT', $pattern, $handler);
+        $this->add('PUT', $pattern, $handler);
     }
 
     public function addPatch(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('PATCH', $pattern, $handler);
+        $this->add('PATCH', $pattern, $handler);
     }
 
     public function addDelete(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('DELETE', $pattern, $handler);
+        $this->add('DELETE', $pattern, $handler);
     }
 
     public function addHead(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('HEAD', $pattern, $handler);
+        $this->add('HEAD', $pattern, $handler);
     }
 
     public function addOptions(string $pattern, string|array $handler): void
     {
-        $this->addWithMethod('OPTIONS', $pattern, $handler);
+        $this->add('OPTIONS', $pattern, $handler);
     }
 
     public function addRest(string $pattern, string $controller): void

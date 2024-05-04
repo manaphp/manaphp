@@ -13,10 +13,10 @@ class Router extends \ManaPHP\Http\Router
     public function __construct()
     {
         $areas = 'user';
-        $this->add('/{controller}', 'App\Controllers\{controller}Controller::indexAction');
-        $this->add('/{controller}/{action}', 'App\Controllers\{controller}Controller::{action}Action');
-        $this->add("/{area:$areas}/{controller}", 'App\Areas\{area}\Controllers\{controller}Controller::indexAction');
-        $this->add("/{area:$areas}/{controller}/{action}", 'App\Areas\{area}\Controllers\{controller}Controller::{action}Action');
+        $this->addAny('/{controller}', 'App\Controllers\{controller}Controller::indexAction');
+        $this->addAny('/{controller}/{action}', 'App\Controllers\{controller}Controller::{action}Action');
+        $this->addAny("/{area:$areas}/{controller}", 'App\Areas\{area}\Controllers\{controller}Controller::indexAction');
+        $this->addAny("/{area:$areas}/{controller}/{action}", 'App\Areas\{area}\Controllers\{controller}Controller::{action}Action');
         $this->addGet('/user/login', [UserSessionController::class, 'loginAction']);
         $this->addGet('/admin/login', [AdminSessionController::class, 'logoutAction']);
         $this->addGet('/about', 'Index::about');

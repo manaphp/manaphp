@@ -400,13 +400,13 @@ class MvcRouterTest extends TestCase
         $this->assertEquals('list', $router->getAction());
 
         $router = new Router();
-        $router->add('/', 'user::list');
+        $router->addGet('/', 'user::list');
         $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('user', $router->getController());
         $this->assertEquals('list', $router->getAction());
 
         $router = new Router();
-        $router->add('/', 'user');
+        $router->addGet('/', 'user');
         $this->assertTrue($router->match('/', 'GET'));
 
         $this->assertEquals('user', $router->getController());
