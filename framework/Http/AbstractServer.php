@@ -7,6 +7,7 @@ use ManaPHP\BootstrapperInterface;
 use ManaPHP\Debugging\DebuggerInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Metrics\ExporterInterface;
+use ManaPHP\Http\Router\MappingScannerInterface;
 use ManaPHP\Swoole\ProcessesInterface;
 use ManaPHP\Swoole\WorkersInterface;
 use Psr\Container\ContainerInterface;
@@ -30,6 +31,7 @@ abstract class AbstractServer implements ServerInterface
             WorkersInterface::class,
             ExporterInterface::class,
             ProcessesInterface::class,
+            MappingScannerInterface::class,
         ];
 
     protected function bootstrap(): void
