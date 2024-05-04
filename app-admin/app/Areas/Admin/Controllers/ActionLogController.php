@@ -7,10 +7,13 @@ use App\Controllers\Controller;
 use App\Models\AdminActionLog;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
+#[RequestMapping('/admin/action-log')]
 class ActionLogController extends Controller
 {
     #[Authorize]
+    #[GetMapping('')]
     public function indexAction(int $page = 1, int $size = 10)
     {
         return AdminActionLog::select()
@@ -20,6 +23,7 @@ class ActionLogController extends Controller
     }
 
     #[Authorize('user')]
+    #[GetMapping]
     public function detailAction(AdminActionLog $adminActionLog)
     {
         if ($adminActionLog->admin_id === $this->identity->getId() || $this->authorization->isAllowed('detail')) {
@@ -29,8 +33,8 @@ class ActionLogController extends Controller
         }
     }
 
-    #[GetMapping]
     #[Authorize('user')]
+    #[GetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
         return AdminActionLog::select()

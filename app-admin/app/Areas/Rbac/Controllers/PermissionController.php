@@ -11,13 +11,18 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\ControllersInterface;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('@index')]
+#[RequestMapping('/rbac/permission')]
 class PermissionController extends Controller
 {
     #[Autowired] protected AuthorizationInterface $authorization;
     #[Autowired] protected ControllersInterface $controllers;
 
+    #[GetMapping('')]
     public function indexAction()
     {
         return Permission::select()
@@ -26,11 +31,13 @@ class PermissionController extends Controller
             ->orderBy(['permission_id' => SORT_DESC]);
     }
 
+    #[GetMapping]
     public function listAction()
     {
         return Permission::select(['permission_id', 'handler', 'display_name'])->orderBy(['handler' => SORT_ASC]);
     }
 
+    #[GetMapping]
     public function rebuildAction()
     {
         $count = 0;
@@ -71,11 +78,13 @@ class PermissionController extends Controller
         return ['code' => 0, 'message' => "新增 $count 条"];
     }
 
+    #[PostMapping]
     public function editAction(Permission $permission)
     {
         return $permission->fillUpdate($this->request->all());
     }
 
+    #[PostMapping]
     public function deleteAction(Permission $permission)
     {
         RolePermission::deleteAll(['permission_id' => $permission->permission_id]);

@@ -7,15 +7,20 @@ use App\Areas\System\Models\DotenvLog;
 use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Redis\RedisDbInterface;
 
 #[Authorize('@index')]
+#[RequestMapping('/system')]
 class DotenvController extends Controller
 {
     #[Autowired] protected RedisDbInterface $redisDb;
 
     public const REDIS_KEY = '.env';
 
+    #[GetMapping('')]
     public function indexAction(string $app_id = '')
     {
         if ($app_id === '') {
@@ -28,6 +33,7 @@ class DotenvController extends Controller
         }
     }
 
+    #[GetMapping]
     public function appsAction()
     {
         $apps = $this->redisDb->hKeys(self::REDIS_KEY);
@@ -36,6 +42,7 @@ class DotenvController extends Controller
         return $apps;
     }
 
+    #[PostMapping]
     public function createAction(string $app_id, string $env)
     {
         if ($this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
@@ -52,6 +59,7 @@ class DotenvController extends Controller
         $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
 
+    #[PostMapping]
     public function editAction(string $app_id, string $env)
     {
         if (!$this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
@@ -72,6 +80,7 @@ class DotenvController extends Controller
         $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
 
+    #[PostMapping]
     public function deleteAction(string $app_id)
     {
         $this->redisDb->hDel(self::REDIS_KEY, $app_id);

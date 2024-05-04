@@ -8,10 +8,15 @@ use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('@index')]
+#[RequestMapping('rbac/admin-role')]
 class AdminRoleController extends Controller
 {
+    #[GetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         return Admin::select(['admin_id', 'admin_name', 'created_time'])
@@ -21,11 +26,13 @@ class AdminRoleController extends Controller
             ->paginate($page, $size);
     }
 
+    #[GetMapping]
     public function detailAction(int $admin_id)
     {
         return AdminRole::all(['admin_id' => $admin_id]);
     }
 
+    #[PostMapping]
     public function editAction(int $admin_id, array $role_ids = [])
     {
         $admin = Admin::get($admin_id);

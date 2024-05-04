@@ -10,11 +10,15 @@ use App\Models\Admin;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\InputInterface;
 use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Query\QueryInterface;
 
 #[Authorize('@index')]
+#[RequestMapping('/rbac/admin')]
 class AdminController extends Controller
 {
+    #[GetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         return Admin::select(
@@ -34,11 +38,13 @@ class AdminController extends Controller
             )->paginate($page, $size);
     }
 
+    #[GetMapping]
     public function listAction()
     {
         return Admin::kvalues('admin_name');
     }
 
+    #[PostMapping]
     public function lockAction(int $admin_id)
     {
         $admin = Admin::get($admin_id);
@@ -52,6 +58,7 @@ class AdminController extends Controller
         return $admin->update();
     }
 
+    #[PostMapping]
     public function activeAction(int $admin_id)
     {
         $admin = Admin::get($admin_id);
@@ -61,6 +68,7 @@ class AdminController extends Controller
         return $admin->update();
     }
 
+    #[PostMapping]
     public function createAction(InputInterface $input, ?int $role_id)
     {
         $admin = Admin::fillCreate($input->all());
@@ -80,6 +88,7 @@ class AdminController extends Controller
         return $admin;
     }
 
+    #[PostMapping]
     public function editAction(int $admin_id, array $role_ids = [], string $password = '')
     {
         $admin = Admin::get($admin_id);

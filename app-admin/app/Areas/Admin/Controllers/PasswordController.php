@@ -10,10 +10,14 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
 use ManaPHP\Mvc\ViewInterface;
 
 #[Authorize('*')]
+#[RequestMapping('/admin/password')]
 class PasswordController extends Controller
 {
     #[Autowired] protected ViewInterface $view;
@@ -22,6 +26,7 @@ class PasswordController extends Controller
 
     #[Config] protected string $app_name;
 
+    #[PostMapping]
     public function captchaAction()
     {
         return $this->captcha->generate();
@@ -34,6 +39,7 @@ class PasswordController extends Controller
         return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
     }
 
+    #[GetMapping, PostMapping]
     public function forgetAction(string $admin_name, string $email)
     {
         $admin = Admin::first(['admin_name' => $admin_name]);
@@ -71,6 +77,7 @@ class PasswordController extends Controller
         );
     }
 
+    #[GetMapping, PostMapping]
     public function resetAction(string $token, string $password)
     {
         try {
@@ -89,6 +96,7 @@ class PasswordController extends Controller
     }
 
     #[Authorize('user')]
+    #[GetMapping, PostMapping]
     public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {
         $admin = Admin::get($this->identity->getId());

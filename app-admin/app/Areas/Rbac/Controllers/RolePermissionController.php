@@ -10,12 +10,17 @@ use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('@index')]
+#[RequestMapping('/rbac/role-permission')]
 class RolePermissionController extends Controller
 {
     #[Autowired] protected AuthorizationInterface $authorization;
 
+    #[GetMapping('')]
     public function indexAction()
     {
         return RolePermission::select(['id', 'permission_id', 'creator_name', 'created_time'])
@@ -26,6 +31,7 @@ class RolePermissionController extends Controller
             ->all();
     }
 
+    #[PostMapping]
     public function saveAction(int $role_id, array $permission_ids = [])
     {
         $role = Role::get($role_id);
@@ -51,6 +57,7 @@ class RolePermissionController extends Controller
         $role->update();
     }
 
+    #[PostMapping]
     public function editAction(int $role_id, array $permission_ids)
     {
         $this->saveAction($role_id, $permission_ids);

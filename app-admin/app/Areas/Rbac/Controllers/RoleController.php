@@ -7,10 +7,15 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('@index')]
+#[RequestMapping('/rbac/role')]
 class RoleController extends Controller
 {
+    #[GetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         return Role::select()
@@ -20,11 +25,13 @@ class RoleController extends Controller
             ->paginate($page, $size);
     }
 
+    #[GetMapping]
     public function listAction()
     {
         return Role::lists(['display_name', 'role_name']);
     }
 
+    #[PostMapping]
     public function createAction(string $role_name)
     {
         $permissions = ',' . implode(',', $this->authorization->buildAllowed($role_name)) . ',';
@@ -32,11 +39,13 @@ class RoleController extends Controller
         return Role::fillCreate($this->request->all(), ['permissions' => $permissions]);
     }
 
+    #[PostMapping]
     public function editAction(Role $role)
     {
         return $role->fillUpdate($this->request->all());
     }
 
+    #[PostMapping]
     public function disableAction(Role $role)
     {
         $role->enabled = 0;
@@ -44,6 +53,7 @@ class RoleController extends Controller
         return $role->update();
     }
 
+    #[PostMapping]
     public function enableAction(Role $role)
     {
         $role->enabled = 1;
@@ -51,6 +61,7 @@ class RoleController extends Controller
         return $role->update();
     }
 
+    #[PostMapping]
     public function deleteAction(Role $role)
     {
         if (AdminRole::exists(['role_id' => $role->role_id])) {

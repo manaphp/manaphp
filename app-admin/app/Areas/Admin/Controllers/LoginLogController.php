@@ -7,10 +7,13 @@ use App\Controllers\Controller;
 use App\Models\AdminLoginLog;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
+#[RequestMapping('/admin/login-log')]
 class LoginLogController extends Controller
 {
     #[Authorize]
+    #[GetMapping('')]
     public function indexAction(int $page = 1, int $size = 10)
     {
         return AdminLoginLog::select(
@@ -23,8 +26,8 @@ class LoginLogController extends Controller
             ->paginate($page, $size);
     }
 
-    #[GetMapping]
     #[Authorize('user')]
+    #[GetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
         return AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])

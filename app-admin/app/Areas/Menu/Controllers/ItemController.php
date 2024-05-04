@@ -6,10 +6,16 @@ namespace App\Areas\Menu\Controllers;
 use App\Areas\Menu\Models\Item;
 use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\DeleteMapping;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('@index')]
+#[RequestMapping('/menu/item')]
 class ItemController extends Controller
 {
+    #[GetMapping('')]
     public function indexAction()
     {
         return Item::select()
@@ -18,16 +24,19 @@ class ItemController extends Controller
             ->all();
     }
 
+    #[PostMapping]
     public function createAction()
     {
         return Item::fillCreate($this->request->all());
     }
 
+    #[PostMapping]
     public function editAction(Item $item)
     {
         return $item->fillUpdate($this->request->all());
     }
 
+    #[PostMapping]
     public function deleteAction(Item $item)
     {
         return $item->delete();

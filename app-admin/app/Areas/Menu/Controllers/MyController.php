@@ -6,11 +6,15 @@ namespace App\Areas\Menu\Controllers;
 use App\Areas\Menu\Models\Group;
 use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Query\QueryInterface;
 
 #[Authorize('user')]
+#[RequestMapping('/menu/my')]
 class MyController extends Controller
 {
+    #[GetMapping('')]
     public function indexAction()
     {
         $groups = Group::select(['group_id', 'group_name', 'icon'])

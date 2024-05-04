@@ -9,17 +9,23 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('admin')]
+#[RequestMapping('/admin/account')]
 class AccountController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
 
+    #[PostMapping]
     public function captchaAction(): ResponseInterface
     {
         return $this->captcha->generate();
     }
 
+    #[GetMapping, PostMapping]
     public function registerAction(string $code, string $password)
     {
         $this->captcha->verify($code);

@@ -5,10 +5,15 @@ namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('admin')]
+#[RequestMapping('/admin/mail')]
 class MailController extends Controller
 {
+    #[GetMapping, PostMapping]
     public function resetPasswordAction()
     {
         $this->view->setVars(

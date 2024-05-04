@@ -14,14 +14,19 @@ use ManaPHP\Helper\Ip;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 
 #[Authorize('*')]
+#[RequestMapping('/admin/session')]
 class SessionController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
 
     #[Config] protected string $app_env;
 
+    #[PostMapping]
     public function captchaAction()
     {
         return $this->captcha->generate();
@@ -34,6 +39,7 @@ class SessionController extends Controller
         return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
     }
 
+    #[GetMapping, PostMapping]
     public function loginAction(string $code, string $admin_name, string $password)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {
@@ -96,6 +102,7 @@ class SessionController extends Controller
     }
 
     #[Authorize('user')]
+    #[GetMapping]
     public function logoutAction()
     {
         $this->session->destroy();
