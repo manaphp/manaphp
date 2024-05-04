@@ -7,9 +7,9 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
-use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\InputInterface;
+use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Query\QueryInterface;
 
 #[Authorize('@index')]
@@ -112,7 +112,7 @@ class AdminController extends Controller
         return $admin;
     }
 
-    #[AcceptVerbs(['GET'])]
+    #[GetMapping]
     public function rolesAction()
     {
         return Role::lists(['display_name', 'role_name'], ['role_name!=' => ['guest', 'user']]);

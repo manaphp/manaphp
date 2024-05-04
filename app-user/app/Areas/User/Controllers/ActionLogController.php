@@ -4,8 +4,8 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\UserActionLog;
-use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
 
 #[Authorize('user')]
 class ActionLogController extends Controller
@@ -20,7 +20,7 @@ class ActionLogController extends Controller
         }
     }
 
-    #[AcceptVerbs(['GET'])]
+    #[GetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
         return UserActionLog::select()
