@@ -37,7 +37,7 @@ class AuthorizationFilter
                 throw new NoCredentialException('No Credential or Invalid Credential');
             } else {
                 $redirect = $this->request->input('redirect', $this->request->url());
-                $login_url = str_contains($this->dispatcher->getHandler(), '\\Areas\\Admin\\') ? '/admin/login'
+                $login_url = str_contains($this->dispatcher->getController(), '\\Areas\\Admin\\') ? '/admin/login'
                     : '/user/login';
                 $this->response->redirect(["$login_url?redirect=$redirect"]);
             }

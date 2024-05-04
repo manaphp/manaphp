@@ -47,7 +47,7 @@ class UserActionLogListener
         }
 
         if ($event instanceof DbExecuting) {
-            if (!$this->dispatcher->isInvoking() || !str_contains($this->dispatcher->getHandler(), '\\Areas\\User\\')) {
+            if (!$this->dispatcher->isInvoking() || !str_contains($this->dispatcher->getController(), '\\Areas\\User\\')) {
                 return;
             }
         }

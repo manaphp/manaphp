@@ -196,7 +196,7 @@ class Authorization implements AuthorizationInterface
 
         if (str_contains($permission, '/')) {
             if (!str_starts_with($permission, '/')) {
-                if (preg_match('#\\\\Areas\\\\(\w+)\\\\#', $this->dispatcher->getHandler(), $match) !== 1) {
+                if (preg_match('#\\\\Areas\\\\(\w+)\\\\#', $this->dispatcher->getController(), $match) !== 1) {
                     throw new MisuseException(['permission is not start with /: {1}', $permission]);
                 } else {
                     $permission = Str::snakelize($match[1]) . "/$permission";

@@ -50,7 +50,7 @@ class AdminActionLogListener
         }
 
         if ($event instanceof UserActionLog) {
-            if ($this->dispatcher->isInvoking() || str_contains($this->dispatcher->getHandler(), '\\Areas\\Admin\\')) {
+            if ($this->dispatcher->isInvoking() || str_contains($this->dispatcher->getController(), '\\Areas\\Admin\\')) {
                 return;
             }
         }
