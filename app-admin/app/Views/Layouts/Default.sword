@@ -38,10 +38,10 @@
                             <axios-cache-switcher></axios-cache-switcher>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link href="/admin/login_log/latest" target="_self">最近登录</el-link>
+                            <el-link href="/admin/login-log/latest" target="_self">最近登录</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <el-link href="/admin/action_log/latest" target="_self">最近操作</el-link>
+                            <el-link href="/admin/action-log/latest" target="_self">最近操作</el-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
                             <el-link href="/admin/password/change" target="_self">修改密码</el-link>
