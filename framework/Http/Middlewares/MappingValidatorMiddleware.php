@@ -35,7 +35,7 @@ class MappingValidatorMiddleware
             }
 
             if (!$allowed) {
-                throw new MethodNotAllowedException("{$method} method is not allowed");
+                throw new MethodNotAllowedException("`$method` method is not allowed");
             }
         }
     }
