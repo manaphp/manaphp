@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Dumping;
 
+use JsonSerializable;
 use ManaPHP\Context\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ReflectionClass;
 use ReflectionNamedType;
 use WeakMap;
+use function class_implements;
 use function is_array;
 use function is_object;
 use function is_string;
@@ -75,7 +77,11 @@ class Dumper implements DumperInterface
                     $value = substr($value, 0, 128) . '...';
                 }
             } elseif (is_object($value)) {
-                $value = class_implements($value) === [] ? $value : ($value::class . '::$object');
+                if ($value instanceof JsonSerializable) {
+                    $value = $value->jsonSerialize();
+                } else {
+                    $value = class_implements($value) === [] ? $value : ($value::class . '::$object');
+                }
             } elseif (is_array($value)) {
                 $value = $this->normalize($value);
             }
