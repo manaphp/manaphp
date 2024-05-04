@@ -5,7 +5,7 @@ namespace ManaPHP\Http\Router;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Http\Router\Attribute\Mapping;
+use ManaPHP\Http\Router\Attribute\MappingInterface;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Http\RouterInterface;
 use ReflectionAttribute;
@@ -48,13 +48,13 @@ class MappingScanner implements MappingScannerInterface
         foreach ($rClass->getMethods(ReflectionMethod::IS_PUBLIC) as $rMethod) {
             $method = $rMethod->getName();
 
-            $attributes = $rMethod->getAttributes(Mapping::class, ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $rMethod->getAttributes(MappingInterface::class, ReflectionAttribute::IS_INSTANCEOF);
             if ($attributes === []) {
                 continue;
             }
 
             foreach ($attributes as $attribute) {
-                /** @var Mapping $mapping */
+                /** @var MappingInterface $mapping */
                 $mapping = $attribute->newInstance();
 
                 foreach (is_array($mapping->path) ? $mapping->path : [$mapping->path] as $item) {

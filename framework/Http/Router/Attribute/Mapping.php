@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Router\Attribute;
 
-abstract class Mapping
+abstract class Mapping implements MappingInterface
 {
     public string|array|null $path;
 
@@ -16,6 +16,4 @@ abstract class Mapping
     {
         return $this->path;
     }
-
-    abstract public function getMethod(): string;
 }

@@ -6,9 +6,10 @@ namespace ManaPHP\Http\Middlewares;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\RequestInterface;
-use ManaPHP\Http\Router\Attribute\Mapping;
+use ManaPHP\Http\Router\Attribute\MappingInterface;
 use ManaPHP\Http\Router\MethodNotAllowedException;
 use ManaPHP\Http\Server\Event\RequestValidating;
+use ReflectionAttribute;
 use ReflectionMethod;
 
 class MappingValidatorMiddleware
@@ -21,14 +22,14 @@ class MappingValidatorMiddleware
         $action = $event->action;
         $rm = new ReflectionMethod($controller, $action);
 
-        if (($attributes = $rm->getAttributes(Mapping::class, \ReflectionAttribute::IS_INSTANCEOF)) !== []) {
+        if (($attributes = $rm->getAttributes(MappingInterface::class, ReflectionAttribute::IS_INSTANCEOF)) !== []) {
             $allowed = false;
 
             $method = $this->request->method();
             foreach ($attributes as $attribute) {
-                /** @var Mapping $mapping */
+                /** @var MappingInterface $mapping */
                 $mapping = $attribute->newInstance();
-                if ($mapping->method === $method) {
+                if ($mapping->getMethod() === $method) {
                     $allowed = true;
                 }
             }
