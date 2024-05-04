@@ -10,6 +10,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Rendering\Renderer\Event\RendererRendered;
 use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -117,7 +118,7 @@ class Renderer implements RendererInterface
             }
         }
 
-        $this->eventDispatcher->dispatch(new RendererRendering($this, $template, $file, $vars));
+        $this->eventDispatcher->dispatch(new RendererRendered($this, $template, $file, $vars));
 
         array_pop($context->templates);
 
