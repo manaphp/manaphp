@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Router;
 
+use JsonSerializable;
 use function is_string;
 use function preg_match;
 
-class RegexRoute implements RouteInterface
+class RegexRoute implements RouteInterface, JsonSerializable
 {
     protected string $pattern;
     protected string $compiled;
@@ -38,5 +39,15 @@ class RegexRoute implements RouteInterface
         } else {
             return null;
         }
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'pattern'  => $this->pattern,
+            'compiled' => $this->compiled,
+            'handler'  => $this->handler,
+            'method'   => $this->method,
+        ];
     }
 }
