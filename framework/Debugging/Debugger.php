@@ -381,6 +381,10 @@ class Debugger implements DebuggerInterface
         $definitions = $this->container->getDefinitions();
         $dependencies = [];
         foreach ($this->container->getInstances() as $id => $instance) {
+            if ($instance instanceof \Psr\Container\ContainerInterface) {
+                continue;
+            }
+
             if (($definition = $definitions[$id] ?? null) !== null
                 && is_string($definition)
                 && str_contains($definition, '#')
