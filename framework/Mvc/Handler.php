@@ -26,9 +26,6 @@ class Handler extends AbstractHandler
             SuppressWarnings::noop();
         } elseif ($actionReturnValue instanceof View) {
             $this->response->setContent($actionReturnValue->render($this->dispatcher->getHandler()));
-            if (($maxAge = $actionReturnValue->getMaxAge()) > 0) {
-                $this->response->setMaxAge($maxAge);
-            }
         } elseif (is_string($actionReturnValue)) {
             $this->response->json(['code' => -1, 'msg' => $actionReturnValue]);
         } elseif (is_int($actionReturnValue)) {

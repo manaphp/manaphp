@@ -5,10 +5,6 @@ namespace ManaPHP\Mvc;
 
 interface ViewInterface
 {
-    public function setMaxAge(int $max_age): static;
-
-    public function getMaxAge(): int;
-
     public function setLayout(string $layout = 'Default'): static;
 
     public function disableLayout(): static;

@@ -34,38 +34,11 @@ class View implements ViewInterface
     #[Autowired] protected RendererInterface $renderer;
     #[Autowired] protected DispatcherInterface $dispatcher;
 
-    #[Autowired] protected int $max_age = 0;
     #[Autowired] protected bool $autofix_url = true;
     #[Autowired] protected ?string $layout = '@views/Layouts/Default';
 
     protected array $dirs = [];
     protected array $exists = [];
-
-    public function setMaxAge(int $max_age): static
-    {
-        /** @var ViewContext $context */
-        $context = $this->getContext();
-
-        $context->max_age = $max_age;
-
-        return $this;
-    }
-
-    public function getMaxAge(): int
-    {
-        if ($this->max_age > 0) {
-            /** @var ViewContext $context */
-            $context = $this->getContext();
-
-            if ($context->max_age === null) {
-                return $this->max_age;
-            } else {
-                return $context->max_age > 0 ? $context->max_age : 0;
-            }
-        } else {
-            return 0;
-        }
-    }
 
     public function setLayout(string $layout = 'Default'): static
     {
@@ -200,10 +173,6 @@ class View implements ViewInterface
     {
         if (!str_contains($widget, '\\')) {
             $widget = 'App\\Widgets\\' . ucfirst($widget) . 'Widget';
-        }
-
-        if ($options !== []) {
-            $this->setMaxAge(0);
         }
 
         if (!class_exists($widget)) {

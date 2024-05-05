@@ -5,7 +5,6 @@ namespace ManaPHP\Mvc;
 
 class ViewContext
 {
-    public ?int $max_age;
     public ?string $layout = null;
     public array $vars = [];
     public string $content;
