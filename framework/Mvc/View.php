@@ -6,7 +6,6 @@ namespace ManaPHP\Mvc;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RouterInterface;
@@ -17,12 +16,12 @@ use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 use function basename;
+use function class_exists;
 use function dirname;
 use function explode;
 use function is_string;
-use function preg_match;
+use function sprintf;
 use function str_contains;
-use function substr;
 use function ucfirst;
 
 class View implements ViewInterface
@@ -128,22 +127,6 @@ class View implements ViewInterface
         return isset($context->_vars[$name]);
     }
 
-    protected function explodeHandler(string $handler): array
-    {
-        list($controllerClass, $action) = explode('::', $handler);
-        if (str_starts_with($controllerClass, 'App\\Controllers\\')) {
-            return [null,
-                    basename(substr($controllerClass, strrpos($controllerClass, '\\') + 1), 'Controller'),
-                    basename($action, 'Action')];
-        } elseif (preg_match("#^App\\\\Areas\\\\(\w+)\\\Controllers\\\\(\w+)Controller$#", $controllerClass, $match)
-            === 1
-        ) {
-            return [$match[1], $match[2], basename($action, 'Action')];
-        } else {
-            return [null, null, null];
-        }
-    }
-
     public function render(string $template, array $vars = []): string
     {
         /** @var ViewContext $context */
@@ -213,39 +196,25 @@ class View implements ViewInterface
         );
     }
 
-    public function getWidgetClassName(string $widget): ?string
-    {
-        if (str_contains($widget, '/')) {
-            throw new MisuseException(['it is not allowed to access other area `{widget}` widget', 'widget' => $widget]
-            );
-        }
-
-        list($area) = $this->explodeHandler($this->dispatcher->getHandler());
-        if ($area && class_exists($widgetClassName = "App\\Areas\\$area\\Widgets\\{$widget}Widget")) {
-            return $widgetClassName;
-        }
-
-        return class_exists($widgetClassName = "App\\Widgets\\{$widget}Widget") ? $widgetClassName : null;
-    }
-
     public function widget(string $widget, array $options = []): void
     {
+        if (!str_contains($widget, '\\')) {
+            $widget = 'App\\Widgets\\' . ucfirst($widget) . 'Widget';
+        }
+
         if ($options !== []) {
             $this->setMaxAge(0);
         }
 
-        if (!$widgetClassName = $this->getWidgetClassName($widget)) {
-            throw new InvalidValueException(['`{1}` class is not exists', $widgetClassName]);
+        if (!class_exists($widget)) {
+            throw new InvalidValueException(sprintf('`%s` widget class is not exists', $widget));
         }
 
-        if (preg_match('#App\\\\Areas\\\\(\w+)\\\\#', $widgetClassName, $match) === 1) {
-            $area = $match[1];
-            $view = "@app/Areas/$area/Views/Widgets/$widget";
-        } else {
-            $view = "@views/Widgets/$widget";
-        }
+        $rClass = new ReflectionClass($widget);
+        $widgetFile = $rClass->getFileName();
+        $view = dirname($widgetFile, 2) . '/Widgets/' . basename($rClass->getShortName(), 'Widget');
 
-        $widgetInstance = $this->container->get($widgetClassName);
+        $widgetInstance = $this->container->get($widget);
         $vars = $widgetInstance->run($options);
 
         if (is_string($vars)) {
