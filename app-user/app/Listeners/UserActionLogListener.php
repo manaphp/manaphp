@@ -47,7 +47,11 @@ class UserActionLogListener
         }
 
         if ($event instanceof DbExecuting) {
-            if (!$this->dispatcher->isInvoking() || !str_contains($this->dispatcher->getController(), '\\Areas\\User\\')) {
+            if (!$this->dispatcher->isInvoking()
+                || !str_contains(
+                    $this->dispatcher->getController(), '\\Areas\\User\\'
+                )
+            ) {
                 return;
             }
         }
@@ -68,7 +72,7 @@ class UserActionLogListener
         $userActionLog->url = $this->request->path();
         $userActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
         $userActionLog->data = json_stringify($data);
-        $userActionLog->handler = $this->dispatcher->getHandler();
+        $userActionLog->handler = (string)$this->dispatcher->getHandler();
         $userActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
         $userActionLog->create();
     }
