@@ -44,6 +44,7 @@ use ManaPHP\Version;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use function dirname;
+use function get_included_files;
 use function in_array;
 use function ini_get;
 use function is_array;
@@ -289,9 +290,7 @@ class Debugger implements DebuggerInterface
             }
         }
 
-        $file = $event->file;
-        $base_name = basename(dirname($file)) . '/' . basename($file);
-        $context->view[] = ['file' => $file, 'vars' => $vars, 'base_name' => $base_name];
+        $context->view[] = ['file' => $event->file, 'vars' => $vars];
     }
 
     public function onMongodb(#[Event] object $event): void
@@ -377,6 +376,7 @@ class Debugger implements DebuggerInterface
             'count'    => $context->sql_count
         ];
         $data['mongodb'] = $context->mongodb;
+        $data['root_dir'] = dirname(get_included_files()[0], 2);
 
         $definitions = $this->container->getDefinitions();
         $dependencies = [];

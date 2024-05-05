@@ -220,7 +220,7 @@
                 <tbody>
                 <tr v-for="(item, index) in view">
                     <td>{{index}}</td>
-                    <td :title="item.file">{{item.base_name}}</td>
+                    <td :title="item.file">{{item.file.substr(root_dir.length + 1)}}</td>
                     <td>
                         <pre :title="json_stringify(item.vars)">{{item.vars|json 4}}</pre>
                     </td>
