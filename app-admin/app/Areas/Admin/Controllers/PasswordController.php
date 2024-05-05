@@ -64,8 +64,9 @@ class PasswordController extends Controller
         return $this->response->json(['code' => 0, 'msg' => '重置密码连接已经发送到您的邮箱']);
     }
 
-    public function resetVars(string $token): array
+    public function resetVars(): array
     {
+        $token = $this->request->input('token');
         try {
             $claims = jwt_decode($token, 'admin.password.forget');
         } catch (Exception $exception) {
@@ -78,8 +79,7 @@ class PasswordController extends Controller
         ];
     }
 
-    #[ViewGetMapping(vars: 'resetVars')]
-    #[GetMapping, PostMapping]
+    #[ViewGetMapping(vars: 'resetVars'), PostMapping]
     public function resetAction(string $token, string $password)
     {
         try {
@@ -98,8 +98,7 @@ class PasswordController extends Controller
     }
 
     #[Authorize('user')]
-    #[ViewGetMapping]
-    #[GetMapping, PostMapping]
+    #[ViewGetMapping, PostMapping]
     public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {
         $admin = Admin::get($this->identity->getId());
