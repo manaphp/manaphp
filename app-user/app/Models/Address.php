@@ -8,12 +8,12 @@ namespace App\Models;
  */
 class Address extends Model
 {
-    public $address_id;
-    public $address;
-    public $address2;
-    public $district;
-    public $city_id;
-    public $postal_code;
-    public $phone;
-    public $last_update;
+    public int $address_id;
+    public string $address;
+    public string $address2;
+    public string $district;
+    public int $city_id;
+    public string $postal_code;
+    public string $phone;
+    public string $last_update;
 }

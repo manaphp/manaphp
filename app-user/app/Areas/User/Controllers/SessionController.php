@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\User\Controllers;
 
@@ -10,28 +11,37 @@ use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\InputInterface;
+use ManaPHP\Http\Router\Attribute\GetMapping;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use function substr;
 
 #[Authorize('*')]
+#[RequestMapping('/user/session')]
 class SessionController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
 
     #[Config] protected string $app_env;
 
+    #[PostMapping]
     public function captchaAction()
     {
         return $this->captcha->generate();
     }
 
-    public function loginView()
+    public function loginVars(): array
     {
-        $this->view->setVar('redirect', $this->request->input('redirect', $this->router->createUrl('/')));
+        $vars = [];
+        $vars['redirect'] = $this->request->input('redirect', $this->router->createUrl('/'));
+        $vars['user_name'] = $this->cookies->get('user_name');
 
-        return $this->view->setVar('user_name', $this->cookies->get('user_name'));
+        return $vars;
     }
 
-    public function loginAction(InputInterface $input, string $code)
+    #[ViewGetMapping('/login', vars: 'loginVars'), PostMapping('/login')]
+    public function loginAction(string $code, string $user_name, string $password)
     {
         if (!$udid = $this->cookies->get('CLIENT_UDID')) {
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
@@ -43,8 +53,8 @@ class SessionController extends Controller
             $this->session->remove('captcha');
         }
 
-        $user = User::first(['user_name' => $input->string('user_name')]);
-        if (!$user || !$user->verifyPassword($input->string('password'))) {
+        $user = User::first(['user_name' => $user_name]);
+        if (!$user || !$user->verifyPassword($password)) {
             return '账号或密码不正确';
         }
 
@@ -74,11 +84,12 @@ class SessionController extends Controller
         $adminLoginLog->user_name = $user->user_name;
         $adminLoginLog->client_ip = $this->request->ip();
         $adminLoginLog->client_udid = $udid;
-        $adminLoginLog->user_agent = \substr($this->request->header('user-agent'), 0, 255);
+        $adminLoginLog->user_agent = substr($this->request->header('user-agent'), 0, 255);
 
         $adminLoginLog->create();
     }
 
+    #[GetMapping(['/logout', '/user/session/logout'])]
     public function logoutAction()
     {
         $this->session->destroy();

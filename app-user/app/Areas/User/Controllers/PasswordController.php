@@ -1,17 +1,23 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\InputInterface;
+use ManaPHP\Http\Router\Attribute\PostMapping;
+use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
+use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
 #[Authorize('*')]
+#[RequestMapping('/user/password')]
 class PasswordController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
@@ -19,18 +25,20 @@ class PasswordController extends Controller
 
     #[Config] protected string $app_name;
 
+    #[PostMapping]
     public function captchaAction()
     {
         return $this->captcha->generate();
     }
 
-    public function forgetView()
+    public function forgetVars()
     {
         $this->view->setVar('redirect', $this->request->input('redirect', $this->router->createUrl('/')));
 
         return $this->view->setVar('user_name', $this->cookies->get('user_name'));
     }
 
+    #[ViewGetMapping(vars: 'forgetVars'), PostMapping]
     public function forgetAction(InputInterface $input)
     {
         $user_name = $input->string('user_name');
@@ -54,52 +62,51 @@ class PasswordController extends Controller
         return $this->response->json(['code' => 0, 'msg' => '重置密码连接已经发送到您的邮箱']);
     }
 
-    public function resetView(InputInterface $input)
+    public function resetVars(): array
     {
-        $token = $input->string('token');
+        $token = $this->request->input('token');
 
         try {
             $claims = jwt_decode($token, 'user.password.forget');
-        } catch (\Exception $exception) {
-            return $this->view->setVars(['expired' => true, 'token' => $token]);
+        } catch (Exception $exception) {
+            return ['expired' => true, 'token' => $token];
         }
 
-        return $this->view->setVars(
-            [
-                'expired'   => false,
+        return ['expired'   => false,
                 'user_name' => $claims['user_name'],
                 'token'     => $token,
-            ]
-        );
+        ];
     }
 
-    public function resetAction(InputInterface $input)
+    #[ViewGetMapping(vars: 'resetVars'), PostMapping]
+    public function resetAction(string $token, string $password)
     {
         try {
-            $claims = jwt_decode($input->string('token'), 'user.password.forget');
-        } catch (\Exception $exception) {
+            $claims = jwt_decode($token, 'user.password.forget');
+        } catch (Exception $exception) {
             return '重置失败：Token已过期';
         }
 
         $user_name = $claims['user_name'];
 
         $user = User::firstOrFail(['user_name' => $user_name]);
-        $user->password = $input->string('password');
+        $user->password = $password;
         $user->update();
 
         return $this->response->json(['code' => 0, 'msg' => '重置密码成功']);
     }
 
     #[Authorize('user')]
-    public function changeAction(InputInterface $input)
+    #[ViewGetMapping, PostMapping]
+    public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {
         $user = User::get($this->identity->getId());
-        if (!$user->verifyPassword($input->string('old_password'))) {
+        if (!$user->verifyPassword($old_password)) {
             return '旧密码不正确';
         }
 
-        $user->password = $input->string('new_password');
-        if ($input->string('new_password_confirm') !== $user->password) {
+        $user->password = $new_password;
+        if ($new_password_confirm !== $user->password) {
             return '两次输入的密码不一致';
         }
 
