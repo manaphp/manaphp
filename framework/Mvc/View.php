@@ -15,8 +15,15 @@ use ManaPHP\Mvc\View\Event\ViewRendering;
 use ManaPHP\Rendering\RendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use ReflectionClass;
+use function basename;
+use function dirname;
+use function explode;
 use function is_string;
 use function preg_match;
+use function str_contains;
+use function substr;
+use function ucfirst;
 
 class View implements ViewInterface
 {
@@ -137,7 +144,7 @@ class View implements ViewInterface
         }
     }
 
-    public function render(?string $template = null, array $vars = []): string
+    public function render(string $template, array $vars = []): string
     {
         /** @var ViewContext $context */
         $context = $this->getContext();
@@ -147,25 +154,15 @@ class View implements ViewInterface
             $this->setMaxAge(0);
         }
 
-        list($area, $controller, $action1) = $this->explodeHandler($this->dispatcher->getHandler());
-
-        if ($template === null) {
-            $action = $action1;
-        } elseif (str_contains($template, '/')) {
-            $action = null;
-        } else {
-            $action = $template;
-            $template = null;
-        }
-
-        if ($template === null) {
-            if ($area) {
-                $dir = "@app/Areas/$area/Views/$controller";
-            } else {
-                $dir = "@views/$controller";
-            }
+        if (str_contains($template, '::')) {
+            list($controller, $action) = explode('::', $template);
+            $rClass = new ReflectionClass($controller);
+            $controllerFile = $rClass->getFileName();
+            $dir = dirname($controllerFile, 2) . '/Views/' . basename($rClass->getShortName(), 'Controller');
 
             $this->dirs[$dir] ??= LocalFS::dirExists($dir);
+
+            $action = basename($action, 'Action');
 
             if ($this->dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($action);
