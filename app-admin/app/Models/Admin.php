@@ -5,6 +5,7 @@ namespace App\Models;
 
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
+use App\Repositories\AdminRepository;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
 use ManaPHP\Model\Event\ModelCreating;
@@ -51,7 +52,7 @@ class Admin extends Model implements ArgumentResolvable
     public static function argumentResolve(ContainerInterface $container): mixed
     {
         $identity = $container->get(IdentityInterface::class);
-        return static::get($identity->getId());
+        return $container->get(AdminRepository::class)->get($identity->getId());
     }
 
     public function relations(): array
