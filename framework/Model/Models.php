@@ -205,6 +205,11 @@ class Models implements ModelsInterface
             }
         }
 
+        $primaryKey = $this->getPrimaryKey($model);
+        if (!in_array($primaryKey, $fillable, true)) {
+            $fillable[] = $primaryKey;
+        }
+
         return $fillable;
     }
 
