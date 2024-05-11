@@ -5,6 +5,7 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Exception;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
@@ -22,6 +23,7 @@ class PasswordController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
     #[Autowired] protected MailerInterface $mailer;
+    #[Autowired] protected UserRepository $userRepository;
 
     #[Config] protected string $app_name;
 
@@ -44,7 +46,7 @@ class PasswordController extends Controller
         $user_name = $input->string('user_name');
         $email = $input->string('email');
 
-        $user = User::first(['user_name' => $user_name]);
+        $user = $this->userRepository->first(['user_name' => $user_name]);
         if (!$user || $user->email !== $email) {
             return '账号不存在或账号与邮箱不匹配';
         }
@@ -89,9 +91,10 @@ class PasswordController extends Controller
 
         $user_name = $claims['user_name'];
 
-        $user = User::firstOrFail(['user_name' => $user_name]);
+        $user = $this->userRepository->firstOrFail(['user_name' => $user_name]);
         $user->password = $password;
-        $user->update();
+
+        $this->userRepository->update($user);
 
         return $this->response->json(['code' => 0, 'msg' => '重置密码成功']);
     }
@@ -100,7 +103,7 @@ class PasswordController extends Controller
     #[ViewGetMapping, PostMapping]
     public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {
-        $user = User::get($this->identity->getId());
+        $user = $this->userRepository->get($this->identity->getId());
         if (!$user->verifyPassword($old_password)) {
             return '旧密码不正确';
         }
@@ -110,7 +113,7 @@ class PasswordController extends Controller
             return '两次输入的密码不一致';
         }
 
-        $user->update();
+        $this->userRepository->update($user);
         $this->session->destroy();
     }
 }

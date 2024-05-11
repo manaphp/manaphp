@@ -4,29 +4,35 @@ declare(strict_types=1);
 namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
-use App\Models\AdminActionLog;
+use App\Repositories\AdminActionLogRepository;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Criteria;
 
 #[RequestMapping('/admin/action-log')]
 class ActionLogController extends Controller
 {
+    #[Autowired] protected AdminActionLogRepository $adminActionLogRepository;
+
     #[Authorize]
     #[ViewGetMapping('')]
     public function indexAction(int $page = 1, int $size = 10)
     {
-        return AdminActionLog::select()
+        $criteria = Criteria::select()
             ->whereCriteria($this->request->all(), ['admin_name', 'handler', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
-            ->paginate($page, $size);
+            ->page($page, $size);
+        return $this->adminActionLogRepository->paginate($criteria);
     }
 
     #[Authorize('user')]
     #[GetMapping]
-    public function detailAction(AdminActionLog $adminActionLog)
+    public function detailAction(int $id)
     {
+        $adminActionLog = $this->adminActionLogRepository->get($id);
         if ($adminActionLog->admin_id === $this->identity->getId() || $this->authorization->isAllowed('detail')) {
             return $adminActionLog;
         } else {
@@ -38,10 +44,12 @@ class ActionLogController extends Controller
     #[ViewGetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
-        return AdminActionLog::select()
+        $criteria = Criteria::select()
             ->where(['admin_id' => $this->identity->getId()])
             ->whereCriteria($this->request->all(), ['handler', 'client_ip', 'created_time@=', 'tag'])
             ->orderBy(['id' => SORT_DESC])
-            ->paginate($page, $size);
+            ->page($page, $size);
+
+        return $this->adminActionLogRepository->paginate($criteria);
     }
 }

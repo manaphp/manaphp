@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Controllers;
 
-use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
+use App\Areas\Rbac\Repositories\AdminRoleRepository;
+use App\Areas\Rbac\Repositories\RoleRepository;
 use App\Controllers\Controller;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
@@ -16,6 +18,9 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 #[RequestMapping('/rbac/role')]
 class RoleController extends Controller
 {
+    #[Autowired] protected RoleRepository $roleRepository;
+    #[Autowired] protected AdminRoleRepository $adminRoleRepository;
+
     #[ViewGetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
@@ -29,7 +34,7 @@ class RoleController extends Controller
     #[GetMapping]
     public function listAction()
     {
-        return Role::lists(['display_name', 'role_name']);
+        return $this->roleRepository->lists(['display_name', 'role_name']);
     }
 
     #[PostMapping]
@@ -37,38 +42,42 @@ class RoleController extends Controller
     {
         $permissions = ',' . implode(',', $this->authorization->buildAllowed($role_name)) . ',';
 
-        return Role::fillCreate($this->request->all(), ['permissions' => $permissions]);
+        $role = $this->roleRepository->fill($this->request->all());
+        $role->permissions = $permissions;
+        return $this->roleRepository->create($role);
     }
 
     #[PostMapping]
-    public function editAction(Role $role)
+    public function editAction()
     {
-        return $role->fillUpdate($this->request->all());
+        return $this->roleRepository->update($this->request->all());
     }
 
     #[PostMapping]
-    public function disableAction(Role $role)
+    public function disableAction(int $role_id)
     {
+        $role = $this->roleRepository->get($role_id);
         $role->enabled = 0;
 
-        return $role->update();
+        return $this->roleRepository->update($role);
     }
 
     #[PostMapping]
-    public function enableAction(Role $role)
+    public function enableAction(int $role_id)
     {
+        $role = $this->roleRepository->get($role_id);
         $role->enabled = 1;
 
-        return $role->update();
+        return $this->roleRepository->update($role);
     }
 
     #[PostMapping]
-    public function deleteAction(Role $role)
+    public function deleteAction(int $role_id)
     {
-        if (AdminRole::exists(['role_id' => $role->role_id])) {
+        if ($this->adminRoleRepository->exists(['role_id' => $role_id])) {
             return '删除失败: 有用户绑定到此角色';
         }
 
-        return $role->delete();
+        return $this->roleRepository->deleteById($role_id);
     }
 }

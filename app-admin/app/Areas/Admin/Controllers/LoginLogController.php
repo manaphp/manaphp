@@ -4,36 +4,41 @@ declare(strict_types=1);
 namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
-use App\Models\AdminLoginLog;
+use App\Repositories\AdminLoginLogRepository;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Criteria;
 
 #[RequestMapping('/admin/login-log')]
 class LoginLogController extends Controller
 {
+    #[Autowired] protected AdminLoginLogRepository $adminLoginLogRepository;
+
     #[Authorize]
     #[ViewGetMapping('')]
     public function indexAction(int $page = 1, int $size = 10)
     {
-        return AdminLoginLog::select(
+        $criteria = Criteria::select(
             ['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time']
         )
             ->orderBy(['login_id' => SORT_DESC])
             ->whereCriteria(
                 $this->request->all(), ['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@=']
-            )
-            ->paginate($page, $size);
+            )->page($page, $size);
+        return $this->adminLoginLogRepository->paginate($criteria);
     }
 
     #[Authorize('user')]
     #[ViewGetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
-        return AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
+        $criteria = Criteria::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
             ->whereCriteria($this->request->all(), ['created_time@='])
             ->orderBy(['login_id' => SORT_DESC])
             ->where(['admin_id' => $this->identity->getId()])
-            ->paginate($page, $size);
+            ->page($page, $size);
+        return $this->adminLoginLogRepository->paginate($criteria);
     }
 }

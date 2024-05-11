@@ -5,6 +5,8 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\UserActionLog;
+use App\Repositories\UserActionLogRepository;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
@@ -14,10 +16,14 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 #[RequestMapping('/user/action-log')]
 class ActionLogController extends Controller
 {
+    #[Autowired] protected UserActionLogRepository $userActionLogRepository;
+
     #[Authorize('user')]
     #[GetMapping]
-    public function detailAction(UserActionLog $userActionLog)
+    public function detailAction(int $id)
     {
+        $userActionLog = $this->userActionLogRepository->get($id);
+
         if ($userActionLog->user_id == $this->identity->getId() || $this->authorization->isAllowed('detail')) {
             return $userActionLog;
         } else {

@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
-use App\Models\Admin;
+use App\Repositories\AdminRepository;
 use Exception;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
@@ -24,6 +23,7 @@ class PasswordController extends Controller
     #[Autowired] protected ViewInterface $view;
     #[Autowired] protected CaptchaInterface $captcha;
     #[Autowired] protected MailerInterface $mailer;
+    #[Autowired] protected AdminRepository $adminRepository;
 
     #[Config] protected string $app_name;
 
@@ -46,7 +46,7 @@ class PasswordController extends Controller
     #[ViewGetMapping(vars: 'forgetVars'), PostMapping]
     public function forgetAction(string $admin_name, string $email)
     {
-        $admin = Admin::first(['admin_name' => $admin_name]);
+        $admin = $this->adminRepository->first(['admin_name' => $admin_name]);
         if (!$admin || $admin->email !== $email) {
             return '账号不存在或账号与邮箱不匹配';
         }
@@ -90,9 +90,9 @@ class PasswordController extends Controller
 
         $admin_name = $claims['admin_name'];
 
-        $admin = Admin::firstOrFail(['admin_name' => $admin_name]);
+        $admin = $this->adminRepository->firstOrFail(['admin_name' => $admin_name]);
         $admin->password = $password;
-        $admin->update();
+        $this->adminRepository->update($admin);
 
         return $this->response->json(['code' => 0, 'msg' => '重置密码成功']);
     }
@@ -101,7 +101,7 @@ class PasswordController extends Controller
     #[ViewGetMapping, PostMapping]
     public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {
-        $admin = Admin::get($this->identity->getId());
+        $admin = $this->adminRepository->get($this->identity->getId());
         if (!$admin->verifyPassword($old_password)) {
             return '旧密码不正确';
         }
@@ -111,7 +111,7 @@ class PasswordController extends Controller
             return '两次输入的密码不一致';
         }
 
-        $admin->update();
+        $this->adminRepository->update($admin);
         $this->session->destroy();
     }
 }

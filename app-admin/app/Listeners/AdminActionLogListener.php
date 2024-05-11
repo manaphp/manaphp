@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Models\AdminActionLog;
+use App\Repositories\AdminActionLogRepository;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
 use ManaPHP\Di\Attribute\Autowired;
@@ -23,6 +24,7 @@ class AdminActionLogListener
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected CookiesInterface $cookies;
     #[Autowired] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected AdminActionLogRepository $adminActionLogRepository;
 
     public function onDbExecuting(#[Event] DbExecuting $event): void
     {
@@ -74,6 +76,7 @@ class AdminActionLogListener
         unset($data['ajax']);
 
         $adminActionLog = new AdminActionLog();
+
         $adminActionLog->admin_id = $this->identity->isGuest() ? 0 : $this->identity->getId();
         $adminActionLog->admin_name = $this->identity->isGuest() ? '' : $this->identity->getName();
         $adminActionLog->client_ip = $this->request->ip();
@@ -83,6 +86,7 @@ class AdminActionLogListener
         $adminActionLog->data = json_stringify($data);
         $adminActionLog->handler = (string)$this->dispatcher->getHandler();
         $adminActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
-        $adminActionLog->create();
+
+        $this->adminActionLogRepository->create($adminActionLog);
     }
 }

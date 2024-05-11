@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Item;
+use App\Areas\Menu\Repositories\ItemRepository;
 use App\Controllers\Controller;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
@@ -14,6 +16,8 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 #[RequestMapping('/menu/item')]
 class ItemController extends Controller
 {
+    #[Autowired] protected ItemRepository $itemRepository;
+
     #[ViewGetMapping('')]
     public function indexAction()
     {
@@ -26,18 +30,18 @@ class ItemController extends Controller
     #[PostMapping]
     public function createAction()
     {
-        return Item::fillCreate($this->request->all());
+        return $this->itemRepository->create($this->request->all());
     }
 
     #[PostMapping]
-    public function editAction(Item $item)
+    public function editAction()
     {
-        return $item->fillUpdate($this->request->all());
+        return $this->itemRepository->update($this->request->all());
     }
 
     #[PostMapping]
-    public function deleteAction(Item $item)
+    public function deleteAction(int $item_id)
     {
-        return $item->delete();
+        return $this->itemRepository->deleteById($item_id);
     }
 }

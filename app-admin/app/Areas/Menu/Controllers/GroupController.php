@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Group;
+use App\Areas\Menu\Repositories\GroupRepository;
 use App\Controllers\Controller;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
@@ -15,6 +17,8 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 #[RequestMapping('/menu/group')]
 class GroupController extends Controller
 {
+    #[Autowired] protected GroupRepository $groupRepository;
+
     #[ViewGetMapping('')]
     public function indexAction()
     {
@@ -27,24 +31,24 @@ class GroupController extends Controller
     #[GetMapping]
     public function listAction()
     {
-        return Group::all([], ['group_id', 'group_name']);
+        return $this->groupRepository->all([], ['group_id', 'group_name']);
     }
 
     #[PostMapping]
     public function createAction()
     {
-        return Group::fillCreate($this->request->all());
+        return $this->groupRepository->create($this->request->all());
     }
 
     #[PostMapping]
-    public function editAction(Group $group)
+    public function editAction()
     {
-        return $group->fillUpdate($this->request->all());
+        return $this->groupRepository->update($this->request->all());
     }
 
     #[PostMapping]
-    public function deleteAction(Group $group)
+    public function deleteAction(int $group_id)
     {
-        return $group->delete();
+        return $this->groupRepository->deleteById($group_id);
     }
 }

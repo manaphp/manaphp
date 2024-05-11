@@ -6,6 +6,8 @@ namespace App\Areas\User\Controllers;
 use App\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserLoginLog;
+use App\Repositories\AdminLoginLogRepository;
+use App\Repositories\UserRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Helper\Str;
@@ -22,6 +24,8 @@ use function substr;
 class SessionController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
+    #[Autowired] protected UserRepository $userRepository;
+    #[Autowired] protected AdminLoginLogRepository $adminLoginLogRepository;
 
     #[Config] protected string $app_env;
 
@@ -76,7 +80,8 @@ class SessionController extends Controller
         $user->login_ip = $this->request->ip();
         $user->login_time = time();
         $user->session_id = $session_id;
-        $user->update();
+
+        $this->userRepository->update($user);
 
         $adminLoginLog = new UserLoginLog();
 
@@ -86,7 +91,7 @@ class SessionController extends Controller
         $adminLoginLog->client_udid = $udid;
         $adminLoginLog->user_agent = substr($this->request->header('user-agent'), 0, 255);
 
-        $adminLoginLog->create();
+        $this->adminLoginLogRepository->create($adminLoginLog);
     }
 
     #[GetMapping(['/logout', '/user/session/logout'])]

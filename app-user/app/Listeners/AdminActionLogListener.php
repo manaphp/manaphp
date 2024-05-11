@@ -5,6 +5,7 @@ namespace App\Listeners;
 
 use App\Events\UserActionLog;
 use App\Models\AdminActionLog;
+use App\Repositories\AdminActionLogRepository;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
 use ManaPHP\Di\Attribute\Autowired;
@@ -24,6 +25,7 @@ class AdminActionLogListener
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected CookiesInterface $cookies;
     #[Autowired] protected DispatcherInterface $dispatcher;
+    #[Autowired] protected AdminActionLogRepository $adminActionLogRepository;
 
     protected function getTag(): int
     {
@@ -64,6 +66,7 @@ class AdminActionLogListener
         unset($data['ajax']);
 
         $adminActionLog = new AdminActionLog();
+
         $adminActionLog->admin_id = $this->identity->isGuest() ? 0 : $this->identity->getId();
         $adminActionLog->admin_name = $this->identity->isGuest() ? '' : $this->identity->getName();
         $adminActionLog->client_ip = $this->request->ip();
@@ -73,6 +76,7 @@ class AdminActionLogListener
         $adminActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $adminActionLog->handler = (string)$this->dispatcher->getHandler();
         $adminActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
-        $adminActionLog->create();
+
+        $this->adminActionLogRepository->create($adminActionLog);
     }
 }

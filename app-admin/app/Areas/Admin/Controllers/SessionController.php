@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace App\Areas\Admin\Controllers;
 
-use App\Areas\Rbac\Models\AdminRole;
-use App\Areas\Rbac\Models\Role;
+use App\Areas\Rbac\Repositories\AdminRoleRepository;
+use App\Areas\Rbac\Repositories\RoleRepository;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\AdminLoginLog;
+use App\Repositories\AdminLoginLogRepository;
+use App\Repositories\AdminRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Helper\Ip;
@@ -24,6 +26,10 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 class SessionController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
+    #[Autowired] protected AdminRepository $adminRepository;
+    #[Autowired] protected RoleRepository $roleRepository;
+    #[Autowired] protected AdminRoleRepository $adminRoleRepository;
+    #[Autowired] protected AdminLoginLogRepository $adminLoginLogRepository;
 
     #[Config] protected string $app_env;
 
@@ -56,7 +62,7 @@ class SessionController extends Controller
             $this->session->remove('captcha');
         }
 
-        $admin = Admin::first(['admin_name' => $admin_name]);
+        $admin = $this->adminRepository->first(['admin_name' => $admin_name]);
         if (!$admin || !$admin->verifyPassword($password)) {
             return '账号或密码不正确';
         }
@@ -76,8 +82,8 @@ class SessionController extends Controller
         if ($admin->admin_id === 1) {
             $roles = ['admin'];
         } else {
-            $roles = AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
-            $roles = Role::values('role_name', ['enabled' => 1, 'role_name' => $roles]);
+            $roles = $this->adminRoleRepository->values('role_name', ['admin_id' => $admin->admin_id]);
+            $roles = $this->roleRepository->values('role_name', ['enabled' => 1, 'role_name' => $roles]);
         }
 
         $claims = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
@@ -92,7 +98,7 @@ class SessionController extends Controller
         $admin->login_ip = $client_ip;
         $admin->login_time = time();
         $admin->session_id = $session_id;
-        $admin->update();
+        $this->adminRepository->update($admin);
 
         $adminLoginLog = new AdminLoginLog();
 
@@ -102,7 +108,7 @@ class SessionController extends Controller
         $adminLoginLog->client_udid = $udid;
         $adminLoginLog->user_agent = \substr($this->request->header('user-agent'), 0, 255);
 
-        $adminLoginLog->create();
+        return $this->adminLoginLogRepository->create($adminLoginLog);
     }
 
     #[Authorize('user')]

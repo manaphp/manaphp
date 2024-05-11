@@ -5,6 +5,7 @@ namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\Admin;
+use App\Repositories\AdminRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
@@ -18,6 +19,7 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 class AccountController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
+    #[Autowired] protected AdminRepository $adminRepository;
 
     #[PostMapping]
     public function captchaAction(): ResponseInterface
@@ -30,9 +32,12 @@ class AccountController extends Controller
     {
         $this->captcha->verify($code);
 
-        return Admin::fillCreate(
-            $this->request->all(),
-            ['white_ip' => '*', 'status' => Admin::STATUS_INIT, 'password' => $password]
-        );
+        $admin = $this->adminRepository->fill($this->request->all());
+
+        $admin->white_ip = '*';
+        $admin->status = Admin::STATUS_INIT;
+        $admin->password = $password;
+
+        return $this->adminRepository->create($admin);
     }
 }

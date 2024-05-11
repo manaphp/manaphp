@@ -5,6 +5,7 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
@@ -17,6 +18,7 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 class AccountController extends Controller
 {
     #[Autowired] protected CaptchaInterface $captcha;
+    #[Autowired] protected UserRepository $userRepository;
 
     #[PostMapping]
     public function captchaAction()
@@ -28,9 +30,12 @@ class AccountController extends Controller
     public function registerAction(string $code, string $password)
     {
         $this->captcha->verify($code);
-        return User::fillCreate(
-            $this->request->all(),
-            ['status' => User::STATUS_ACTIVE, 'password' => $password]
-        );
+
+        $user = $this->userRepository->fill($this->request->all());
+
+        $user->status = User::STATUS_ACTIVE;
+        $user->password = $password;
+
+        $this->userRepository->create($user);
     }
 }

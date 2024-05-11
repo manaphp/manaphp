@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Areas\System\Controllers;
 
 use App\Areas\System\Models\DotenvLog;
+use App\Areas\System\Repositories\DotenvLogRepository;
 use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
@@ -18,6 +19,7 @@ use ManaPHP\Redis\RedisDbInterface;
 class DotenvController extends Controller
 {
     #[Autowired] protected RedisDbInterface $redisDb;
+    #[Autowired] protected DotenvLogRepository $dotenvLogRepository;
 
     public const REDIS_KEY = '.env';
 
@@ -55,7 +57,7 @@ class DotenvController extends Controller
         $dotenvLog->app_id = $app_id;
         $dotenvLog->env = $env;
 
-        $dotenvLog->create();
+        $this->dotenvLogRepository->create($dotenvLog);
 
         $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
@@ -76,7 +78,7 @@ class DotenvController extends Controller
         $dotenvLog->app_id = $app_id;
         $dotenvLog->env = $env;
 
-        $dotenvLog->create();
+        $this->dotenvLogRepository->create($dotenvLog);
 
         $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
