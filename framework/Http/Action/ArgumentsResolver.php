@@ -7,5 +7,5 @@ use ManaPHP\Di\Attribute\Autowired;
 
 class ArgumentsResolver extends \ManaPHP\Invoking\ArgumentsResolver implements ArgumentsResolverInterface
 {
-    #[Autowired] protected array $resolvers = ['model', 'request', 'form'];
+    #[Autowired] protected array $resolvers = ['request', 'form'];
 }
