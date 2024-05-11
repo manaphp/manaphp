@@ -61,6 +61,8 @@ interface RepositoryInterface
 
     public function exists(array $filters): bool;
 
+    public function existsById(int|string $id): bool;
+
     /**
      * @param array $data
      *

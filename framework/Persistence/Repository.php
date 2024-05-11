@@ -108,6 +108,13 @@ class Repository implements RepositoryInterface
         return $this->entityClass::exists($filters);
     }
 
+    public function existsById(int|string $id): bool
+    {
+        $primaryKey = $this->models->getPrimaryKey($this->entityClass);
+
+        return $this->entityClass::exists([$primaryKey => $id]);
+    }
+
     /**
      * @param T $entity
      *
