@@ -5,7 +5,9 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 
 use Attribute;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\Container;
 use ManaPHP\Model\ModelInterface;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
 use function is_int;
@@ -35,6 +37,11 @@ class Unique extends AbstractConstraint
             } else {
                 $filters[$key] = $value;
             }
+        }
+
+        $primaryKey = Container::get(ModelsInterface::class)->getPrimaryKey($source::class);
+        if ($primaryKey !== null && isset($source->$primaryKey)) {
+            $filters[$primaryKey . '!='] = $source->$primaryKey;
         }
 
         return !$source::exists($filters);
