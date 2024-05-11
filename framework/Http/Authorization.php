@@ -9,10 +9,10 @@ use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Helper\SuppressWarnings;
+use ManaPHP\Http\Authorization\RoleRepositoryInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 use ManaPHP\Identifying\IdentityInterface;
-use ManaPHP\Model\ModelInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use function in_array;
@@ -29,6 +29,7 @@ class Authorization implements AuthorizationInterface
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected ControllersInterface $controllers;
+    #[Autowired] protected RoleRepositoryInterface $roleRepository;
 
     public function getPermissions(string $controller): array
     {
@@ -128,20 +129,9 @@ class Authorization implements AuthorizationInterface
         $context = $this->getContext();
 
         if (!isset($context->role_permissions[$role])) {
-            /** @var ModelInterface $roleModel */
-            $roleModel = null;
-            if (class_exists('App\Areas\Rbac\Models\Role')) {
-                $roleModel = 'App\Areas\Rbac\Models\Role';
-            } elseif (class_exists('App\Models\Role')) {
-                $roleModel = 'App\Models\Role';
-            }
-
-            if ($roleModel) {
-                $permissions = $roleModel::valueOrDefault(['role_name' => $role], 'permissions', '');
-            } else {
+            if (($permissions = $this->roleRepository->getPermissions($role)) === null) {
                 $permissions = ',' . implode(',', $this->buildAllowed($role)) . ',';
             }
-
             return $context->role_permissions[$role] = $permissions;
         } else {
             return $context->role_permissions[$role];
