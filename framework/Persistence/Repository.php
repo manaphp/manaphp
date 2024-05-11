@@ -116,13 +116,25 @@ class Repository implements RepositoryInterface
     }
 
     /**
-     * @param T $entity
+     * @param T|array $entity
      *
      * @return T
      */
-    public function save(object $entity): object
+    public function save(object|array $entity): object
     {
-        return $entity->save();
+        $primaryKey = $this->models->getPrimaryKey($this->entityClass);
+
+        if (is_array($entity)) {
+            if (!isset($entity[$primaryKey]) || !$this->existsById($entity[$primaryKey])) {
+                return $this->create($entity);
+            }
+        } else {
+            if (!isset($entity->$primaryKey) || !$this->existsById($entity->$primaryKey)) {
+                return $this->create($entity);
+            }
+        }
+
+        return $this->update($entity);
     }
 
     /**

@@ -267,21 +267,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * Inserts or updates a model instance. Returning true on success or false otherwise.
-     *
-     * @return static
-     */
-    public function save(): static
-    {
-        $primaryKey = Container::get(ModelsInterface::class)->getPrimaryKey(static::class);
-        if ($this->_snapshot || isset($this->$primaryKey)) {
-            return $this->update();
-        } else {
-            return $this->create();
-        }
-    }
-
-    /**
      * @param array $fieldValues =model_var(new static)
      * @param array $filters     =model_var(new static)
      *

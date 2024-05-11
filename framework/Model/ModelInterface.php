@@ -31,8 +31,6 @@ interface ModelInterface
 
     public function validate(array $fields): void;
 
-    public function save(): static;
-
     public function create(): static;
 
     public function update(): static;

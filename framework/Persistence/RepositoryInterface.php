@@ -71,11 +71,11 @@ interface RepositoryInterface
     public function fill(array $data): object;
 
     /**
-     * @param T $entity
+     * @param T|array $entity
      *
      * @return T
      */
-    public function save(object $entity): object;
+    public function save(object|array $entity): object;
 
     /**
      * @param T|array $entity
