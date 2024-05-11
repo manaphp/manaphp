@@ -49,13 +49,6 @@ interface RepositoryInterface
      */
     public function firstOrFail(array $filters, array $fields = []): object;
 
-    /**
-     * @param array $filters
-     *
-     * @return T
-     */
-    public function firstOrNew(array $filters): object;
-
     public function value(array $filters, string $field): mixed;
 
     public function valueOrFail(array $filters, string $field): mixed;

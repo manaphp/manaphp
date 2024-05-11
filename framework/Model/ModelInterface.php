@@ -13,21 +13,13 @@ interface ModelInterface
 
     public static function lists(array $fields, array $filters = []): array;
 
-    public static function get(int|string $id, array $fields = []): static;
-
     public static function first(array $filters, array $fields = []): ?static;
-
-    public static function firstOrFail(array $filters, array $fields = []): static;
 
     public static function firstOrNew(array $filters): static;
 
     public static function last(array $filters, array $fields = []): ?static;
 
     public static function value(array $filters, string $field): mixed;
-
-    public static function valueOrFail(array $filters, string $field): mixed;
-
-    public static function valueOrDefault(array $filters, string $field, mixed $default): mixed;
 
     public static function values(string $field, array $filters = []): array;
 

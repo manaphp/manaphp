@@ -5,7 +5,7 @@ namespace ManaPHP\Persistence;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\NotFoundException;
+use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
 use function is_array;
@@ -18,6 +18,7 @@ use function preg_match;
 class Repository implements RepositoryInterface
 {
     #[Autowired] protected EntityFillerInterface $entityFiller;
+    #[Autowired] protected ModelsInterface $models;
 
     /** @var class-string<T>|ModelInterface */
     protected string $entityClass;
@@ -54,7 +55,9 @@ class Repository implements RepositoryInterface
 
     public function get(int|string $id, array $fields = []): object
     {
-        return $this->entityClass::get($id, $fields);
+        $primaryKey = $this->models->getPrimaryKey($this->entityClass);
+
+        return $this->firstOrFail([$primaryKey => $id], $fields);
     }
 
     public function first(array $filters, array $fields = []): ?object
@@ -64,12 +67,11 @@ class Repository implements RepositoryInterface
 
     public function firstOrFail(array $filters, array $fields = []): object
     {
-        return $this->entityClass::firstOrFail($filters, $fields);
-    }
+        if (($entity = $this->first($filters, $fields)) === null) {
+            throw new EntityNotFoundException($this->entityClass, $filters);
+        }
 
-    public function firstOrNew(array $filters): object
-    {
-        return $this->entityClass::firstOrNew($filters);
+        return $entity;
     }
 
     public function value(array $filters, string $field): mixed
@@ -79,12 +81,16 @@ class Repository implements RepositoryInterface
 
     public function valueOrFail(array $filters, string $field): mixed
     {
-        return $this->entityClass::valueOrFail($filters, $field);
+        if (($value = $this->value($filters, $field)) === null) {
+            throw new EntityNotFoundException($this->entityClass, $filters);
+        } else {
+            return $value;
+        }
     }
 
     public function valueOrDefault(array $filters, string $field, mixed $default): mixed
     {
-        return $this->entityClass::valueOrDefault($filters, $field, $default);
+        return $this->value($filters, $field) ?? $default;
     }
 
     public function values(string $field, array $filters = []): array
@@ -161,7 +167,7 @@ class Repository implements RepositoryInterface
             $entity = $this->get($id);
             $entity->delete();
             return $entity;
-        } catch (NotFoundException) {
+        } catch (EntityNotFoundException) {
             return null;
         }
     }

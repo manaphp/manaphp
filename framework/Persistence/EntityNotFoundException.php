@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Model;
+namespace ManaPHP\Persistence;
 
 use JetBrains\PhpStorm\ArrayShape;
+use function json_stringify;
 
-class NotFoundException extends Exception
+class EntityNotFoundException extends Exception
 {
     public string $model;
     public mixed $filters;

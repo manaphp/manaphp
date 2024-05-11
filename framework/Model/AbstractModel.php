@@ -74,19 +74,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param int|string $id
-     * @param array      $fields =model_fields(new static)
-     *
-     * @return static
-     */
-    public static function get(int|string $id, array $fields = []): static
-    {
-        $primaryKey = Container::get(ModelsInterface::class)->getPrimaryKey(static::class);
-
-        return static::firstOrFail([$primaryKey => $id], $fields);
-    }
-
-    /**
      * @param array $fields =model_fields(new static)
      *
      * @return QueryInterface <static>
@@ -108,22 +95,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     {
         $rs = static::select($fields)->where($filters)->limit(1)->fetch();
         return $rs[0] ?? null;
-    }
-
-    /**
-     * @param array $filters =model_var(new static)
-     * @param array $fields  =model_fields(new static)
-     *
-     * @return static
-     */
-    public static function firstOrFail(array $filters, array $fields = []): static
-    {
-        $r = static::first($filters, $fields);
-        if ($r === null) {
-            throw new NotFoundException(static::class, $filters);
-        }
-
-        return $r;
     }
 
     /**
@@ -168,34 +139,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     {
         $rs = static::select([$field])->where($filters)->limit(1)->execute();
         return $rs ? $rs[0][$field] : null;
-    }
-
-    /**
-     * @param array  $filters =model_var(new static)
-     * @param string $field   =model_field(new static)
-     *
-     * @return int|float|string
-     */
-    public static function valueOrFail(array $filters, string $field): mixed
-    {
-        $value = static::value($filters, $field);
-        if ($value === null) {
-            throw new NotFoundException(static::class, $filters);
-        } else {
-            return $value;
-        }
-    }
-
-    /**
-     * @param array  $filters =model_var(new static)
-     * @param string $field   =model_field(new static)
-     * @param mixed  $default
-     *
-     * @return float|int|string
-     */
-    public static function valueOrDefault(array $filters, mixed $field, mixed $default): mixed
-    {
-        return ($value = static::value($filters, $field)) === null ? $default : $value;
     }
 
     /**
