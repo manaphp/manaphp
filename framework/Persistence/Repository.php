@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Persistence;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Query\Paginator;
@@ -16,6 +17,8 @@ use function preg_match;
  */
 class Repository implements RepositoryInterface
 {
+    #[Autowired] protected EntityFillerInterface $entityFiller;
+
     /** @var class-string<T>|ModelInterface */
     protected string $entityClass;
 
@@ -164,13 +167,13 @@ class Repository implements RepositoryInterface
     }
 
     /**
-     * @param array $kv
+     * @param array $data
      *
      * @return T
      */
-    public function fill(array $kv): object
+    public function fill(array $data): object
     {
-        return (new $this->entityClass())->fill($kv);
+        return $this->entityFiller->fill(new $this->entityClass(), $data);
     }
 
     public function paginate(CriteriaInterface $criteria): Paginator

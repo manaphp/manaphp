@@ -69,11 +69,11 @@ interface RepositoryInterface
     public function exists(array $filters): bool;
 
     /**
-     * @param array $kv
+     * @param array $data
      *
      * @return T
      */
-    public function fill(array $kv): object;
+    public function fill(array $data): object;
 
     /**
      * @param T $entity

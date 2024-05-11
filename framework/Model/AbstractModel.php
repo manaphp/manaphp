@@ -10,7 +10,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Query\QueryInterface;
-use ManaPHP\Validating\Constraint\Attribute\Type;
 use ManaPHP\Validating\ConstraintInterface;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -277,50 +276,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         }
 
         return $this;
-    }
-
-    public function fill(array $kv): static
-    {
-        $validator = Container::get(ValidatorInterface::class);
-
-        $validation = $validator->beginValidate($kv);
-        foreach (Container::get(ModelsInterface::class)->getFillable(static::class) as $field) {
-            if (($value = $kv[$field] ?? null) !== null) {
-                $validation->field = $field;
-                $validation->value = $value;
-
-                $rProperty = new ReflectionProperty(static::class, $field);
-
-                if ($attributes = $rProperty->getAttributes(Type::class, ReflectionAttribute::IS_INSTANCEOF)) {
-                    $constraint = $attributes[0]->newInstance();
-                } else {
-                    $constraint = new Type($rProperty->getType()?->getName() ?? 'mixed');
-                }
-
-                if ($validation->validate($constraint)) {
-                    $this->$field = $validation->value;
-                }
-            }
-        }
-        $validator->endValidate($validation);
-
-        return $this;
-    }
-
-    public static function fillCreate(array $data, array $kv = []): static
-    {
-        $model = (new static())->fill($data);
-
-        foreach ($kv as $key => $val) {
-            $model->$key = $val;
-        }
-
-        return $model->create();
-    }
-
-    public function fillUpdate(array $data): static
-    {
-        return $this->fill($data)->update();
     }
 
     /**

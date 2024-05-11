@@ -37,12 +37,6 @@ interface ModelInterface
 
     public function assign(array|object $data, array $fields): static;
 
-    public function fill(array $kv): static;
-
-    public static function fillCreate(array $data, array $kv): static;
-
-    public function fillUpdate(array $data): static;
-
     public function validate(array $fields): void;
 
     public function save(): static;
