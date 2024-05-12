@@ -11,7 +11,7 @@ use function trim;
 
 class Restrictions implements RestrictionsInterface
 {
-    protected array $restrictions;
+    protected array $restrictions = [];
 
     public static function of(array $data, array $filters): static
     {
@@ -43,7 +43,8 @@ class Restrictions implements RestrictionsInterface
 
     public function eq(string $field, mixed $value): static
     {
-        $this->restrictions[] = ['eq', $field, $value];
+        $this->restrictions[$field] = $value;
+
         return $this;
     }
 
