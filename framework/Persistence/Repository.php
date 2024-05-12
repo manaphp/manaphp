@@ -43,7 +43,7 @@ class Repository implements RepositoryInterface
      *
      * @return array<T>
      */
-    public function all(array|RestrictionsInterface $filters = [], array $fields = [], array $orders = []): array
+    public function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array
     {
         return $this->entityClass::all($filters, $fields, $orders);
     }
@@ -201,7 +201,7 @@ class Repository implements RepositoryInterface
         return $this->entityFiller->fill(new $this->entityClass(), $data);
     }
 
-    public function paginate(array $fields, array|RestrictionsInterface $restrictions, array $orders, Page $page
+    public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
     ): Paginator {
         return $this->entityClass::select($fields)
             ->where($restrictions)

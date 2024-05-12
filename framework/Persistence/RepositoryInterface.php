@@ -16,13 +16,13 @@ interface RepositoryInterface
     public function getEntityClass(): string;
 
     /**
-     * @param array|RestrictionsInterface $filters
-     * @param array                       $fields
-     * @param array                       $orders
+     * @param array|Restrictions $filters
+     * @param array              $fields
+     * @param array              $orders
      *
      * @return array<T>
      */
-    public function all(array|RestrictionsInterface $filters = [], array $fields = [], array $orders = []): array;
+    public function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array;
 
     public function lists(array $fields, array $filters = []): array;
 
@@ -106,7 +106,7 @@ interface RepositoryInterface
      */
     public function deleteById(int|string $id): ?object;
 
-    public function paginate(array $fields, array|RestrictionsInterface $restrictions, array $orders, Page $page
+    public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
     ): Paginator;
 
     public function deleteAll(array $filters): int;

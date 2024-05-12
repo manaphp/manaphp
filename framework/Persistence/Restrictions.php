@@ -9,7 +9,7 @@ use function strpos;
 use function substr;
 use function trim;
 
-class Restrictions implements RestrictionsInterface
+class Restrictions
 {
     protected array $restrictions = [];
 

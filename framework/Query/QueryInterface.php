@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Query;
 
 use ManaPHP\Model\ModelInterface;
-use ManaPHP\Persistence\RestrictionsInterface;
+use ManaPHP\Persistence\Restrictions;
 
 /**
  * @template Model
@@ -31,11 +31,11 @@ interface QueryInterface
     /**
      * Appends a condition to the current conditions using a AND operator
      *
-     * @param array|RestrictionsInterface $filters =model_var(new Model)
+     * @param array|Restrictions $filters =model_var(new Model)
      *
      * @return static
      */
-    public function where(array|RestrictionsInterface $filters): static;
+    public function where(array|Restrictions $filters): static;
 
     /**
      * @param string $field =model_field(new Model)

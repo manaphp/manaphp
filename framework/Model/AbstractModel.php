@@ -9,7 +9,7 @@ use JsonSerializable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Persistence\RestrictionsInterface;
+use ManaPHP\Persistence\Restrictions;
 use ManaPHP\Query\QueryInterface;
 use ManaPHP\Validating\ConstraintInterface;
 use ManaPHP\Validating\ValidatorInterface;
@@ -43,13 +43,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array|RestrictionsInterface $filters =model_var(new static)
-     * @param array                       $fields  =model_fields(new static)
-     * @param array                       $orders
+     * @param array|Restrictions $filters =model_var(new static)
+     * @param array              $fields  =model_fields(new static)
+     * @param array              $orders
      *
      * @return  static[]
      */
-    public static function all(array|RestrictionsInterface $filters = [], array $fields = [], array $orders = []): array
+    public static function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array
     {
         return static::select($fields)->where($filters)->orderBy($orders)->fetch();
     }
