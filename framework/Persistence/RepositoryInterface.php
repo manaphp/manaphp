@@ -105,7 +105,7 @@ interface RepositoryInterface
      */
     public function deleteById(int|string $id): ?object;
 
-    public function paginate(CriteriaInterface $criteria): Paginator;
+    public function applyCriteria(CriteriaInterface $criteria): Paginator;
 
     public function deleteAll(array $filters): int;
 }

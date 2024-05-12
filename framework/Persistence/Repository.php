@@ -201,7 +201,7 @@ class Repository implements RepositoryInterface
         return $this->entityFiller->fill(new $this->entityClass(), $data);
     }
 
-    public function paginate(CriteriaInterface $criteria): Paginator
+    public function applyCriteria(CriteriaInterface $criteria): Paginator
     {
         /** @var QueryInterface $query */
         $query = $this->entityClass::select($criteria->getSelect())

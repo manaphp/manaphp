@@ -28,7 +28,7 @@ class ActionLogController extends Controller
             )
             ->orderBy(['id' => SORT_DESC])
             ->page($page, $size);
-        return $this->adminActionLogRepository->paginate($criteria);
+        return $this->adminActionLogRepository->applyCriteria($criteria);
     }
 
     #[Authorize('user')]
@@ -53,6 +53,6 @@ class ActionLogController extends Controller
             ->orderBy(['id' => SORT_DESC])
             ->page($page, $size);
 
-        return $this->adminActionLogRepository->paginate($criteria);
+        return $this->adminActionLogRepository->applyCriteria($criteria);
     }
 }

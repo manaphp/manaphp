@@ -30,7 +30,7 @@ class LoginLogController extends Controller
                     $this->request->all(), ['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@=']
                 )
             )->page($page, $size);
-        return $this->adminLoginLogRepository->paginate($criteria);
+        return $this->adminLoginLogRepository->applyCriteria($criteria);
     }
 
     #[Authorize('user')]
@@ -42,6 +42,6 @@ class LoginLogController extends Controller
             ->orderBy(['login_id' => SORT_DESC])
             ->where(['admin_id' => $this->identity->getId()])
             ->page($page, $size);
-        return $this->adminLoginLogRepository->paginate($criteria);
+        return $this->adminLoginLogRepository->applyCriteria($criteria);
     }
 }
