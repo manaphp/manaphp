@@ -10,7 +10,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
-use ManaPHP\Persistence\Criteria;
+use ManaPHP\Persistence\Page;
 use ManaPHP\Persistence\Restrictions;
 
 #[RequestMapping('/admin/action-log')]
@@ -22,13 +22,13 @@ class ActionLogController extends Controller
     #[ViewGetMapping('')]
     public function indexAction(int $page = 1, int $size = 10)
     {
-        $criteria = Criteria::select()
-            ->where(
-                Restrictions::of($this->request->all(), ['admin_name', 'handler', 'client_ip', 'created_time@=', 'tag'])
-            )
-            ->orderBy(['id' => SORT_DESC])
-            ->page($page, $size);
-        return $this->adminActionLogRepository->applyCriteria($criteria);
+        $restrictions = Restrictions::of(
+            $this->request->all(),
+            ['admin_name', 'handler', 'client_ip', 'created_time@=', 'tag']
+        );
+
+        $orders = ['id' => SORT_DESC];
+        return $this->adminActionLogRepository->paginate([], $restrictions, $orders, Page::of($page, $size));
     }
 
     #[Authorize('user')]
@@ -47,12 +47,10 @@ class ActionLogController extends Controller
     #[ViewGetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
-        $criteria = Criteria::select()
-            ->where(['admin_id' => $this->identity->getId()])
-            ->where(Restrictions::of($this->request->all(), ['handler', 'client_ip', 'created_time@=', 'tag']))
-            ->orderBy(['id' => SORT_DESC])
-            ->page($page, $size);
+        $restrictions = Restrictions::of($this->request->all(), ['handler', 'client_ip', 'created_time@=', 'tag']);
+        $restrictions->eq('admin_id', $this->identity->getId());
 
-        return $this->adminActionLogRepository->applyCriteria($criteria);
+        $orders = ['id' => SORT_DESC];
+        return $this->adminActionLogRepository->paginate([], $restrictions, $orders, Page::of($page, $size));
     }
 }

@@ -7,7 +7,6 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\Paginator;
-use ManaPHP\Query\QueryInterface;
 use function is_array;
 use function preg_match;
 
@@ -201,14 +200,12 @@ class Repository implements RepositoryInterface
         return $this->entityFiller->fill(new $this->entityClass(), $data);
     }
 
-    public function applyCriteria(CriteriaInterface $criteria): Paginator
-    {
-        /** @var QueryInterface $query */
-        $query = $this->entityClass::select($criteria->getSelect())
-            ->where($criteria->getWhere());
-
-        return $query->orderBy($criteria->getOrderBy())
-            ->paginate($criteria->getPage(), $criteria->getLimit());
+    public function paginate(array $fields, array|RestrictionsInterface $restrictions, array $orders, Page $page
+    ): Paginator {
+        return $this->entityClass::select($fields)
+            ->where($restrictions)
+            ->orderBy($orders)
+            ->paginate($page->getPage(), $page->getLimit());
     }
 
     public function deleteAll(array $filters): int
