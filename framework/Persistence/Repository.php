@@ -179,6 +179,7 @@ class Repository implements RepositoryInterface
      * @param int|string $id
      *
      * @return ?T
+     * @noinspection PhpRedundantCatchClauseInspection
      */
     public function deleteById(int|string $id): ?object
     {
