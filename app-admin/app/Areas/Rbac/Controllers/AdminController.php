@@ -16,7 +16,9 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
-use ManaPHP\Query\QueryInterface;
+use ManaPHP\Persistence\Page;
+use ManaPHP\Persistence\Restrictions;
+use function str_contains;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/admin')]
@@ -29,21 +31,21 @@ class AdminController extends Controller
     #[ViewGetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
-        return Admin::select(
-            ['admin_id', 'admin_name', 'status', 'white_ip', 'login_ip', 'login_time', 'email', 'updator_name',
-             'creator_name', 'created_time', 'updated_time']
-        )
-            ->orderBy(['admin_id' => SORT_DESC])
-            ->with(['roles' => ['role_id', 'display_name']])
-            ->callable(
-                static function (QueryInterface $query) use ($keyword) {
-                    if (str_contains($keyword, '@')) {
-                        $query->whereContains('email', $keyword);
-                    } else {
-                        $query->whereContains(['admin_name', 'email'], $keyword);
-                    }
-                }
-            )->paginate($page, $size);
+        $fields = ['admin_id', 'admin_name', 'status', 'white_ip', 'login_ip', 'login_time',
+                   'email', 'updator_name', 'creator_name', 'created_time', 'updated_time',
+                   'roles' => ['role_id', 'display_name']
+        ];
+
+        $restrictions = Restrictions::create();
+        if (str_contains($keyword, '@')) {
+            $restrictions->contains('email', $keyword);
+        } else {
+            $restrictions->contains(['admin_name', 'email'], $keyword);
+        }
+
+        $orders = ['admin_id' => SORT_DESC];
+
+        return $this->adminRepository->paginate($fields, $restrictions, $orders, Page::of($page, $size));
     }
 
     #[GetMapping]

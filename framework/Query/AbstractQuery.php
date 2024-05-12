@@ -138,7 +138,9 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     public function where(array|Restrictions $filters): static
     {
         if ($filters instanceof Restrictions) {
-            $filters = $filters->get();
+            $filters->apply($this);
+
+            return $this;
         }
 
         foreach ($filters as $filter => $value) {

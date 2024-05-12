@@ -8,6 +8,7 @@ use ManaPHP\Model\ModelInterface;
 use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Query\Paginator;
 use function is_array;
+use function is_string;
 use function preg_match;
 
 /**
@@ -204,8 +205,18 @@ class Repository implements RepositoryInterface
 
     public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
     ): Paginator {
+
+        $withs = [];
+        foreach ($fields as $k => $v) {
+            if (is_string($k)) {
+                $withs[$k] = $v;
+                unset($fields[$k]);
+            }
+        }
+
         return $this->entityClass::select($fields)
             ->where($restrictions)
+            ->with($withs)
             ->orderBy($orders)
             ->paginate($page->getPage(), $page->getLimit());
     }

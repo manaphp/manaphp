@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Controllers;
 
-use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Repositories\AdminRoleRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;
 use App\Controllers\Controller;
@@ -13,6 +12,8 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Page;
+use ManaPHP\Persistence\Restrictions;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/role')]
@@ -24,11 +25,13 @@ class RoleController extends Controller
     #[ViewGetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
-        return Role::select()
-            ->whereContains(['role_name', 'display_name'], $keyword)
-            ->whereNotIn('role_name', ['guest', 'user', 'admin'])
-            ->orderBy(['role_id' => SORT_DESC])
-            ->paginate($page, $size);
+        $restrictions = Restrictions::create()
+            ->contains(['role_name', 'display_name'], $keyword)
+            ->nin('role_name', ['guest', 'user', 'admin']);
+
+        $orders = ['role_id' => SORT_DESC];
+
+        return $this->roleRepository->paginate([], $restrictions, $orders, Page::of($page, $size));
     }
 
     #[GetMapping]

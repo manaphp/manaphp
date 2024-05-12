@@ -7,7 +7,6 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Repositories\AdminRoleRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;
 use App\Controllers\Controller;
-use App\Models\Admin;
 use App\Repositories\AdminRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
@@ -15,6 +14,8 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Page;
+use ManaPHP\Persistence\Restrictions;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/admin-role')]
@@ -27,11 +28,16 @@ class AdminRoleController extends Controller
     #[ViewGetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
-        return Admin::select(['admin_id', 'admin_name', 'created_time'])
-            ->orderBy(['admin_id' => SORT_DESC])
-            ->whereContains(['admin_name'], $keyword)
-            ->with(['roles' => ['role_id', 'display_name']])
-            ->paginate($page, $size);
+        $fields = ['admin_id', 'admin_name', 'created_time',
+                   'roles' => ['role_id', 'display_name']
+        ];
+
+        $orders = ['admin_id' => SORT_DESC];
+
+        $restrictions = Restrictions::create();
+        $restrictions->contains('admin_name', $keyword);
+
+        return $this->adminRepository->paginate($fields, $restrictions, $orders, Page::of($page, $size));
     }
 
     #[GetMapping]
