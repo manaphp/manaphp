@@ -13,6 +13,7 @@ use ManaPHP\Model\Relation\HasMany;
 use ManaPHP\Model\Relation\HasManyOthers;
 use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Model\Relation\HasOne;
+use ManaPHP\Persistence\AdditionalRelationCriteria;
 use ManaPHP\Query\QueryInterface;
 use function is_array;
 use function is_callable;
@@ -163,6 +164,9 @@ class Relations implements RelationsInterface
             $query->select($data);
         } elseif (is_callable($data)) {
             $data($query);
+        } elseif ($data instanceof AdditionalRelationCriteria) {
+            $query->select($data->getFields());
+            $query->orderBy($data->getOrders());
         } else {
             throw new InvalidValueException(['`{with}` with is invalid', 'with' => $name]);
         }
