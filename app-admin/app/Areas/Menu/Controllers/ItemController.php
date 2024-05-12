@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Areas\Menu\Controllers;
 
-use App\Areas\Menu\Models\Item;
 use App\Areas\Menu\Repositories\ItemRepository;
 use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
@@ -22,10 +21,9 @@ class ItemController extends Controller
     #[ViewGetMapping('')]
     public function indexAction()
     {
-        return Item::select()
-            ->where(Restrictions::of($this->request->all(), ['group_id']))
-            ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
-            ->all();
+        $restrictions = Restrictions::of($this->request->all(), ['group_id']);
+        $orders = ['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC];
+        return $this->itemRepository->all($restrictions, [], $orders);
     }
 
     #[PostMapping]

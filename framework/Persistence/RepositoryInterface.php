@@ -16,12 +16,13 @@ interface RepositoryInterface
     public function getEntityClass(): string;
 
     /**
-     * @param array $filters
-     * @param array $fields
+     * @param array|RestrictionsInterface $filters
+     * @param array                       $fields
+     * @param array                       $orders
      *
      * @return array<T>
      */
-    public function all(array $filters = [], array $fields = []): array;
+    public function all(array|RestrictionsInterface $filters = [], array $fields = [], array $orders = []): array;
 
     public function lists(array $fields, array $filters = []): array;
 

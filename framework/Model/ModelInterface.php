@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Model;
 
+use ManaPHP\Persistence\RestrictionsInterface;
 use ManaPHP\Query\QueryInterface;
 
 interface ModelInterface
 {
     public static function query(?string $alias = null): QueryInterface;
 
-    public static function all(array $filters = [], array $fields = []): array;
+    public static function all(array|RestrictionsInterface $filters = [], array $fields = [], array $orders = []
+    ): array;
 
     public static function lists(array $fields, array $filters = []): array;
 

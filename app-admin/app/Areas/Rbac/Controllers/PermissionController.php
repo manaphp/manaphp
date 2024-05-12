@@ -41,7 +41,9 @@ class PermissionController extends Controller
     #[GetMapping]
     public function listAction()
     {
-        return Permission::select(['permission_id', 'handler', 'display_name'])->orderBy(['handler' => SORT_ASC]);
+        $fields = ['permission_id', 'handler', 'display_name'];
+        $orders = ['handler' => SORT_ASC];
+        return $this->permissionRepository->all([], $fields, $orders);
     }
 
     #[GetMapping]

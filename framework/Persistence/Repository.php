@@ -39,12 +39,13 @@ class Repository implements RepositoryInterface
     /**
      * @param array $filters
      * @param array $fields
+     * @param array $orders
      *
      * @return array<T>
      */
-    public function all(array $filters = [], array $fields = []): array
+    public function all(array|RestrictionsInterface $filters = [], array $fields = [], array $orders = []): array
     {
-        return $this->entityClass::all($filters, $fields);
+        return $this->entityClass::all($filters, $fields, $orders);
     }
 
     public function lists(array $fields, array $filters = []): array

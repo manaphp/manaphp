@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Areas\Menu\Controllers;
 
-use App\Areas\Menu\Models\Group;
 use App\Areas\Menu\Repositories\GroupRepository;
 use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
@@ -23,10 +22,9 @@ class GroupController extends Controller
     #[ViewGetMapping('')]
     public function indexAction()
     {
-        return Group::select()
-            ->where(Restrictions::of($this->request->all(), ['group_id']))
-            ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
-            ->all();
+        $restrictions = Restrictions::of($this->request->all(), ['group_id']);
+        $orders = ['display_order' => SORT_DESC, 'group_id' => SORT_ASC];
+        return $this->groupRepository->all($restrictions, [], $orders);
     }
 
     #[GetMapping]
