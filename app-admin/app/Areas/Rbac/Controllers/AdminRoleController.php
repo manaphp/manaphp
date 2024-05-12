@@ -30,7 +30,7 @@ class AdminRoleController extends Controller
         return Admin::select(['admin_id', 'admin_name', 'created_time'])
             ->orderBy(['admin_id' => SORT_DESC])
             ->whereContains(['admin_name'], $keyword)
-            ->with(['roles' => 'role_id, display_name'])
+            ->with(['roles' => ['role_id', 'display_name']])
             ->paginate($page, $size);
     }
 

@@ -34,7 +34,7 @@ class AdminController extends Controller
              'creator_name', 'created_time', 'updated_time']
         )
             ->orderBy(['admin_id' => SORT_DESC])
-            ->with(['roles' => 'role_id, display_name'])
+            ->with(['roles' => ['role_id', 'display_name']])
             ->callable(
                 static function (QueryInterface $query) use ($keyword) {
                     if (str_contains($keyword, '@')) {

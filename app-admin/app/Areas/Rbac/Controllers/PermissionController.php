@@ -34,7 +34,7 @@ class PermissionController extends Controller
     {
         return Permission::select()
             ->where(Restrictions::of($this->request->all(), ['permission_id']))
-            ->with(['roles' => 'role_id, display_name'])
+            ->with(['roles' => ['role_id', 'display_name']])
             ->orderBy(['permission_id' => SORT_DESC]);
     }
 
