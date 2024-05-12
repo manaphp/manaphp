@@ -51,7 +51,15 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array
     {
-        return static::select($fields)->where($filters)->orderBy($orders)->fetch();
+        $withs = [];
+        foreach ($fields as $k => $v) {
+            if (is_string($k)) {
+                $withs[$k] = $v;
+                unset($fields[$k]);
+            }
+        }
+
+        return static::select($fields)->where($filters)->with($withs)->orderBy($orders)->fetch();
     }
 
     /**

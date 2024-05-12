@@ -32,10 +32,11 @@ class PermissionController extends Controller
     #[ViewGetMapping('')]
     public function indexAction()
     {
-        return Permission::select()
-            ->where(Restrictions::of($this->request->all(), ['permission_id']))
-            ->with(['roles' => ['role_id', 'display_name']])
-            ->orderBy(['permission_id' => SORT_DESC]);
+        $fields = ['roles' => ['role_id', 'display_name']];
+        $restrictions = Restrictions::of($this->request->all(), ['permission_id']);
+        $orders = ['permission_id' => SORT_DESC];
+
+        return $this->permissionRepository->all($restrictions, $fields, $orders);
     }
 
     #[GetMapping]

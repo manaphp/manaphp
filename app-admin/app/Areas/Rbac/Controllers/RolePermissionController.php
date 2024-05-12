@@ -28,12 +28,13 @@ class RolePermissionController extends Controller
     #[ViewGetMapping('')]
     public function indexAction()
     {
-        return RolePermission::select(['id', 'permission_id', 'creator_name', 'created_time'])
-            ->with(['permission' => ['permission_id', 'display_name', 'handler'],
-                    'roles'      => ['role_id', 'role_name', 'display_name']
-            ])
-            ->where(Restrictions::of($this->request->all(), ['role_id']))
-            ->all();
+        $fields = ['id', 'permission_id', 'creator_name', 'created_time',
+                   'permission' => ['permission_id', 'display_name', 'handler'],
+                   'roles'      => ['role_id', 'role_name', 'display_name']
+        ];
+        $restrictions = Restrictions::of($this->request->all(), ['role_id']);
+
+        return $this->rolePermissionRepository->all($restrictions, $fields);
     }
 
     #[PostMapping]
