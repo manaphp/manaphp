@@ -107,7 +107,6 @@ class View implements ViewInterface
 
         if ($vars !== []) {
             $context->vars = $vars;
-            $this->setMaxAge(0);
         }
 
         if (str_contains($template, '::')) {
