@@ -11,6 +11,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Restrictions;
 
 #[Authorize('@index')]
 #[RequestMapping('/menu/item')]
@@ -22,7 +23,7 @@ class ItemController extends Controller
     public function indexAction()
     {
         return Item::select()
-            ->whereCriteria($this->request->all(), ['group_id'])
+            ->where(Restrictions::of($this->request->all(), ['group_id']))
             ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
             ->all();
     }

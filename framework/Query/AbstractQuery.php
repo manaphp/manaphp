@@ -17,6 +17,7 @@ use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Model\RelationsInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Model\ThoseInterface;
+use ManaPHP\Persistence\RestrictionsInterface;
 use function count;
 use function in_array;
 use function is_array;
@@ -134,34 +135,12 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         return $this;
     }
 
-    public function whereCriteria(array $data, array $filters): static
+    public function where(array|RestrictionsInterface $filters): static
     {
-        foreach ($filters as $k => $v) {
-            if (is_string($k)) {
-                $this->where([$k => $v]);
-            } else {
-                preg_match('#^\w+#', ($pos = strpos($v, '.')) ? substr($v, $pos + 1) : $v, $match);
-                $field = $match[0];
-
-                if (!isset($data[$field])) {
-                    continue;
-                }
-                $value = $data[$field];
-                if (is_string($value)) {
-                    $value = trim($value);
-                    if ($value === '') {
-                        continue;
-                    }
-                }
-                $this->where([$v => $value]);
-            }
+        if ($filters instanceof RestrictionsInterface) {
+            $filters = $filters->get();
         }
 
-        return $this;
-    }
-
-    public function where(array $filters): static
-    {
         foreach ($filters as $filter => $value) {
             if (is_int($filter)) {
                 $this->whereExpr($value);

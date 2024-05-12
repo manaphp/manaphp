@@ -206,9 +206,6 @@ class Repository implements RepositoryInterface
         /** @var QueryInterface $query */
         $query = $this->entityClass::select($criteria->getSelect())
             ->where($criteria->getWhere());
-        if (($whereCriteria = $criteria->getWhereCriteria()) !== []) {
-            $query->whereCriteria($whereCriteria[0], $whereCriteria[1]);
-        }
 
         return $query->orderBy($criteria->getOrderBy())
             ->paginate($criteria->getPage(), $criteria->getLimit());

@@ -17,6 +17,7 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Restrictions;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/permission')]
@@ -32,7 +33,7 @@ class PermissionController extends Controller
     public function indexAction()
     {
         return Permission::select()
-            ->whereCriteria($this->request->all(), ['permission_id'])
+            ->where(Restrictions::of($this->request->all(), ['permission_id']))
             ->with(['roles' => 'role_id, display_name'])
             ->orderBy(['permission_id' => SORT_DESC]);
     }

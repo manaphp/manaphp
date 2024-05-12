@@ -9,8 +9,6 @@ interface CriteriaInterface
 
     public function where($filters): static;
 
-    public function whereCriteria(array $data, array $filters): static;
-
     public function getWhere(): array;
 
     public function getSelect(): array;
@@ -18,8 +16,6 @@ interface CriteriaInterface
     public function orderBy(array $order): static;
 
     public function getOrderBy(): array;
-
-    public function getWhereCriteria(): array;
 
     public function getLimit(): ?int;
 

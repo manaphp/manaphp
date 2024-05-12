@@ -11,8 +11,6 @@ class Criteria implements CriteriaInterface
 
     protected array $order = [];
 
-    protected array $whereCriteria = [];
-
     protected ?int $page;
 
     protected ?int $limit;
@@ -32,13 +30,6 @@ class Criteria implements CriteriaInterface
         } else {
             $this->where += $filters;
         }
-
-        return $this;
-    }
-
-    public function whereCriteria(array $data, array $filters): static
-    {
-        $this->whereCriteria = [$data, $filters];
 
         return $this;
     }
@@ -66,11 +57,6 @@ class Criteria implements CriteriaInterface
     public function getOrderBy(): array
     {
         return $this->order;
-    }
-
-    public function getWhereCriteria(): array
-    {
-        return $this->whereCriteria;
     }
 
     /**

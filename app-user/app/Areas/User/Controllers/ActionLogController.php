@@ -11,6 +11,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Restrictions;
 
 #[Authorize('user')]
 #[RequestMapping('/user/action-log')]
@@ -36,7 +37,7 @@ class ActionLogController extends Controller
     {
         return UserActionLog::select()
             ->where(['user_id' => $this->identity->getId()])
-            ->whereCriteria($this->request->all(), ['path', 'client_ip', 'created_time@=', 'tag'])
+            ->where(Restrictions::of($this->request->all(), ['path', 'client_ip', 'created_time@=', 'tag']))
             ->orderBy(['id' => SORT_DESC])
             ->paginate($page, $size);
     }

@@ -14,6 +14,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Restrictions;
 
 #[Authorize('@index')]
 #[RequestMapping('/rbac/role-permission')]
@@ -31,7 +32,7 @@ class RolePermissionController extends Controller
             ->with(
                 ['permission' => 'permission_id, display_name, handler', 'roles' => 'role_id, role_name, display_name']
             )
-            ->whereCriteria($this->request->all(), ['role_id'])
+            ->where(Restrictions::of($this->request->all(), ['role_id']))
             ->all();
     }
 

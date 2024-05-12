@@ -12,6 +12,7 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Restrictions;
 
 #[Authorize('@index')]
 #[RequestMapping('/menu/group')]
@@ -23,7 +24,7 @@ class GroupController extends Controller
     public function indexAction()
     {
         return Group::select()
-            ->whereCriteria($this->request->all(), ['group_id'])
+            ->where(Restrictions::of($this->request->all(), ['group_id']))
             ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
             ->all();
     }
