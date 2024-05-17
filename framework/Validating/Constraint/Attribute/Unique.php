@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Validating\Constraint\Attribute;
 
 use Attribute;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\Entity;
 use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Validating\AbstractConstraint;
@@ -16,6 +16,8 @@ use function sprintf;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Unique extends AbstractConstraint
 {
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+
     public function __construct(public array $filters = [], public ?string $message = null)
     {
         parent::__construct($message);
@@ -39,12 +41,11 @@ class Unique extends AbstractConstraint
             }
         }
 
-        $entityMetadata = Container::get(EntityMetadataInterface::class);
-        $primaryKey = $entityMetadata->getPrimaryKey($source::class);
+        $primaryKey = $this->entityMetadata->getPrimaryKey($source::class);
         if ($primaryKey !== null && isset($source->$primaryKey)) {
             $filters[$primaryKey . '!='] = $source->$primaryKey;
         }
 
-        return !$entityMetadata->getRepository($source::class)->exists($filters);
+        return !$this->entityMetadata->getRepository($source::class)->exists($filters);
     }
 }

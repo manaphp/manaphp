@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Persistence;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Query\QueryInterface;
 use ManaPHP\Validating\ConstraintInterface;
@@ -21,6 +22,7 @@ abstract class AbstractEntityManager implements EntityManagerInterface
     #[Autowired] protected ValidatorInterface $validator;
     #[Autowired] protected RelationsInterface $relations;
     #[Autowired] protected MakerInterface $maker;
+    #[Autowired] protected ContainerInterface $container;
 
     /**
      * @param Entity $entity
@@ -43,6 +45,7 @@ abstract class AbstractEntityManager implements EntityManagerInterface
                 foreach ($attributes as $attribute) {
                     /** @var ConstraintInterface $constraint */
                     $constraint = $attribute->newInstance();
+                    $this->container->injectProperties($constraint);
 
                     if (!$validation->validate($constraint)) {
                         break;
