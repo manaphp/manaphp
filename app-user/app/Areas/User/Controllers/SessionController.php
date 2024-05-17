@@ -57,7 +57,7 @@ class SessionController extends Controller
             $this->session->remove('captcha');
         }
 
-        $user = User::first(['user_name' => $user_name]);
+        $user = $this->userRepository->first(['user_name' => $user_name]);
         if (!$user || !$user->verifyPassword($password)) {
             return '账号或密码不正确';
         }
