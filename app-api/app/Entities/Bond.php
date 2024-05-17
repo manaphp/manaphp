@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
+use ManaPHP\Persistence\Attribute\Id;
+
 class Bond extends Entity
 {
+    #[Id]
     public $bond_id;
+
     public $bond_name;
     public $bond_pinyin;
     public $increase_rate;

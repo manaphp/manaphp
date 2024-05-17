@@ -6,7 +6,7 @@ namespace ManaPHP\Mongodb;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Mongodb\Model\InferenceInterface;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Persistence\AbstractEntityManager;
 use ManaPHP\Persistence\Entity;
 use ManaPHP\Persistence\Entity\Lifecycle;
@@ -17,6 +17,7 @@ use ManaPHP\Persistence\Event\EntityDeleting;
 use ManaPHP\Persistence\Event\EntityUpdated;
 use ManaPHP\Persistence\Event\EntityUpdating;
 use MongoDB\BSON\ObjectId;
+use function gettype;
 use function is_bool;
 use function is_float;
 use function is_int;
@@ -27,9 +28,10 @@ use function strlen;
 class EntityManager extends AbstractEntityManager implements EntityManagerInterface
 {
     #[Autowired] protected MongodbConnectorInterface $mongodbConnector;
-    #[Autowired] protected InferenceInterface $inference;
 
     #[Config] protected string $queryClass = 'ManaPHP\Mongodb\Query';
+
+    protected array $fieldTypes = [];
 
     /**
      * @return Query
@@ -54,7 +56,41 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
      */
     public function fieldTypes(string $entityClass): array
     {
-        return $this->inference->fieldTypes($entityClass);
+        if (($types = $this->fieldTypes[$entityClass] ?? null) === null) {
+            list($connection, $collection) = $this->sharding->getAnyShard($entityClass);
+
+            $mongodb = $this->mongodbConnector->get($connection);
+            if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
+                throw new RuntimeException(['`{collection}` collection has none record', 'collection' => $collection]);
+            }
+
+            $types = [];
+            foreach ($docs[0] as $field => $value) {
+                $type = gettype($value);
+                if ($type === 'integer') {
+                    $types[$field] = 'int';
+                } elseif ($type === 'string') {
+                    $types[$field] = 'string';
+                } elseif ($type === 'double') {
+                    $types[$field] = 'float';
+                } elseif ($type === 'boolean') {
+                    $types[$field] = 'bool';
+                } elseif ($type === 'array') {
+                    $types[$field] = 'array';
+                } elseif ($value instanceof ObjectId) {
+                    if ($field === '_id') {
+                        continue;
+                    }
+                    $types[$field] = 'objectid';
+                } else {
+                    throw new RuntimeException(['`{field}` field value type can not be infer.', 'field' => $field]);
+                }
+            }
+
+            return $this->fieldTypes[$entityClass] = $types;
+        } else {
+            return $types;
+        }
     }
 
     public function isAllowNullValue(): bool

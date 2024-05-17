@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
+use ManaPHP\Persistence\Attribute\Id;
+
 class AdminActionLog extends Entity
 {
+    #[Id]
     public int $id;
+
     public int $admin_id;
     public string $admin_name;
     public string $method;

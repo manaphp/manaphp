@@ -5,6 +5,7 @@ namespace App\Areas\Rbac\Entities;
 
 use App\Entities\Entity;
 use ManaPHP\Persistence\Attribute\Fillable;
+use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Attribute\Table;
 use ManaPHP\Validating\Constraint\Attribute\Unique;
 
@@ -12,9 +13,12 @@ use ManaPHP\Validating\Constraint\Attribute\Unique;
 #[Fillable([])]
 class AdminRole extends Entity
 {
+    #[Id]
     public int $id;
+
     #[Unique(['role_id'])]
     public int $admin_id;
+
     public string $admin_name;
     public int $role_id;
     public string $role_name;

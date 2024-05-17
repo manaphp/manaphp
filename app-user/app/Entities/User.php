@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
+use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Entity\Lifecycle;
 use ManaPHP\Validating\Constraint\Attribute\Account;
 use ManaPHP\Validating\Constraint\Attribute\Constant;
@@ -18,13 +19,18 @@ class User extends Entity
     const STATUS_ACTIVE = 1;
     const STATUS_LOCKED = 2;
 
+    #[Id]
     public $user_id;
+
     #[Length(4, 16), Account, Immutable]
     public $user_name;
+
     #[Constant]
     public $status;
+
     #[Email, Lowercase, Unique]
     public $email;
+
     public $salt;
     public $password;
     public $login_ip;

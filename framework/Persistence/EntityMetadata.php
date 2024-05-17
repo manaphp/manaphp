@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Persistence;
 
-use ManaPHP\Db\Model\InferenceInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
@@ -12,7 +11,7 @@ use ManaPHP\Persistence\Attribute\Connection;
 use ManaPHP\Persistence\Attribute\DateFormat;
 use ManaPHP\Persistence\Attribute\Fillable;
 use ManaPHP\Persistence\Attribute\Guarded;
-use ManaPHP\Persistence\Attribute\PrimaryKey;
+use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Attribute\ReferencedKey;
 use ManaPHP\Persistence\Attribute\Repository;
 use ManaPHP\Persistence\Attribute\Table;
@@ -24,13 +23,13 @@ use ReflectionClass;
 use ReflectionProperty;
 use function in_array;
 use function preg_match;
+use function property_exists;
 use function sprintf;
 
 class EntityMetadata implements EntityMetadataInterface
 {
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected ThoseInterface $those;
-    #[Autowired] protected InferenceInterface $inference;
 
     protected array $rClass = [];
     protected array $table = [];
@@ -71,7 +70,9 @@ class EntityMetadata implements EntityMetadataInterface
             /** @var  Table $attribute */
             return $attribute->name;
         } else {
-            return Str::snakelize(($pos = strrpos($entityClass, '\\')) === false ? $entityClass : substr($entityClass, $pos + 1));
+            return Str::snakelize(
+                ($pos = strrpos($entityClass, '\\')) === false ? $entityClass : substr($entityClass, $pos + 1)
+            );
         }
     }
 
@@ -103,23 +104,27 @@ class EntityMetadata implements EntityMetadataInterface
         return $connection;
     }
 
-    protected function getPrimaryKeyInternal(string $entityClass): string
-    {
-        if (($attribute = $this->getClassAttribute($entityClass, PrimaryKey::class)) !== null) {
-            /** @var PrimaryKey $attribute */
-            return $attribute->name;
-        } else {
-            return $this->inference->primaryKey($entityClass);
-        }
-    }
-
     public function getPrimaryKey(string $entityClass): string
     {
         if (($primaryKey = $this->primaryKey[$entityClass] ?? null) === null) {
-            $primaryKey = $this->primaryKey[$entityClass] = $this->getPrimaryKeyInternal($entityClass);
-        }
+            foreach ((new ReflectionClass($entityClass))->getProperties() as $property) {
+                if ($property->isReadOnly() || $property->isStatic()) {
+                    continue;
+                }
 
-        return $primaryKey;
+                if ($property->getAttributes(Id::class) !== []) {
+                    return $this->primaryKey[$entityClass] = $property->getName();
+                }
+            }
+
+            if (property_exists($entityClass, 'id')) {
+                return $this->primaryKey[$entityClass] = 'id';
+            }
+
+            throw new MisuseException('Primary key not found for entity: ' . $entityClass);
+        } else {
+            return $primaryKey;
+        }
     }
 
     protected function getReferencedKeyInternal(string $entityClass): string

@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
-use ManaPHP\Persistence\Attribute\PrimaryKey;
+use ManaPHP\Persistence\Attribute\Id;
 
-#[PrimaryKey('login_id')]
 class AdminLoginLog extends Entity
 {
+    #[Id]
     public int $login_id;
+
     public int $admin_id;
     public string $admin_name;
     public string $client_ip;

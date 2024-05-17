@@ -17,7 +17,7 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Persistence\Attribute\ColumnMap;
 use ManaPHP\Persistence\Attribute\Connection;
-use ManaPHP\Persistence\Attribute\PrimaryKey;
+use ManaPHP\Persistence\Attribute\Id;
 use function count;
 use function dirname;
 use function in_array;
@@ -195,7 +195,7 @@ class DbCommand extends Command
         $primaryKeys = $metadata[Db::METADATA_PRIMARY_KEY];
         if ($primaryKey = count($primaryKeys) === 1 ? $primaryKeys[0] : null) {
             if ($primaryKey !== 'id' && $primaryKey !== $table . '_id' && $primaryKey !== $table . 'Id') {
-                $uses[] = PrimaryKey::class;
+                $uses[] = Id::class;
                 $attributes[] = "#[PrimaryKey('$primaryKey')]";
             }
         }
@@ -354,7 +354,8 @@ class DbCommand extends Command
      *
      * @return void
      */
-    public function entityAction(string $table, string $connection = '', bool $optimized = false, bool $camelized = false
+    public function entityAction(string $table, string $connection = '', bool $optimized = false,
+        bool $camelized = false
     ): void {
         if ($connection) {
             $db = $this->connector->get($connection);

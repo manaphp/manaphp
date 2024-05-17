@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
+use ManaPHP\Persistence\Attribute\Id;
+
 class Admin extends Entity
 {
+    #[Id]
     public int $admin_id;
+
     public int $admin_name;
     public int $status;
     public int $type;

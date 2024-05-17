@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
+use ManaPHP\Persistence\Attribute\Id;
+
 class UserLoginLog extends Entity
 {
+    #[Id]
     public $login_id;
+
     public $user_id;
     public $user_name;
     public $client_ip;

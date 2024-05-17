@@ -8,6 +8,7 @@ use App\Areas\Rbac\Entities\Role;
 use App\Repositories\AdminRepository;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
+use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Entity\Lifecycle;
 use ManaPHP\Persistence\Relation\HasManyToMany;
 use ManaPHP\Validating\Constraint\Attribute\Account;
@@ -26,20 +27,29 @@ class Admin extends Entity implements ArgumentResolvable
     public const STATUS_ACTIVE = 1;
     public const STATUS_LOCKED = 2;
 
+    #[Id]
     public int $admin_id;
+
     #[Length(4, 16), Account, Immutable, Unique]
     public string $admin_name;
+
     #[Constant]
     public int $status;
+
     public int $type;
     public int $tag;
+
     #[Email, Unique]
     public string $email;
+
     public string $salt;
+
     #[Length(6, 16)]
     public string $password;
+
     #[Defaults(''), MaxLength(64)]
     public string $white_ip;
+
     public string $login_ip;
     public int $login_time;
     public string $session_id;
