@@ -12,6 +12,7 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use ManaPHP\Persistence\Page;
 use ManaPHP\Redis\RedisDbInterface;
 
 #[Authorize('@index')]
@@ -30,7 +31,8 @@ class DotenvController extends Controller
             return [];
         } else {
             $current = [['app_id' => $app_id, 'env' => $this->redisDb->hGet(self::REDIS_KEY, $app_id) ?: '']];
-            $logs = DotenvLog::where(['app_id' => $app_id])->orderBy(['id' => SORT_DESC])->limit(10)->execute();
+            $logs = $this->dotenvLogRepository->paginate([], ['app_id' => $app_id], ['id' => SORT_DESC], Page::of(1, 10)
+            )->items;
 
             return compact('current', 'logs');
         }
