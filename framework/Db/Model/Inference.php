@@ -70,22 +70,4 @@ class Inference implements InferenceInterface
             return $primaryKey;
         }
     }
-
-    public function intFields(string $entityClass): array
-    {
-        if (($fields = $this->intFields[$entityClass] ?? null) === null) {
-            if (($columnMap = $this->entityMetadata->getColumnMap($entityClass)) !== []) {
-                foreach ($this->metadata->getIntTypeAttributes($entityClass) as $field) {
-                    $fields[] = array_search($field, $columnMap, true) ?: $field;
-                }
-            } else {
-                $fields = $this->metadata->getIntTypeAttributes($entityClass);
-            }
-
-            return $this->intFields[$entityClass] = $fields;
-        } else {
-            return $fields;
-        }
-    }
-
 }

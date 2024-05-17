@@ -6,6 +6,4 @@ namespace ManaPHP\Db\Model;
 interface InferenceInterface
 {
     public function primaryKey(string $entityClass): string;
-
-    public function intFields(string $entityClass): array;
 }
