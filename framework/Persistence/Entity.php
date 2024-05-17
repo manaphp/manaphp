@@ -8,6 +8,7 @@ use JsonSerializable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
+use ManaPHP\Persistence\Attribute\Transient;
 use ManaPHP\Persistence\Entity\Lifecycle;
 use ReflectionClass;
 use Stringable;
@@ -17,6 +18,7 @@ use function is_object;
 
 class Entity implements ArrayAccess, JsonSerializable, Stringable
 {
+    #[Transient]
     public ?array $_snapshot = [];
 
     public function __construct(array $data = [])

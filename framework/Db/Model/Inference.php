@@ -71,21 +71,6 @@ class Inference implements InferenceInterface
         }
     }
 
-    public function fields(string $entityClass): array
-    {
-        if (($fields = $this->fields[$entityClass] ?? null) === null) {
-            $fields = [];
-            foreach (get_class_vars($entityClass) as $field => $value) {
-                if ($value === null && $field[0] !== '_') {
-                    $fields[] = $field;
-                }
-            }
-            return $this->fields[$entityClass] = $fields ?: $this->metadata->getAttributes($entityClass);
-        } else {
-            return $fields;
-        }
-    }
-
     public function intFields(string $entityClass): array
     {
         if (($fields = $this->intFields[$entityClass] ?? null) === null) {

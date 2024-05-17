@@ -16,6 +16,7 @@ use ManaPHP\Persistence\Attribute\PrimaryKey;
 use ManaPHP\Persistence\Attribute\ReferencedKey;
 use ManaPHP\Persistence\Attribute\Repository;
 use ManaPHP\Persistence\Attribute\Table;
+use ManaPHP\Persistence\Attribute\Transiently;
 use ManaPHP\Validating\ConstraintInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionAttribute;
@@ -155,15 +156,22 @@ class EntityMetadata implements EntityMetadataInterface
         return $referencedKey;
     }
 
-    protected function getFieldsInternal(string $entityClass): array
-    {
-        return $this->inference->fields($entityClass);
-    }
-
     public function getFields(string $entityClass): array
     {
         if (($fields = $this->fields[$entityClass] ?? null) === null) {
-            $fields = $this->fields[$entityClass] = $this->getFieldsInternal($entityClass);
+            $fields = [];
+            foreach ((new ReflectionClass($entityClass))->getProperties() as $property) {
+                if ($property->isReadOnly() || $property->isStatic()) {
+                    continue;
+                }
+
+                if ($property->getAttributes(Transiently::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                    continue;
+                }
+                $fields[] = $property->getName();
+            }
+
+            $this->fields[$entityClass] = $fields;
         }
 
         return $fields;
