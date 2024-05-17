@@ -77,7 +77,7 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    protected function processInjectObject(ReflectionProperty $property, object $object, array $parameters): void
+    protected function injectObject(ReflectionProperty $property, object $object, array $parameters): void
     {
         $name = $property->getName();
 
@@ -107,7 +107,7 @@ class Container implements ContainerInterface
         $property->setValue($object, $value);
     }
 
-    protected function processInjectNoValue(ReflectionProperty $property, $object): void
+    protected function injectNoValue(ReflectionProperty $property, $object): void
     {
         $rType = $property->getType();
 
@@ -123,7 +123,7 @@ class Container implements ContainerInterface
         }
     }
 
-    protected function processInjectValue(ReflectionProperty $property, object $object, array $parameters): void
+    protected function injectValue(ReflectionProperty $property, object $object, array $parameters): void
     {
         $name = $property->getName();
 
@@ -133,11 +133,11 @@ class Container implements ContainerInterface
             }
             $property->setValue($object, $parameters[$name]);
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
-            $this->processInjectNoValue($property, $object);
+            $this->injectNoValue($property, $object);
         }
     }
 
-    protected function processInjectConfig(ReflectionProperty $property, object $object, array $parameters): void
+    protected function injectConfig(ReflectionProperty $property, object $object, array $parameters): void
     {
         $name = $property->getName();
 
@@ -152,11 +152,11 @@ class Container implements ContainerInterface
             }
             $property->setValue($object, $config->get($name));
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
-            $this->processInjectNoValue($property, $object);
+            $this->injectNoValue($property, $object);
         }
     }
 
-    protected function processInjects(object $object, ReflectionClass $rClass, array $parameters): void
+    protected function injectPropertiesInternal(object $object, ReflectionClass $rClass, array $parameters): void
     {
         foreach ($rClass->getProperties() as $property) {
             if ($property->isStatic()) {
@@ -178,9 +178,9 @@ class Container implements ContainerInterface
                     $type = $rType instanceof ReflectionNamedType ? $rType : $rType->getTypes()[0];
 
                     if ($type->isBuiltin()) {
-                        $this->processInjectValue($property, $object, $parameters);
+                        $this->injectValue($property, $object, $parameters);
                     } else {
-                        $this->processInjectObject($property, $object, $parameters);
+                        $this->injectObject($property, $object, $parameters);
                     }
                 } else {
                     throw new Exception(
@@ -188,9 +188,16 @@ class Container implements ContainerInterface
                     );
                 }
             } elseif (isset($attributes[ConfigAttribute::class])) {
-                $this->processInjectConfig($property, $object, $parameters);
+                $this->injectConfig($property, $object, $parameters);
             }
         }
+    }
+
+    public function injectProperties(object $object, array $parameters = []): object
+    {
+        $this->injectPropertiesInternal($object, new ReflectionClass($object), $parameters);
+
+        return $object;
     }
 
     protected function makeInternal(string $name, array $parameters = [], string $id = null): object
@@ -203,7 +210,7 @@ class Container implements ContainerInterface
                 $this->instances[$id] = $instance;
             }
 
-            $this->processInjects($instance, $rClass, $parameters);
+            $this->injectPropertiesInternal($instance, $rClass, $parameters);
 
             $this->call([$instance, '__construct'], $parameters);
         } else {
@@ -213,7 +220,7 @@ class Container implements ContainerInterface
                 $this->instances[$id] = $instance;
             }
 
-            $this->processInjects($instance, $rClass, $parameters);
+            $this->injectPropertiesInternal($instance, $rClass, $parameters);
         }
 
         return $instance;
