@@ -5,57 +5,48 @@ namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Model\ModelsInterface;
-use ManaPHP\Model\ShardingInterface;
-use ManaPHP\Model\ThoseInterface;
+use ManaPHP\Persistence\EntityMetadataInterface;
+use ManaPHP\Persistence\ShardingInterface;
+use ManaPHP\Persistence\ThoseInterface;
 
 class CollectionGateway implements CollectionGatewayInterface
 {
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected MongodbConnectorInterface $connector;
     #[Autowired] protected ShardingInterface $sharding;
-    #[Autowired] protected ModelsInterface $models;
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+    #[Autowired] protected EntityManagerInterface $entityManager;
 
-    protected function getThat(string $model): Model
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->those->get($model);
-    }
-
-    public function bulkInsert(string $model, array $documents): int
+    public function bulkInsert(string $entityClass, array $documents): int
     {
         if (!$documents) {
             return 0;
         }
 
-        $that = $this->getThat($model);
-
         foreach ($documents as $i => $document) {
-            $documents[$i] = $that->normalizeDocument($document);
+            $documents[$i] = $this->entityManager->normalizeDocument($entityClass, $document);
         }
 
-        list($connection, $collection) = $this->sharding->getUniqueShard($model, []);
+        list($connection, $collection) = $this->sharding->getUniqueShard($entityClass, []);
 
         return $this->connector->get($connection)->bulkInsert($collection, $documents);
     }
 
-    public function bulkUpdate(string $model, array $documents): int
+    public function bulkUpdate(string $entityClass, array $documents): int
     {
         if (!$documents) {
             return 0;
         }
 
-        $that = $this->getThat($model);
-
-        $primaryKey = $this->models->getPrimaryKey($model);
+        $primaryKey = $this->entityMetadata->getPrimaryKey($entityClass);
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
-                throw new MisuseException(['bulkUpdate `{1}` model must set primary value', static::class]);
+                throw new MisuseException(['bulkUpdate `{1}` entity must set primary value', static::class]);
             }
-            $documents[$i] = $that->normalizeDocument($document);
+            $documents[$i] = $this->entityManager->normalizeDocument($entityClass, $document);
         }
 
-        $shards = $this->sharding->getAllShards($model);
+        $shards = $this->sharding->getAllShards($entityClass);
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
@@ -68,37 +59,33 @@ class CollectionGateway implements CollectionGatewayInterface
         return $affected_count;
     }
 
-    public function bulkUpsert(string $model, array $documents): int
+    public function bulkUpsert(string $entityClass, array $documents): int
     {
         if (!$documents) {
             return 0;
         }
 
-        $that = $this->getThat($model);
-
         foreach ($documents as $i => $document) {
-            $documents[$i] = $that->normalizeDocument($document);
+            $documents[$i] = $this->entityManager->normalizeDocument($entityClass, $document);
         }
 
-        list($connection, $collection) = $this->sharding->getUniqueShard($model, []);
+        list($connection, $collection) = $this->sharding->getUniqueShard($entityClass, []);
 
-        $primaryKey = $this->models->getPrimaryKey($model);
+        $primaryKey = $this->entityMetadata->getPrimaryKey($entityClass);
         return $this->connector->get($connection)->bulkUpsert($collection, $documents, $primaryKey);
     }
 
     /**
-     * @param string $model
-     * @param array  $record =model_var(new static)
+     * @param string $entityClass
+     * @param array  $record =entity_var(new static)
      *
      * @return int
      */
-    public function insert(string $model, array $record): int
+    public function insert(string $entityClass, array $record): int
     {
-        $that = $this->getThat($model);
+        $record = $this->entityManager->normalizeDocument($entityClass, $record);
 
-        $record = $that->normalizeDocument($record);
-
-        list($connection, $collection) = $this->sharding->getUniqueShard($model, $record);
+        list($connection, $collection) = $this->sharding->getUniqueShard($entityClass, $record);
 
         $mongodb = $this->connector->get($connection);
         $mongodb->insert($collection, $record);
@@ -106,9 +93,9 @@ class CollectionGateway implements CollectionGatewayInterface
         return 1;
     }
 
-    public function delete(string $model, array $conditions): int
+    public function delete(string $entityClass, array $conditions): int
     {
-        $shards = $this->sharding->getMultipleShards($model, $conditions);
+        $shards = $this->sharding->getMultipleShards($entityClass, $conditions);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -122,9 +109,9 @@ class CollectionGateway implements CollectionGatewayInterface
         return $affected_count;
     }
 
-    public function update(string $model, array $fieldValues, array $conditions): int
+    public function update(string $entityClass, array $fieldValues, array $conditions): int
     {
-        $shards = $this->sharding->getMultipleShards($model, $conditions);
+        $shards = $this->sharding->getMultipleShards($entityClass, $conditions);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {

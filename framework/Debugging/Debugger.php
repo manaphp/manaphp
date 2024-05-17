@@ -34,10 +34,10 @@ use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Http\Server\Event\ServerReady;
 use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
-use ManaPHP\Model\ModelInterface;
 use ManaPHP\Mongodb\Event\MongodbBulkWritten;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
 use ManaPHP\Mongodb\Event\MongodbQueried;
+use ManaPHP\Persistence\Entity;
 use ManaPHP\Redis\RedisCacheInterface;
 use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use ManaPHP\Version;
@@ -285,7 +285,7 @@ class Debugger implements DebuggerInterface
 
         $vars = $event->vars;
         foreach ($vars as $k => $v) {
-            if (is_object($v) && !$v instanceof ModelInterface && class_implements($v) !== []) {
+            if (is_object($v) && !$v instanceof Entity && class_implements($v) !== []) {
                 unset($vars[$k]);
             }
         }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
-use App\Models\UserActionLog;
+use App\Entities\UserActionLog;
 use App\Repositories\UserActionLogRepository;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;

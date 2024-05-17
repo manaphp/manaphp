@@ -5,7 +5,7 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 
 use Attribute;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Model\ModelInterface;
+use ManaPHP\Persistence\Entity;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
 use function sprintf;
@@ -15,10 +15,10 @@ class Immutable extends AbstractConstraint
 {
     public function validate(Validation $validation): bool
     {
-        /** @var ModelInterface $source */
+        /** @var Entity $source */
         $source = $validation->source;
-        if (!$source instanceof ModelInterface) {
-            throw new MisuseException(sprintf('%s is not a model', $source::class));
+        if (!$source instanceof Entity) {
+            throw new MisuseException(sprintf('%s is not a entity', $source::class));
         }
 
         $field = $validation->field;

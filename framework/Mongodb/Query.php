@@ -27,6 +27,7 @@ use function strlen;
 class Query extends AbstractQuery
 {
     #[Autowired] protected MongodbConnectorInterface $connector;
+    #[Autowired] protected EntityManagerInterface $entityManager;
 
     protected array $types;
     protected array $aliases;
@@ -37,12 +38,10 @@ class Query extends AbstractQuery
         $this->connection = $connection;
     }
 
-    public function setModel(string $model): static
+    public function setEntityClass(string $entityClass): static
     {
-        $this->model = $model;
-        /** @var Model $instance */
-        $instance = $this->those->get($model);
-        $this->setTypes($instance->fieldTypes());
+        $this->entityClass = $entityClass;
+        $this->setTypes($this->entityManager->fieldTypes($entityClass));
 
         return $this;
     }
@@ -313,8 +312,8 @@ class Query extends AbstractQuery
             return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($this->types && !isset($this->types[$field])) {
-                $model = $this->model;
-                $collection = $model ? $this->models->getTable($model) : $this->table;
+                $entityClass = $this->entityClass;
+                $collection = $entityClass ? $this->entityMetadata->getTable($entityClass) : $this->table;
                 throw new InvalidArgumentException(['`{1}` field is not exist in `{2}` collection', $field, $collection]
                 );
             }
@@ -646,7 +645,7 @@ class Query extends AbstractQuery
         $mongodb = $this->connector->get($connection);
 
         if (!$this->aggregate) {
-            $model = $this->model;
+            $entityClass = $this->entityClass;
 
             $options = [];
 
@@ -656,13 +655,13 @@ class Query extends AbstractQuery
                 } else {
                     $options['projection'] = $this->fields;
                 }
-            } elseif ($model !== null) {
-                $options['projection'] = array_fill_keys($this->models->getFields($model), 1);
+            } elseif ($entityClass !== null) {
+                $options['projection'] = array_fill_keys($this->entityMetadata->getFields($entityClass), 1);
             }
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {
-                if ($model !== null) {
-                    if ($this->models->getPrimaryKey($model) !== '_id') {
+                if ($entityClass !== null) {
+                    if ($this->entityMetadata->getPrimaryKey($entityClass) !== '_id') {
                         $options['projection']['_id'] = false;
                     }
                 } else {

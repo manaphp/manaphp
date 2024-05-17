@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Areas\Menu\Repositories;
 
-use App\Areas\Menu\Models\Group;
-use ManaPHP\Persistence\Repository;
+use App\Areas\Menu\Entities\Group;
+use ManaPHP\Db\Repository;
 
 /**
  * @extends Repository<Group>

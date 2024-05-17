@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Controllers;
 
-use App\Areas\Rbac\Models\AdminRole;
+use App\Areas\Rbac\Entities\AdminRole;
 use App\Areas\Rbac\Repositories\AdminRoleRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;
 use App\Controllers\Controller;
-use App\Models\Admin;
+use App\Entities\Admin;
 use App\Repositories\AdminRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;

@@ -515,17 +515,17 @@ class Query extends AbstractQuery
         } elseif ($joins) {
             return '*';
         } else {
-            return $this->model ? '[' . implode('], [', $this->models->getFields($this->model)) . ']' : '*';
+            return $this->entityClass ? '[' . implode('], [', $this->entityMetadata->getFields($this->entityClass)) . ']' : '*';
         }
     }
 
     protected function translateField2Columns(string $sql): string
     {
-        if (($model = $this->model) === null) {
+        if (($entityClass = $this->entityClass) === null) {
             return $sql;
         }
 
-        if (($columnMap = $this->models->getColumnMap($model)) === []) {
+        if (($columnMap = $this->entityMetadata->getColumnMap($entityClass)) === []) {
             return $sql;
         }
 
@@ -667,8 +667,8 @@ class Query extends AbstractQuery
 
         $rows = $db->fetchAll($this->sql, $this->bind, PDO::FETCH_ASSOC, $this->force_master);
 
-        $model = $this->model;
-        if ($columnMap = $model ? $this->models->getColumnMap($model) : []) {
+        $entityClass = $this->entityClass;
+        if ($columnMap = $entityClass ? $this->entityMetadata->getColumnMap($entityClass) : []) {
             foreach ($rows as &$row) {
                 foreach ($columnMap as $propery => $column) {
                     if (array_key_exists($column, $row)) {

@@ -6,11 +6,11 @@ namespace ManaPHP\Mongodb\Model;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Model\ModelsInterface;
-use ManaPHP\Model\ShardingInterface;
-use ManaPHP\Model\ThoseInterface;
-use ManaPHP\Mongodb\Model;
+use ManaPHP\Mongodb\EntityManagerInterface;
 use ManaPHP\Mongodb\MongodbConnectorInterface;
+use ManaPHP\Persistence\EntityMetadataInterface;
+use ManaPHP\Persistence\ShardingInterface;
+use ManaPHP\Persistence\ThoseInterface;
 use MongoDB\BSON\ObjectId;
 use function gettype;
 use function in_array;
@@ -20,35 +20,32 @@ class Inference implements InferenceInterface
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected MongodbConnectorInterface $connector;
     #[Autowired] protected ShardingInterface $sharding;
-    #[Autowired] protected ModelsInterface $models;
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+    #[Autowired] protected EntityManagerInterface $entityManager;
 
     protected array $primaryKey = [];
     protected array $fields = [];
     protected array $intFields = [];
     protected array $fieldTypes = [];
 
-    protected function getThat(string $model): Model
+    protected function primaryKeyInternal(string $entityClass): ?string
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->those->get($model);
-    }
-
-    protected function primaryKeyInternal(string $model): ?string
-    {
-        $fields = $this->models->getFields($model);
+        $fields = $this->entityMetadata->getFields($entityClass);
 
         if (in_array('id', $fields, true)) {
             return 'id';
         }
 
-        $prefix = lcfirst(($pos = strrpos($model, '\\')) === false ? $model : substr($model, $pos + 1));
+        $prefix = lcfirst(
+            ($pos = strrpos($entityClass, '\\')) === false ? $entityClass : substr($entityClass, $pos + 1)
+        );
         if (in_array($tryField = $prefix . '_id', $fields, true)) {
             return $tryField;
         } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
-        $table = $this->models->getTable($model);
+        $table = $this->entityMetadata->getTable($entityClass);
         if (($pos = strpos($table, ':')) !== false) {
             $table = substr($table, 0, $pos);
         } elseif (($pos = strpos($table, ',')) !== false) {
@@ -65,54 +62,52 @@ class Inference implements InferenceInterface
         return null;
     }
 
-    public function primaryKey(string $model): string
+    public function primaryKey(string $entityClass): string
     {
-        if (($primaryKey = $this->primaryKey[$model] ?? null) === null) {
-            if ($primaryKey = $this->primaryKeyInternal($model)) {
-                return $this->primaryKey[$model] = $primaryKey;
+        if (($primaryKey = $this->primaryKey[$entityClass] ?? null) === null) {
+            if ($primaryKey = $this->primaryKeyInternal($entityClass)) {
+                return $this->primaryKey[$entityClass] = $primaryKey;
             } else {
-                throw new NotImplementedException(['Primary key of `{1}` model can not be inferred', $model]);
+                throw new NotImplementedException(['Primary key of `{1}` entity can not be inferred', $entityClass]);
             }
         } else {
             return $primaryKey;
         }
     }
 
-    public function fields(string $model): array
+    public function fields(string $entityClass): array
     {
-        if (($fields = $this->fields[$model] ?? null) === null) {
-            $that = $this->getThat($model);
-            $fieldTypes = $that->fieldTypes();
+        if (($fields = $this->fields[$entityClass] ?? null) === null) {
+            $fieldTypes = $this->entityManager->fieldTypes($entityClass);
             if (isset($fieldTypes['_id']) && $fieldTypes['_id'] === 'objectid') {
                 unset($fieldTypes['_id']);
             }
-            return $this->fields[$model] = array_keys($fieldTypes);
+            return $this->fields[$entityClass] = array_keys($fieldTypes);
         } else {
             return $fields;
         }
     }
 
-    public function intFields(string $model): array
+    public function intFields(string $entityClass): array
     {
-        if (($intFields = $this->intFields[$model] ?? null) === null) {
-            $that = $this->getThat($model);
+        if (($intFields = $this->intFields[$entityClass] ?? null) === null) {
             $fields = [];
-            foreach ($that->fieldTypes() as $field => $type) {
+            foreach ($this->entityManager->fieldTypes($entityClass) as $field => $type) {
                 if ($type === 'int') {
                     $fields[] = $field;
                 }
             }
 
-            return $this->intFields[$model] = $fields;
+            return $this->intFields[$entityClass] = $fields;
         } else {
             return $intFields;
         }
     }
 
-    public function fieldTypes(string $model): array
+    public function fieldTypes(string $entityClass): array
     {
-        if (($types = $this->fieldTypes[$model] ?? null) === null) {
-            list($connection, $collection) = $this->sharding->getAnyShard($model);
+        if (($types = $this->fieldTypes[$entityClass] ?? null) === null) {
+            list($connection, $collection) = $this->sharding->getAnyShard($entityClass);
 
             $mongodb = $this->connector->get($connection);
             if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
@@ -142,7 +137,7 @@ class Inference implements InferenceInterface
                 }
             }
 
-            return $this->fieldTypes[$model] = $types;
+            return $this->fieldTypes[$entityClass] = $types;
         } else {
             return $types;
         }

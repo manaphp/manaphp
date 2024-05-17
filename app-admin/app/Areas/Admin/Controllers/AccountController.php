@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
-use App\Models\Admin;
+use App\Entities\Admin;
 use App\Repositories\AdminRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\CaptchaInterface;

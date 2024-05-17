@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Persistence;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Model\ModelsInterface;
 use ManaPHP\Validating\Constraint\Attribute\Type;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionAttribute;
@@ -12,13 +11,13 @@ use ReflectionProperty;
 
 class EntityFiller implements EntityFillerInterface
 {
-    #[Autowired] protected ModelsInterface $models;
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
     #[Autowired] protected ValidatorInterface $validator;
 
-    public function fill(object $entity, array $data): object
+    public function fill(Entity $entity, array $data): Entity
     {
         $validation = $this->validator->beginValidate($data);
-        foreach ($this->models->getFillable($entity::class) as $field) {
+        foreach ($this->entityMetadata->getFillable($entity::class) as $field) {
             if (($value = $data[$field] ?? null) !== null) {
                 $validation->field = $field;
                 $validation->value = $value;

@@ -8,14 +8,14 @@ use function json_stringify;
 
 class EntityNotFoundException extends Exception
 {
-    public string $model;
+    public string $entityClass;
     public mixed $filters;
 
-    public function __construct(string $model, mixed $filters)
+    public function __construct(string $entityClass, mixed $filters)
     {
-        parent::__construct(['No record for `{1}` model of `{2}`', $model, json_stringify($filters)]);
+        parent::__construct(['No record for `{1}` entity of `{2}`', $entityClass, json_stringify($filters)]);
 
-        $this->model = $model;
+        $this->entityClass = $entityClass;
         $this->filters = $filters;
     }
 
@@ -27,6 +27,6 @@ class EntityNotFoundException extends Exception
     #[ArrayShape(['code' => 'int', 'msg' => 'string'])]
     public function getJson(): array
     {
-        return ['code' => 404, 'msg' => "Record of `$this->model` Model is not exists"];
+        return ['code' => 404, 'msg' => "Record of `$this->entityClass` Model is not exists"];
     }
 }

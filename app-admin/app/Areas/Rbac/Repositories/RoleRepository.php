@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Repositories;
 
-use App\Areas\Rbac\Models\Role;
+use App\Areas\Rbac\Entities\Role;
+use ManaPHP\Db\Repository;
 use ManaPHP\Http\Authorization\RoleRepositoryInterface;
-use ManaPHP\Persistence\Repository;
 
 /**
  * @extends Repository<Role>

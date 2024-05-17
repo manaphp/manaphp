@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Areas\Menu\Repositories;
 
-use App\Areas\Menu\Models\Item;
-use ManaPHP\Persistence\Repository;
+use App\Areas\Menu\Entities\Item;
+use ManaPHP\Db\Repository;
 
 /**
  * @extends Repository<Item>

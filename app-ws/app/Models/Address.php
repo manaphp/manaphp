@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Entities;
 
 /**
- * @property-read \App\Models\Customer $customers
+ * @property-read \App\Entities\Customer $customers
  */
-class Address extends Model
+class Address extends Entity
 {
     public $address_id;
     public $address;

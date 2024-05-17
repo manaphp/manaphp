@@ -5,8 +5,8 @@ namespace ManaPHP\Db\Model;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Model\ModelsInterface;
-use ManaPHP\Model\ThoseInterface;
+use ManaPHP\Persistence\EntityMetadataInterface;
+use ManaPHP\Persistence\ThoseInterface;
 use function count;
 use function in_array;
 
@@ -14,28 +14,28 @@ class Inference implements InferenceInterface
 {
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected MetadataInterface $metadata;
-    #[Autowired] protected ModelsInterface $models;
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
     protected array $primaryKey = [];
     protected array $fields = [];
     protected array $intFields = [];
 
-    protected function primaryKeyInternal(string $model): ?string
+    protected function primaryKeyInternal(string $entityClass): ?string
     {
-        $fields = $this->models->getFields($model);
+        $fields = $this->entityMetadata->getFields($entityClass);
 
         if (in_array('id', $fields, true)) {
             return 'id';
         }
 
-        $prefix = lcfirst(($pos = strrpos($model, '\\')) === false ? $model : substr($model, $pos + 1));
+        $prefix = lcfirst(($pos = strrpos($entityClass, '\\')) === false ? $entityClass : substr($entityClass, $pos + 1));
         if (in_array($tryField = $prefix . '_id', $fields, true)) {
             return $tryField;
         } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
-        $table = $this->models->getTable($model);
+        $table = $this->entityMetadata->getTable($entityClass);
         if (($pos = strpos($table, ':')) !== false) {
             $table = substr($table, 0, $pos);
         } elseif (($pos = strpos($table, ',')) !== false) {
@@ -52,52 +52,52 @@ class Inference implements InferenceInterface
         return null;
     }
 
-    public function primaryKey(string $model): string
+    public function primaryKey(string $entityClass): string
     {
-        if (($primaryKey = $this->primaryKey[$model] ?? null) === null) {
-            if ($primaryKey = $this->primaryKeyInternal($model)) {
-                return $this->primaryKey[$model] = $primaryKey;
+        if (($primaryKey = $this->primaryKey[$entityClass] ?? null) === null) {
+            if ($primaryKey = $this->primaryKeyInternal($entityClass)) {
+                return $this->primaryKey[$entityClass] = $primaryKey;
             } else {
-                $primaryKeys = $this->metadata->getPrimaryKeyAttributes($model);
+                $primaryKeys = $this->metadata->getPrimaryKeyAttributes($entityClass);
                 if (count($primaryKeys) !== 1) {
                     throw new NotSupportedException('only support one primary key');
                 }
                 $primaryKey = $primaryKeys[0];
-                $columnMap = $this->models->getColumnMap($model);
-                return $this->primaryKey[$model] = array_search($primaryKey, $columnMap, true) ?: $primaryKey;
+                $columnMap = $this->entityMetadata->getColumnMap($entityClass);
+                return $this->primaryKey[$entityClass] = array_search($primaryKey, $columnMap, true) ?: $primaryKey;
             }
         } else {
             return $primaryKey;
         }
     }
 
-    public function fields(string $model): array
+    public function fields(string $entityClass): array
     {
-        if (($fields = $this->fields[$model] ?? null) === null) {
+        if (($fields = $this->fields[$entityClass] ?? null) === null) {
             $fields = [];
-            foreach (get_class_vars($model) as $field => $value) {
+            foreach (get_class_vars($entityClass) as $field => $value) {
                 if ($value === null && $field[0] !== '_') {
                     $fields[] = $field;
                 }
             }
-            return $this->fields[$model] = $fields ?: $this->metadata->getAttributes($model);
+            return $this->fields[$entityClass] = $fields ?: $this->metadata->getAttributes($entityClass);
         } else {
             return $fields;
         }
     }
 
-    public function intFields(string $model): array
+    public function intFields(string $entityClass): array
     {
-        if (($fields = $this->intFields[$model] ?? null) === null) {
-            if (($columnMap = $this->models->getColumnMap($model)) !== []) {
-                foreach ($this->metadata->getIntTypeAttributes($model) as $field) {
+        if (($fields = $this->intFields[$entityClass] ?? null) === null) {
+            if (($columnMap = $this->entityMetadata->getColumnMap($entityClass)) !== []) {
+                foreach ($this->metadata->getIntTypeAttributes($entityClass) as $field) {
                     $fields[] = array_search($field, $columnMap, true) ?: $field;
                 }
             } else {
-                $fields = $this->metadata->getIntTypeAttributes($model);
+                $fields = $this->metadata->getIntTypeAttributes($entityClass);
             }
 
-            return $this->intFields[$model] = $fields;
+            return $this->intFields[$entityClass] = $fields;
         } else {
             return $fields;
         }

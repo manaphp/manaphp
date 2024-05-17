@@ -9,10 +9,10 @@ ManaPHP为了方便数据表的维护实现了`Model`类。
 定义一个User模型类：
 
 ```php
-    namespace App\Models;
-    use ManaPHP\Db\Model;
+    namespace App\Entities;
+    ;use ManaPHP\Persistence\Entity;
     
-    class User extends Model
+    class User extends Entity
     {
         public $user_id;
         public $user_name;

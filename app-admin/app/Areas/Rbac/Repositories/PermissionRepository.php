@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Repositories;
 
-use App\Areas\Rbac\Models\Permission;
-use ManaPHP\Persistence\Repository;
+use App\Areas\Rbac\Entities\Permission;
+use ManaPHP\Db\Repository;
 
 /**
  * @extends Repository<Permission>

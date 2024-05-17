@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Repositories;
 
-use App\Areas\Rbac\Models\AdminRole;
-use ManaPHP\Persistence\Repository;
+use App\Areas\Rbac\Entities\AdminRole;
+use ManaPHP\Db\Repository;
 
 /**
  * @extends Repository<AdminRole>

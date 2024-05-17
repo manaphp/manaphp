@@ -8,7 +8,7 @@ use ManaPHP\Exception;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
-use ManaPHP\Model\ModelInterface;
+use ManaPHP\Persistence\Entity;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
 use function get_class;
@@ -19,8 +19,8 @@ class Exists extends AbstractConstraint
 {
     public function validate(Validation $validation): bool
     {
-        if (!$validation->source instanceof ModelInterface) {
-            throw new MisuseException(sprintf('%s is not a model', get_class($validation->source)));
+        if (!$validation->source instanceof Entity) {
+            throw new MisuseException(sprintf('%s is not a entity', get_class($validation->source)));
         }
 
         $value = $validation->value;
@@ -30,13 +30,13 @@ class Exists extends AbstractConstraint
         }
 
         if (preg_match('#^(.*)_id$#', $validation->field, $match)) {
-            $modelName = $validation->source::class;
-            $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Str::pascalize($match[1]);
+            $entityName = $validation->source::class;
+            $className = substr($entityName, 0, strrpos($entityName, '\\') + 1) . Str::pascalize($match[1]);
             if (!class_exists($className)) {
-                $className = 'App\\Models\\' . Str::pascalize($match[1]);
+                $className = 'App\\Entities\\' . Str::pascalize($match[1]);
             }
         } else {
-            throw new InvalidValueException(['validate `{1}` failed: related model class is not provided', $field]);
+            throw new InvalidValueException(['validate `{1}` failed: related entity class is not provided', $field]);
         }
 
         if (!class_exists($className)) {

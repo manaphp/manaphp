@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\Admin;
-use ManaPHP\Persistence\Repository;
+use App\Entities\Admin;
+use ManaPHP\Db\Repository;
 
 /**
  * @extends Repository<Admin>

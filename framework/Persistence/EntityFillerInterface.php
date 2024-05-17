@@ -5,5 +5,5 @@ namespace ManaPHP\Persistence;
 
 interface EntityFillerInterface
 {
-    public function fill(object $entity, array $data);
+    public function fill(Entity $entity, array $data);
 }

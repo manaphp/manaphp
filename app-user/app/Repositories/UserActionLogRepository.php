@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Events\UserActionLog;
-use ManaPHP\Persistence\Repository;
+use ManaPHP\Db\Repository;
 
 /**
  * @extends Repository<UserActionLog>

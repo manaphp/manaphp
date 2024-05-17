@@ -7,7 +7,7 @@ use ManaPHP\Db\Db;
 use ManaPHP\Db\DbConnectorInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
-use ManaPHP\Model\ShardingInterface;
+use ManaPHP\Persistence\ShardingInterface;
 use function function_exists;
 
 class Metadata implements MetadataInterface
@@ -27,9 +27,9 @@ class Metadata implements MetadataInterface
         }
     }
 
-    protected function getMetadata(string $model): array
+    protected function getMetadata(string $entityClass): array
     {
-        $key = __FILE__ . ':' . $model;
+        $key = __FILE__ . ':' . $entityClass;
 
         if ($this->ttl > 0) {
             $r = apcu_fetch($key, $success);
@@ -38,7 +38,7 @@ class Metadata implements MetadataInterface
             }
         }
 
-        list($connection, $table) = $this->sharding->getAnyShard($model);
+        list($connection, $table) = $this->sharding->getAnyShard($entityClass);
         $db = $this->connector->get($connection);
         $data = $db->getMetadata($table);
 
@@ -49,23 +49,23 @@ class Metadata implements MetadataInterface
         return $data;
     }
 
-    public function getAttributes(string $model): array
+    public function getAttributes(string $entityClass): array
     {
-        return $this->getMetadata($model)[Db::METADATA_ATTRIBUTES];
+        return $this->getMetadata($entityClass)[Db::METADATA_ATTRIBUTES];
     }
 
-    public function getPrimaryKeyAttributes(string $model): array
+    public function getPrimaryKeyAttributes(string $entityClass): array
     {
-        return $this->getMetadata($model)[Db::METADATA_PRIMARY_KEY];
+        return $this->getMetadata($entityClass)[Db::METADATA_PRIMARY_KEY];
     }
 
-    public function getAutoIncrementAttribute(string $model): ?string
+    public function getAutoIncrementAttribute(string $entityClass): ?string
     {
-        return $this->getMetadata($model)[Db::METADATA_AUTO_INCREMENT_KEY];
+        return $this->getMetadata($entityClass)[Db::METADATA_AUTO_INCREMENT_KEY];
     }
 
-    public function getIntTypeAttributes(string $model): array
+    public function getIntTypeAttributes(string $entityClass): array
     {
-        return $this->getMetadata($model)[Db::METADATA_INT_TYPE_ATTRIBUTES];
+        return $this->getMetadata($entityClass)[Db::METADATA_INT_TYPE_ATTRIBUTES];
     }
 }

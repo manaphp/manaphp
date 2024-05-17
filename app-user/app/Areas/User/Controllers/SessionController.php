@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
-use App\Models\User;
-use App\Models\UserLoginLog;
+use App\Entities\User;
+use App\Entities\UserLoginLog;
 use App\Repositories\AdminLoginLogRepository;
 use App\Repositories\UserRepository;
 use ManaPHP\Di\Attribute\Autowired;

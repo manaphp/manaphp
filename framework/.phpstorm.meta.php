@@ -124,17 +124,17 @@ unset($view, $renderer);
 
 class_exists('\Elasticsearch\Client') || class_alias('\stdClass', '\Elasticsearch\Client');
 
-function model_fields($model)
+function entity_fields($entity)
 {
-    return array_keys(get_object_vars($model));
+    return array_keys(get_object_vars($entity));
 }
 
-function model_field($model)
+function entity_field($entity)
 {
-    return key(get_object_vars($model));
+    return key(get_object_vars($entity));
 }
 
-function model_var($model)
+function entity_var($entity)
 {
-    return get_object_vars($model);
+    return get_object_vars($entity);
 }

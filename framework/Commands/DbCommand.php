@@ -15,9 +15,9 @@ use ManaPHP\Di\Pool;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Helper\SuppressWarnings;
-use ManaPHP\Model\Attribute\ColumnMap;
-use ManaPHP\Model\Attribute\Connection;
-use ManaPHP\Model\Attribute\PrimaryKey;
+use ManaPHP\Persistence\Attribute\ColumnMap;
+use ManaPHP\Persistence\Attribute\Connection;
+use ManaPHP\Persistence\Attribute\PrimaryKey;
 use function count;
 use function dirname;
 use function in_array;
@@ -63,13 +63,13 @@ class DbCommand extends Command
     }
 
     /**
-     * @param string $modelName
+     * @param string $entityName
      *
      * @return string
      */
-    protected function getConstantsByFile(string $modelName): string
+    protected function getConstantsByFile(string $entityName): string
     {
-        $file = "@app/Models/$modelName.php";
+        $file = "@app/Entities/$entityName.php";
         if (!LocalFS::fileExists($file)) {
             return '';
         }
@@ -158,7 +158,7 @@ class DbCommand extends Command
      *
      * @return string
      */
-    protected function renderModel(string $connection, string $class, string $table, bool $optimized = false,
+    protected function renderEntity(string $connection, string $class, string $table, bool $optimized = false,
         bool $camelized = false
     ): string {
         $db = $this->connector->get($connection);
@@ -183,7 +183,7 @@ class DbCommand extends Command
 
         $uses = [];
         if (strpos($class, '\\Areas\\')) {
-            $uses[] = 'App\Models\Model';
+            $uses[] = 'App\Entities\Entity';
         }
 
         $attributes = [];
@@ -265,10 +265,10 @@ class DbCommand extends Command
      *
      * @return string
      */
-    protected function renderTable(string $connection, string $table, string $rootNamespace = 'App\Models'): string
+    protected function renderTable(string $connection, string $table, string $rootNamespace = 'App\Entities'): string
     {
         $plainClass = Str::pascalize($table);
-        $modelName = $rootNamespace . '\\' . $plainClass;
+        $entityClass = $rootNamespace . '\\' . $plainClass;
 
         if ($constants = $this->getConstantsByDb($connection, $table)) {
             SuppressWarnings::noop();
@@ -277,7 +277,7 @@ class DbCommand extends Command
         }
 
         $str = '<?php' . PHP_EOL . PHP_EOL;
-        $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
+        $str .= 'namespace ' . substr($entityClass, 0, strrpos($entityClass, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
 
         $str .= 'class ' . $plainClass . ' extends Table' . PHP_EOL;
@@ -345,7 +345,7 @@ class DbCommand extends Command
     }
 
     /**
-     * generate model file in online
+     * generate entity file in online
      *
      * @param string $table      table name
      * @param string $connection connection name
@@ -354,7 +354,7 @@ class DbCommand extends Command
      *
      * @return void
      */
-    public function modelAction(string $table, string $connection = '', bool $optimized = false, bool $camelized = false
+    public function entityAction(string $table, string $connection = '', bool $optimized = false, bool $camelized = false
     ): void {
         if ($connection) {
             $db = $this->connector->get($connection);
@@ -375,16 +375,16 @@ class DbCommand extends Command
         }
 
         $plainClass = Str::pascalize($table);
-        $fileName = "@runtime/db_model/$plainClass.php";
-        $class = "App\Models\\$plainClass";
-        $model_str = $this->renderModel($connection, $class, $table, $optimized, $camelized);
-        LocalFS::filePut($fileName, $model_str);
+        $fileName = "@runtime/db_entity/$plainClass.php";
+        $class = "App\Entities\\$plainClass";
+        $entity_str = $this->renderEntity($connection, $class, $table, $optimized, $camelized);
+        LocalFS::filePut($fileName, $entity_str);
 
         $this->console->writeLn("`$table` table saved to `$fileName`");
     }
 
     /**
-     * generate models file in online
+     * generate entities file in online
      *
      * @param array  $connections   connections name list
      * @param string $table_pattern match table against a pattern
@@ -393,7 +393,7 @@ class DbCommand extends Command
      *
      * @return void
      */
-    public function modelsAction(array $connections = [], string $table_pattern = '', bool $optimized = false,
+    public function entitiesAction(array $connections = [], string $table_pattern = '', bool $optimized = false,
         bool $camelized = false
     ): void {
         $areas = $this->getAreas();
@@ -401,19 +401,19 @@ class DbCommand extends Command
         foreach ($connections ?: $this->getConnections() as $connection) {
             foreach ($this->getTables($connection, $table_pattern) as $table) {
                 $plainClass = Str::pascalize($table);
-                $class = "App\Models\\$plainClass";
-                $fileName = "@runtime/db_models/$plainClass.php";
+                $class = "App\Entities\\$plainClass";
+                $fileName = "@runtime/db_entities/$plainClass.php";
                 if (($pos = strpos($table, '_')) !== false) {
                     $area = Str::pascalize(substr($table, 0, $pos));
                     if (in_array($area, $areas, true)) {
                         $plainClass = Str::pascalize(substr($table, $pos + 1));
-                        $class = 'App\\Areas\\Models\\' . Str::pascalize(substr($table, $pos));
-                        $fileName = "@runtime/db_models/Areas/$area/$plainClass.php";
+                        $class = 'App\\Areas\\Entities\\' . Str::pascalize(substr($table, $pos));
+                        $fileName = "@runtime/db_entities/Areas/$area/$plainClass.php";
                     }
                 }
 
-                $model_str = $this->renderModel($connection, $class, $table, $optimized, $camelized);
-                LocalFS::filePut($fileName, $model_str);
+                $entity_str = $this->renderEntity($connection, $class, $table, $optimized, $camelized);
+                LocalFS::filePut($fileName, $entity_str);
 
                 $this->console->writeLn(" `$table` table saved to `$fileName`");
             }
@@ -421,11 +421,11 @@ class DbCommand extends Command
     }
 
     /**
-     * generate models file in online
+     * generate tables file in online
      *
      * @param array  $connections   connections name list
      * @param string $table_pattern match table against a pattern
-     * @param string $namespace     namespace of models
+     * @param string $namespace     namespace of entities
      *
      * @return void
      */
@@ -440,8 +440,8 @@ class DbCommand extends Command
 
                 $plainClass = Str::pascalize($table);
                 $fileName = "@runtime/db_tables/$plainClass.php";
-                $model_str = $this->renderTable($connection, $table, $namespace);
-                LocalFS::filePut($fileName, $model_str);
+                $entity_str = $this->renderTable($connection, $table, $namespace);
+                LocalFS::filePut($fileName, $entity_str);
 
                 $this->console->writeLn(" `$table` table saved to `$fileName`");
             }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Controllers;
 
-use App\Areas\Rbac\Models\AdminRole;
+use App\Areas\Rbac\Entities\AdminRole;
 use App\Areas\Rbac\Repositories\AdminRoleRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;
 use App\Controllers\Controller;

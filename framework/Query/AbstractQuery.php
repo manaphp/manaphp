@@ -12,12 +12,12 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
-use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelsInterface;
-use ManaPHP\Model\RelationsInterface;
-use ManaPHP\Model\ShardingInterface;
-use ManaPHP\Model\ThoseInterface;
+use ManaPHP\Persistence\Entity;
+use ManaPHP\Persistence\EntityMetadataInterface;
+use ManaPHP\Persistence\RelationsInterface;
 use ManaPHP\Persistence\Restrictions;
+use ManaPHP\Persistence\ShardingInterface;
+use ManaPHP\Persistence\ThoseInterface;
 use function count;
 use function in_array;
 use function is_array;
@@ -31,7 +31,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     #[Autowired] protected RelationsInterface $relations;
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected ShardingInterface $sharding;
-    #[Autowired] protected ModelsInterface $models;
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
     protected string $connection;
     protected string $table;
@@ -40,7 +40,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     protected ?int $limit = null;
     protected int $offset = 0;
     protected bool $distinct = false;
-    protected ?string $model = null;
+    protected ?string $entityClass = null;
     protected ?bool $multiple = null;
     protected array $with = [];
     protected ?array $order = null;
@@ -62,16 +62,16 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         return $this->all();
     }
 
-    public function setModel(string $model): static
+    public function setEntityClass(string $entityClass): static
     {
-        $this->model = $model;
+        $this->entityClass = $entityClass;
 
         return $this;
     }
 
-    public function getModel(): ?string
+    public function getEntityClass(): ?string
     {
-        return $this->model;
+        return $this->entityClass;
     }
 
     public function shard(callable $strategy): static
@@ -83,8 +83,8 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
     public function getShards(): array
     {
-        if ($model = $this->model ?? null) {
-            return $this->sharding->getMultipleShards($model, $this->shard_context);
+        if ($entityClass = $this->entityClass ?? null) {
+            return $this->sharding->getMultipleShards($entityClass, $this->shard_context);
         } else {
             $connection = $this->connection;
             $table = $this->table;
@@ -117,8 +117,8 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     {
         if ($table) {
             if (str_contains($table, '\\')) {
-                $this->setModel($table);
-                $table = $this->models->getTable($table);
+                $this->setEntityClass($table);
+                $table = $this->entityMetadata->getTable($table);
             }
 
             $this->table = $table;
@@ -219,8 +219,8 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
     public function whereDateBetween(string $field, mixed $min, mixed $max): static
     {
-        if (!$this->model) {
-            throw new MisuseException('use whereDateBetween must provide model');
+        if (!$this->entityClass) {
+            throw new MisuseException('use whereDateBetween must provide entity');
         }
 
         if ($min && !str_contains($min, ':')) {
@@ -230,8 +230,8 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
             $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
         }
 
-        $model = $this->model;
-        if ($format = $this->models->getDateFormat($model)) {
+        $entityClass = $this->entityClass;
+        if ($format = $this->entityMetadata->getDateFormat($entityClass)) {
             if (is_int($min)) {
                 $min = date($format, $min);
             }
@@ -335,7 +335,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
             $parent_value = $with[$parent_name];
             if (!$parent_value instanceof QueryInterface) {
-                $with[$parent_name] = $this->relations->getQuery($this->model, $parent_name, $parent_value);
+                $with[$parent_name] = $this->relations->getQuery($this->entityClass, $parent_name, $parent_value);
             }
 
             $with[$parent_name]->with(is_int($k) ? [$child_name] : [$child_name => $v]);
@@ -362,20 +362,20 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
     }
 
     /**
-     * @return ModelInterface[]|ModelInterface|null|array
+     * @return Entity[]|Entity|null|array
      */
     public function fetch(): mixed
     {
         $rows = $this->execute();
 
-        if (($model = $this->model) !== null) {
+        if (($entityClass = $this->entityClass) !== null) {
             foreach ($rows as $k => $v) {
-                $rows[$k] = new $model($v);
+                $rows[$k] = new $entityClass($v);
             }
         }
 
         if ($rows && $this->with) {
-            $rows = $this->relations->earlyLoad($model, $rows, $this->with);
+            $rows = $this->relations->earlyLoad($entityClass, $rows, $this->with);
         }
 
         if (($map = $this->map) !== null) {
@@ -473,9 +473,9 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
     public function whereDate(string $field, int|string $date): static
     {
-        if ($this->model) {
-            $model = $this->model;
-            $format = $this->models->getDateFormat($model);
+        if ($this->entityClass) {
+            $entityClass = $this->entityClass;
+            $format = $this->entityMetadata->getDateFormat($entityClass);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -500,9 +500,9 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
      */
     public function whereMonth(string $field, int|string $date): static
     {
-        if ($this->model) {
-            $model = $this->model;
-            $format = $this->models->getDateFormat($model);
+        if ($this->entityClass) {
+            $entityClass = $this->entityClass;
+            $format = $this->entityMetadata->getDateFormat($entityClass);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -527,9 +527,9 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
      */
     public function whereYear(string $field, int|string $date): static
     {
-        if ($this->model) {
-            $model = $this->model;
-            $format = $this->models->getDateFormat($model);
+        if ($this->entityClass) {
+            $entityClass = $this->entityClass;
+            $format = $this->entityMetadata->getDateFormat($entityClass);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }

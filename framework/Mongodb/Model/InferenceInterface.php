@@ -5,11 +5,11 @@ namespace ManaPHP\Mongodb\Model;
 
 interface InferenceInterface
 {
-    public function primaryKey(string $model): string;
+    public function primaryKey(string $entityClass): string;
 
-    public function fields(string $model): array;
+    public function fields(string $entityClass): array;
 
-    public function intFields(string $model): array;
+    public function intFields(string $entityClass): array;
 
-    public function fieldTypes(string $model): array;
+    public function fieldTypes(string $entityClass): array;
 }

@@ -6,21 +6,21 @@ namespace ManaPHP\Commands;
 use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Model\ModelsInterface;
+use ManaPHP\Persistence\EntityMetadataInterface;
 use ReflectionProperty;
 use function in_array;
 
 class ViewCommand extends Command
 {
-    #[Autowired] protected ModelsInterface $models;
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      * @noinspection PhpUnusedParameterInspection
      */
-    public function renderRequestForm(string $model): string
+    public function renderRequestForm(string $entityClass): string
     {
         $content = <<<HTML
 <request-form>
@@ -30,17 +30,17 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      */
-    public function renderDetailForm(string $model): string
+    public function renderDetailForm(string $entityClass): string
     {
         $content = PHP_EOL . <<<HTML
 <detail-form>
 HTML;
-        foreach ($this->models->getFields($model) as $field) {
-            if ($this->isTimestampField($model, $field)) {
+        foreach ($this->entityMetadata->getFields($entityClass) as $field) {
+            if ($this->isTimestampField($entityClass, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <detail-timestamp prop="$field"></detail-timestamp>
 HTML;
@@ -59,13 +59,13 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      */
-    public function renderCreateForm(string $model): string
+    public function renderCreateForm(string $entityClass): string
     {
-        if (!$fields = $this->models->getFillable($model)) {
+        if (!$fields = $this->entityMetadata->getFillable($entityClass)) {
             return '';
         }
 
@@ -85,20 +85,20 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      */
-    public function renderEditForm(string $model): string
+    public function renderEditForm(string $entityClass): string
     {
-        if (!$fields = $this->models->getFillable($model)) {
+        if (!$fields = $this->entityMetadata->getFillable($entityClass)) {
             return '';
         }
 
         $content = PHP_EOL . <<<HTML
 <edit-form>
 HTML;
-        $primaryKey = $this->models->getPrimaryKey($model);
+        $primaryKey = $this->entityMetadata->getPrimaryKey($entityClass);
         $content .= PHP_EOL . <<<HTML
     <edit-text prop="$primaryKey" disabled></edit-text>
 HTML;
@@ -116,14 +116,14 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      * @param string $field
      *
      * @return bool
      */
-    public function isTimestampField(string $model, string $field): bool
+    public function isTimestampField(string $entityClass, string $field): bool
     {
-        $rProperty = new ReflectionProperty($model, $field);
+        $rProperty = new ReflectionProperty($entityClass, $field);
         if ($rProperty->getType()?->getName() !== 'int') {
             return false;
         }
@@ -132,18 +132,18 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      */
-    public function renderResultTable(string $model): string
+    public function renderResultTable(string $entityClass): string
     {
         $content = PHP_EOL . <<<HTML
 <result-table>
     <result-index></result-index>
 HTML;
-        foreach ($this->models->getFields($model) as $field) {
-            if ($this->isTimestampField($model, $field)) {
+        foreach ($this->entityMetadata->getFields($entityClass) as $field) {
+            if ($this->isTimestampField($entityClass, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <result-timestamp prop="$field"></result-timestamp>
 HTML;
@@ -184,12 +184,12 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      * @noinspection PhpUnusedParameterInspection
      */
-    public function renderCss(string $model): string
+    public function renderCss(string $entityClass): string
     {
         $content = PHP_EOL . <<<HTML
 @section('css')
@@ -202,13 +202,13 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      */
-    public function renderScript(string $model): string
+    public function renderScript(string $entityClass): string
     {
-        $fields = $this->models->getFillable($model);
+        $fields = $this->entityMetadata->getFillable($entityClass);
 
         $content = PHP_EOL . <<<HTML
 @section('script')
@@ -231,7 +231,7 @@ HTML;
                 },
                 edit: {
 HTML;
-            $content .= PHP_EOL . '                    ' . $this->models->getPrimaryKey($model) . ': 0,';
+            $content .= PHP_EOL . '                    ' . $this->entityMetadata->getPrimaryKey($entityClass) . ': 0,';
             $content .= PHP_EOL . '                },';
         }
 
@@ -245,19 +245,19 @@ HTML;
     }
 
     /**
-     * @param string $model
+     * @param string $entityClass
      *
      * @return string
      */
-    public function render(string $model): string
+    public function render(string $entityClass): string
     {
-        $content = $this->renderRequestForm($model);
-        $content .= $this->renderDetailForm($model);
-        $content .= $this->renderCreateForm($model);
-        $content .= $this->renderEditForm($model);
-        $content .= $this->renderResultTable($model);
-        $content .= $this->renderCss($model);
-        $content .= $this->renderScript($model);
+        $content = $this->renderRequestForm($entityClass);
+        $content .= $this->renderDetailForm($entityClass);
+        $content .= $this->renderCreateForm($entityClass);
+        $content .= $this->renderEditForm($entityClass);
+        $content .= $this->renderResultTable($entityClass);
+        $content .= $this->renderCss($entityClass);
+        $content .= $this->renderScript($entityClass);
 
         return $content;
     }
@@ -269,28 +269,28 @@ HTML;
      */
     public function defaultAction(): void
     {
-        foreach (LocalFS::glob('@app/Models/*.php') as $model_file) {
-            if (basename($model_file) === 'Model.php') {
+        foreach (LocalFS::glob('@app/Entities/*.php') as $entity_file) {
+            if (basename($entity_file) === 'Entity.php') {
                 continue;
             }
-            $plain = basename($model_file, '.php');
+            $plain = basename($entity_file, '.php');
             $view_file = "@runtime/view/Views/$plain.sword";
-            $model = "App\Models\\$plain";
-            LocalFS::filePut($view_file, $this->render($model));
-            $this->console->writeLn("view of `$model` saved to `$view_file`");
+            $entityClass = "App\Entities\\$plain";
+            LocalFS::filePut($view_file, $this->render($entityClass));
+            $this->console->writeLn("view of `$entityClass` saved to `$view_file`");
         }
 
-        foreach (LocalFS::glob('@app/Areas/*/Models/*.php') as $model_file) {
-            if (basename($model_file) === 'Model.php') {
+        foreach (LocalFS::glob('@app/Areas/*/Entities/*.php') as $entity_file) {
+            if (basename($entity_file) === 'Entity.php') {
                 continue;
             }
-            preg_match('#Areas/(\w+)/Models/(\w+).php$#', $model_file, $match);
+            preg_match('#Areas/(\w+)/Entities/(\w+).php$#', $entity_file, $match);
             list(, $area, $plain) = $match;
 
             $view_file = "@runtime/view/Areas/$area/Views/$plain.sword";
-            $model = "App\\Areas\\$area\\Models\\$plain";
-            LocalFS::filePut($view_file, $this->render($model));
-            $this->console->writeLn("view of `$model` saved to `$view_file`");
+            $entityClass = "App\\Areas\\$area\\Entities\\$plain";
+            LocalFS::filePut($view_file, $this->render($entityClass));
+            $this->console->writeLn("view of `$entityClass` saved to `$view_file`");
         }
     }
 }

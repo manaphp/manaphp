@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Areas\System\Models;
 
-use App\Models\Model;
-use ManaPHP\Model\Attribute\PrimaryKey;
+use App\Entities\Entity;
+use ManaPHP\Persistence\Attribute\PrimaryKey;
 
 #[PrimaryKey('id')]
-class DotenvLog extends Model
+class DotenvLog extends Entity
 {
     public int $id;
     public string $app_id;

@@ -6,8 +6,8 @@ namespace ManaPHP\Validating\Constraint\Attribute;
 use Attribute;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Model\ModelInterface;
-use ManaPHP\Model\ModelsInterface;
+use ManaPHP\Persistence\Entity;
+use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
 use function is_int;
@@ -23,11 +23,11 @@ class Unique extends AbstractConstraint
 
     public function validate(Validation $validation): bool
     {
-        /** @var ModelInterface $source */
+        /** @var Entity $source */
         $source = $validation->source;
 
-        if (!$source instanceof ModelInterface) {
-            throw new MisuseException(sprintf('%s is not a model', $source::class));
+        if (!$source instanceof Entity) {
+            throw new MisuseException(sprintf('%s is not a entity', $source::class));
         }
 
         $filters = [$validation->field => $validation->value];
@@ -39,11 +39,12 @@ class Unique extends AbstractConstraint
             }
         }
 
-        $primaryKey = Container::get(ModelsInterface::class)->getPrimaryKey($source::class);
+        $entityMetadata = Container::get(EntityMetadataInterface::class);
+        $primaryKey = $entityMetadata->getPrimaryKey($source::class);
         if ($primaryKey !== null && isset($source->$primaryKey)) {
             $filters[$primaryKey . '!='] = $source->$primaryKey;
         }
 
-        return !$source::exists($filters);
+        return !$entityMetadata->getRepository($source::class)->exists($filters);
     }
 }

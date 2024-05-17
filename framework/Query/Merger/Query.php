@@ -8,7 +8,8 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Http\RequestInterface;
-use ManaPHP\Model\ModelInterface;
+use ManaPHP\Persistence\Entity;
+use ManaPHP\Persistence\EntityManagerInterface;
 use ManaPHP\Query\AbstractQuery;
 use ManaPHP\Query\QueryInterface;
 use function array_slice;
@@ -34,7 +35,7 @@ class Query extends AbstractQuery
     }
 
     /**
-     * @param string[]|ModelInterface[]|QueryInterface[] $queries
+     * @param string[]|Entity[]|QueryInterface[] $queries
      *
      * @return static
      */
@@ -47,8 +48,8 @@ class Query extends AbstractQuery
 
             if ($query instanceof QueryInterface) {
                 $this->queries[$id] = $query;
-            } elseif ($query instanceof ModelInterface) {
-                $this->queries[$id] = $query::query();
+            } elseif ($query instanceof EntityManagerInterface) {
+                $this->queries[$id] = $query->query($queries[0]->getEntityClass());
             } else {
                 throw new MisuseException('');
             }
@@ -85,12 +86,12 @@ class Query extends AbstractQuery
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function setModel(string $model): static
+    public function setEntityClass(string $entityClass): static
     {
-        $this->model = $model;
+        $this->entityClass = $entityClass;
 
         foreach ($this->queries as $query) {
-            $query->setModel($model);
+            $query->setModel($entityClass);
         }
 
         return $this;

@@ -46,37 +46,37 @@ class MongodbCommand extends Command
     }
 
     /**
-     * generate model file from base64 encoded string
+     * generate entity file from base64 encoded string
      *
      * @param string $input the base64 encoded json string
-     * @param string $modelName
+     * @param string $entityClass
      *
      * @return void
      */
-    public function modelAction(string $input, string $modelName): void
+    public function entityAction(string $input, string $entityClass): void
     {
-        if (!str_contains($modelName, '\\')) {
-            $modelName = 'App\\Models\\' . ucfirst($modelName);
+        if (!str_contains($entityClass, '\\')) {
+            $entityClass = 'App\\Entities\\' . ucfirst($entityClass);
         }
 
         $fieldTypes = $this->inferFieldTypes([json_parse($input)]);
 
-        $model = $this->renderModel($fieldTypes, $modelName);
-        $file = '@runtime/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
-        LocalFS::filePut($file, $model);
+        $entity = $this->renderEntity($fieldTypes, $entityClass);
+        $file = '@runtime/mongodb_entities/' . substr($entityClass, strrpos($entityClass, '\\') + 1) . '.php';
+        LocalFS::filePut($file, $entity);
 
-        $this->console->writeLn("write model to `:$file`");
+        $this->console->writeLn("write entity to `:$file`");
     }
 
     /**
-     * generate models file from data files or online data
+     * generate entities file from data files or online data
      *
      * @param int   $sample sample size
      * @param array $db     db name list
      *
      * @return void
      */
-    public function modelsAction(
+    public function entitiesAction(
         int $sample = 1000,
         array $db = []
     ): void {
@@ -100,12 +100,12 @@ class MongodbCommand extends Command
                     }
 
                     $plainClass = Str::pascalize($collection);
-                    $fileName = "@runtime/mongodb_models/$plainClass.php";
+                    $fileName = "@runtime/mongodb_entities/$plainClass.php";
 
                     $fieldTypes = $this->inferFieldTypes($docs);
-                    $modelClass = 'App\Models\\' . $plainClass;
-                    $model = $this->renderModel($fieldTypes, $modelClass);
-                    LocalFS::filePut($fileName, $model);
+                    $entityClass = 'App\Entities\\' . $plainClass;
+                    $entity = $this->renderEntity($fieldTypes, $entityClass);
+                    LocalFS::filePut($fileName, $entity);
 
                     $this->console->writeLn(sprintf(' `%s` collection saved to `%s`', "$cdb.$collection", $fileName));
 
@@ -157,13 +157,13 @@ class MongodbCommand extends Command
     }
 
     /**
-     * @param string $modelName
+     * @param string $entityName
      *
      * @return string
      */
-    protected function getConstants(string $modelName): string
+    protected function getConstants(string $entityName): string
     {
-        $file = "@app/Models/$modelName.php";
+        $file = "@app/Entities/$entityName.php";
         if (!LocalFS::fileExists($file)) {
             return '';
         }
@@ -182,22 +182,22 @@ class MongodbCommand extends Command
 
     /**
      * @param array  $fieldTypes
-     * @param string $modelName
+     * @param string $entityName
      *
      * @return string
      */
-    protected function renderModel(array $fieldTypes, string $modelName): string
+    protected function renderEntity(array $fieldTypes, string $entityName): string
     {
-        $constants = $this->getConstants($modelName);
+        $constants = $this->getConstants($entityName);
 
         $str = '<?php' . PHP_EOL;
-        $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
+        $str .= 'namespace ' . substr($entityName, 0, strrpos($entityName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
 
         $str .= 'class ' . substr(
-                $modelName,
-                strrpos($modelName, '\\') + 1
-            ) . ' extends \ManaPHP\Mongodb\Model' . PHP_EOL;
+                $entityName,
+                strrpos($entityName, '\\') + 1
+            ) . ' extends \ManaPHP\Entities\Entity' . PHP_EOL;
         $str .= '{';
         if ($constants) {
             $str .= PHP_EOL . '    ' . $constants . PHP_EOL;

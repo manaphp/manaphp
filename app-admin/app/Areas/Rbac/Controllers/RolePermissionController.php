@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Controllers;
 
-use App\Areas\Rbac\Models\RolePermission;
+use App\Areas\Rbac\Entities\RolePermission;
 use App\Areas\Rbac\Repositories\PermissionRepository;
 use App\Areas\Rbac\Repositories\RolePermissionRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;

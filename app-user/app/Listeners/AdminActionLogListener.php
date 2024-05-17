@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\UserActionLog;
-use App\Models\AdminActionLog;
+use App\Entities\AdminActionLog;
 use App\Repositories\AdminActionLogRepository;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;

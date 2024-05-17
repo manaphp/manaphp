@@ -6,7 +6,7 @@ namespace ManaPHP\Persistence;
 use ManaPHP\Query\Paginator;
 
 /**
- * @template T
+ * @template T of Entity
  */
 interface RepositoryInterface
 {
@@ -32,7 +32,7 @@ interface RepositoryInterface
      *
      * @return T
      */
-    public function get(int|string $id, array $fields = []): object;
+    public function get(int|string $id, array $fields = []): Entity;
 
     /**
      * @param array $filters
@@ -40,7 +40,7 @@ interface RepositoryInterface
      *
      * @return ?T
      */
-    public function first(array $filters, array $fields = []): ?object;
+    public function first(array $filters, array $fields = []): ?Entity;
 
     /**
      * @param array $filters
@@ -48,7 +48,7 @@ interface RepositoryInterface
      *
      * @return T
      */
-    public function firstOrFail(array $filters, array $fields = []): object;
+    public function firstOrFail(array $filters, array $fields = []): Entity;
 
     public function value(array $filters, string $field): mixed;
 
@@ -69,42 +69,42 @@ interface RepositoryInterface
      *
      * @return T
      */
-    public function fill(array $data): object;
+    public function fill(array $data): Entity;
 
     /**
      * @param T|array $entity
      *
      * @return T
      */
-    public function save(object|array $entity): object;
+    public function save(Entity|array $entity): Entity;
 
     /**
      * @param T|array $entity
      *
      * @return T
      */
-    public function create(object|array $entity): object;
+    public function create(Entity|array $entity): Entity;
 
     /**
      * @param T|array $entity
      *
      * @return T
      */
-    public function update(object|array $entity): object;
+    public function update(Entity|array $entity): Entity;
 
     /**
      * @param T $entity
      *
      * @return T
      */
-    public function delete(object $entity): object;
+    public function delete(Entity $entity): Entity;
 
     /**
      * @param int|string $id
      *
      * @return ?T
      */
-    public function deleteById(int|string $id): ?object;
+    public function deleteById(int|string $id): ?Entity;
 
     public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
     ): Paginator;

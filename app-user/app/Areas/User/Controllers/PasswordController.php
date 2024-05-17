@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
-use App\Models\User;
+use App\Entities\User;
 use App\Repositories\UserRepository;
 use Exception;
 use ManaPHP\Di\Attribute\Autowired;
