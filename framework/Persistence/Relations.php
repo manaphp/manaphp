@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Persistence;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
@@ -23,6 +24,7 @@ class Relations implements RelationsInterface
 {
     #[Autowired] protected ThoseInterface $those;
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
+    #[Autowired] protected ContainerInterface $container;
 
     protected array $relations;
 
@@ -135,12 +137,17 @@ class Relations implements RelationsInterface
     public function get(string $entityClass, string $name): ?RelationInterface
     {
         $instance = $this->those->get($entityClass);
-        $this->relations[$entityClass] ??= $instance->relations();
+        if (!isset($this->relations[$entityClass])) {
+            $this->relations[$entityClass] = [];
+            foreach ($instance->relations() as $relation_name => $relation) {
+                $this->relations[$entityClass][$relation_name] = $this->container->injectProperties($relation);
+            }
+        }
 
         if (($relation = $this->relations[$entityClass][$name] ?? null) !== null) {
             return $relation;
         } elseif ($relation = $this->inferRelation($entityClass, $name)) {
-            return $this->relations[$entityClass][$name] = $relation;
+            return $this->relations[$entityClass][$name] = $this->container->injectProperties($relation);
         } else {
             return null;
         }

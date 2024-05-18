@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Persistence\Relation;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
@@ -15,6 +16,8 @@ use function in_array;
 
 class HasManyOthers extends AbstractRelation
 {
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+
     protected string $selfFilter;
     protected string $selfValue;
     protected string $thatField;
@@ -60,7 +63,7 @@ class HasManyOthers extends AbstractRelation
         $thatField = $this->thatField;
 
         $ids = Arr::unique_column($r, $this->selfFilter);
-        $repository = Container::get(EntityMetadataInterface::class)->getRepository($this->selfEntity);
+        $repository = $this->entityMetadata->getRepository($this->selfEntity);
         $pivotQuery = $repository->select([$this->selfFilter, $this->selfValue])->whereIn($this->selfFilter, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->selfValue);
@@ -86,9 +89,9 @@ class HasManyOthers extends AbstractRelation
     public function lazyLoad(Entity $entity): QueryInterface
     {
         $selfFilter = $this->selfFilter;
-        $selfRepository = Container::get(EntityMetadataInterface::class)->getRepository($this->selfEntity);
+        $selfRepository = $this->entityMetadata->getRepository($this->selfEntity);
         $ids = $selfRepository->values($this->selfValue, [$selfFilter => $entity->$selfFilter]);
-        $thatRepository = Container::get(EntityMetadataInterface::class)->getRepository($this->thatEntity);
+        $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
         return $thatRepository->select()->whereIn($this->thatField, $ids)->setFetchType(true);
     }
 }

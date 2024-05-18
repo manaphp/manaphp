@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Persistence\Relation;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\AbstractRelation;
@@ -12,6 +13,8 @@ use ManaPHP\Query\QueryInterface;
 
 class HasManyToMany extends AbstractRelation
 {
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+
     protected string $selfField;
     protected string $thatField;
     protected string $pivotModel;
@@ -37,7 +40,7 @@ class HasManyToMany extends AbstractRelation
         $thatPivot = $this->thatPivot;
 
         $ids = Arr::unique_column($r, $this->selfField);
-        $repository = Container::get(EntityMetadataInterface::class)->getRepository($this->pivotModel);
+        $repository = $this->entityMetadata->getRepository($this->pivotModel);
         $pivotQuery = $repository->select([$this->selfPivot, $this->thatPivot])->whereIn($this->selfPivot, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->thatPivot);
@@ -63,11 +66,11 @@ class HasManyToMany extends AbstractRelation
     public function lazyLoad(Entity $entity): QueryInterface
     {
         $selfField = $this->selfField;
-        $pivotRepository = Container::get(EntityMetadataInterface::class)->getRepository($this->pivotModel);
+        $pivotRepository = $this->entityMetadata->getRepository($this->pivotModel);
         $ids = $pivotRepository->values(
             $this->thatPivot, [$this->selfPivot => $entity->$selfField]
         );
-        $thatRepository = Container::get(EntityMetadataInterface::class)->getRepository($this->thatEntity);
+        $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
         return $thatRepository->select()->whereIn($this->thatField, $ids)->setFetchType(true);
     }
 }

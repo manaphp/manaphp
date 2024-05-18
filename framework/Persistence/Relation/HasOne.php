@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Persistence\Relation;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\AbstractRelation;
 use ManaPHP\Persistence\Entity;
@@ -12,6 +13,8 @@ use function is_string;
 
 class HasOne extends AbstractRelation
 {
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+
     protected string $selfField;
     protected string $thatField;
 
@@ -50,7 +53,7 @@ class HasOne extends AbstractRelation
     {
         $selfField = $this->selfField;
         $thatField = $this->thatField;
-        $repository = Container::get(EntityMetadataInterface::class)->getRepository($this->thatEntity);
+        $repository = $this->entityMetadata->getRepository($this->thatEntity);
         return $repository->select()->where([$thatField => $entity->$selfField])->setFetchType(false);
     }
 }

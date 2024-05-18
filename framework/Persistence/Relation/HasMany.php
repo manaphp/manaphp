@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Persistence\Relation;
 
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\AbstractRelation;
@@ -13,6 +14,8 @@ use function is_string;
 
 class HasMany extends AbstractRelation
 {
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+
     protected string $selfField;
     protected string $thatField;
 
@@ -63,7 +66,7 @@ class HasMany extends AbstractRelation
     public function lazyLoad(Entity $entity): QueryInterface
     {
         $selfField = $this->selfField;
-        $repository = Container::get(EntityMetadataInterface::class)->getRepository($this->thatEntity);
+        $repository = $this->entityMetadata->getRepository($this->thatEntity);
         return $repository->select()->where([$this->thatField => $entity->$selfField])->setFetchType(true);
     }
 }
