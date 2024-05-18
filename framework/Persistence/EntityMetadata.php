@@ -68,6 +68,15 @@ class EntityMetadata implements EntityMetadataInterface
         }
     }
 
+    protected function getPropertyAttribute(ReflectionProperty $property, string $name): ?object
+    {
+        if (($attribute = $property->getAttributes($name, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null) !== null) {
+            return $attribute->newInstance();
+        } else {
+            return null;
+        }
+    }
+
     public function getTable(string $entityClass): string
     {
         if (($table = $this->table[$entityClass] ?? null) === null) {
@@ -104,7 +113,7 @@ class EntityMetadata implements EntityMetadataInterface
     public function getPrimaryKey(string $entityClass): string
     {
         if (($primaryKey = $this->primaryKey[$entityClass] ?? null) === null) {
-            foreach ((new ReflectionClass($entityClass))->getProperties() as $property) {
+            foreach ($this->getClassReflection($entityClass)->getProperties() as $property) {
                 if ($property->isReadOnly() || $property->isStatic()) {
                     continue;
                 }
@@ -162,14 +171,15 @@ class EntityMetadata implements EntityMetadataInterface
     {
         if (($fields = $this->fields[$entityClass] ?? null) === null) {
             $fields = [];
-            foreach ((new ReflectionClass($entityClass))->getProperties() as $property) {
+            foreach ($this->getClassReflection($entityClass)->getProperties() as $property) {
                 if ($property->isReadOnly() || $property->isStatic()) {
                     continue;
                 }
 
-                if ($property->getAttributes(Transiently::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                if ($property->getAttributes(Transiently::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
                     continue;
                 }
+
                 $fields[] = $property->getName();
             }
 
@@ -195,13 +205,11 @@ class EntityMetadata implements EntityMetadataInterface
                 }
 
                 $propertyName = $property->getName();
-                $attributes = $property->getAttributes(Column::class);
-                if ($attributes === []) {
-                    $columnName = $namingStrategy->propertyToColumnName($propertyName);
-                } else {
-                    /** @var Column $attribute */
-                    $attribute = $attributes[0]->newInstance();
+
+                if (($attribute = $this->getPropertyAttribute($property, Column::class)) !== null) {
                     $columnName = $attribute->name ?? $namingStrategy->propertyToColumnName($propertyName);
+                } else {
+                    $columnName = $namingStrategy->propertyToColumnName($propertyName);
                 }
 
                 if ($propertyName !== $columnName) {
@@ -277,11 +285,8 @@ class EntityMetadata implements EntityMetadataInterface
     public function getRepository(string $entityClass): RepositoryInterface
     {
         if (($repository = $this->repository[$entityClass] ?? null) === null) {
-            $rClass = new ReflectionClass($entityClass);
-            if (($attributes = $rClass->getAttributes(Repository::class)) !== []) {
-                /** @var Repository $rRepository */
-                $rRepository = $attributes[0]->newInstance();
-                $repository = $rRepository->name;
+            if (($attribute = $this->getClassAttribute($entityClass, Repository::class)) !== null) {
+                $repository = $attribute->name;
             } else {
                 if (preg_match('#^(.*)\\\\Entities\\\\(\\w+)$#', $entityClass, $match) === 1) {
                     $repository = $match[1] . '\\Repositories\\' . $match[2] . 'Repository';
@@ -300,14 +305,10 @@ class EntityMetadata implements EntityMetadataInterface
     public function getNamingStrategy(string $entityClass): NamingStrategyInterface
     {
         if (($namingStrategy = $this->namingStrategy[$entityClass] ?? null) === null) {
-            $rClass = new ReflectionClass($entityClass);
-            $attributes = $rClass->getAttributes(NamingStrategy::class);
-            if ($attributes === []) {
-                $namingStrategy = $this->defaultNamingStrategy;
-            } else {
-                /** @var NamingStrategy $attribute */
-                $attribute = $attributes[0]->newInstance();
+            if (($attribute = $this->getClassAttribute($entityClass, NamingStrategy::class)) !== null) {
                 $namingStrategy = $attribute->strategy;
+            } else {
+                $namingStrategy = $this->defaultNamingStrategy;
             }
             $this->namingStrategy[$entityClass] = $namingStrategy;
         }
