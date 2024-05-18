@@ -15,6 +15,13 @@ interface ContainerInterface extends PSrContainerInterface, MakerInterface, Invo
 
     public function getInstances(): array;
 
+    /**
+     * @template T
+     * @param T     $object
+     * @param array $parameters
+     *
+     * @return T
+     */
     public function injectProperties(object $object, array $parameters = []): object;
 
     public function make(string $name, array $parameters = [], string $id = null): mixed;
