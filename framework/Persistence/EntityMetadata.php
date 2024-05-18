@@ -68,6 +68,13 @@ class EntityMetadata implements EntityMetadataInterface
         }
     }
 
+    /**
+     * @template T
+     * @param ReflectionProperty $property
+     * @param class-string<T>    $name
+     *
+     * @return T
+     */
     protected function getPropertyAttribute(ReflectionProperty $property, string $name): ?object
     {
         if (($attribute = $property->getAttributes($name, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null) !== null) {
