@@ -7,11 +7,8 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Query\QueryInterface;
-use ManaPHP\Validating\ConstraintInterface;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use ReflectionAttribute;
-use ReflectionProperty;
 
 abstract class AbstractEntityManager implements EntityManagerInterface
 {
@@ -34,19 +31,15 @@ abstract class AbstractEntityManager implements EntityManagerInterface
     {
         $entityClass = $entity::class;
 
+        $constraints = $this->entityMetadata->getConstraints($entityClass);
+
         $validation = $this->validator->beginValidate($entity);
         foreach ($fields as $field) {
-            $rProperty = new ReflectionProperty($entityClass, $field);
-            $attributes = $rProperty->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF);
-            if ($attributes !== []) {
+            if (($fieldConstraints = $constraints[$field] ?? []) !== []) {
                 $validation->field = $field;
                 $validation->value = $entity->$field ?? null;
 
-                foreach ($attributes as $attribute) {
-                    /** @var ConstraintInterface $constraint */
-                    $constraint = $attribute->newInstance();
-                    $this->container->injectProperties($constraint);
-
+                foreach ($fieldConstraints as $constraint) {
                     if (!$validation->validate($constraint)) {
                         break;
                     }

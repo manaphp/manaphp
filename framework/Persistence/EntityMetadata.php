@@ -5,6 +5,7 @@ namespace ManaPHP\Persistence;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Persistence\Attribute\Column;
 use ManaPHP\Persistence\Attribute\Connection;
@@ -18,7 +19,6 @@ use ManaPHP\Persistence\Attribute\Repository;
 use ManaPHP\Persistence\Attribute\Table;
 use ManaPHP\Persistence\Attribute\Transiently;
 use ManaPHP\Validating\ConstraintInterface;
-use Psr\Container\ContainerInterface;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
@@ -46,6 +46,7 @@ class EntityMetadata implements EntityMetadataInterface
 
     protected array $repository = [];
     protected array $namingStrategy = [];
+    protected array $constraints = [];
 
     protected function getClassReflection(string $entityClass): ReflectionClass
     {
@@ -321,5 +322,41 @@ class EntityMetadata implements EntityMetadataInterface
         }
 
         return $this->container->get($namingStrategy);
+    }
+
+    public function getConstraints(string $entityClass): array
+    {
+        if (($constraints = $this->constraints[$entityClass] ?? null) === null) {
+            $constraints = [];
+            foreach ($this->getClassReflection($entityClass)->getProperties() as $property) {
+                if ($property->isReadOnly() || $property->isStatic()) {
+                    continue;
+                }
+
+                $propertyConstraints = [];
+                if (($attributes = $property->getAttributes(
+                        ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF
+                    )) !== []
+                ) {
+                    foreach ($attributes as $attribute) {
+                        if ($attribute->getArguments() === []) {
+                            $constraint = $this->container->get($attribute->getName());
+                        } else {
+                            $constraint = $attribute->newInstance();
+                            $this->container->injectProperties($constraint);
+                        }
+                        $propertyConstraints[] = $constraint;
+                    }
+                }
+
+                if ($propertyConstraints !== []) {
+                    $constraints[$property->getName()] = $propertyConstraints;
+                }
+            }
+
+            $this->constraints[$entityClass] = $constraints;
+        }
+
+        return $constraints;
     }
 }

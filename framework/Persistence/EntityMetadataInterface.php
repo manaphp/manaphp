@@ -24,4 +24,6 @@ interface EntityMetadataInterface
     public function getRepository(string $entityClass): RepositoryInterface;
 
     public function getNamingStrategy(string $entityClass): NamingStrategyInterface;
+
+    public function getConstraints(string $entityClass): array;
 }
