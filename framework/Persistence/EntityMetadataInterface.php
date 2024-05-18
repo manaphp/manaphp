@@ -22,4 +22,6 @@ interface EntityMetadataInterface
     public function getDateFormat(string $entityClass): string;
 
     public function getRepository(string $entityClass): RepositoryInterface;
+
+    public function getNamingStrategy(string $entityClass): NamingStrategyInterface;
 }

@@ -4,14 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Persistence;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Helper\Str;
-use ManaPHP\Persistence\Attribute\ColumnMap;
+use ManaPHP\Persistence\Attribute\Column;
 use ManaPHP\Persistence\Attribute\Connection;
 use ManaPHP\Persistence\Attribute\DateFormat;
 use ManaPHP\Persistence\Attribute\Fillable;
 use ManaPHP\Persistence\Attribute\Guarded;
 use ManaPHP\Persistence\Attribute\Id;
+use ManaPHP\Persistence\Attribute\NamingStrategy;
 use ManaPHP\Persistence\Attribute\ReferencedKey;
 use ManaPHP\Persistence\Attribute\Repository;
 use ManaPHP\Persistence\Attribute\Table;
@@ -31,6 +32,8 @@ class EntityMetadata implements EntityMetadataInterface
     #[Autowired] protected ContainerInterface $container;
     #[Autowired] protected ThoseInterface $those;
 
+    #[Config] protected string $defaultNamingStrategy = 'ManaPHP\Persistence\UnderscoreNamingStrategy';
+
     protected array $rClass = [];
     protected array $table = [];
     protected array $connection = [];
@@ -42,6 +45,7 @@ class EntityMetadata implements EntityMetadataInterface
     protected array $dateFormat = [];
 
     protected array $repository = [];
+    protected array $namingStrategy = [];
 
     protected function getClassReflection(string $entityClass): ReflectionClass
     {
@@ -64,22 +68,15 @@ class EntityMetadata implements EntityMetadataInterface
         }
     }
 
-    protected function getTableInternal(string $entityClass): string
-    {
-        if (($attribute = $this->getClassAttribute($entityClass, Table::class)) !== null) {
-            /** @var  Table $attribute */
-            return $attribute->name;
-        } else {
-            return Str::snakelize(
-                ($pos = strrpos($entityClass, '\\')) === false ? $entityClass : substr($entityClass, $pos + 1)
-            );
-        }
-    }
-
     public function getTable(string $entityClass): string
     {
         if (($table = $this->table[$entityClass] ?? null) === null) {
-            $table = $this->table[$entityClass] = $this->getTableInternal($entityClass);
+            if (($attribute = $this->getClassAttribute($entityClass, Table::class)) !== null) {
+                $table = $attribute->name;
+            } else {
+                $table = $this->getNamingStrategy($entityClass)->classToTableName($entityClass);
+            }
+            $this->table[$entityClass] = $table;
         }
 
         return $table;
@@ -182,21 +179,36 @@ class EntityMetadata implements EntityMetadataInterface
         return $fields;
     }
 
-    protected function getColumnMapInternal(string $entityClass): array
-    {
-        $columnMap = [];
-        if (($attribute = $this->getClassAttribute($entityClass, ColumnMap::class)) !== null) {
-            /** @var ColumnMap $attribute */
-            $columnMap = $attribute->get($this->getFields($entityClass));
-        }
-
-        return $columnMap;
-    }
-
     public function getColumnMap(string $entityClass): array
     {
+        $namingStrategy = $this->getNamingStrategy($entityClass);
+
         if (($columnMap = $this->columnMap[$entityClass] ?? null) === null) {
-            $columnMap = $this->columnMap[$entityClass] = $this->getColumnMapInternal($entityClass);
+            $columnMap = [];
+            foreach ($this->getClassReflection($entityClass)->getProperties() as $property) {
+                if ($property->isReadOnly() || $property->isStatic()) {
+                    continue;
+                }
+
+                if ($property->getAttributes(Transiently::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
+                    continue;
+                }
+
+                $propertyName = $property->getName();
+                $attributes = $property->getAttributes(Column::class);
+                if ($attributes === []) {
+                    $columnName = $namingStrategy->propertyToColumnName($propertyName);
+                } else {
+                    /** @var Column $attribute */
+                    $attribute = $attributes[0]->newInstance();
+                    $columnName = $attribute->name ?? $namingStrategy->propertyToColumnName($propertyName);
+                }
+
+                if ($propertyName !== $columnName) {
+                    $columnMap[$propertyName] = $columnName;
+                }
+            }
+            $this->columnMap[$entityClass] = $columnMap;
         }
 
         return $columnMap;
@@ -283,5 +295,23 @@ class EntityMetadata implements EntityMetadataInterface
         }
 
         return $this->container->get($repository);
+    }
+
+    public function getNamingStrategy(string $entityClass): NamingStrategyInterface
+    {
+        if (($namingStrategy = $this->namingStrategy[$entityClass] ?? null) === null) {
+            $rClass = new ReflectionClass($entityClass);
+            $attributes = $rClass->getAttributes(NamingStrategy::class);
+            if ($attributes === []) {
+                $namingStrategy = $this->defaultNamingStrategy;
+            } else {
+                /** @var NamingStrategy $attribute */
+                $attribute = $attributes[0]->newInstance();
+                $namingStrategy = $attribute->strategy;
+            }
+            $this->namingStrategy[$entityClass] = $namingStrategy;
+        }
+
+        return $this->container->get($namingStrategy);
     }
 }

@@ -15,7 +15,6 @@ use ManaPHP\Di\Pool;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Helper\SuppressWarnings;
-use ManaPHP\Persistence\Attribute\ColumnMap;
 use ManaPHP\Persistence\Attribute\Connection;
 use ManaPHP\Persistence\Attribute\Id;
 use function count;
@@ -198,11 +197,6 @@ class DbCommand extends Command
                 $uses[] = Id::class;
                 $attributes[] = "#[PrimaryKey('$primaryKey')]";
             }
-        }
-
-        if ($camelized) {
-            $uses[] = ColumnMap::class;
-            $attributes[] = '#[ColumnMap(ColumnMap::STRATEGY_SNAKE_CASE)]';
         }
 
         sort($uses);
