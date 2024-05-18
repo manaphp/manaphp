@@ -219,7 +219,7 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
                     $fieldValues[$field] = null;
                 }
             } elseif (!isset($snapshot[$field]) || $snapshot[$field] !== $entity->$field) {
-                $fieldValues[$field] = $this->$field;
+                $fieldValues[$field] = $entity->$field;
             }
         }
 

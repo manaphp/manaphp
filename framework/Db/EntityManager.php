@@ -110,7 +110,7 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
             throw new MisuseException('missing primary key value');
         }
 
-        $this->_snapshot[$primaryKey] ??= $entity->$primaryKey;
+        $entity->_snapshot[$primaryKey] ??= $entity->$primaryKey;
 
         $snapshot = $entity->_snapshot;
 
