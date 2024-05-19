@@ -19,16 +19,16 @@ class HasMany extends AbstractRelation
     protected string $selfField;
     protected string $thatField;
 
-    public function __construct(string $selfModel, string|array $that)
+    public function __construct(string $selfEntity, string|array $that)
     {
         $entityManager = Container::get(EntityMetadataInterface::class);
 
-        $this->selfEntity = $selfModel;
-        $this->selfField = $entityManager->getPrimaryKey($selfModel);
+        $this->selfEntity = $selfEntity;
+        $this->selfField = $entityManager->getPrimaryKey($selfEntity);
 
         if (is_string($that)) {
             $this->thatEntity = $that;
-            $this->thatField = $entityManager->getReferencedKey($selfModel);
+            $this->thatField = $entityManager->getReferencedKey($selfEntity);
         } else {
             list($this->thatEntity, $this->thatField) = $that;
         }

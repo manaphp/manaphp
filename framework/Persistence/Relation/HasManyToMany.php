@@ -17,21 +17,21 @@ class HasManyToMany extends AbstractRelation
 
     protected string $selfField;
     protected string $thatField;
-    protected string $pivotModel;
+    protected string $pivotEntity;
     protected string $selfPivot;
     protected string $thatPivot;
 
-    public function __construct(string $selfModel, string $thatModel, string $pivotModel)
+    public function __construct(string $selfEntity, string $thatEntity, string $pivotEntity)
     {
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
-        $this->selfEntity = $selfModel;
-        $this->selfField = $entityMetadata->getPrimaryKey($selfModel);
-        $this->thatEntity = $thatModel;
-        $this->thatField = $entityMetadata->getPrimaryKey($thatModel);
-        $this->pivotModel = $pivotModel;
-        $this->selfPivot = $entityMetadata->getReferencedKey($selfModel);
-        $this->thatPivot = $entityMetadata->getPrimaryKey($thatModel);
+        $this->selfEntity = $selfEntity;
+        $this->selfField = $entityMetadata->getPrimaryKey($selfEntity);
+        $this->thatEntity = $thatEntity;
+        $this->thatField = $entityMetadata->getPrimaryKey($thatEntity);
+        $this->pivotEntity = $pivotEntity;
+        $this->selfPivot = $entityMetadata->getReferencedKey($selfEntity);
+        $this->thatPivot = $entityMetadata->getPrimaryKey($thatEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
@@ -40,7 +40,7 @@ class HasManyToMany extends AbstractRelation
         $thatPivot = $this->thatPivot;
 
         $ids = Arr::unique_column($r, $this->selfField);
-        $repository = $this->entityMetadata->getRepository($this->pivotModel);
+        $repository = $this->entityMetadata->getRepository($this->pivotEntity);
         $pivotQuery = $repository->select([$this->selfPivot, $this->thatPivot])->whereIn($this->selfPivot, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->thatPivot);
@@ -66,7 +66,7 @@ class HasManyToMany extends AbstractRelation
     public function lazyLoad(Entity $entity): QueryInterface
     {
         $selfField = $this->selfField;
-        $pivotRepository = $this->entityMetadata->getRepository($this->pivotModel);
+        $pivotRepository = $this->entityMetadata->getRepository($this->pivotEntity);
         $ids = $pivotRepository->values(
             $this->thatPivot, [$this->selfPivot => $entity->$selfField]
         );

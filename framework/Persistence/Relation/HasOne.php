@@ -18,16 +18,16 @@ class HasOne extends AbstractRelation
     protected string $selfField;
     protected string $thatField;
 
-    public function __construct(string $selfModel, string|array $that)
+    public function __construct(string $selfEntity, string|array $that)
     {
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
-        $this->selfEntity = $selfModel;
-        $this->selfField = $entityMetadata->getPrimaryKey($selfModel);
+        $this->selfEntity = $selfEntity;
+        $this->selfField = $entityMetadata->getPrimaryKey($selfEntity);
 
         if (is_string($that)) {
             $this->thatEntity = $that;
-            $this->thatField = $entityMetadata->getReferencedKey($selfModel);
+            $this->thatField = $entityMetadata->getReferencedKey($selfEntity);
         } else {
             list($this->thatEntity, $this->thatField) = $that;
         }

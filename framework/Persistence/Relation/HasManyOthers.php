@@ -22,13 +22,13 @@ class HasManyOthers extends AbstractRelation
     protected string $selfValue;
     protected string $thatField;
 
-    public function __construct(string $selfModel, string $thatModel)
+    public function __construct(string $selfEntity, string $thatEntity)
     {
         $entityManager = Container::get(EntityMetadataInterface::class);
-        $referencedKey = $entityManager->getReferencedKey($thatModel);
+        $referencedKey = $entityManager->getReferencedKey($thatEntity);
 
         $keys = [];
-        foreach ($entityManager->getFields($selfModel) as $field) {
+        foreach ($entityManager->getFields($selfEntity) as $field) {
             if ($field === $referencedKey || $field === 'id' || $field === '_id') {
                 continue;
             }
@@ -50,11 +50,11 @@ class HasManyOthers extends AbstractRelation
             throw new MisuseException('$thisValue must be not null');
         }
 
-        $this->selfEntity = $selfModel;
+        $this->selfEntity = $selfEntity;
         $this->selfFilter = $selfFilter;
-        $this->selfValue = $entityManager->getReferencedKey($thatModel);
-        $this->thatEntity = $thatModel;
-        $this->thatField = $entityManager->getPrimaryKey($thatModel);
+        $this->selfValue = $entityManager->getReferencedKey($thatEntity);
+        $this->thatEntity = $thatEntity;
+        $this->thatField = $entityManager->getPrimaryKey($thatEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

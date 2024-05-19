@@ -18,19 +18,19 @@ class BelongsTo extends AbstractRelation
     protected string $selfField;
     protected string $thatField;
 
-    public function __construct(string|array $self, string $thatModel)
+    public function __construct(string|array $self, string $thatEntity)
     {
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
         if (is_string($self)) {
             $this->selfEntity = $self;
-            $this->selfField = $entityMetadata->getReferencedKey($thatModel);
+            $this->selfField = $entityMetadata->getReferencedKey($thatEntity);
         } else {
             list($this->selfEntity, $this->selfField) = $self;
         }
 
-        $this->thatEntity = $thatModel;
-        $this->thatField = $entityMetadata->getPrimaryKey($thatModel);
+        $this->thatEntity = $thatEntity;
+        $this->thatField = $entityMetadata->getPrimaryKey($thatEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
