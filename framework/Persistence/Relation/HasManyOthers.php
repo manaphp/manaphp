@@ -18,7 +18,7 @@ class HasManyOthers extends AbstractRelation
 {
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
-    protected string $selfFilter;
+    protected string $selfField;
     protected string $selfValue;
     protected string $thatField;
 
@@ -45,13 +45,13 @@ class HasManyOthers extends AbstractRelation
         }
 
         if (count($keys) === 1) {
-            $selfFilter = $keys[0];
+            $selfField = $keys[0];
         } else {
             throw new MisuseException('$thisValue must be not null');
         }
 
         $this->selfEntity = $selfEntity;
-        $this->selfFilter = $selfFilter;
+        $this->selfField = $selfField;
         $this->selfValue = $entityManager->getReferencedKey($thatEntity);
         $this->thatEntity = $thatEntity;
         $this->thatField = $entityManager->getPrimaryKey($thatEntity);
@@ -59,12 +59,12 @@ class HasManyOthers extends AbstractRelation
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        $selfFilter = $this->selfFilter;
+        $selfField = $this->selfField;
         $thatField = $this->thatField;
 
-        $ids = Arr::unique_column($r, $this->selfFilter);
+        $ids = Arr::unique_column($r, $this->selfField);
         $repository = $this->entityMetadata->getRepository($this->selfEntity);
-        $pivotQuery = $repository->select([$this->selfFilter, $this->selfValue])->whereIn($this->selfFilter, $ids);
+        $pivotQuery = $repository->select([$this->selfField, $this->selfValue])->whereIn($this->selfField, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->selfValue);
         $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
@@ -74,12 +74,12 @@ class HasManyOthers extends AbstractRelation
             $key = $dv[$thatField];
 
             if (isset($data[$key])) {
-                $rd[$dv[$selfFilter]][] = $data[$key];
+                $rd[$dv[$selfField]][] = $data[$key];
             }
         }
 
         foreach ($r as $ri => $rv) {
-            $rvr = $rv[$selfFilter];
+            $rvr = $rv[$selfField];
             $r[$ri][$name] = $rd[$rvr] ?? [];
         }
 
@@ -88,9 +88,9 @@ class HasManyOthers extends AbstractRelation
 
     public function lazyLoad(Entity $entity): QueryInterface
     {
-        $selfFilter = $this->selfFilter;
+        $selfField = $this->selfField;
         $selfRepository = $this->entityMetadata->getRepository($this->selfEntity);
-        $ids = $selfRepository->values($this->selfValue, [$selfFilter => $entity->$selfFilter]);
+        $ids = $selfRepository->values($this->selfValue, [$selfField => $entity->$selfField]);
         $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
         return $thatRepository->select()->whereIn($this->thatField, $ids)->setFetchType(true);
     }
