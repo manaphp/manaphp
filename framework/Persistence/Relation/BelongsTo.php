@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Persistence\Relation;
 
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\AbstractRelation;
 use ManaPHP\Persistence\Entity;
@@ -38,7 +39,7 @@ class BelongsTo extends AbstractRelation
         $selfField = $this->selfField;
         $thatField = $this->thatField;
 
-        $ids = array_values(array_unique(array_column($r, $selfField)));
+        $ids = Arr::unique_column($r, $selfField);
         $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         foreach ($r as $ri => $rv) {
