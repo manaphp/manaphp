@@ -4,15 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Persistence\Relation;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\AbstractRelation;
 use ManaPHP\Persistence\Entity;
 use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Query\QueryInterface;
-use function count;
-use function in_array;
 
 class HasManyOthers extends AbstractRelation
 {
@@ -21,38 +18,12 @@ class HasManyOthers extends AbstractRelation
     protected string $selfField;
     protected string $selfValue;
 
-    public function __construct(string $selfEntity, string $thatEntity)
+    public function __construct(string $selfEntity, string $thatEntity, string $selfField, ?string $selfValue = null)
     {
-        $entityManager = Container::get(EntityMetadataInterface::class);
-        $referencedKey = $entityManager->getReferencedKey($thatEntity);
-
-        $keys = [];
-        foreach ($entityManager->getFields($selfEntity) as $field) {
-            if ($field === $referencedKey || $field === 'id' || $field === '_id') {
-                continue;
-            }
-
-            if (!str_ends_with($field, '_id') && !str_ends_with($field, 'Id')) {
-                continue;
-            }
-
-            if (in_array($field, ['updator_id', 'creator_id'], true)) {
-                continue;
-            }
-
-            $keys[] = $field;
-        }
-
-        if (count($keys) === 1) {
-            $selfField = $keys[0];
-        } else {
-            throw new MisuseException('$thisValue must be not null');
-        }
-
         $this->selfEntity = $selfEntity;
-        $this->selfField = $selfField;
-        $this->selfValue = $entityManager->getReferencedKey($thatEntity);
         $this->thatEntity = $thatEntity;
+        $this->selfField = $selfField;
+        $this->selfValue = $selfValue ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($thatEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array

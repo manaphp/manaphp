@@ -111,7 +111,7 @@ class Relations implements RelationsInterface
             if ($selfLen > $thatLen) {
                 $pos = strpos($selfPlain, $thatPlain);
                 if ($pos === 0 || $pos + $thatLen === $selfLen) {
-                    return new HasManyOthers($selfModel, $thatModel);
+                    return new HasManyOthers($selfModel, $thatModel, '??');
                 }
             }
 

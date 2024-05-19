@@ -17,45 +17,46 @@ class HasManyToMany extends AbstractRelation
 
     protected string $selfField;
     protected string $pivotEntity;
-    protected string $selfPivot;
-    protected string $thatPivot;
+    protected string $pivotSelfField;
+    protected string $pivotThatField;
 
-    public function __construct(string $selfEntity, string $thatEntity, string $pivotEntity)
-    {
+    public function __construct(string $selfEntity, string $thatEntity,
+        string $pivotEntity, ?string $pivotSelfField = null, ?string $pivotThatField = null
+    ) {
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
         $this->selfEntity = $selfEntity;
         $this->thatEntity = $thatEntity;
         $this->pivotEntity = $pivotEntity;
-        $this->selfPivot = $entityMetadata->getReferencedKey($selfEntity);
-        $this->thatPivot = $entityMetadata->getReferencedKey($thatEntity);
+        $this->pivotSelfField = $pivotSelfField ?? $entityMetadata->getReferencedKey($selfEntity);
+        $this->pivotThatField = $pivotThatField ?? $entityMetadata->getReferencedKey($thatEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array
     {
-        $selfPivot = $this->selfPivot;
-        $thatPivot = $this->thatPivot;
+        $pivotSelfField = $this->pivotSelfField;
+        $pivotThatField = $this->pivotThatField;
 
         $ids = Arr::unique_column($r, $this->entityMetadata->getPrimaryKey($this->selfEntity));
         $repository = $this->entityMetadata->getRepository($this->pivotEntity);
-        $pivotQuery = $repository->select([$selfPivot, $thatPivot])->whereIn($selfPivot, $ids);
+        $pivotQuery = $repository->select([$pivotSelfField, $pivotThatField])->whereIn($pivotSelfField, $ids);
         $pivot_data = $pivotQuery->execute();
-        $ids = Arr::unique_column($pivot_data, $thatPivot);
+        $ids = Arr::unique_column($pivot_data, $pivotThatField);
 
         $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
         $data = $thatQuery->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {
-            $key = $dv[$thatPivot];
+            $key = $dv[$pivotThatField];
 
             if (isset($data[$key])) {
-                $rd[$dv[$selfPivot]][] = $data[$key];
+                $rd[$dv[$pivotSelfField]][] = $data[$key];
             }
         }
 
         foreach ($r as $ri => $rv) {
-            $rvr = $rv[$selfPivot];
+            $rvr = $rv[$pivotSelfField];
             $r[$ri][$name] = $rd[$rvr] ?? [];
         }
 
@@ -67,7 +68,7 @@ class HasManyToMany extends AbstractRelation
         $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $pivotRepository = $this->entityMetadata->getRepository($this->pivotEntity);
         $ids = $pivotRepository->values(
-            $this->thatPivot, [$this->selfPivot => $entity->$selfField]
+            $this->pivotThatField, [$this->pivotSelfField => $entity->$selfField]
         );
         $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
         return $thatRepository->select()

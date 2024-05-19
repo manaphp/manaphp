@@ -10,7 +10,6 @@ use ManaPHP\Persistence\AbstractRelation;
 use ManaPHP\Persistence\Entity;
 use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Query\QueryInterface;
-use function is_string;
 
 class BelongsTo extends AbstractRelation
 {
@@ -18,17 +17,10 @@ class BelongsTo extends AbstractRelation
 
     protected string $selfField;
 
-    public function __construct(string|array $self, string $thatEntity)
+    public function __construct(string $selfEntity, string $thatEntity, ?string $selfField = null)
     {
-        $entityMetadata = Container::get(EntityMetadataInterface::class);
-
-        if (is_string($self)) {
-            $this->selfEntity = $self;
-            $this->selfField = $entityMetadata->getReferencedKey($thatEntity);
-        } else {
-            list($this->selfEntity, $this->selfField) = $self;
-        }
-
+        $this->selfEntity = $selfEntity;
+        $this->selfField = $selfField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($thatEntity);
         $this->thatEntity = $thatEntity;
     }
 
