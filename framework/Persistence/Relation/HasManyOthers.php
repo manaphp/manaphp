@@ -20,7 +20,6 @@ class HasManyOthers extends AbstractRelation
 
     protected string $selfField;
     protected string $selfValue;
-    protected string $thatField;
 
     public function __construct(string $selfEntity, string $thatEntity)
     {
@@ -54,13 +53,12 @@ class HasManyOthers extends AbstractRelation
         $this->selfField = $selfField;
         $this->selfValue = $entityManager->getReferencedKey($thatEntity);
         $this->thatEntity = $thatEntity;
-        $this->thatField = $entityManager->getPrimaryKey($thatEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
         $selfField = $this->selfField;
-        $thatField = $this->thatField;
+        $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
 
         $ids = Arr::unique_column($r, $selfField);
         $repository = $this->entityMetadata->getRepository($this->selfEntity);
@@ -92,6 +90,7 @@ class HasManyOthers extends AbstractRelation
         $selfRepository = $this->entityMetadata->getRepository($this->selfEntity);
         $ids = $selfRepository->values($this->selfValue, [$selfField => $entity->$selfField]);
         $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
-        return $thatRepository->select()->whereIn($this->thatField, $ids)->setFetchType(true);
+        return $thatRepository->select()->whereIn($this->entityMetadata->getPrimaryKey($this->thatEntity), $ids)
+            ->setFetchType(true);
     }
 }

@@ -16,7 +16,6 @@ class HasManyToMany extends AbstractRelation
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
     protected string $selfField;
-    protected string $thatField;
     protected string $pivotEntity;
     protected string $selfPivot;
     protected string $thatPivot;
@@ -26,12 +25,10 @@ class HasManyToMany extends AbstractRelation
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
         $this->selfEntity = $selfEntity;
-        $this->selfField = $entityMetadata->getPrimaryKey($selfEntity);
         $this->thatEntity = $thatEntity;
-        $this->thatField = $entityMetadata->getPrimaryKey($thatEntity);
         $this->pivotEntity = $pivotEntity;
         $this->selfPivot = $entityMetadata->getReferencedKey($selfEntity);
-        $this->thatPivot = $entityMetadata->getPrimaryKey($thatEntity);
+        $this->thatPivot = $entityMetadata->getReferencedKey($thatEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
@@ -39,12 +36,14 @@ class HasManyToMany extends AbstractRelation
         $selfPivot = $this->selfPivot;
         $thatPivot = $this->thatPivot;
 
-        $ids = Arr::unique_column($r, $this->selfField);
+        $ids = Arr::unique_column($r, $this->entityMetadata->getPrimaryKey($this->selfEntity));
         $repository = $this->entityMetadata->getRepository($this->pivotEntity);
         $pivotQuery = $repository->select([$selfPivot, $thatPivot])->whereIn($selfPivot, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $thatPivot);
-        $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
+
+        $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
+        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {
@@ -65,12 +64,13 @@ class HasManyToMany extends AbstractRelation
 
     public function lazyLoad(Entity $entity): QueryInterface
     {
-        $selfField = $this->selfField;
+        $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $pivotRepository = $this->entityMetadata->getRepository($this->pivotEntity);
         $ids = $pivotRepository->values(
             $this->thatPivot, [$this->selfPivot => $entity->$selfField]
         );
         $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
-        return $thatRepository->select()->whereIn($this->thatField, $ids)->setFetchType(true);
+        return $thatRepository->select()
+            ->whereIn($this->entityMetadata->getPrimaryKey($this->thatEntity), $ids)->setFetchType(true);
     }
 }

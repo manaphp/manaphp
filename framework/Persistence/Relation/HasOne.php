@@ -16,7 +16,6 @@ class HasOne extends AbstractRelation
 {
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
-    protected string $selfField;
     protected string $thatField;
 
     public function __construct(string $selfEntity, string|array $that)
@@ -24,7 +23,6 @@ class HasOne extends AbstractRelation
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
         $this->selfEntity = $selfEntity;
-        $this->selfField = $entityMetadata->getPrimaryKey($selfEntity);
 
         if (is_string($that)) {
             $this->thatEntity = $that;
@@ -36,7 +34,7 @@ class HasOne extends AbstractRelation
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        $selfField = $this->selfField;
+        $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $thatField = $this->thatField;
 
         $ids = Arr::unique_column($r, $selfField);
@@ -52,7 +50,7 @@ class HasOne extends AbstractRelation
 
     public function lazyLoad(Entity $entity): QueryInterface
     {
-        $selfField = $this->selfField;
+        $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $thatField = $this->thatField;
         $repository = $this->entityMetadata->getRepository($this->thatEntity);
         return $repository->select()->where([$thatField => $entity->$selfField])->setFetchType(false);

@@ -16,7 +16,6 @@ class HasMany extends AbstractRelation
 {
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
-    protected string $selfField;
     protected string $thatField;
 
     public function __construct(string $selfEntity, string|array $that)
@@ -24,7 +23,6 @@ class HasMany extends AbstractRelation
         $entityManager = Container::get(EntityMetadataInterface::class);
 
         $this->selfEntity = $selfEntity;
-        $this->selfField = $entityManager->getPrimaryKey($selfEntity);
 
         if (is_string($that)) {
             $this->thatEntity = $that;
@@ -36,7 +34,7 @@ class HasMany extends AbstractRelation
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        $selfField = $this->selfField;
+        $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $thatField = $this->thatField;
 
         $r_index = [];
@@ -65,7 +63,7 @@ class HasMany extends AbstractRelation
 
     public function lazyLoad(Entity $entity): QueryInterface
     {
-        $selfField = $this->selfField;
+        $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $repository = $this->entityMetadata->getRepository($this->thatEntity);
         return $repository->select()->where([$this->thatField => $entity->$selfField])->setFetchType(true);
     }
