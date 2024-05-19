@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Entities;
 
 use App\Areas\Rbac\Entities\AdminRole;
-use App\Areas\Rbac\Entities\Role;
 use App\Repositories\AdminRepository;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
@@ -58,7 +57,8 @@ class Admin extends Entity implements ArgumentResolvable
     public int $created_time;
     public int $updated_time;
 
-    #[HasManyToMany(thatEntity: Role::class, pivotEntity: AdminRole::class)]
+    /** @var array<Role> */
+    #[HasManyToMany(AdminRole::class)]
     public array $roles;
 
     public static function argumentResolve(ContainerInterface $container): mixed

@@ -10,6 +10,12 @@ use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\Entity;
 use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Query\QueryInterface;
+use function basename;
+use function class_exists;
+use function str_starts_with;
+use function strlen;
+use function strrpos;
+use function substr;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class HasManyToMany extends AbstractRelation
@@ -21,15 +27,44 @@ class HasManyToMany extends AbstractRelation
     protected string $pivotSelfField;
     protected string $pivotThatField;
 
-    public function __construct(string $thatEntity,
-        string $pivotEntity, ?string $pivotSelfField = null, ?string $pivotThatField = null
+    public function __construct(string $pivotEntity,
+        ?string $thatEntity = null,
+        ?string $pivotSelfField = null, ?string $pivotThatField = null
     ) {
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
-        $this->thatEntity = $thatEntity;
         $this->pivotEntity = $pivotEntity;
+        $this->thatEntity = $thatEntity ?? $this->inferThatEntity($pivotEntity, $this->selfEntity);
         $this->pivotSelfField = $pivotSelfField ?? $entityMetadata->getReferencedKey($this->selfEntity);
-        $this->pivotThatField = $pivotThatField ?? $entityMetadata->getReferencedKey($thatEntity);
+        $this->pivotThatField = $pivotThatField ?? $entityMetadata->getReferencedKey($this->thatEntity);
+    }
+
+    protected function inferThatEntity(string $pivotEntity, string $selfEntity): string
+    {
+        if (($pos = strrpos($pivotEntity, '\\')) === false) {
+            $pivotNamespace = '';
+            $pivotSimpleName = $pivotEntity;
+        } else {
+            $pivotNamespace = substr($pivotEntity, 0, $pos + 1);
+            $pivotSimpleName = substr($pivotEntity, $pos + 1);
+        }
+
+        if (($pos = strrpos($selfEntity, '\\')) === false) {
+            $selfNamespace = '';
+            $selfSimpleName = $selfEntity;
+        } else {
+            $selfNamespace = substr($selfEntity, 0, $pos + 1);
+            $selfSimpleName = substr($selfEntity, $pos + 1);
+        }
+
+        if (str_starts_with($pivotSimpleName, $selfSimpleName)) {
+            $thatSimpleName = substr($pivotSimpleName, strlen($selfSimpleName));
+        } else {
+            $thatSimpleName = basename($pivotSimpleName, $selfSimpleName);
+        }
+        $thatEntity = $pivotNamespace . $thatSimpleName;
+
+        return class_exists($thatEntity) ? $thatEntity : ($selfNamespace . $thatSimpleName);
     }
 
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array

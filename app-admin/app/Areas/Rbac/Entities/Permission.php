@@ -23,6 +23,7 @@ class Permission extends Entity
     public int $created_time;
     public int $updated_time;
 
-    #[HasManyToMany(thatEntity: Role::class,pivotEntity: RolePermission::class)]
+    /** @var array<Role> */
+    #[HasManyToMany(RolePermission::class)]
     public array $roles;
 }
