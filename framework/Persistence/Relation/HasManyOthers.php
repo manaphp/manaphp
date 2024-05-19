@@ -62,12 +62,12 @@ class HasManyOthers extends AbstractRelation
         $selfField = $this->selfField;
         $thatField = $this->thatField;
 
-        $ids = Arr::unique_column($r, $this->selfField);
+        $ids = Arr::unique_column($r, $selfField);
         $repository = $this->entityMetadata->getRepository($this->selfEntity);
-        $pivotQuery = $repository->select([$this->selfField, $this->selfValue])->whereIn($this->selfField, $ids);
+        $pivotQuery = $repository->select([$selfField, $this->selfValue])->whereIn($selfField, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->selfValue);
-        $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
+        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {

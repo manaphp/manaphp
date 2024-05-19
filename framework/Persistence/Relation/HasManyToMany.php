@@ -41,9 +41,9 @@ class HasManyToMany extends AbstractRelation
 
         $ids = Arr::unique_column($r, $this->selfField);
         $repository = $this->entityMetadata->getRepository($this->pivotEntity);
-        $pivotQuery = $repository->select([$this->selfPivot, $this->thatPivot])->whereIn($this->selfPivot, $ids);
+        $pivotQuery = $repository->select([$selfPivot, $thatPivot])->whereIn($selfPivot, $ids);
         $pivot_data = $pivotQuery->execute();
-        $ids = Arr::unique_column($pivot_data, $this->thatPivot);
+        $ids = Arr::unique_column($pivot_data, $thatPivot);
         $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
 
         $rd = [];
