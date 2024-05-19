@@ -15,5 +15,5 @@ interface RelationsInterface
 
     public function lazyLoad(Entity $entity, string $relation_name): QueryInterface;
 
-    public function getQuery(string $entityClass, string $name, array $data): QueryInterface;
+    public function getThatQuery(string $entityClass, string $name, array $data): QueryInterface;
 }

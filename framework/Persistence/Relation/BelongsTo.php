@@ -32,13 +32,13 @@ class BelongsTo extends AbstractRelation
         $this->thatEntity = $thatEntity;
     }
 
-    public function earlyLoad(array $r, QueryInterface $query, string $name): array
+    public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array
     {
         $selfField = $this->selfField;
         $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
 
         $ids = Arr::unique_column($r, $selfField);
-        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
+        $data = $thatQuery->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         foreach ($r as $ri => $rv) {
             $key = $rv[$selfField];

@@ -153,7 +153,7 @@ class Relations implements RelationsInterface
         }
     }
 
-    public function getQuery(string $entityClass, string $name, mixed $data): QueryInterface
+    public function getThatQuery(string $entityClass, string $name, mixed $data): QueryInterface
     {
         $relation = $this->get($entityClass, $name);
         /** @noinspection NullPointerExceptionInspection */
@@ -192,20 +192,20 @@ class Relations implements RelationsInterface
                 throw new InvalidValueException(['unknown `{relation}` relation', 'relation' => $name]);
             }
 
-            $query = $v instanceof QueryInterface
+            $thatQuery = $v instanceof QueryInterface
                 ? $v
-                : $this->getQuery($entityClass, $name, is_string($k) ? $v : null);
+                : $this->getThatQuery($entityClass, $name, is_string($k) ? $v : null);
 
             if ($child_name) {
-                $query->with([$child_name]);
+                $thatQuery->with([$child_name]);
             }
 
             $method = 'get' . ucfirst($name);
             if (method_exists($entityClass, $method)) {
-                $query = $this->those->get($entityClass)->$method($query);
+                $thatQuery = $this->those->get($entityClass)->$method($thatQuery);
             }
 
-            $r = $relation->earlyLoad($r, $query, $name);
+            $r = $relation->earlyLoad($r, $thatQuery, $name);
         }
 
         return $r;

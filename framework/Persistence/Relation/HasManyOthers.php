@@ -55,7 +55,7 @@ class HasManyOthers extends AbstractRelation
         $this->thatEntity = $thatEntity;
     }
 
-    public function earlyLoad(array $r, QueryInterface $query, string $name): array
+    public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array
     {
         $selfField = $this->selfField;
         $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
@@ -65,7 +65,7 @@ class HasManyOthers extends AbstractRelation
         $pivotQuery = $repository->select([$selfField, $this->selfValue])->whereIn($selfField, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->selfValue);
-        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
+        $data = $thatQuery->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {

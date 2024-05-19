@@ -31,7 +31,7 @@ class HasManyToMany extends AbstractRelation
         $this->thatPivot = $entityMetadata->getReferencedKey($thatEntity);
     }
 
-    public function earlyLoad(array $r, QueryInterface $query, string $name): array
+    public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array
     {
         $selfPivot = $this->selfPivot;
         $thatPivot = $this->thatPivot;
@@ -43,7 +43,7 @@ class HasManyToMany extends AbstractRelation
         $ids = Arr::unique_column($pivot_data, $thatPivot);
 
         $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
-        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
+        $data = $thatQuery->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {

@@ -335,7 +335,7 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
 
             $parent_value = $with[$parent_name];
             if (!$parent_value instanceof QueryInterface) {
-                $with[$parent_name] = $this->relations->getQuery($this->entityClass, $parent_name, $parent_value);
+                $with[$parent_name] = $this->relations->getThatQuery($this->entityClass, $parent_name, $parent_value);
             }
 
             $with[$parent_name]->with(is_int($k) ? [$child_name] : [$child_name => $v]);

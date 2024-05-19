@@ -32,7 +32,7 @@ class HasMany extends AbstractRelation
         }
     }
 
-    public function earlyLoad(array $r, QueryInterface $query, string $name): array
+    public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array
     {
         $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $thatField = $this->thatField;
@@ -43,7 +43,7 @@ class HasMany extends AbstractRelation
         }
 
         $ids = array_column($r, $selfField);
-        $data = $query->whereIn($thatField, $ids)->fetch();
+        $data = $thatQuery->whereIn($thatField, $ids)->fetch();
 
         if (isset($data[0]) && !isset($data[0][$thatField])) {
             throw new MisuseException(['missing `{1}` field in `{2}` with', $thatField, $name]);
