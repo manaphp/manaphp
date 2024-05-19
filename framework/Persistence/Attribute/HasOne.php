@@ -18,9 +18,8 @@ class HasOne extends AbstractRelation
 
     protected string $thatField;
 
-    public function __construct(string $thatEntity, ?string $thatField = null)
+    public function __construct(?string $thatField = null)
     {
-        $this->thatEntity = $thatEntity;
         $this->thatField = $thatField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($this->selfEntity);
     }
 

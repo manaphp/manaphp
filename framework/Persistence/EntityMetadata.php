@@ -376,10 +376,13 @@ class EntityMetadata implements EntityMetadataInterface
                 ) {
                     $attribute = $attributes[0];
                     $relation = $property->getName();
-                    $parameters = $attribute->getArguments();
 
+                    $parameters = $attribute->getArguments();
                     $parameters['selfEntity'] = $entityClass;
                     $parameters['relation'] = $relation;
+                    if (($rType = $property->getType()) !== null && !$rType->isBuiltin()) {
+                        $parameters['thatEntity'] = $rType->getName();
+                    }
 
                     $relations[$relation] = $this->container->make($attribute->getName(), $parameters);
                 }
