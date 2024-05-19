@@ -58,7 +58,7 @@ class Admin extends Entity implements ArgumentResolvable
     public int $created_time;
     public int $updated_time;
 
-    #[HasManyToMany(selfEntity: self::class, thatEntity: Role::class, pivotEntity: AdminRole::class)]
+    #[HasManyToMany(thatEntity: Role::class, pivotEntity: AdminRole::class)]
     public array $roles;
 
     public static function argumentResolve(ContainerInterface $container): mixed

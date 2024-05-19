@@ -22,9 +22,9 @@ class RolePermission extends Entity
     public string $creator_name;
     public int $created_time;
 
-    #[BelongsTo(selfEntity: self::class, thatEntity: Permission::class)]
+    #[BelongsTo(thatEntity: Permission::class)]
     public Permission $permission;
 
-    #[HasManyOthers(selfEntity: self::class, thatEntity: Role::class, selfField: 'permission_id', selfValue: 'role_id')]
+    #[HasManyOthers(thatEntity: Role::class, selfField: 'permission_id', selfValue: 'role_id')]
     public array $roles;
 }

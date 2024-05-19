@@ -31,6 +31,6 @@ class Group extends Entity
     public int $created_time;
     public int $updated_time;
 
-    #[HasMany(selfEntity: self::class, thatEntity: Item::class)]
+    #[HasMany(thatEntity: Item::class)]
     public array $items;
 }

@@ -18,11 +18,10 @@ class HasMany extends AbstractRelation
 
     protected string $thatField;
 
-    public function __construct(string $selfEntity, string $thatEntity, ?string $thatField = null)
+    public function __construct(string $thatEntity, ?string $thatField = null)
     {
-        $this->selfEntity = $selfEntity;
         $this->thatEntity = $thatEntity;
-        $this->thatField = $thatField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($selfEntity);
+        $this->thatField = $thatField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($this->selfEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array

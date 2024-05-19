@@ -19,9 +19,8 @@ class HasManyOthers extends AbstractRelation
     protected string $selfField;
     protected string $selfValue;
 
-    public function __construct(string $selfEntity, string $thatEntity, string $selfField, ?string $selfValue = null)
+    public function __construct(string $thatEntity, string $selfField, ?string $selfValue = null)
     {
-        $this->selfEntity = $selfEntity;
         $this->thatEntity = $thatEntity;
         $this->selfField = $selfField;
         $this->selfValue = $selfValue ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($thatEntity);

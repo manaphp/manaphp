@@ -18,9 +18,8 @@ class BelongsTo extends AbstractRelation
 
     protected string $selfField;
 
-    public function __construct(string $selfEntity, string $thatEntity, ?string $selfField = null)
+    public function __construct(string $thatEntity, ?string $selfField = null)
     {
-        $this->selfEntity = $selfEntity;
         $this->selfField = $selfField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($thatEntity);
         $this->thatEntity = $thatEntity;
     }

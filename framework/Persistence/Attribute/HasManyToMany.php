@@ -21,15 +21,14 @@ class HasManyToMany extends AbstractRelation
     protected string $pivotSelfField;
     protected string $pivotThatField;
 
-    public function __construct(string $selfEntity, string $thatEntity,
+    public function __construct(string $thatEntity,
         string $pivotEntity, ?string $pivotSelfField = null, ?string $pivotThatField = null
     ) {
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
-        $this->selfEntity = $selfEntity;
         $this->thatEntity = $thatEntity;
         $this->pivotEntity = $pivotEntity;
-        $this->pivotSelfField = $pivotSelfField ?? $entityMetadata->getReferencedKey($selfEntity);
+        $this->pivotSelfField = $pivotSelfField ?? $entityMetadata->getReferencedKey($this->selfEntity);
         $this->pivotThatField = $pivotThatField ?? $entityMetadata->getReferencedKey($thatEntity);
     }
 
