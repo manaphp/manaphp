@@ -1,16 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Persistence\Relation;
+namespace ManaPHP\Persistence\Attribute;
 
+use Attribute;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
-use ManaPHP\Persistence\AbstractRelation;
 use ManaPHP\Persistence\Entity;
 use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Query\QueryInterface;
 
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class HasManyToMany extends AbstractRelation
 {
     #[Autowired] protected EntityMetadataInterface $entityMetadata;

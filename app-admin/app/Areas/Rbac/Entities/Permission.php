@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Areas\Rbac\Entities;
 
 use App\Entities\Entity;
+use ManaPHP\Persistence\Attribute\HasManyToMany;
 use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Attribute\Table;
 use ManaPHP\Validating\Constraint\Attribute\MaxLength;
@@ -21,4 +22,7 @@ class Permission extends Entity
 
     public int $created_time;
     public int $updated_time;
+
+    #[HasManyToMany(selfEntity: self::class,thatEntity: Role::class,pivotEntity: RolePermission::class)]
+    public array $roles;
 }

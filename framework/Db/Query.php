@@ -515,7 +515,8 @@ class Query extends AbstractQuery
         } elseif ($joins) {
             return '*';
         } else {
-            return $this->entityClass ? '[' . implode('], [', $this->entityMetadata->getFields($this->entityClass)) . ']' : '*';
+            return $this->entityClass ? '[' . implode('], [', $this->entityMetadata->getFields($this->entityClass))
+                . ']' : '*';
         }
     }
 

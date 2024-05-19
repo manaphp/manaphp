@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Persistence;
+namespace ManaPHP\Persistence\Attribute;
 
+use ManaPHP\Persistence\Entity;
 use ManaPHP\Query\QueryInterface;
 
-interface RelationInterface
+interface RelationInterface extends Transiently
 {
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array;
 

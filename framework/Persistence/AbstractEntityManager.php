@@ -59,11 +59,6 @@ abstract class AbstractEntityManager implements EntityManagerInterface
         return $this;
     }
 
-    public function relations(): array
-    {
-        return [];
-    }
-
     /**
      * @param string  $entityClass
      * @param ?string $alias

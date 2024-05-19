@@ -28,7 +28,7 @@ class RolePermissionController extends Controller
     #[ViewGetMapping('')]
     public function indexAction()
     {
-        $fields = ['id', 'permission_id', 'creator_name', 'created_time',
+        $fields = ['id', 'permission_id', 'creator_name', 'created_time', 'role_id',
                    'permission' => ['permission_id', 'display_name', 'handler'],
                    'roles'      => ['role_id', 'role_name', 'display_name']
         ];

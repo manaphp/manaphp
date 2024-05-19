@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Persistence;
+namespace ManaPHP\Persistence\Attribute;
 
 use ManaPHP\Helper\Container;
+use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Query\QueryInterface;
 
 abstract class AbstractRelation implements RelationInterface

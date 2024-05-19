@@ -175,11 +175,6 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
         return false;
     }
 
-    public function relations(): array
-    {
-        return [];
-    }
-
     public function onLifecycle(Lifecycle $lifecycle)
     {
     }

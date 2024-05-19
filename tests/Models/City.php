@@ -36,9 +36,4 @@ class City extends Model
             'last_update' => 'date'
         ];
     }
-
-    public function relations(): array
-    {
-        return ['countryExplicit' => [Country::class, AbstractRelation::TYPE_HAS_ONE]];
-    }
 }

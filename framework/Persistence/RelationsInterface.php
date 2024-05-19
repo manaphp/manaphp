@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Persistence;
 
+use ManaPHP\Persistence\Attribute\RelationInterface;
 use ManaPHP\Query\QueryInterface;
 
 interface RelationsInterface

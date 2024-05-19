@@ -8,9 +8,9 @@ use App\Areas\Rbac\Entities\Role;
 use App\Repositories\AdminRepository;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
+use ManaPHP\Persistence\Attribute\HasManyToMany;
 use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Entity\Lifecycle;
-use ManaPHP\Persistence\Relation\HasManyToMany;
 use ManaPHP\Validating\Constraint\Attribute\Account;
 use ManaPHP\Validating\Constraint\Attribute\Constant;
 use ManaPHP\Validating\Constraint\Attribute\Defaults;
@@ -58,15 +58,13 @@ class Admin extends Entity implements ArgumentResolvable
     public int $created_time;
     public int $updated_time;
 
+    #[HasManyToMany(selfEntity: self::class, thatEntity: Role::class, pivotEntity: AdminRole::class)]
+    public array $roles;
+
     public static function argumentResolve(ContainerInterface $container): mixed
     {
         $identity = $container->get(IdentityInterface::class);
         return $container->get(AdminRepository::class)->get($identity->getId());
-    }
-
-    public function relations(): array
-    {
-        return ['roles' => new HasManyToMany(static::class, Role::class, AdminRole::class)];
     }
 
     public function hashPassword(string $password): string

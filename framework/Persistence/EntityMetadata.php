@@ -15,6 +15,7 @@ use ManaPHP\Persistence\Attribute\Guarded;
 use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Attribute\NamingStrategy;
 use ManaPHP\Persistence\Attribute\ReferencedKey;
+use ManaPHP\Persistence\Attribute\RelationInterface;
 use ManaPHP\Persistence\Attribute\Repository;
 use ManaPHP\Persistence\Attribute\Table;
 use ManaPHP\Persistence\Attribute\Transiently;
@@ -47,6 +48,7 @@ class EntityMetadata implements EntityMetadataInterface
     protected array $repository = [];
     protected array $namingStrategy = [];
     protected array $constraints = [];
+    protected array $relations = [];
 
     protected function getClassReflection(string $entityClass): ReflectionClass
     {
@@ -358,5 +360,34 @@ class EntityMetadata implements EntityMetadataInterface
         }
 
         return $constraints;
+    }
+
+    public function getRelations(string $entityClass): array
+    {
+        if (($relations = $this->relations[$entityClass] ?? null) === null) {
+            $relations = [];
+            foreach ($this->getClassReflection($entityClass)->getProperties() as $property) {
+                if ($property->isReadOnly() || $property->isStatic()) {
+                    continue;
+                }
+                if (($attributes = $property->getAttributes(
+                        RelationInterface::class, ReflectionAttribute::IS_INSTANCEOF
+                    )) !== []
+                ) {
+                    $attribute = $attributes[0];
+                    $relation = $property->getName();
+                    $parameters = $attribute->getArguments();
+
+                    $parameters['selfEntity'] = $entityClass;
+                    $parameters['relation'] = $relation;
+
+                    $relations[$relation] = $this->container->make($attribute->getName(), $parameters);
+                }
+            }
+
+            $this->relations[$entityClass] = $relations;
+        }
+
+        return $relations;
     }
 }

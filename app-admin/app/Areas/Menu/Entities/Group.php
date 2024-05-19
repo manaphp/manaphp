@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Areas\Menu\Entities;
 
 use App\Entities\Entity;
+use ManaPHP\Persistence\Attribute\HasMany;
 use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Attribute\Table;
 use ManaPHP\Validating\Constraint\Attribute\MaxLength;
@@ -29,4 +30,7 @@ class Group extends Entity
     public string $updator_name;
     public int $created_time;
     public int $updated_time;
+
+    #[HasMany(selfEntity: self::class, thatEntity: Item::class)]
+    public array $items;
 }

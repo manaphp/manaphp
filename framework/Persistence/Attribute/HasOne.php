@@ -1,33 +1,34 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Persistence\Relation;
+namespace ManaPHP\Persistence\Attribute;
 
+use Attribute;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
-use ManaPHP\Persistence\AbstractRelation;
 use ManaPHP\Persistence\Entity;
 use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Query\QueryInterface;
 
-class BelongsTo extends AbstractRelation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+class HasOne extends AbstractRelation
 {
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
-    protected string $selfField;
+    protected string $thatField;
 
-    public function __construct(string $selfEntity, string $thatEntity, ?string $selfField = null)
+    public function __construct(string $selfEntity, string $thatEntity, ?string $thatField = null)
     {
         $this->selfEntity = $selfEntity;
-        $this->selfField = $selfField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($thatEntity);
         $this->thatEntity = $thatEntity;
+        $this->thatField = $thatField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($selfEntity);
     }
 
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array
     {
-        $selfField = $this->selfField;
-        $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
+        $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
+        $thatField = $this->thatField;
 
         $ids = Arr::unique_column($r, $selfField);
         $data = $thatQuery->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
@@ -42,8 +43,8 @@ class BelongsTo extends AbstractRelation
 
     public function lazyLoad(Entity $entity): QueryInterface
     {
-        $selfField = $this->selfField;
-        $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
+        $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
+        $thatField = $this->thatField;
         $repository = $this->entityMetadata->getRepository($this->thatEntity);
         return $repository->select()->where([$thatField => $entity->$selfField])->setFetchType(false);
     }
