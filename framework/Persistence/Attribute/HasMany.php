@@ -53,7 +53,6 @@ class HasMany extends AbstractRelation
     public function lazyLoad(Entity $entity): QueryInterface
     {
         $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
-        $repository = $this->entityMetadata->getRepository($this->thatEntity);
-        return $repository->select()->where([$this->thatField => $entity->$selfField])->setFetchType(true);
+        return $this->getThatQuery()->where([$this->thatField => $entity->$selfField])->setFetchType(true);
     }
 }

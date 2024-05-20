@@ -102,8 +102,9 @@ class HasManyToMany extends AbstractRelation
         $ids = $pivotRepository->values(
             $this->pivotThatField, [$this->pivotSelfField => $entity->$selfField]
         );
-        $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
-        return $thatRepository->select()
-            ->whereIn($this->entityMetadata->getPrimaryKey($this->thatEntity), $ids)->setFetchType(true);
+
+        return $this->getThatQuery()
+            ->whereIn($this->entityMetadata->getPrimaryKey($this->thatEntity), $ids)
+            ->setFetchType(true);
     }
 }

@@ -40,7 +40,6 @@ class HasOne extends AbstractRelation
     {
         $selfField = $this->entityMetadata->getPrimaryKey($this->selfEntity);
         $thatField = $this->thatField;
-        $repository = $this->entityMetadata->getRepository($this->thatEntity);
-        return $repository->select()->where([$thatField => $entity->$selfField])->setFetchType(false);
+        return $this->getThatQuery()->where([$thatField => $entity->$selfField])->setFetchType(false);
     }
 }

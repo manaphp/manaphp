@@ -40,7 +40,6 @@ class BelongsTo extends AbstractRelation
     {
         $selfField = $this->selfField;
         $thatField = $this->entityMetadata->getPrimaryKey($this->thatEntity);
-        $repository = $this->entityMetadata->getRepository($this->thatEntity);
-        return $repository->select()->where([$thatField => $entity->$selfField])->setFetchType(false);
+        return $this->getThatQuery()->where([$thatField => $entity->$selfField])->setFetchType(false);
     }
 }

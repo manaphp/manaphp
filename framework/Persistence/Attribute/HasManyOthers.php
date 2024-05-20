@@ -57,8 +57,9 @@ class HasManyOthers extends AbstractRelation
         $selfField = $this->selfField;
         $selfRepository = $this->entityMetadata->getRepository($this->selfEntity);
         $ids = $selfRepository->values($this->selfValue, [$selfField => $entity->$selfField]);
-        $thatRepository = $this->entityMetadata->getRepository($this->thatEntity);
-        return $thatRepository->select()->whereIn($this->entityMetadata->getPrimaryKey($this->thatEntity), $ids)
+
+        return $this->getThatQuery()
+            ->whereIn($this->entityMetadata->getPrimaryKey($this->thatEntity), $ids)
             ->setFetchType(true);
     }
 }
