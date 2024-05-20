@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Persistence\Attribute;
 
 use Attribute;
-use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\Entity;
@@ -20,8 +19,6 @@ use function substr;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class HasManyToMany extends AbstractRelation
 {
-    #[Autowired] protected EntityMetadataInterface $entityMetadata;
-
     protected string $selfField;
     protected string $pivotEntity;
     protected string $pivotSelfField;
