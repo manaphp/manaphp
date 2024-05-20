@@ -331,7 +331,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    public function orderBy(string|array $orderBy): static
+    public function orderBy(array $orderBy): static
     {
         parent::orderBy($orderBy);
 

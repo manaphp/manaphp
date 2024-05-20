@@ -233,11 +233,11 @@ interface QueryInterface
     /**
      * Sets a ORDER BY condition clause
      *
-     * @param string|array $orderBy =entity_var(new Model) ?: entity_field(new Model) ?: [$k=>SORT_ASC, $k=>SORT_DESC]
+     * @param array $orderBy =entity_var(new Model) ?: entity_field(new Model) ?: [$k=>SORT_ASC, $k=>SORT_DESC]
      *
      * @return static
      */
-    public function orderBy(string|array $orderBy): static;
+    public function orderBy(array $orderBy): static;
 
     /**
      * @param callable|string|array $indexBy =entity_field(new Model)

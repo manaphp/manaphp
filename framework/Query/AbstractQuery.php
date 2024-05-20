@@ -9,7 +9,6 @@ use JsonSerializable;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Persistence\Entity;
@@ -261,38 +260,19 @@ abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonS
         return $this;
     }
 
-    public function orderBy(string|array $orderBy): static
+    public function orderBy(array $orderBy): static
     {
-        if (is_string($orderBy)) {
-            foreach (explode(',', $orderBy) as $order) {
-                $order = trim($order);
-                if ($pos = strrpos($order, ' ')) {
-                    $field = substr($order, 0, $pos);
-                    $type = strtoupper(substr($order, $pos + 1));
-                    if ($type === 'ASC') {
-                        $this->order[$field] = SORT_ASC;
-                    } elseif ($type === 'DESC') {
-                        $this->order[$field] = SORT_DESC;
-                    } else {
-                        throw new NotSupportedException($orderBy);
-                    }
-                } else {
-                    $this->order[$order] = SORT_ASC;
-                }
-            }
-        } else {
-            foreach ($orderBy as $k => $v) {
-                if (is_int($k)) {
-                    $this->order[$v] = SORT_ASC;
-                } elseif ($v === SORT_ASC || $v === SORT_DESC) {
-                    $this->order[$k] = $v;
-                } elseif ($v === 'ASC' || $v === 'asc') {
-                    $this->order[$k] = SORT_ASC;
-                } elseif ($v === 'DESC' || $v === 'desc') {
-                    $this->order[$k] = SORT_DESC;
-                } else {
-                    throw new MisuseException(['unknown sort order: `{order}`', 'order' => $v]);
-                }
+        foreach ($orderBy as $k => $v) {
+            if (is_int($k)) {
+                $this->order[$v] = SORT_ASC;
+            } elseif ($v === SORT_ASC || $v === SORT_DESC) {
+                $this->order[$k] = $v;
+            } elseif ($v === 'ASC' || $v === 'asc') {
+                $this->order[$k] = SORT_ASC;
+            } elseif ($v === 'DESC' || $v === 'desc') {
+                $this->order[$k] = SORT_DESC;
+            } else {
+                throw new MisuseException(['unknown sort order: `{order}`', 'order' => $v]);
             }
         }
 
