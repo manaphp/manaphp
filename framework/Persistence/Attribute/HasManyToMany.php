@@ -23,10 +23,12 @@ class HasManyToMany extends AbstractRelation
     protected string $pivotEntity;
     protected string $pivotSelfField;
     protected string $pivotThatField;
+    protected array $orderBy;
 
     public function __construct(string $pivotEntity,
         ?string $thatEntity = null,
-        ?string $pivotSelfField = null, ?string $pivotThatField = null
+        ?string $pivotSelfField = null, ?string $pivotThatField = null,
+        array $orderBy = []
     ) {
         $entityMetadata = Container::get(EntityMetadataInterface::class);
 
@@ -34,6 +36,12 @@ class HasManyToMany extends AbstractRelation
         $this->thatEntity = $thatEntity ?? $this->inferThatEntity($pivotEntity, $this->selfEntity);
         $this->pivotSelfField = $pivotSelfField ?? $entityMetadata->getReferencedKey($this->selfEntity);
         $this->pivotThatField = $pivotThatField ?? $entityMetadata->getReferencedKey($this->thatEntity);
+        $this->orderBy = $orderBy;
+    }
+
+    public function getThatQuery(): QueryInterface
+    {
+        return parent::getThatQuery()->orderBy($this->orderBy);
     }
 
     protected function inferThatEntity(string $pivotEntity, string $selfEntity): string

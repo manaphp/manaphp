@@ -58,7 +58,7 @@ class Admin extends Entity implements ArgumentResolvable
     public int $updated_time;
 
     /** @var array<Role> */
-    #[HasManyToMany(AdminRole::class)]
+    #[HasManyToMany(AdminRole::class, orderBy: ['role_id' => SORT_ASC])]
     public array $roles;
 
     public static function argumentResolve(ContainerInterface $container): mixed

@@ -15,12 +15,19 @@ class HasManyOthers extends AbstractRelation
 {
     protected string $selfField;
     protected string $selfValue;
+    protected array $orderBy;
 
-    public function __construct(string $thatEntity, string $selfField, ?string $selfValue = null)
+    public function __construct(string $thatEntity, string $selfField, ?string $selfValue = null, array $orderBy = [])
     {
         $this->thatEntity = $thatEntity;
         $this->selfField = $selfField;
         $this->selfValue = $selfValue ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($thatEntity);
+        $this->orderBy = $orderBy;
+    }
+
+    public function getThatQuery(): QueryInterface
+    {
+        return parent::getThatQuery()->orderBy($this->orderBy);
     }
 
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array

@@ -9,7 +9,6 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
-use ManaPHP\Persistence\AdditionalRelationCriteria;
 
 #[Authorize('user')]
 #[RequestMapping('/menu/my')]
@@ -21,10 +20,8 @@ class MyController extends Controller
     public function indexAction()
     {
         $fields = ['group_id', 'group_name', 'icon',
-                   'items' => AdditionalRelationCriteria::of(
-                       ['item_id', 'item_name', 'url', 'icon', 'group_id'],
-                       ['display_order' => SORT_DESC, 'item_id' => SORT_ASC]
-                   )];
+                   'items' => ['item_id', 'item_name', 'url', 'icon', 'group_id']
+        ];
         $orders = ['display_order' => SORT_DESC, 'group_id' => SORT_ASC];
 
         $groups = $this->groupRepository->all([], $fields, $orders);

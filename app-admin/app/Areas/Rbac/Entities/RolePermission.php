@@ -25,6 +25,6 @@ class RolePermission extends Entity
     #[BelongsTo]
     public Permission $permission;
 
-    #[HasManyOthers(Role::class, selfField: 'permission_id', selfValue: 'role_id')]
+    #[HasManyOthers(Role::class, selfField: 'permission_id', selfValue: 'role_id', orderBy: ['role_id' => SORT_ASC])]
     public array $roles;
 }

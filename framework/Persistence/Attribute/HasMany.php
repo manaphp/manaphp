@@ -14,11 +14,18 @@ use ManaPHP\Query\QueryInterface;
 class HasMany extends AbstractRelation
 {
     protected string $thatField;
+    protected array $orderBy;
 
-    public function __construct(string $thatEntity, ?string $thatField = null)
+    public function __construct(string $thatEntity, ?string $thatField = null, array $orderBy = [])
     {
         $this->thatEntity = $thatEntity;
         $this->thatField = $thatField ?? Container::get(EntityMetadataInterface::class)->getReferencedKey($this->selfEntity);
+        $this->orderBy = $orderBy;
+    }
+
+    public function getThatQuery(): QueryInterface
+    {
+        return parent::getThatQuery()->orderBy($this->orderBy);
     }
 
     public function earlyLoad(array $r, QueryInterface $thatQuery, string $name): array
