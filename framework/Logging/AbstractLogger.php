@@ -20,6 +20,7 @@ use function is_array;
 use function is_object;
 use function is_scalar;
 use function is_string;
+use function json_stringify;
 
 abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 {
@@ -78,11 +79,11 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 
             if (is_string($val)) {
                 SuppressWarnings::noop();
+            } elseif ($val instanceof JsonSerializable) {
+                $val = json_stringify($val);
             } elseif ($val instanceof Stringable) {
                 $val = (string)$val;
             } elseif (is_scalar($val)) {
-                $val = json_stringify($val);
-            } elseif ($val instanceof JsonSerializable) {
                 $val = json_stringify($val);
             } elseif (is_array($val)) {
                 $val = json_stringify($val);
