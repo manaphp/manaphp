@@ -245,10 +245,6 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
             $data[$field] = $value;
         }
 
-        if ($changedFields = $this->getChangedFields()) {
-            $data['*changed_fields*'] = $changedFields;
-        }
-
         foreach (Container::get(EntityMetadataInterface::class)->getFields(static::class) as $field) {
             if (!isset($this->$field)) {
                 continue;
