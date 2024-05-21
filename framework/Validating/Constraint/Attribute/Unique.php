@@ -42,7 +42,7 @@ class Unique extends AbstractConstraint
         }
 
         $primaryKey = $this->entityMetadata->getPrimaryKey($source::class);
-        if ($primaryKey !== null && isset($source->$primaryKey)) {
+        if (isset($source->$primaryKey)) {
             $filters[$primaryKey . '!='] = $source->$primaryKey;
         }
 
