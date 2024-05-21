@@ -7,7 +7,6 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Identifying\IdentityInterface;
 use ReflectionNamedType;
 use ReflectionProperty;
-use function in_array;
 
 class AutoFiller implements AutoFillerInterface
 {
@@ -114,26 +113,22 @@ class AutoFiller implements AutoFillerInterface
         $user_id = $this->identity->isGuest() ? 0 : $this->identity->getId();
         $user_name = $this->identity->isGuest() ? '' : $this->identity->getName();
 
-        $changed = $entity->getChangedFields();
-
         $updated_time = $this->findField($entity, $this->updated_time);
-        if ($updated_time !== null && !in_array($updated_time, $changed, true)) {
+        if ($updated_time !== null) {
             $this->setTime($entity, $updated_time, $timestamp);
         }
 
         $updated_by = $this->findField($entity, $this->updated_by);
         if ($updated_by !== null) {
-            if (!in_array($updated_by, $changed, true)) {
-                $this->setBy($entity, $updated_by, $user_id, $user_name);
-            }
+            $this->setBy($entity, $updated_by, $user_id, $user_name);
         } else {
             $updator_id = $this->findField($entity, $this->updator_id);
-            if ($updator_id !== null && !in_array($updator_id, $changed, true)) {
+            if ($updator_id !== null) {
                 $entity->$updator_id = $user_id;
             }
 
             $updator_name = $this->findField($entity, $this->updator_name);
-            if ($updator_name !== null && !in_array($updator_name, $changed, true)) {
+            if ($updator_name !== null) {
                 $entity->$updator_name = $user_name;
             }
         }
