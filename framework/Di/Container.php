@@ -101,9 +101,6 @@ class Container implements ContainerInterface
             }
         }
 
-        if (!$property->isPublic()) {
-            $property->setAccessible(true);
-        }
         $property->setValue($object, $value);
     }
 
@@ -112,9 +109,6 @@ class Container implements ContainerInterface
         $rType = $property->getType();
 
         if ($rType !== null && $rType->allowsNull()) {
-            if (!$property->isPublic()) {
-                $property->setAccessible(true);
-            }
             $property->setValue($object, null);
         } else {
             throw new Exception(
@@ -128,9 +122,6 @@ class Container implements ContainerInterface
         $name = $property->getName();
 
         if (array_key_exists($name, $parameters)) {
-            if (!$property->isPublic()) {
-                $property->setAccessible(true);
-            }
             $property->setValue($object, $parameters[$name]);
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
             $this->injectNoValue($property, $object);
@@ -142,14 +133,8 @@ class Container implements ContainerInterface
         $name = $property->getName();
 
         if (array_key_exists($name, $parameters)) {
-            if (!$property->isPublic()) {
-                $property->setAccessible(true);
-            }
             $property->setValue($object, $parameters[$name]);
         } elseif (($config = $this->get(ConfigInterface::class))->has($name)) {
-            if (!$property->isPublic()) {
-                $property->setAccessible(true);
-            }
             $property->setValue($object, $config->get($name));
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
             $this->injectNoValue($property, $object);

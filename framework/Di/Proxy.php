@@ -52,9 +52,6 @@ class Proxy implements Lazy
 
         $target = $this->container->get($id);
 
-        if (!$this->property->isPublic()) {
-            $this->property->setAccessible(true);
-        }
         $this->property->setValue($this->object, $target);
 
         return call_user_func_array([$target, $name], $args);
