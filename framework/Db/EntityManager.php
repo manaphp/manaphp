@@ -93,6 +93,7 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
 
     /**
      * @param Entity $entity
+     * @param Entity $original
      *
      * @return Entity
      */
