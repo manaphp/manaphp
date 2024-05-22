@@ -6,6 +6,7 @@ namespace ManaPHP\Persistence;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\MakerInterface;
+use ManaPHP\Persistence\Event\EntityEventInterface;
 use ManaPHP\Query\QueryInterface;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -71,4 +72,13 @@ abstract class AbstractEntityManager implements EntityManagerInterface
     }
 
     abstract protected function newQuery(): QueryInterface;
+
+    public function dispatchEvent(EntityEventInterface $event): void
+    {
+        $entity = $event->getEntity();
+
+        $entity->onEvent($event);
+
+        $this->eventDispatcher->dispatch($event);
+    }
 }

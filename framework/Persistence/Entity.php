@@ -8,7 +8,7 @@ use JsonSerializable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Persistence\Entity\Lifecycle;
+use ManaPHP\Persistence\Event\EntityEventInterface;
 use ReflectionClass;
 use Stringable;
 use function is_array;
@@ -113,20 +113,7 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
         return $entity;
     }
 
-    /**
-     * Check if a specific attribute has changed
-     * This only works if the entity is keeping data snapshots
-     *
-     * @param array $fields =entity_fields(new static)
-     *
-     * @return bool
-     */
-    public function hasChanged(array $fields): bool
-    {
-        return false;
-    }
-
-    public function onLifecycle(Lifecycle $lifecycle)
+    public function onEvent(EntityEventInterface $entityEvent)
     {
     }
 

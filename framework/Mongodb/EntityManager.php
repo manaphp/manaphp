@@ -9,7 +9,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Persistence\AbstractEntityManager;
 use ManaPHP\Persistence\Entity;
-use ManaPHP\Persistence\Entity\Lifecycle;
 use ManaPHP\Persistence\Event\EntityCreated;
 use ManaPHP\Persistence\Event\EntityCreating;
 use ManaPHP\Persistence\Event\EntityDeleted;
@@ -161,8 +160,7 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
 
         list($connection, $collection) = $this->sharding->getUniqueShard($entityClass, $entity);
 
-        $entity->onLifecycle(Lifecycle::Creating);
-        $this->eventDispatcher->dispatch(new EntityCreating($entity));
+        $this->dispatchEvent(new EntityCreating($entity));
 
         $fieldValues = [];
         foreach ($fields as $field) {
@@ -174,8 +172,7 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
         $mongodb = $this->mongodbConnector->get($connection);
         $mongodb->insert($collection, $fieldValues);
 
-        $entity->onLifecycle(Lifecycle::Created);
-        $this->eventDispatcher->dispatch(new EntityCreated($entity));
+        $this->dispatchEvent(new EntityCreated($entity));
 
         return $entity;
     }
@@ -211,8 +208,7 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
         $this->autoFiller->fillUpdated($entity);
         list($connection, $collection) = $this->sharding->getUniqueShard($entityClass, $entity);
 
-        $entity->onLifecycle(Lifecycle::Updating);
-        $this->eventDispatcher->dispatch(new EntityUpdating($entity));
+        $this->dispatchEvent(new EntityUpdating($entity, $original));
 
         $fieldValues = [];
         foreach ($fields as $field) {
@@ -224,8 +220,7 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
         $mongodb = $this->mongodbConnector->get($connection);
         $mongodb->update($collection, $fieldValues, [$primaryKey => $entity->$primaryKey]);
 
-        $entity->onLifecycle(Lifecycle::Updated);
-        $this->eventDispatcher->dispatch(new EntityUpdated($entity));
+        $this->dispatchEvent(new EntityUpdated($entity, $original));
 
         return $entity;
     }
@@ -241,15 +236,13 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
 
         list($connection, $table) = $this->sharding->getUniqueShard($entityClass, $entity);
 
-        $entity->onLifecycle(Lifecycle::Deleting);
-        $this->eventDispatcher->dispatch(new EntityDeleting($entity));
+        $this->dispatchEvent(new EntityDeleting($entity));
 
         $mongodb = $this->mongodbConnector->get($connection);
 
         $mongodb->delete($table, [$primaryKey => $entity->$primaryKey]);
 
-        $entity->onLifecycle(Lifecycle::Deleted);
-        $this->eventDispatcher->dispatch(new EntityDeleted($entity));
+        $this->dispatchEvent(new EntityDeleted($entity));
 
         return $entity;
     }

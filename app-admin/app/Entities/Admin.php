@@ -9,7 +9,9 @@ use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ArgumentResolvable;
 use ManaPHP\Persistence\Attribute\HasManyToMany;
 use ManaPHP\Persistence\Attribute\Id;
-use ManaPHP\Persistence\Entity\Lifecycle;
+use ManaPHP\Persistence\Event\EntityCreating;
+use ManaPHP\Persistence\Event\EntityEventInterface;
+use ManaPHP\Persistence\Event\EntityUpdating;
 use ManaPHP\Validating\Constraint\Attribute\Account;
 use ManaPHP\Validating\Constraint\Attribute\Constant;
 use ManaPHP\Validating\Constraint\Attribute\Defaults;
@@ -77,11 +79,11 @@ class Admin extends Entity implements ArgumentResolvable
         return $this->hashPassword($password) === $this->password;
     }
 
-    public function onLifecycle(Lifecycle $lifecycle): void
+    public function onEvent(EntityEventInterface $entityEvent): void
     {
-        if ($lifecycle === Lifecycle::Creating
-            || ($lifecycle === Lifecycle::Updating
-                && $this->hasChanged(['password']))
+        if ($entityEvent instanceof EntityCreating
+            || ($entityEvent instanceof EntityUpdating
+                && $entityEvent->hasChanged(['password']))
         ) {
             $this->salt = bin2hex(random_bytes(8));
             $this->password = $this->hashPassword($this->password);
