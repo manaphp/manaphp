@@ -217,11 +217,16 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function update(Entity|array $entity): Entity
     {
+        $primaryKey = $this->entityMetadata->getPrimaryKey($this->entityClass);
+
         if (is_array($entity)) {
-            $entity = $this->fill($entity);
+            $original = $this->get($entity[$primaryKey]);
+            $entity = $this->entityFiller->fill(clone $original, $entity);
+        } else {
+            $original = $this->get($entity[$primaryKey]);
         }
 
-        return $this->getEntityManager()->update($entity);
+        return $this->getEntityManager()->update($entity, $original);
     }
 
     /**

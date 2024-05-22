@@ -177,12 +177,10 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
         $entity->onLifecycle(Lifecycle::Created);
         $this->eventDispatcher->dispatch(new EntityCreated($entity));
 
-        $entity->_snapshot = $entity->toArray();
-
         return $entity;
     }
 
-    public function update(Entity $entity): Entity
+    public function update(Entity $entity, Entity $original): Entity
     {
         $entityClass = $entity::class;
         $primaryKey = $this->entityMetadata->getPrimaryKey($entityClass);
@@ -191,16 +189,20 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
             throw new MisuseException('missing primary key value');
         }
 
-        $entity->_snapshot[$primaryKey] ??= $entity->$primaryKey;
+        $fields = $this->entityMetadata->getFields($entityClass);
 
-        $snapshot = $entity->_snapshot;
-
-        /** @noinspection TypeUnsafeComparisonInspection */
-        if ($entity->$primaryKey != $snapshot[$primaryKey]) {
+        if ($entity->$primaryKey !== $original->$primaryKey) {
             throw new MisuseException('updating entity primary key value is not support');
         }
 
-        if (($changedFields = $entity->getChangedFields()) === []) {
+        $changedFields = [];
+        foreach ($fields as $field) {
+            if (isset($entity->$field) && $entity->$field !== $original->$field) {
+                $changedFields[] = $field;
+            }
+        }
+
+        if ($changedFields === []) {
             return $entity;
         }
 
@@ -213,12 +215,8 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
         $this->eventDispatcher->dispatch(new EntityUpdating($entity));
 
         $fieldValues = [];
-        foreach ($this->entityMetadata->getFields($entityClass) as $field) {
-            if (!isset($entity->$field)) {
-                if (isset($snapshot[$field])) {
-                    $fieldValues[$field] = null;
-                }
-            } elseif (!isset($snapshot[$field]) || $snapshot[$field] !== $entity->$field) {
+        foreach ($fields as $field) {
+            if (isset($original->$field) && $entity->$field !== $original->$field) {
                 $fieldValues[$field] = $entity->$field;
             }
         }
@@ -228,8 +226,6 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
 
         $entity->onLifecycle(Lifecycle::Updated);
         $this->eventDispatcher->dispatch(new EntityUpdated($entity));
-
-        $entity->_snapshot = $entity->toArray();
 
         return $entity;
     }

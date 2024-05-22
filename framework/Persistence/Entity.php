@@ -8,7 +8,6 @@ use JsonSerializable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Persistence\Attribute\Transient;
 use ManaPHP\Persistence\Entity\Lifecycle;
 use ReflectionClass;
 use Stringable;
@@ -18,14 +17,9 @@ use function is_object;
 
 class Entity implements ArrayAccess, JsonSerializable, Stringable
 {
-    #[Transient]
-    public ?array $_snapshot = [];
-
     public function __construct(array $data = [])
     {
         if ($data) {
-            $this->_snapshot = $data;
-
             foreach ($data as $field => $value) {
                 $this->{$field} = $value;
             }
@@ -95,7 +89,6 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
     public function only(array $fields): static
     {
         $entity = new static();
-        $entity->_snapshot = null;
 
         foreach ($fields as $field) {
             $entity->$field = $this->$field;
@@ -112,46 +105,12 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
     public function except(array $fields): static
     {
         $entity = clone $this;
-        $entity->_snapshot = null;
 
         foreach ($fields as $field) {
             unset($entity->$field);
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns the internal snapshot data
-     *
-     * @return array =entity_var(new static)
-     */
-    public function getSnapshotData(): array
-    {
-        return $this->_snapshot;
-    }
-
-    /**
-     * Returns a list of changed values
-     *
-     * @return array =entity_fields(new static)
-     */
-    public function getChangedFields(): array
-    {
-        $snapshot = $this->_snapshot;
-
-        $changed = [];
-        foreach (Container::get(EntityMetadataInterface::class)->getFields(static::class) as $field) {
-            if (isset($snapshot[$field])) {
-                if ($this->{$field} !== $snapshot[$field]) {
-                    $changed[] = $field;
-                }
-            } elseif (isset($this->$field)) {
-                $changed[] = $field;
-            }
-        }
-
-        return $changed;
     }
 
     /**
@@ -164,14 +123,6 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
      */
     public function hasChanged(array $fields): bool
     {
-        $snapshot = $this->_snapshot;
-
-        foreach ($fields as $field) {
-            if (!isset($snapshot[$field]) || $this->{$field} !== $snapshot[$field]) {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -234,10 +185,6 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if ($field === '_snapshot') {
-                continue;
-            }
-
             if (is_object($value) && !$value instanceof self) {
                 continue;
             }
