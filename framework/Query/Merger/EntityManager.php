@@ -29,7 +29,7 @@ class EntityManager extends AbstractEntityManager
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function update(array|Entity $entity): Entity
+    public function update(array|Entity $entity, Entity $original): Entity
     {
         throw new NotSupportedException(__METHOD__);
     }
