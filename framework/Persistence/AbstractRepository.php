@@ -221,7 +221,7 @@ abstract class AbstractRepository implements RepositoryInterface
 
         if (is_array($entity)) {
             $original = $this->get($entity[$primaryKey]);
-            $entity = $this->entityFiller->fill(clone $original, $entity);
+            $entity = $this->entityFiller->fill(new $this->entityClass, $entity);
         } else {
             $original = $this->get($entity[$primaryKey]);
         }

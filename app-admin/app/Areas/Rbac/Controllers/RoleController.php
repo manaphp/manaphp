@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Controllers;
 
+use App\Areas\Rbac\Entities\Role;
 use App\Areas\Rbac\Repositories\AdminRoleRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;
 use App\Controllers\Controller;
@@ -59,7 +60,9 @@ class RoleController extends Controller
     #[PostMapping]
     public function disableAction(int $role_id)
     {
-        $role = $this->roleRepository->get($role_id);
+        $role = new Role();
+
+        $role->role_id = $role_id;
         $role->enabled = 0;
 
         return $this->roleRepository->update($role);
@@ -68,7 +71,9 @@ class RoleController extends Controller
     #[PostMapping]
     public function enableAction(int $role_id)
     {
-        $role = $this->roleRepository->get($role_id);
+        $role = new Role();
+
+        $role->role_id = $role_id;
         $role->enabled = 1;
 
         return $this->roleRepository->update($role);

@@ -57,12 +57,13 @@ class AdminController extends Controller
     #[PostMapping]
     public function lockAction(int $admin_id)
     {
-        $admin = $this->adminRepository->get($admin_id);
-
-        if ($this->identity->getId() === $admin->admin_id) {
+        if ($this->identity->getId() === $admin_id) {
             return '不能锁定自己';
         }
 
+        $admin = new Admin();
+
+        $admin->admin_id = $admin_id;
         $admin->status = Admin::STATUS_LOCKED;
 
         return $this->adminRepository->update($admin);
@@ -71,8 +72,9 @@ class AdminController extends Controller
     #[PostMapping]
     public function activeAction(int $admin_id)
     {
-        $admin = $this->adminRepository->get($admin_id);
+        $admin = new Admin();
 
+        $admin->admin_id = $admin_id;
         $admin->status = Admin::STATUS_ACTIVE;
 
         return $this->adminRepository->update($admin);
@@ -102,8 +104,9 @@ class AdminController extends Controller
     #[PostMapping]
     public function editAction(int $admin_id, array $role_ids = [], string $password = '')
     {
-        $admin = $this->adminRepository->get($admin_id);
+        $admin = new Admin();
 
+        $admin->admin_id = $admin_id;
         $admin->assign($this->request->all(), ['email', 'white_ip']);
 
         if ($password !== '') {

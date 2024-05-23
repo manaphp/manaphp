@@ -203,6 +203,12 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
             return $entity;
         }
 
+        foreach ($fields as $field) {
+            if (!isset($entity->$field)) {
+                $entity->$field = $original->$field;
+            }
+        }
+
         $this->validate($entity, $changedFields);
 
         $this->autoFiller->fillUpdated($entity);
