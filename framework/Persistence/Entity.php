@@ -9,10 +9,9 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Persistence\Event\EntityEventInterface;
-use ReflectionClass;
 use Stringable;
+use function get_object_vars;
 use function is_array;
-use function is_int;
 use function is_object;
 
 class Entity implements ArrayAccess, JsonSerializable, Stringable
@@ -81,38 +80,6 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
         return $data;
     }
 
-    /**
-     * @param array $fields =entity_fields(new static)
-     *
-     * @return static
-     */
-    public function only(array $fields): static
-    {
-        $entity = new static();
-
-        foreach ($fields as $field) {
-            $entity->$field = $this->$field;
-        }
-
-        return $entity;
-    }
-
-    /**
-     * @param array $fields =entity_fields(new static)
-     *
-     * @return static
-     */
-    public function except(array $fields): static
-    {
-        $entity = clone $this;
-
-        foreach ($fields as $field) {
-            unset($entity->$field);
-        }
-
-        return $entity;
-    }
-
     public function onEvent(EntityEventInterface $entityEvent)
     {
     }
@@ -162,49 +129,6 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
             }
         }
         throw new NotSupportedException(['`{1}` does not contain `{2}` method', static::class, $name]);
-    }
-
-    /**
-     * @return array
-     */
-    public function __debugInfo()
-    {
-        $data = [];
-
-        foreach (get_object_vars($this) as $field => $value) {
-            if (is_object($value) && !$value instanceof self) {
-                continue;
-            }
-
-            $data[$field] = $value;
-        }
-
-        foreach (Container::get(EntityMetadataInterface::class)->getFields(static::class) as $field) {
-            if (!isset($this->$field)) {
-                continue;
-            }
-
-            $value = $this->$field;
-
-            /**1973/3/3 17:46:40*/
-            if (is_int($value) && $value > 100000000
-                && !str_ends_with($field, '_id')
-                && !str_ends_with($field, 'Id')
-            ) {
-                $data['*human_time*'][$field] = date('Y-m-d H:i:s', $value);
-            }
-
-            if (is_numeric($value)) {
-                foreach ((new ReflectionClass(static::class))->getConstants() as $cName => $cValue) {
-                    /** @noinspection TypeUnsafeComparisonInspection */
-                    if ($cValue == $value && stripos($cName, $field) === 0) {
-                        $data['*human_const*'][$field] = $cName;
-                    }
-                }
-            }
-        }
-
-        return $data;
     }
 
     public function offsetExists(mixed $offset): bool
