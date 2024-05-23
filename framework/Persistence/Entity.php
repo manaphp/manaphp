@@ -58,7 +58,7 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if ($value === null || $field[0] === '_') {
+            if ($value === null) {
                 continue;
             }
 
