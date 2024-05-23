@@ -153,7 +153,7 @@ class Entity implements ArrayAccess, JsonSerializable, Stringable
 
     public function jsonSerialize(): array
     {
-        return $this->toArray();
+        return get_object_vars($this);
     }
 
     public function __toString(): string
