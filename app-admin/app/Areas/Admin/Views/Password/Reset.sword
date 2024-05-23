@@ -66,11 +66,11 @@
                     if (res.data.code === 0) {
                         window.location.href = "/";
                     } else {
-                        this.$alert(res.data.message);
+                        this.$alert(res.data.msg);
                     }
                 }).catch((error) => {
-                    if (error.response.data.message) {
-                        this.$alert(error.response.data.message, '失败');
+                    if (error.response.data.msg) {
+                        this.$alert(error.response.data.msg, '失败');
                     } else {
                         this.$alert(error.response.statusText, '失败');
                     }

@@ -113,7 +113,7 @@
                         this.create.image_url = '';
                         this.reload();
                     } else {
-                        this.$alert(res.message);
+                        this.$alert(res.msg);
                     }
                 },
                 uploadChange(file, fileList) {

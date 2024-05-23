@@ -122,13 +122,13 @@
                     } else {
                         this.request.code = '';
                         this.captcha_timestamp = Date.now();
-                        this.$alert(res.data.message ? res.data.message : res.data, '失败');
+                        this.$alert(res.data.msg ? res.data.msg : res.data, '失败');
                     }
                 }).catch((error) => {
                     this.captcha_timestamp = Date.now();
 
-                    if (error.response.data.message) {
-                        this.$alert(error.response.data.message, '失败');
+                    if (error.response.data.msg) {
+                        this.$alert(error.response.data.msg, '失败');
                     } else {
                         this.$alert(error.response.statusText, '失败');
                     }

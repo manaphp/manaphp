@@ -80,7 +80,7 @@ axios.interceptors.response.use(function (res) {
                     window.location.href = '/login';
                     break;
                 default:
-                    alert(error.response.message || '网络错误，请稍后重试: ' + error.response.status);
+                    alert(error.response.msg || '网络错误，请稍后重试: ' + error.response.status);
                     break;
             }
         } else {
