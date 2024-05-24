@@ -6,6 +6,10 @@ namespace ManaPHP\Persistence;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
+use ManaPHP\Validating\Constraint\Attribute\Type;
+use ManaPHP\Validating\ValidatorInterface;
+use ReflectionAttribute;
+use ReflectionProperty;
 use function array_unshift;
 use function is_array;
 use function is_string;
@@ -17,7 +21,7 @@ use function preg_match;
  */
 abstract class AbstractRepository implements RepositoryInterface
 {
-    #[Autowired] protected EntityFillerInterface $entityFiller;
+    #[Autowired] protected ValidatorInterface $validator;
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
     /** @var class-string<T> */
@@ -204,7 +208,7 @@ abstract class AbstractRepository implements RepositoryInterface
 
         if (is_array($entity)) {
             $original = $this->get($entity[$primaryKey]);
-            $entity = $this->entityFiller->fill(new $this->entityClass, $entity);
+            $entity = $this->fill($entity);
         } else {
             $original = $this->get($entity[$primaryKey]);
         }
@@ -246,7 +250,30 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function fill(array $data): Entity
     {
-        return $this->entityFiller->fill(new $this->entityClass, $data);
+        $entity = new $this->entityClass;
+
+        $validation = $this->validator->beginValidate($data);
+        foreach ($this->entityMetadata->getFillable($this->entityClass) as $field) {
+            if (($value = $data[$field] ?? null) !== null) {
+                $validation->field = $field;
+                $validation->value = $value;
+
+                $rProperty = new ReflectionProperty($this->entityClass, $field);
+
+                if ($attributes = $rProperty->getAttributes(Type::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                    $constraint = $attributes[0]->newInstance();
+                } else {
+                    $constraint = new Type($rProperty->getType()?->getName() ?? 'mixed');
+                }
+
+                if ($validation->validate($constraint)) {
+                    $entity->$field = $validation->value;
+                }
+            }
+        }
+        $this->validator->endValidate($validation);
+
+        return $entity;
     }
 
     public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
