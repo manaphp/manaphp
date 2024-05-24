@@ -246,10 +246,7 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function fill(array $data): Entity
     {
-        $primaryKey = $this->entityMetadata->getPrimaryKey($this->entityClass);
-        $entity = isset($data[$primaryKey]) ? $this->get($data[$primaryKey]) : new $this->entityClass;
-
-        return $this->entityFiller->fill($entity, $data);
+        return $this->entityFiller->fill(new $this->entityClass, $data);
     }
 
     public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
