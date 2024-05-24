@@ -24,8 +24,6 @@ interface RepositoryInterface
      */
     public function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array;
 
-    public function lists(array $fields, array $filters = []): array;
-
     /**
      * @param int|string $id
      * @param array      $fields

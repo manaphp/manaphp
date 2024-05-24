@@ -140,6 +140,7 @@ class AdminController extends Controller
     #[GetMapping]
     public function rolesAction()
     {
-        return $this->roleRepository->lists(['display_name', 'role_name'], ['role_name!=' => ['guest', 'user']]);
+        return $this->roleRepository->all(['role_name!=' => ['guest', 'user']], ['role_id', 'display_name', 'role_name']
+        );
     }
 }

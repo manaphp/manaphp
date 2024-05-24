@@ -7,11 +7,9 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
 use function array_unshift;
-use function in_array;
 use function is_array;
 use function is_string;
 use function preg_match;
-use function property_exists;
 
 /**
  * @template T of Entity
@@ -68,21 +66,6 @@ abstract class AbstractRepository implements RepositoryInterface
             }
         }
         return $this->select($fields)->where($filters)->with($withs)->orderBy($orders)->fetch();
-    }
-
-    public function lists(array $fields, array $filters = []): array
-    {
-        $keyField = $this->entityMetadata->getPrimaryKey($this->entityClass);
-        if (!in_array($keyField, $fields, true)) {
-            array_unshift($fields, $keyField);
-        }
-
-        if (property_exists($this->entityClass, 'display_order')) {
-            $order = ['display_order' => SORT_DESC, $keyField => SORT_ASC];
-        } else {
-            $order = [$keyField => SORT_ASC];
-        }
-        return $this->select($fields)->where($filters)->orderBy($order)->execute();
     }
 
     public function get(int|string $id, array $fields = []): Entity
