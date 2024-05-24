@@ -14,13 +14,11 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
-use ManaPHP\Mvc\ViewInterface;
 
 #[Authorize('*')]
 #[RequestMapping('/admin/password')]
 class PasswordController extends Controller
 {
-    #[Autowired] protected ViewInterface $view;
     #[Autowired] protected CaptchaInterface $captcha;
     #[Autowired] protected MailerInterface $mailer;
     #[Autowired] protected AdminRepository $adminRepository;
