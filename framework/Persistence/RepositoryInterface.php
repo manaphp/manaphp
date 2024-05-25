@@ -24,6 +24,9 @@ interface RepositoryInterface
      */
     public function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array;
 
+    public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page
+    ): Paginator;
+
     /**
      * @param int|string $id
      * @param array      $fields
@@ -96,9 +99,6 @@ interface RepositoryInterface
      * @return ?T
      */
     public function deleteById(int|string $id): ?Entity;
-
-    public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
-    ): Paginator;
 
     public function deleteAll(array $filters): int;
 }

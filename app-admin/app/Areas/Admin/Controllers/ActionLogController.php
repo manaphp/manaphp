@@ -28,7 +28,7 @@ class ActionLogController extends Controller
         );
 
         $orders = ['id' => SORT_DESC];
-        return $this->adminActionLogRepository->paginate([], $restrictions, $orders, Page::of($page, $size));
+        return $this->adminActionLogRepository->paginate($restrictions, [], $orders, Page::of($page, $size));
     }
 
     #[Authorize('user')]
@@ -51,6 +51,6 @@ class ActionLogController extends Controller
         $restrictions->eq('admin_id', $this->identity->getId());
 
         $orders = ['id' => SORT_DESC];
-        return $this->adminActionLogRepository->paginate([], $restrictions, $orders, Page::of($page, $size));
+        return $this->adminActionLogRepository->paginate($restrictions, [], $orders, Page::of($page, $size));
     }
 }

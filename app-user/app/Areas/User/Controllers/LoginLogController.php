@@ -28,6 +28,6 @@ class LoginLogController extends Controller
 
         $orders = ['login_id' => SORT_DESC];
 
-        return $this->userLoginLogRepository->paginate($fields, $restrictions, $orders, Page::of($page, $size));
+        return $this->userLoginLogRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
     }
 }

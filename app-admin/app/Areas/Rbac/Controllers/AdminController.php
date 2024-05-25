@@ -45,7 +45,7 @@ class AdminController extends Controller
 
         $orders = ['admin_id' => SORT_DESC];
 
-        return $this->adminRepository->paginate($fields, $restrictions, $orders, Page::of($page, $size));
+        return $this->adminRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
     }
 
     #[GetMapping]

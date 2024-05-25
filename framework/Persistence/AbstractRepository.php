@@ -67,6 +67,24 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->select($fields)->where($filters)->with($withs)->orderBy($orders)->fetch();
     }
 
+    public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page
+    ): Paginator {
+
+        $withs = [];
+        foreach ($fields as $k => $v) {
+            if (is_string($k)) {
+                $withs[$k] = $v;
+                unset($fields[$k]);
+            }
+        }
+
+        return $this->select($fields)
+            ->where($restrictions)
+            ->with($withs)
+            ->orderBy($orders)
+            ->paginate($page->getPage(), $page->getLimit());
+    }
+
     public function get(int|string $id, array $fields = []): Entity
     {
         $primaryKey = $this->entityMetadata->getPrimaryKey($this->entityClass);
@@ -245,24 +263,6 @@ abstract class AbstractRepository implements RepositoryInterface
         }
 
         return $entity;
-    }
-
-    public function paginate(array $fields, array|Restrictions $restrictions, array $orders, Page $page
-    ): Paginator {
-
-        $withs = [];
-        foreach ($fields as $k => $v) {
-            if (is_string($k)) {
-                $withs[$k] = $v;
-                unset($fields[$k]);
-            }
-        }
-
-        return $this->select($fields)
-            ->where($restrictions)
-            ->with($withs)
-            ->orderBy($orders)
-            ->paginate($page->getPage(), $page->getLimit());
     }
 
     public function deleteAll(array $filters): int

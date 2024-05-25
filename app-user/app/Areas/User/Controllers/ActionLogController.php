@@ -39,6 +39,6 @@ class ActionLogController extends Controller
         $restrictions->eq('user_id', $this->identity->getId());
 
         $orders = ['id' => SORT_DESC];
-        return $this->userActionLogRepository->paginate([], $restrictions, $orders, Page::of($page, $size));
+        return $this->userActionLogRepository->paginate($restrictions, [], $orders, Page::of($page, $size));
     }
 }

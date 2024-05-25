@@ -31,7 +31,8 @@ class DotenvController extends Controller
             return [];
         } else {
             $current = [['app_id' => $app_id, 'env' => $this->redisDb->hGet(self::REDIS_KEY, $app_id) ?: '']];
-            $logs = $this->dotenvLogRepository->paginate([], ['app_id' => $app_id], ['id' => SORT_DESC], Page::of(1, 10)
+            $restrictions = ['app_id' => $app_id];
+            $logs = $this->dotenvLogRepository->paginate($restrictions, [], ['id' => SORT_DESC], Page::of(1, 10)
             )->items;
 
             return compact('current', 'logs');

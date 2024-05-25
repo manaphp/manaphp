@@ -37,7 +37,7 @@ class AdminRoleController extends Controller
         $restrictions = Restrictions::create();
         $restrictions->contains('admin_name', $keyword);
 
-        return $this->adminRepository->paginate($fields, $restrictions, $orders, Page::of($page, $size));
+        return $this->adminRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
     }
 
     #[GetMapping]

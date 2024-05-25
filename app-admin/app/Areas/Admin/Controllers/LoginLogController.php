@@ -27,7 +27,7 @@ class LoginLogController extends Controller
             ['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@=']
         );
         $orders = ['login_id' => SORT_DESC];
-        return $this->adminLoginLogRepository->paginate($fields, $restrictions, $orders, Page::of($page, $size));
+        return $this->adminLoginLogRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
     }
 
     #[Authorize('user')]
@@ -41,6 +41,6 @@ class LoginLogController extends Controller
 
         $orders = ['login_id' => SORT_DESC];
 
-        return $this->adminLoginLogRepository->paginate($fields, $restrictions, $orders, Page::of($page, $size));
+        return $this->adminLoginLogRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
     }
 }

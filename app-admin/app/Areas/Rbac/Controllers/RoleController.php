@@ -32,7 +32,7 @@ class RoleController extends Controller
 
         $orders = ['role_id' => SORT_DESC];
 
-        return $this->roleRepository->paginate([], $restrictions, $orders, Page::of($page, $size));
+        return $this->roleRepository->paginate($restrictions, [], $orders, Page::of($page, $size));
     }
 
     #[GetMapping]
