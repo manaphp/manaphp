@@ -10,8 +10,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Persistence\Attribute\Column;
 use ManaPHP\Persistence\Attribute\Connection;
 use ManaPHP\Persistence\Attribute\DateFormat;
-use ManaPHP\Persistence\Attribute\Fillable;
-use ManaPHP\Persistence\Attribute\Guarded;
 use ManaPHP\Persistence\Attribute\Id;
 use ManaPHP\Persistence\Attribute\NamingStrategy;
 use ManaPHP\Persistence\Attribute\ReferencedKey;
@@ -23,7 +21,6 @@ use ManaPHP\Validating\ConstraintInterface;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
-use function in_array;
 use function preg_match;
 use function property_exists;
 use function sprintf;
@@ -231,43 +228,31 @@ class EntityMetadata implements EntityMetadataInterface
 
         return $columnMap;
     }
-
-    protected function getFillableInternal(string $entityClass): array
-    {
-        if (($attribute = $this->getClassAttribute($entityClass, Fillable::class)) !== null) {
-            /** @var Fillable $attribute */
-            $fillable = $attribute->fields;
-        } elseif (($attribute = $this->getClassAttribute($entityClass, Guarded::class)) !== null) {
-            /** @var Guarded $attribute */
-            $guarded = $attribute->fields;
-            $fillable = [];
-            foreach ($this->getFields($entityClass) as $field) {
-                if (!in_array($field, $guarded, true)) {
-                    $fillable[] = $field;
-                }
-            }
-        } else {
-            $fillable = [];
-            $rClass = new ReflectionClass($entityClass);
-            foreach ($rClass->getProperties(ReflectionProperty::IS_PUBLIC) as $rProperty) {
-                if ($rProperty->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF) !== []) {
-                    $fillable[] = $rProperty->getName();
-                }
-            }
-        }
-
-        $primaryKey = $this->getPrimaryKey($entityClass);
-        if (!in_array($primaryKey, $fillable, true)) {
-            $fillable[] = $primaryKey;
-        }
-
-        return $fillable;
-    }
-
+    
     public function getFillable(string $entityClass): array
     {
         if (($fillable = $this->fillable[$entityClass] ?? null) === null) {
-            $fillable = $this->fillable[$entityClass] = $this->getFillableInternal($entityClass);
+            $fillable = [];
+            foreach ($this->getClassReflection($entityClass)->getProperties() as $property) {
+                $name = $property->getName();
+                $rType = $property->getType();
+                $type = $rType === null ? 'mixed' : $rType->getName();
+
+                if ($property->getAttributes(Id::class) !== []) {
+                    $fillable[$name] = $type;
+                } elseif (($column = $this->getPropertyAttribute($property, Column::class)) !== null
+                    && $column->fillable !== null
+                ) {
+                    if ($column->fillable) {
+                        $fillable[$name] = $type;
+                    }
+                } elseif ($property->getAttributes(ConstraintInterface::class, ReflectionAttribute::IS_INSTANCEOF)
+                    !== []
+                ) {
+                    $fillable[$name] = $type;
+                }
+            }
+            $this->fillable[$entityClass] = $fillable;
         }
 
         return $fillable;

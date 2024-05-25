@@ -6,10 +6,6 @@ namespace ManaPHP\Persistence;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
-use ManaPHP\Validating\Constraint\Attribute\Type;
-use ManaPHP\Validating\ValidatorInterface;
-use ReflectionAttribute;
-use ReflectionProperty;
 use function array_unshift;
 use function is_array;
 use function is_string;
@@ -21,7 +17,6 @@ use function preg_match;
  */
 abstract class AbstractRepository implements RepositoryInterface
 {
-    #[Autowired] protected ValidatorInterface $validator;
     #[Autowired] protected EntityMetadataInterface $entityMetadata;
 
     /** @var class-string<T> */
@@ -252,26 +247,21 @@ abstract class AbstractRepository implements RepositoryInterface
     {
         $entity = new $this->entityClass;
 
-        $validation = $this->validator->beginValidate($data);
-        foreach ($this->entityMetadata->getFillable($this->entityClass) as $field) {
-            if (($value = $data[$field] ?? null) !== null) {
-                $validation->field = $field;
-                $validation->value = $value;
-
-                $rProperty = new ReflectionProperty($this->entityClass, $field);
-
-                if ($attributes = $rProperty->getAttributes(Type::class, ReflectionAttribute::IS_INSTANCEOF)) {
-                    $constraint = $attributes[0]->newInstance();
-                } else {
-                    $constraint = new Type($rProperty->getType()?->getName() ?? 'mixed');
-                }
-
-                if ($validation->validate($constraint)) {
-                    $entity->$field = $validation->value;
-                }
+        foreach ($this->entityMetadata->getFillable($this->entityClass) as $field => $type) {
+            if (($value = $data[$field] ?? null) === null) {
+                continue;
             }
+
+            if ($type === 'int') {
+                $value = (int)$value;
+            } elseif ($type === 'float') {
+                $value = (float)$value;
+            } elseif ($type === 'string') {
+                $value = (string)$value;
+            }
+
+            $entity->$field = $value;
         }
-        $this->validator->endValidate($validation);
 
         return $entity;
     }
