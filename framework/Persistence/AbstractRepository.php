@@ -161,28 +161,6 @@ abstract class AbstractRepository implements RepositoryInterface
      *
      * @return T
      */
-    public function save(Entity|array $entity): Entity
-    {
-        $primaryKey = $this->entityMetadata->getPrimaryKey($this->entityClass);
-
-        if (is_array($entity)) {
-            if (!isset($entity[$primaryKey]) || !$this->existsById($entity[$primaryKey])) {
-                return $this->create($entity);
-            }
-        } else {
-            if (!isset($entity->$primaryKey) || !$this->existsById($entity->$primaryKey)) {
-                return $this->create($entity);
-            }
-        }
-
-        return $this->update($entity);
-    }
-
-    /**
-     * @param T|array $entity
-     *
-     * @return T
-     */
     public function create(Entity|array $entity): Entity
     {
         if (is_array($entity)) {

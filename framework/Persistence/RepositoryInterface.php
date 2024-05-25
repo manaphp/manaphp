@@ -74,13 +74,6 @@ interface RepositoryInterface
      *
      * @return T
      */
-    public function save(Entity|array $entity): Entity;
-
-    /**
-     * @param T|array $entity
-     *
-     * @return T
-     */
     public function create(Entity|array $entity): Entity;
 
     /**
