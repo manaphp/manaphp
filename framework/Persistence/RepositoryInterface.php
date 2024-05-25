@@ -16,13 +16,13 @@ interface RepositoryInterface
     public function getEntityClass(): string;
 
     /**
-     * @param array|Restrictions $filters
+     * @param array|Restrictions $restrictions
      * @param array              $fields
      * @param array              $orders
      *
      * @return array<T>
      */
-    public function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array;
+    public function all(array|Restrictions $restrictions = [], array $fields = [], array $orders = []): array;
 
     public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page): Paginator;
 
@@ -35,32 +35,32 @@ interface RepositoryInterface
     public function get(int|string $id, array $fields = []): Entity;
 
     /**
-     * @param array $filters
-     * @param array $fields
+     * @param array|Restrictions $restrictions
+     * @param array              $fields
      *
      * @return ?T
      */
-    public function first(array $filters, array $fields = []): ?Entity;
+    public function first(array|Restrictions $restrictions, array $fields = []): ?Entity;
 
     /**
-     * @param array $filters
-     * @param array $fields
+     * @param array|Restrictions $restrictions
+     * @param array              $fields
      *
      * @return T
      */
-    public function firstOrFail(array $filters, array $fields = []): Entity;
+    public function firstOrFail(array|Restrictions $restrictions, array $fields = []): Entity;
 
-    public function value(array $filters, string $field): mixed;
+    public function value(array|Restrictions $restrictions, string $field): mixed;
 
-    public function valueOrFail(array $filters, string $field): mixed;
+    public function valueOrFail(array|Restrictions $restrictions, string $field): mixed;
 
-    public function valueOrDefault(array $filters, string $field, mixed $default): mixed;
+    public function valueOrDefault(array|Restrictions $restrictions, string $field, mixed $default): mixed;
 
-    public function values(string $field, array $filters = []): array;
+    public function values(string $field, array|Restrictions $restrictions = []): array;
 
-    public function dict(array $filters, string|array $kv): array;
+    public function dict(array|Restrictions $restrictions, string|array $kv): array;
 
-    public function exists(array $filters): bool;
+    public function exists(array|Restrictions $restrictions): bool;
 
     public function existsById(int|string $id): bool;
 
@@ -99,5 +99,5 @@ interface RepositoryInterface
      */
     public function deleteById(int|string $id): ?Entity;
 
-    public function deleteAll(array $filters): int;
+    public function deleteAll(array|Restrictions $restrictions): int;
 }

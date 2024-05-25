@@ -49,13 +49,13 @@ abstract class AbstractRepository implements RepositoryInterface
     }
 
     /**
-     * @param array $filters
-     * @param array $fields
-     * @param array $orders
+     * @param array|Restrictions $restrictions
+     * @param array              $fields
+     * @param array              $orders
      *
      * @return array<T>
      */
-    public function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array
+    public function all(array|Restrictions $restrictions = [], array $fields = [], array $orders = []): array
     {
         $withs = [];
         foreach ($fields as $k => $v) {
@@ -64,7 +64,7 @@ abstract class AbstractRepository implements RepositoryInterface
                 unset($fields[$k]);
             }
         }
-        return $this->select($fields)->where($filters)->with($withs)->orderBy($orders)->fetch();
+        return $this->select($fields)->where($restrictions)->with($withs)->orderBy($orders)->fetch();
     }
 
     public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page): Paginator
@@ -91,54 +91,54 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->firstOrFail([$primaryKey => $id], $fields);
     }
 
-    public function first(array $filters, array $fields = []): ?Entity
+    public function first(array|Restrictions $restrictions, array $fields = []): ?Entity
     {
-        $rs = $this->select($fields)->where($filters)->limit(1)->fetch();
+        $rs = $this->select($fields)->where($restrictions)->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
-    public function firstOrFail(array $filters, array $fields = []): Entity
+    public function firstOrFail(array|Restrictions $restrictions, array $fields = []): Entity
     {
-        if (($entity = $this->first($filters, $fields)) === null) {
-            throw new EntityNotFoundException($this->entityClass, $filters);
+        if (($entity = $this->first($restrictions, $fields)) === null) {
+            throw new EntityNotFoundException($this->entityClass, $restrictions);
         }
 
         return $entity;
     }
 
-    public function value(array $filters, string $field): mixed
+    public function value(array|Restrictions $restrictions, string $field): mixed
     {
-        $rs = $this->select([$field])->where($filters)->limit(1)->execute();
+        $rs = $this->select([$field])->where($restrictions)->limit(1)->execute();
         return $rs ? $rs[0][$field] : null;
     }
 
-    public function valueOrFail(array $filters, string $field): mixed
+    public function valueOrFail(array|Restrictions $restrictions, string $field): mixed
     {
-        if (($value = $this->value($filters, $field)) === null) {
-            throw new EntityNotFoundException($this->entityClass, $filters);
+        if (($value = $this->value($restrictions, $field)) === null) {
+            throw new EntityNotFoundException($this->entityClass, $restrictions);
         } else {
             return $value;
         }
     }
 
-    public function valueOrDefault(array $filters, string $field, mixed $default): mixed
+    public function valueOrDefault(array|Restrictions $restrictions, string $field, mixed $default): mixed
     {
-        return $this->value($filters, $field) ?? $default;
+        return $this->value($restrictions, $field) ?? $default;
     }
 
-    public function values(string $field, array $filters = []): array
+    public function values(string $field, array|Restrictions $restrictions = []): array
     {
-        return $this->where($filters)->orderBy([$field => SORT_ASC])->values($field);
+        return $this->where($restrictions)->orderBy([$field => SORT_ASC])->values($field);
     }
 
-    public function dict(array $filters, string|array $kv): array
+    public function dict(array|Restrictions $restrictions, string|array $kv): array
     {
         $dict = [];
 
         if (is_string($kv)) {
             $key = $this->entityMetadata->getPrimaryKey($this->entityClass);
             $value = $kv;
-            foreach ($this->select([$key, $value])->where($filters)->execute() as $row) {
+            foreach ($this->select([$key, $value])->where($restrictions)->execute() as $row) {
                 $dict[$row[$key]] = $row[$value];
             }
         } else {
@@ -147,12 +147,12 @@ abstract class AbstractRepository implements RepositoryInterface
 
             if (is_string($fields)) {
                 $value = $fields;
-                foreach ($this->select([$key, $value])->where($filters)->execute() as $row) {
+                foreach ($this->select([$key, $value])->where($restrictions)->execute() as $row) {
                     $dict[$row[$key]] = $row[$value];
                 }
             } else {
                 array_unshift($fields, $key);
-                foreach ($this->select($fields)->where($filters)->execute() as $row) {
+                foreach ($this->select($fields)->where($restrictions)->execute() as $row) {
                     $dict[$row[$key]] = $row;
                 }
             }
@@ -161,9 +161,9 @@ abstract class AbstractRepository implements RepositoryInterface
         return $dict;
     }
 
-    public function exists(array $filters): bool
+    public function exists(array|Restrictions $restrictions): bool
     {
-        return $this->where($filters)->exists();
+        return $this->where($restrictions)->exists();
     }
 
     public function existsById(int|string $id): bool
@@ -264,8 +264,8 @@ abstract class AbstractRepository implements RepositoryInterface
         return $entity;
     }
 
-    public function deleteAll(array $filters): int
+    public function deleteAll(array|Restrictions $restrictions): int
     {
-        return $this->where($filters)->delete();
+        return $this->where($restrictions)->delete();
     }
 }
