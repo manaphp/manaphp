@@ -114,7 +114,7 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->where($filters)->orderBy([$field => SORT_ASC])->values($field);
     }
 
-    public function kvalues(string|array $kv, array $filters = []): array
+    public function dict(string|array $kv, array $filters = []): array
     {
         $dict = [];
 

@@ -51,7 +51,7 @@ class AdminController extends Controller
     #[GetMapping]
     public function listAction()
     {
-        return $this->adminRepository->kvalues('admin_name');
+        return $this->adminRepository->dict('admin_name');
     }
 
     #[PostMapping]
