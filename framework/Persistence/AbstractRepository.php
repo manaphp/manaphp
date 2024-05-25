@@ -187,6 +187,9 @@ abstract class AbstractRepository implements RepositoryInterface
     {
         if (is_array($entity)) {
             $entity = $this->fill($entity);
+
+            $primaryKey = $this->entityMetadata->getPrimaryKey($this->entityClass);
+            unset($entity->$primaryKey);
         }
 
         return $this->getEntityManager()->create($entity);
