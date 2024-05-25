@@ -8,7 +8,7 @@ class Page
     protected int $page;
     protected int $limit;
 
-    public static function of(int $page, int $limit): static
+    public static function of(int $page, int $limit = 10): static
     {
         $instance = new static();
 
