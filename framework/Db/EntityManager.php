@@ -119,14 +119,16 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
             }
         }
 
-        if ($changedFields === []) {
-            return $entity;
-        }
-
+        //Fill in all fields, even if no fields have been modified.
+        //The following business logic may depend on these data
         foreach ($fields as $field) {
             if (!isset($entity->$field)) {
                 $entity->$field = $original->$field;
             }
+        }
+
+        if ($changedFields === []) {
+            return $entity;
         }
 
         $this->validate($entity, $changedFields);

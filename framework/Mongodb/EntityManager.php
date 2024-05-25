@@ -186,11 +186,11 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
             throw new MisuseException('missing primary key value');
         }
 
-        $fields = $this->entityMetadata->getFields($entityClass);
-
         if ($entity->$primaryKey !== $original->$primaryKey) {
             throw new MisuseException('updating entity primary key value is not support');
         }
+
+        $fields = $this->entityMetadata->getFields($entityClass);
 
         $changedFields = [];
         foreach ($fields as $field) {
@@ -199,14 +199,16 @@ class EntityManager extends AbstractEntityManager implements EntityManagerInterf
             }
         }
 
-        if ($changedFields === []) {
-            return $entity;
-        }
-
+        //Fill in all fields, even if no fields have been modified.
+        //The following business logic may depend on these data
         foreach ($fields as $field) {
             if (!isset($entity->$field)) {
                 $entity->$field = $original->$field;
             }
+        }
+
+        if ($changedFields === []) {
+            return $entity;
         }
 
         $this->validate($entity, $changedFields);
