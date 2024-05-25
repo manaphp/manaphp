@@ -47,7 +47,7 @@ class PermissionController extends Controller
         return $this->permissionRepository->all([], $fields, $orders);
     }
 
-    #[GetMapping]
+    #[PostMapping]
     public function rebuildAction()
     {
         $count = 0;
@@ -89,7 +89,7 @@ class PermissionController extends Controller
             $this->roleRepository->update($role);
         }
 
-        return ['code' => 0, 'msg' => "新增 $count 条"];
+        return $this->response->json(['code' => 0, 'msg' => "新增 $count 条"]);
     }
 
     #[PostMapping]
