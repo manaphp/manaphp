@@ -67,9 +67,8 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->select($fields)->where($filters)->with($withs)->orderBy($orders)->fetch();
     }
 
-    public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page
-    ): Paginator {
-
+    public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page): Paginator
+    {
         $withs = [];
         foreach ($fields as $k => $v) {
             if (is_string($k)) {

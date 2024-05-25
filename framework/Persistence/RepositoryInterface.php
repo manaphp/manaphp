@@ -24,8 +24,7 @@ interface RepositoryInterface
      */
     public function all(array|Restrictions $filters = [], array $fields = [], array $orders = []): array;
 
-    public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page
-    ): Paginator;
+    public function paginate(array|Restrictions $restrictions, array $fields, array $orders, Page $page): Paginator;
 
     /**
      * @param int|string $id
