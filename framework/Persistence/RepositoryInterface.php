@@ -56,7 +56,7 @@ interface RepositoryInterface
 
     public function values(string $field, array $filters = []): array;
 
-    public function dict(string|array $kv, array $filters = []): array;
+    public function dict(array $filters, string|array $kv): array;
 
     public function exists(array $filters): bool;
 
