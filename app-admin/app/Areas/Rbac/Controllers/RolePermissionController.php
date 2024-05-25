@@ -38,7 +38,7 @@ class RolePermissionController extends Controller
     }
 
     #[PostMapping]
-    public function saveAction(int $role_id, array $permission_ids = [])
+    public function editAction(int $role_id, array $permission_ids = [])
     {
         $role = $this->roleRepository->get($role_id);
         $old_permissions = $this->rolePermissionRepository->values('permission_id', ['role_id' => $role->role_id]);
@@ -61,11 +61,5 @@ class RolePermissionController extends Controller
 
         $role->permissions = ',' . implode(',', $handlers) . ',';
         $this->roleRepository->update($role);
-    }
-
-    #[PostMapping]
-    public function editAction(int $role_id, array $permission_ids)
-    {
-        $this->saveAction($role_id, $permission_ids);
     }
 }
