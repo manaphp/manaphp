@@ -38,7 +38,7 @@ class RoleController extends Controller
     #[GetMapping]
     public function listAction()
     {
-        return $this->roleRepository->all([], ['role_id', 'display_name', 'role_name']);
+        return $this->roleRepository->all([], ['role_id', 'display_name']);
     }
 
     #[PostMapping]
