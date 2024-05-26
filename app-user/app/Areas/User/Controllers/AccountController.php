@@ -13,7 +13,7 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize('*')]
+#[Authorize(Authorize::GUEST)]
 #[RequestMapping('/user/account')]
 class AccountController extends Controller
 {

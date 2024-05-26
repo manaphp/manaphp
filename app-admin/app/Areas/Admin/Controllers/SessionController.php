@@ -21,7 +21,7 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize('*')]
+#[Authorize(Authorize::GUEST)]
 #[RequestMapping('/admin/session')]
 class SessionController extends Controller
 {
@@ -111,7 +111,7 @@ class SessionController extends Controller
         return $this->adminLoginLogRepository->create($adminLoginLog);
     }
 
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[GetMapping(['/logout', '/admin/session/logout'])]
     public function logoutAction()
     {

@@ -15,7 +15,7 @@ use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize('*')]
+#[Authorize(Authorize::GUEST)]
 #[RequestMapping('/admin/password')]
 class PasswordController extends Controller
 {
@@ -95,7 +95,7 @@ class PasswordController extends Controller
         return $this->response->json(['code' => 0, 'msg' => '重置密码成功']);
     }
 
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[ViewGetMapping, PostMapping]
     public function changeAction(string $old_password, string $new_password, string $new_password_confirm)
     {

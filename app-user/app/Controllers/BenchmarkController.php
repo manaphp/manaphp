@@ -7,7 +7,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize('*')]
+#[Authorize(Authorize::GUEST)]
 #[RequestMapping('/benchmark')]
 class BenchmarkController extends Controller
 {

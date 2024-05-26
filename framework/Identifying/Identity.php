@@ -8,6 +8,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\UnauthorizedException;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
 class Identity implements IdentityInterface, ContextCreatorInterface
 {
@@ -110,7 +111,7 @@ class Identity implements IdentityInterface, ContextCreatorInterface
         }
 
         if (isset($claims['admin_id'])) {
-            return $claims['admin_id'] === 1 ? 'admin' : 'user';
+            return $claims['admin_id'] === 1 ? Authorize::ADMIN : Authorize::USER;
         }
 
         throw new MisuseException('missing role in claims');

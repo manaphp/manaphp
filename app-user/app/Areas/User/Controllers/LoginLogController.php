@@ -17,7 +17,7 @@ class LoginLogController extends Controller
 {
     #[Autowired] protected UserLoginLogRepository $userLoginLogRepository;
 
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[ViewGetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {

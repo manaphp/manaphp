@@ -11,7 +11,7 @@ use ManaPHP\Http\Router\Attribute\RequestMapping;
 #[RequestMapping('')]
 class IndexController extends Controller
 {
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[GetMapping('/rbac')]
     public function indexAction()
     {

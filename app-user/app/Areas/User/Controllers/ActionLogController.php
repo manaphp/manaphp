@@ -13,13 +13,13 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Persistence\Page;
 use ManaPHP\Persistence\Restrictions;
 
-#[Authorize('user')]
+#[Authorize(Authorize::USER)]
 #[RequestMapping('/user/action-log')]
 class ActionLogController extends Controller
 {
     #[Autowired] protected UserActionLogRepository $userActionLogRepository;
 
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[GetMapping]
     public function detailAction(int $id)
     {

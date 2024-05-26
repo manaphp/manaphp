@@ -10,7 +10,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 
-#[Authorize('user')]
+#[Authorize(Authorize::USER)]
 #[RequestMapping('/menu/my')]
 class MyController extends Controller
 {

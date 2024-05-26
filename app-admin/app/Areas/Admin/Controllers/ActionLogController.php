@@ -31,7 +31,7 @@ class ActionLogController extends Controller
         return $this->adminActionLogRepository->paginate($restrictions, [], $orders, Page::of($page, $size));
     }
 
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[GetMapping]
     public function detailAction(int $id)
     {
@@ -43,7 +43,7 @@ class ActionLogController extends Controller
         }
     }
 
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[ViewGetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {

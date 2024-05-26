@@ -9,7 +9,7 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize('user')]
+#[Authorize(Authorize::USER)]
 #[RequestMapping('/user')]
 class IndexController extends Controller
 {

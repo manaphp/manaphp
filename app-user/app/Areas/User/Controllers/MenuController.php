@@ -8,7 +8,7 @@ use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\Controller;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize('user')]
+#[Authorize(Authorize::USER)]
 #[RequestMapping('/user/menu')]
 class MenuController extends Controller
 {

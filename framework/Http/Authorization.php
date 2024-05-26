@@ -180,7 +180,7 @@ class Authorization implements AuthorizationInterface
     {
         $roles = $roles ?? $this->identity->getRoles();
 
-        if (in_array('admin', $roles, true)) {
+        if (in_array(Authorize::ADMIN, $roles, true)) {
             return true;
         }
 
@@ -209,19 +209,19 @@ class Authorization implements AuthorizationInterface
 
         $checked = ",$permission,";
 
-        if ($roles === [] || $roles === ['guest']) {
-            return str_contains($this->getAllowed('guest'), $checked);
-        } elseif ($roles === ['user']) {
-            if (str_contains($this->getAllowed('guest'), $checked)) {
+        if ($roles === [] || $roles === [Authorize::GUEST]) {
+            return str_contains($this->getAllowed(Authorize::GUEST), $checked);
+        } elseif ($roles === [Authorize::USER]) {
+            if (str_contains($this->getAllowed(Authorize::GUEST), $checked)) {
                 return true;
             }
-            return str_contains($this->getAllowed('user'), $checked);
+            return str_contains($this->getAllowed(Authorize::USER), $checked);
         } else {
-            if (str_contains($this->getAllowed('guest'), $checked)) {
+            if (str_contains($this->getAllowed(Authorize::GUEST), $checked)) {
                 return true;
             }
 
-            if (str_contains($this->getAllowed('user'), $checked)) {
+            if (str_contains($this->getAllowed(Authorize::USER), $checked)) {
                 return true;
             }
 

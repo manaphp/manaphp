@@ -30,7 +30,7 @@ class LoginLogController extends Controller
         return $this->adminLoginLogRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
     }
 
-    #[Authorize('user')]
+    #[Authorize(Authorize::USER)]
     #[ViewGetMapping]
     public function latestAction(int $page = 1, int $size = 10)
     {
