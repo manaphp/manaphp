@@ -9,7 +9,7 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize(Authorize::ADMIN)]
+#[Authorize]
 #[RequestMapping('/admin/mail')]
 class MailController extends Controller
 {

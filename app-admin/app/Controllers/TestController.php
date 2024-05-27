@@ -7,7 +7,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 
-#[Authorize(Authorize::ADMIN)]
+#[Authorize]
 #[RequestMapping('/test')]
 class TestController extends Controller
 {
