@@ -16,6 +16,7 @@ use ManaPHP\Identifying\IdentityInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use function in_array;
+use function is_string;
 use function preg_match;
 use function str_contains;
 
@@ -52,13 +53,13 @@ class Authorization implements AuthorizationInterface
                 $actionAuthorize = $controllerAuthorize;
             }
 
-            if ($actionAuthorize === null || $actionAuthorize->role === null) {
+            if ($actionAuthorize === null || $actionAuthorize->roles === []) {
                 $permissions[] = $this->controllers->getPath($controller, $action);
             }
         }
 
-        if ($controllerAuthorize?->role !== null && str_starts_with($controllerAuthorize->role, '@')) {
-            $refer = substr($controllerAuthorize->role, 1);
+        if (is_string($controllerAuthorize?->roles)) {
+            $refer = substr($controllerAuthorize->roles, 1);
             $method = Str::camelize($refer) . 'Action';
             if (method_exists($controller, $method)) {
                 $rMethod = new ReflectionMethod($controller, $method);
@@ -152,8 +153,8 @@ class Authorization implements AuthorizationInterface
         /** @var Authorize $authorize */
         $authorize = $attribute->newInstance();
 
-        if ($authorize->role !== null && str_starts_with($authorize->role, '@')) {
-            $refer = substr($authorize->role, 1);
+        if (is_string($authorize->roles) && str_starts_with($authorize->roles, '@')) {
+            $refer = substr($authorize->roles, 1);
             $referMethod = Str::camelize($refer) . 'Action';
 
             if (!method_exists($controller, $referMethod)) {
@@ -168,7 +169,7 @@ class Authorization implements AuthorizationInterface
             /** @var Authorize $authorize */
             $authorize = $attribute->newInstance();
 
-            if ($authorize->role !== null && str_starts_with($authorize->role, '@')) {
+            if (is_string($authorize->roles) && str_starts_with($authorize->roles, '@')) {
                 throw new MisuseException(['Too many indirect refer: {1}Action', $action]);
             }
         }
@@ -199,9 +200,27 @@ class Authorization implements AuthorizationInterface
 
             $action = Str::camelize($permission);
             if (($authorize = $this->getAuthorize($controller, $action)) !== null) {
-                if (($allowed = $authorize->isAllowed($roles)) !== null) {
-                    return $allowed;
+                //allow guest
+                if (in_array(Authorize::GUEST, $authorize->roles, true)) {
+                    return true;
                 }
+
+                // role is guest
+                if (in_array(Authorize::GUEST, $roles, true)) {
+                    return false;
+                }
+
+                if ($roles !== [] && in_array(Authorize::USER, $authorize->roles, true)) {
+                    return true;
+                }
+
+                foreach ($authorize->roles as $role) {
+                    if (in_array($role, $roles, true)) {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             $permission = $this->controllers->getPath($controller, $action);

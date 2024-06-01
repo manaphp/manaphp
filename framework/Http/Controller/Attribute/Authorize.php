@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Controller\Attribute;
 
 use Attribute;
-use function in_array;
+use function is_string;
+use function str_starts_with;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class Authorize
@@ -13,29 +14,14 @@ class Authorize
     public const USER = 'user';
     public const GUEST = 'guest';
 
-    public ?string $role;
+    public string|array $roles;
 
-    public function __construct(string $role = null)
+    public function __construct(string|array $roles = [])
     {
-        $this->role = $role === '*' ? self::GUEST : $role;
-    }
-
-    public function isAllowed(array $roles): ?bool
-    {
-        if (in_array(self::ADMIN, $roles, true)) {
-            return true;
-        } elseif ($this->role === null) {
-            return null;
-        } elseif ($this->role === self::GUEST) {
-            return true;
-        } elseif ($roles) {
-            if ($this->role === self::USER) {
-                return true;
-            } else {
-                return in_array($this->role, $roles, true);
-            }
+        if (is_string($roles)) {
+            $this->roles = str_starts_with($roles, '@') ? $roles : [$roles];
+        } else {
+            $this->roles = $roles;
         }
-
-        return null;
     }
 }
