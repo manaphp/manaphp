@@ -24,7 +24,6 @@ class Authorization implements AuthorizationInterface
 
     #[Autowired] protected IdentityInterface $identity;
     #[Autowired] protected DispatcherInterface $dispatcher;
-    #[Autowired] protected RouterInterface $router;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected ControllersInterface $controllers;
