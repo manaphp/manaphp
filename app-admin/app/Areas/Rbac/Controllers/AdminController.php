@@ -20,7 +20,7 @@ use ManaPHP\Persistence\Page;
 use ManaPHP\Persistence\Restrictions;
 use function str_contains;
 
-#[Authorize('@index')]
+#[Authorize]
 #[RequestMapping('/rbac/admin')]
 class AdminController extends Controller
 {

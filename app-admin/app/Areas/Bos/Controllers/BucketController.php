@@ -11,7 +11,7 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 
-#[Authorize('@index')]
+#[Authorize]
 #[RequestMapping('/bos/bucket')]
 class BucketController extends Controller
 {

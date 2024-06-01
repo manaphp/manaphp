@@ -15,7 +15,7 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Persistence\Page;
 use ManaPHP\Redis\RedisDbInterface;
 
-#[Authorize('@index')]
+#[Authorize]
 #[RequestMapping('/system')]
 class DotenvController extends Controller
 {

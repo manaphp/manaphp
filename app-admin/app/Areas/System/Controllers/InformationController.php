@@ -9,7 +9,7 @@ use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Version;
 
-#[Authorize('@index')]
+#[Authorize]
 #[RequestMapping('/system/information')]
 class InformationController extends Controller
 {

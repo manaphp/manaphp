@@ -12,7 +12,7 @@ use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use Throwable;
 
-#[Authorize('@index')]
+#[Authorize]
 #[RequestMapping('/bos/object')]
 class ObjectController extends Controller
 {

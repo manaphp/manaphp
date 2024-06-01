@@ -16,7 +16,7 @@ use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Persistence\Page;
 use ManaPHP\Persistence\Restrictions;
 
-#[Authorize('@index')]
+#[Authorize]
 #[RequestMapping('/rbac/role')]
 class RoleController extends Controller
 {

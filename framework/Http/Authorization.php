@@ -8,7 +8,6 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
-use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Authorization\RoleRepositoryInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Identifying\Identity\NoCredentialException;
@@ -16,7 +15,6 @@ use ManaPHP\Identifying\IdentityInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use function in_array;
-use function is_string;
 use function preg_match;
 use function str_contains;
 
@@ -58,19 +56,6 @@ class Authorization implements AuthorizationInterface
             }
         }
 
-        if (is_string($controllerAuthorize?->roles)) {
-            $refer = substr($controllerAuthorize->roles, 1);
-            $method = Str::camelize($refer) . 'Action';
-            if (method_exists($controller, $method)) {
-                $rMethod = new ReflectionMethod($controller, $method);
-                if (!isset($rMethod->getAttributes(Authorize::class)[0])) {
-                    $permissions[] = $this->controllers->getPath($controller, $refer);
-                }
-            } else {
-                $permissions[] = $this->controllers->getPath($controller, $refer);
-            }
-        }
-
         return $permissions;
     }
 
@@ -91,27 +76,11 @@ class Authorization implements AuthorizationInterface
                     }
 
                     if ($attribute !== null) {
+                        /** @var Authorize $authorize */
                         $authorize = $attribute->newInstance();
-                        if ($authorize->role === null) {
-                            SuppressWarnings::noop();
-                        } elseif (str_starts_with($authorize->role, '@')) {
-                            $refer = substr($authorize->role, 1);
-                            $refer_permission = $this->controllers->getPath($controller, $refer);
-                            if (in_array($refer_permission, $granted, true)) {
-                                $permissions[] = $permission;
-                            } else {
-                                $method = Str::camelize($refer) . 'Action';
-                                if (method_exists($controller, $method)) {
-                                    $rMethod = new ReflectionMethod($controller, $method);
-                                    if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) !== null) {
-                                        $authorize = $attribute->newInstance();
-                                        if ($authorize->role === $role) {
-                                            $permissions[] = $permission;
-                                        }
-                                    }
-                                }
-                            }
-                        } elseif ($role === $authorize->role) {
+                        if (in_array(Authorize::GUEST, $authorize->roles, true)) {
+                            $permissions[] = $permission;
+                        } elseif ($role !== Authorize::GUEST && in_array(Authorize::USER, $authorize->roles, true)) {
                             $permissions[] = $permission;
                         }
                     }
@@ -150,31 +119,7 @@ class Authorization implements AuthorizationInterface
             }
         }
 
-        /** @var Authorize $authorize */
-        $authorize = $attribute->newInstance();
-
-        if (is_string($authorize->roles) && str_starts_with($authorize->roles, '@')) {
-            $refer = substr($authorize->roles, 1);
-            $referMethod = Str::camelize($refer) . 'Action';
-
-            if (!method_exists($controller, $referMethod)) {
-                return null;
-            }
-
-            $rMethod = new ReflectionMethod($controller, $referMethod);
-            if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) === null) {
-                return null;
-            }
-
-            /** @var Authorize $authorize */
-            $authorize = $attribute->newInstance();
-
-            if (is_string($authorize->roles) && str_starts_with($authorize->roles, '@')) {
-                throw new MisuseException(['Too many indirect refer: {1}Action', $action]);
-            }
-        }
-
-        return $authorize;
+        return $attribute->newInstance();
     }
 
     public function isAllowed(string $permission, ?array $roles = null): bool

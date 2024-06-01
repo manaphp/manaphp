@@ -5,7 +5,6 @@ namespace ManaPHP\Http\Controller\Attribute;
 
 use Attribute;
 use function is_string;
-use function str_starts_with;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class Authorize
@@ -14,14 +13,10 @@ class Authorize
     public const USER = 'user';
     public const GUEST = 'guest';
 
-    public string|array $roles;
+    public array $roles;
 
     public function __construct(string|array $roles = [])
     {
-        if (is_string($roles)) {
-            $this->roles = str_starts_with($roles, '@') ? $roles : [$roles];
-        } else {
-            $this->roles = $roles;
-        }
+        $this->roles = is_string($roles) ? [$roles] : $roles;
     }
 }
