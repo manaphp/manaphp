@@ -8,8 +8,11 @@ use ManaPHP\Exception\NotSupportedException;
 use function chr;
 use function lcfirst;
 use function ord;
+use function preg_replace;
 use function preg_replace_callback;
 use function strlen;
+use function strtolower;
+use function substr;
 use function ucfirst;
 
 class Str
@@ -18,6 +21,22 @@ class Str
     public static function snakelize(string $str): string
     {
         return strtolower(preg_replace('/[A-Z]/', '_$0', lcfirst($str)));
+    }
+
+    /**
+     * conversion fooBar10OHLCV2Candles → foo-bar10-ohlcv2-candles
+     *
+     * @param string $str
+     *
+     * @return string
+     */
+    public static function hyphen(string $str): string
+    {
+        $str = preg_replace_callback('/[a-z0-9][A-Z]/m', static function ($match) {
+            $text = $match[0];
+            return $text[0] . '-' . $text[1];
+        }, $str);
+        return strtolower($str);
     }
 
     /** @noinspection SpellCheckingInspection */
