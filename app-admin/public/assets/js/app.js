@@ -740,10 +740,10 @@ Vue.component('result-timestamp', {
 });
 
 Vue.component('result-column', {
-    props: ['label', 'prop'],
+    props: ['label', 'prop', 'title'],
     template: `
 <el-table-column :prop="prop" :label="label||$root.label[prop]||prop" v-bind="$attrs" v-slot="{row}">
-    <slot :row="row">{{$attrs['formatter']?$attrs['formatter'](row, prop, getProp(row,prop)):getProp(row,prop)}}</slot>
+    <slot :row="row"><span :title="title?row[title]:''">{{$attrs['formatter']?$attrs['formatter'](row, prop, getProp(row,prop)):getProp(row,prop)}}</span></slot>
 </el-table-column>`,
     methods: {
         getProp(row, prop) {
