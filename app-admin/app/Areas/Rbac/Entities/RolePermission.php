@@ -21,7 +21,7 @@ class RolePermission extends Entity
     public int $created_time;
 
     #[BelongsTo]
-    public Permission $permission;
+    public ?Permission $permission;
 
     #[HasManyOthers(Role::class, selfField: 'permission_id', selfValue: 'role_id', orderBy: ['role_id' => SORT_ASC])]
     public array $roles;
