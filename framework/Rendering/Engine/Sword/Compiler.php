@@ -94,9 +94,9 @@ class Compiler
 
         $parts = explode('/', substr($file, $pos + 7));
         if (count($parts) === 1) {
-            $controller = Str::snakelize(pathinfo($parts[0], PATHINFO_FILENAME));
+            $controller = Str::hyphen(pathinfo($parts[0], PATHINFO_FILENAME));
         } else {
-            $controller = Str::snakelize($parts[0]);
+            $controller = Str::hyphen($parts[0]);
         }
         if (str_contains($str, '/')) {
             $absolute = $area ? "/$area/$str" : "/$str";
