@@ -3,16 +3,13 @@ declare(strict_types=1);
 
 namespace App\Areas\Rbac\Controllers;
 
-use App\Areas\Rbac\Entities\Permission;
-use App\Areas\Rbac\Entities\Role;
 use App\Areas\Rbac\Repositories\PermissionRepository;
 use App\Areas\Rbac\Repositories\RolePermissionRepository;
-use App\Areas\Rbac\Repositories\RoleRepository;
+use App\Areas\Rbac\Services\PermissionService;
+use App\Areas\Rbac\Services\RoleService;
 use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\ControllersInterface;
 use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
@@ -23,11 +20,10 @@ use ManaPHP\Persistence\Restrictions;
 #[RequestMapping('/rbac/permission')]
 class PermissionController extends Controller
 {
-    #[Autowired] protected AuthorizationInterface $authorization;
-    #[Autowired] protected ControllersInterface $controllers;
-    #[Autowired] protected RoleRepository $roleRepository;
     #[Autowired] protected PermissionRepository $permissionRepository;
     #[Autowired] protected RolePermissionRepository $rolePermissionRepository;
+    #[Autowired] protected PermissionService $permissionService;
+    #[Autowired] protected RoleService $roleService;
 
     #[ViewGetMapping('')]
     public function indexAction()
@@ -50,47 +46,18 @@ class PermissionController extends Controller
     #[PostMapping]
     public function rebuildAction()
     {
-        $count = 0;
-        foreach ($this->controllers->getControllers() as $controller) {
-            foreach ($this->authorization->getPermissions($controller) as $handler) {
-                if ($this->permissionRepository->exists(['handler' => $handler])) {
-                    continue;
-                }
+        $counts = $this->permissionService->rebuild();
 
-                $permission = new Permission();
+        $this->roleService->ensureBuiltinExists();
+        $this->roleService->rebuildPermissions();
 
-                $permission->handler = $handler;
-                $permission->display_name = $handler;
+        $createdCount = $counts['create'];
+        $updatedCount = $counts['update'];
+        $deletedCount = $counts['delete'];
 
-                $this->permissionRepository->create($permission);
-
-                $count++;
-            }
-        }
-
-        foreach (['guest', 'user', 'admin'] as $role_name) {
-            if (!$this->roleRepository->exists(['role_name' => $role_name])) {
-                $role = new Role();
-
-                $role->role_name = $role_name;
-                $role->display_name = $role_name;
-                $role->builtin = 1;
-                $role->enabled = 1;
-                $role->permissions = '';
-
-                $this->roleRepository->create($role);
-            }
-        }
-
-        foreach ($this->roleRepository->all() as $role) {
-            $permission_ids = $this->rolePermissionRepository->values('permission_id', ['role_id' => $role->role_id]);
-            $granted = $this->permissionRepository->values('handler', ['permission_id' => $permission_ids]);
-            $role_permissions = $this->authorization->buildAllowed($role->role_name, $granted);
-            $role->permissions = ',' . implode(',', $role_permissions) . ',';
-            $this->roleRepository->update($role);
-        }
-
-        return $this->response->json(['code' => 0, 'msg' => "新增 $count 条"]);
+        return $this->response->json(
+            ['code' => 0, 'msg' => "新增 $createdCount 条，删除$deletedCount 条, 更新 $updatedCount 条"]
+        );
     }
 
     #[PostMapping]

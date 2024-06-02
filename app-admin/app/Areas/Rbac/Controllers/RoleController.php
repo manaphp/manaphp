@@ -6,6 +6,7 @@ namespace App\Areas\Rbac\Controllers;
 use App\Areas\Rbac\Entities\Role;
 use App\Areas\Rbac\Repositories\AdminRoleRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;
+use App\Areas\Rbac\Services\RoleService;
 use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Controller\Attribute\Authorize;
@@ -15,6 +16,7 @@ use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Persistence\Page;
 use ManaPHP\Persistence\Restrictions;
+use function implode;
 
 #[Authorize]
 #[RequestMapping('/rbac/role')]
@@ -22,6 +24,7 @@ class RoleController extends Controller
 {
     #[Autowired] protected RoleRepository $roleRepository;
     #[Autowired] protected AdminRoleRepository $adminRoleRepository;
+    #[Autowired] protected RoleService $roleService;
 
     #[ViewGetMapping('')]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
@@ -44,7 +47,7 @@ class RoleController extends Controller
     #[PostMapping]
     public function createAction(string $role_name)
     {
-        $permissions = ',' . implode(',', $this->authorization->buildAllowed($role_name)) . ',';
+        $permissions = ',' . implode(',', $this->roleService->getPermissions($role_name, [])) . ',';
 
         $role = $this->roleRepository->fill($this->request->all());
         $role->builtin = 0;

@@ -5,8 +5,8 @@
 <edit-form>
     <el-checkbox-group v-model="edit.permission_ids">
         <el-checkbox v-for="permission in permissions" :label="permission.permission_id"
-                     :key="permission.permission_id" style="width: 20%; text-align: left">
-            @{{permission.display_name}}
+                     :key="permission.permission_id" style="width: 40%; text-align: left" :title="permission.display_name">
+            @{{permission.handler}}
         </el-checkbox>
     </el-checkbox-group>
 </edit-form>
@@ -53,7 +53,7 @@
                 }
             },
             mounted() {
-                this.ajax_get("role/list", (res) => this.roles = res);
+                this.ajax_get("roles", (res) => this.roles = res);
             },
             methods: {
                 show_edit() {
@@ -61,7 +61,7 @@
                     this.edit.role_id = this.request.role_id;
 
                     if (!this.permissions.length) {
-                        this.ajax_get("permission/list", (res) => {
+                        this.ajax_get("permissions", (res) => {
                             this.permissions = res;
                             this.editVisible = true;
                         });

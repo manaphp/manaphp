@@ -17,6 +17,10 @@ class Permission extends Entity
 
     public string $handler;
 
+    public string $authorize;
+
+    public int $grantable;
+
     #[MaxLength(128)]
     public string $display_name;
 

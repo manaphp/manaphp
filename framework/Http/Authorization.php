@@ -14,9 +14,14 @@ use ManaPHP\Identifying\Identity\NoCredentialException;
 use ManaPHP\Identifying\IdentityInterface;
 use ReflectionClass;
 use ReflectionMethod;
+use function basename;
 use function in_array;
 use function preg_match;
 use function str_contains;
+use function str_replace;
+use function str_starts_with;
+use function strpos;
+use function substr;
 
 class Authorization implements AuthorizationInterface
 {
@@ -29,67 +34,16 @@ class Authorization implements AuthorizationInterface
     #[Autowired] protected ControllersInterface $controllers;
     #[Autowired] protected RoleRepositoryInterface $roleRepository;
 
-    public function getPermissions(string $controller): array
+    public function getPermission(string $controller, string $action): string
     {
-        $permissions = [];
-
-        $rClass = new ReflectionClass($controller);
-        if (($attribute = $rClass->getAttributes(Authorize::class)[0] ?? null) !== null) {
-            $controllerAuthorize = $attribute->newInstance();
-        } else {
-            /** @var Authorize $controllerAuthorize */
-            $controllerAuthorize = null;
+        $controller = str_replace('\\', '.', $controller);
+        $controller = basename($controller, 'Controller');
+        $controller = str_replace('.Controllers.', '.', $controller);
+        $controller = substr($controller, strpos($controller, '.') + 1);
+        if (str_starts_with($controller, 'Areas.')) {
+            $controller = substr($controller, 6);
         }
-
-        foreach ($this->controllers->getActions($controller) as $action) {
-            $rMethod = new ReflectionMethod($controller, $action . 'Action');
-            if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) !== null) {
-                $actionAuthorize = $attribute->newInstance();
-            } else {
-                /** @var Authorize $actionAuthorize */
-                $actionAuthorize = $controllerAuthorize;
-            }
-
-            if ($actionAuthorize === null || $actionAuthorize->roles === []) {
-                $permissions[] = $this->controllers->getPath($controller, $action);
-            }
-        }
-
-        return $permissions;
-    }
-
-    public function buildAllowed(string $role, array $granted = []): array
-    {
-        $permissions = [];
-        foreach ($this->controllers->getControllers() as $controller) {
-            foreach ($this->controllers->getActions($controller) as $action) {
-                $permission = $this->controllers->getPath($controller, $action);
-
-                if (in_array($permission, $granted, true)) {
-                    $permissions[] = $permission;
-                } else {
-                    $rMethod = new ReflectionMethod($controller, $action . 'Action');
-                    if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) === null) {
-                        $rClass = new ReflectionClass($controller);
-                        $attribute = $rClass->getAttributes(Authorize::class)[0] ?? null;
-                    }
-
-                    if ($attribute !== null) {
-                        /** @var Authorize $authorize */
-                        $authorize = $attribute->newInstance();
-                        if (in_array(Authorize::GUEST, $authorize->roles, true)) {
-                            $permissions[] = $permission;
-                        } elseif ($role !== Authorize::GUEST && in_array(Authorize::USER, $authorize->roles, true)) {
-                            $permissions[] = $permission;
-                        }
-                    }
-                }
-            }
-        }
-
-        sort($permissions);
-
-        return $permissions;
+        return Str::hyphen($controller) . '::' . Str::hyphen(basename($action, 'Action'));
     }
 
     public function getAllowed(string $role): string
@@ -98,9 +52,7 @@ class Authorization implements AuthorizationInterface
         $context = $this->getContext();
 
         if (!isset($context->role_permissions[$role])) {
-            if (($permissions = $this->roleRepository->getPermissions($role)) === null) {
-                $permissions = ',' . implode(',', $this->buildAllowed($role)) . ',';
-            }
+            $permissions = $this->roleRepository->getPermissions($role) ?? '';
             return $context->role_permissions[$role] = $permissions;
         } else {
             return $context->role_permissions[$role];
@@ -167,7 +119,7 @@ class Authorization implements AuthorizationInterface
                 return false;
             }
 
-            $permission = $this->controllers->getPath($controller, $action);
+            $permission = $this->getPermission($controller, $action);
         }
 
         $checked = ",$permission,";

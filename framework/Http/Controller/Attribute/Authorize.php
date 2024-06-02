@@ -19,4 +19,10 @@ class Authorize
     {
         $this->roles = is_string($roles) ? [$roles] : $roles;
     }
+
+    public function isGrantable(): bool
+    {
+        return !in_array(self::GUEST, $this->roles, true)
+            && !in_array(self::USER, $this->roles, true);
+    }
 }

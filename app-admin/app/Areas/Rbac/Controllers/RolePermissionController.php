@@ -7,10 +7,12 @@ use App\Areas\Rbac\Entities\RolePermission;
 use App\Areas\Rbac\Repositories\PermissionRepository;
 use App\Areas\Rbac\Repositories\RolePermissionRepository;
 use App\Areas\Rbac\Repositories\RoleRepository;
+use App\Areas\Rbac\Services\RoleService;
 use App\Controllers\Controller;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
@@ -24,6 +26,7 @@ class RolePermissionController extends Controller
     #[Autowired] protected RoleRepository $roleRepository;
     #[Autowired] protected PermissionRepository $permissionRepository;
     #[Autowired] protected RolePermissionRepository $rolePermissionRepository;
+    #[Autowired] protected RoleService $roleService;
 
     #[ViewGetMapping('')]
     public function indexAction()
@@ -55,11 +58,25 @@ class RolePermissionController extends Controller
             $this->rolePermissionRepository->create($rolePermission);
         }
 
-        $explicit_permissions = $this->permissionRepository->values('handler', ['permission_id' => $permission_ids]);
-        $handlers = $this->authorization->buildAllowed($role->role_name, $explicit_permissions);
-        sort($handlers);
+        $granted = $this->roleService->getGrantedPermissions($role_id);
+        $permissions = $this->roleService->getPermissions($role->role_name, $granted);
+        sort($permissions);
 
-        $role->permissions = ',' . implode(',', $handlers) . ',';
+        $role->permissions = ',' . implode(',', $permissions) . ',';
         $this->roleRepository->update($role);
+    }
+
+    #[GetMapping]
+    public function permissionsAction()
+    {
+        $fields = ['permission_id', 'handler', 'display_name'];
+        $orders = ['handler' => SORT_ASC];
+        return $this->permissionRepository->all(['grantable' => 1], $fields, $orders);
+    }
+
+    #[GetMapping]
+    public function rolesAction()
+    {
+        return $this->roleRepository->all(['builtin' => 0], ['role_id', 'display_name']);
     }
 }
