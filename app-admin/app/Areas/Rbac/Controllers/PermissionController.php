@@ -74,6 +74,7 @@ class PermissionController extends Controller
 
                 $role->role_name = $role_name;
                 $role->display_name = $role_name;
+                $role->builtin = 1;
                 $role->enabled = 1;
                 $role->permissions = '';
 

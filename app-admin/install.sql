@@ -264,6 +264,7 @@ CREATE TABLE `rbac_role` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_name` varchar(64) NOT NULL,
   `display_name` varchar(64) NOT NULL,
+  `builtin` tinyint(4) NOT NULL DEFAULT 1,
   `enabled` tinyint(4) NOT NULL DEFAULT 1,
   `permissions` text CHARACTER SET ascii NOT NULL,
   `creator_name` varchar(32) CHARACTER SET ascii NOT NULL,
@@ -277,10 +278,10 @@ CREATE TABLE `rbac_role` (
 
 /*Data for the table `rbac_role` */
 
-insert  into `rbac_role`(`role_id`,`role_name`,`display_name`,`enabled`,`permissions`,`creator_name`,`updator_name`,`created_time`,`updated_time`) values 
-(1,'admin','超级管理员',1,'','admin','admin',0,0),
-(2,'rbac','权限管理员',1,'','admin','admin',0,0),
-(3,'menu','菜单管理员',1,'','admin','admin',0,0);
+insert  into `rbac_role`(`role_id`,`role_name`,`display_name`,`builtin`,`enabled`,`permissions`,`creator_name`,`updator_name`,`created_time`,`updated_time`) values
+(1,'admin','超级管理员',1,1,'','admin','admin',0,0),
+(2,'rbac','权限管理员',0,1,'','admin','admin',0,0),
+(3,'menu','菜单管理员',0,1,'','admin','admin',0,0);
 
 /*Table structure for table `rbac_role_permission` */
 

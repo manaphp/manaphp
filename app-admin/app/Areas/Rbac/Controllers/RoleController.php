@@ -27,8 +27,8 @@ class RoleController extends Controller
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         $restrictions = Restrictions::create()
-            ->contains(['role_name', 'display_name'], $keyword)
-            ->nin('role_name', ['guest', 'user', 'admin']);
+            ->eq('builtin', 0)
+            ->contains(['role_name', 'display_name'], $keyword);
 
         $orders = ['role_id' => SORT_DESC];
 
@@ -47,6 +47,7 @@ class RoleController extends Controller
         $permissions = ',' . implode(',', $this->authorization->buildAllowed($role_name)) . ',';
 
         $role = $this->roleRepository->fill($this->request->all());
+        $role->builtin = 0;
         $role->permissions = $permissions;
         return $this->roleRepository->create($role);
     }

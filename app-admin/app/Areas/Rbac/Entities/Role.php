@@ -24,6 +24,8 @@ class Role extends Entity
     #[Trim, Lowercase, Length(3, 15), Unique]
     public string $display_name;
 
+    public int $builtin;
+
     #[Type('bit')]
     public int $enabled;
 
