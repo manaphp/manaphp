@@ -5,6 +5,7 @@ namespace ManaPHP\Http\Router;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Attribute\MappingInterface;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Http\RouterInterface;
@@ -59,7 +60,7 @@ class MappingScanner implements MappingScannerInterface
 
                 foreach (is_array($mapping->path) ? $mapping->path : [$mapping->path] as $item) {
                     if ($item === null) {
-                        $pattern = $prefix . '/' . basename($method, 'Action');
+                        $pattern = $prefix . '/' . Str::hyphen(basename($method, 'Action'));
                     } elseif ($item === '') {
                         $pattern = $prefix;
                     } elseif (str_starts_with($item, '/')) {
