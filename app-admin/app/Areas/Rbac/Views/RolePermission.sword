@@ -1,5 +1,5 @@
 <request-form>
-    <show-edit></show-edit>
+    <show-edit :disabled="editDisabled"></show-edit>
     <el-select v-model="request.role_id" placeholder="请选择">
         <el-option
                 v-for="role in roles"
@@ -53,6 +53,18 @@
             },
             mounted() {
                 this.ajax_get("roles", (res) => this.roles = res);
+            },
+            computed: {
+                editDisabled() {
+                    let excludes = ['guest', 'user'];
+                    for (let i = 0; i < this.roles.length; i++) {
+                        let role = this.roles[i];
+                        if (role.role_id == this.request.role_id) {
+                            return excludes.includes(role.role_name);
+                        }
+                    }
+                    return false;
+                }
             },
             methods: {
                 show_edit() {
