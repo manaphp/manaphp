@@ -93,7 +93,7 @@ class RolePermissionController extends Controller
     #[GetMapping]
     public function rolesAction()
     {
-        return $this->roleRepository->all([], ['role_id', 'display_name']);
+        return $this->roleRepository->all([], ['role_id', 'role_name', 'display_name']);
     }
 
     #[GetMapping]
