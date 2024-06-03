@@ -17,6 +17,9 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Persistence\Restrictions;
+use function explode;
+use function str_contains;
+use function trim;
 
 #[Authorize]
 #[RequestMapping('/rbac/role-permission')]
@@ -29,15 +32,29 @@ class RolePermissionController extends Controller
     #[Autowired] protected RoleService $roleService;
 
     #[ViewGetMapping('')]
-    public function indexAction()
+    public function indexAction(int $role_id = 0)
     {
-        $fields = ['id', 'permission_id', 'creator_name', 'created_time', 'role_id',
-                   'permission' => ['permission_id', 'display_name', 'handler'],
-                   'roles'      => ['role_id', 'role_name', 'display_name']
-        ];
-        $restrictions = Restrictions::of($this->request->all(), ['role_id']);
+        if ($role_id > 0) {
+            $fields = ['permission_id', 'handler', 'display_name', 'created_time'];
+            $role = $this->roleRepository->get($role_id);
 
-        return $this->rolePermissionRepository->all($restrictions, $fields);
+            $restrictions = Restrictions::create();
+            $restrictions->in('handler', explode(',', trim($role->permissions)));
+
+            $permissions = $this->permissionRepository->all($restrictions, $fields);
+
+            $roles = $this->roleRepository->all();
+            foreach ($permissions as $permission) {
+                foreach ($roles as $role) {
+                    if (str_contains($role->permissions, $permission->handler)) {
+                        $permission->roles[] = $role;
+                    }
+                }
+            }
+            return $permissions;
+        } else {
+            return [];
+        }
     }
 
     #[PostMapping]
@@ -60,7 +77,6 @@ class RolePermissionController extends Controller
 
         $granted = $this->roleService->getGrantedPermissions($role_id);
         $permissions = $this->roleService->getPermissions($role->role_name, $granted);
-        sort($permissions);
 
         $role->permissions = ',' . implode(',', $permissions) . ',';
         $this->roleRepository->update($role);
@@ -77,6 +93,12 @@ class RolePermissionController extends Controller
     #[GetMapping]
     public function rolesAction()
     {
-        return $this->roleRepository->all(['builtin' => 0], ['role_id', 'display_name']);
+        return $this->roleRepository->all([], ['role_id', 'display_name']);
+    }
+
+    #[GetMapping]
+    public function grantedAction(int $role_id)
+    {
+        return $this->rolePermissionRepository->values('permission_id', ['role_id' => $role_id]);
     }
 }
