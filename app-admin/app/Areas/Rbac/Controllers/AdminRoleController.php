@@ -26,7 +26,7 @@ class AdminRoleController extends Controller
     #[Autowired] protected AdminRoleRepository $adminRoleRepository;
 
     #[ViewGetMapping('')]
-    public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
+    public function indexAction(int $role_id = 0, string $keyword = '', int $page = 1, int $size = 10)
     {
         $fields = ['admin_id', 'admin_name', 'created_time',
                    'roles' => ['role_id', 'display_name']
@@ -36,7 +36,9 @@ class AdminRoleController extends Controller
 
         $restrictions = Restrictions::create();
         $restrictions->contains('admin_name', $keyword);
-
+        if ($role_id > 0) {
+            $restrictions->in('admin_id', $this->adminRoleRepository->values('admin_id', ['role_id' => $role_id]));
+        }
         return $this->adminRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
     }
 
@@ -63,5 +65,11 @@ class AdminRoleController extends Controller
 
             $this->adminRoleRepository->create($adminRole);
         }
+    }
+
+    #[GetMapping]
+    public function rolesAction()
+    {
+        return $this->roleRepository->all(['role_name!=' => ['guest', 'user']], ['role_id', 'display_name']);
     }
 }

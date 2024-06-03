@@ -1,4 +1,5 @@
 <request-form>
+    <selector v-model="request.role_id" :data="roles"></selector>
     <request-text prop="keyword" placeholder="用户名"></request-text>
 </request-form>
 <edit-form>
@@ -25,6 +26,7 @@
         vm = new App({
             data: {
                 request: {
+                    role_id: '',
                     keyword: '',
                     size: 20,
                     page: 1
@@ -35,7 +37,6 @@
                     admin_id: '',
                     role_ids: []
                 },
-
                 admins: [],
                 roles: [],
                 label: {
@@ -56,7 +57,10 @@
                         this.editVisible = true;
                     }
                 }
-            }
+            },
+            mounted() {
+                this.ajax_get("roles", (res) => this.roles = res);
+            },
         });
     </script>
 @append
