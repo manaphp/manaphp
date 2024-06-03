@@ -449,8 +449,8 @@ Vue.component('show-create', {
 });
 
 Vue.component('show-edit', {
-    props: ['row'],
-    template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary" icon="el-icon-edit" title="编辑"></el-button>`
+    props: ['row','disabled'],
+    template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary" icon="el-icon-edit" title="编辑" :disabled="disabled"></el-button>`
 });
 
 Vue.component('show-delete', {
@@ -863,6 +863,8 @@ App = Vue.extend({
                 tag: 'Tag',
                 icon: '图标',
                 path: '路径',
+                builtin: '内置',
+                enabled: "启用",
             },
             createVisible: false,
             editVisible: false,

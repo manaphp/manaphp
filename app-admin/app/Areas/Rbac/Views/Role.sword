@@ -12,6 +12,16 @@
     <edit-text prop="role_name"></edit-text>
     <edit-text prop="display_name"></edit-text>
 </edit-form>
+
+<detail-form>
+    <detail-text prop="role_id"></detail-text>
+    <detail-text prop="role_name"></detail-text>
+    <detail-text prop="display_name"></detail-text>
+    <detail-text prop="enabled"></detail-text>
+    <detail-text prop="builtin"></detail-text>
+    <detail-text prop="permissions"></detail-text>
+    <detail-timestamp prop="updated_time"></detail-timestamp>
+</detail-form>
 <result-table>
     <result-index></result-index>
     <result-id prop="role_id"></result-id>
@@ -21,7 +31,7 @@
     <result-column prop="builtin"></result-column>
     <result-account prop="updator_name"></result-account>
     <result-timestamp prop="updated_time"></result-timestamp>
-    <result-op show-enable show-delete width="180"></result-op>
+    <result-op show-detail show-enable show-delete width="240"></result-op>
 </result-table>
 @section('script')
     <script>
@@ -48,7 +58,7 @@
                 label: {
                     role_id: '角色ID',
                     role_name: '角色名称',
-                    builtin: '内置',
+                    permissions: "权限",
                 }
             }
         });

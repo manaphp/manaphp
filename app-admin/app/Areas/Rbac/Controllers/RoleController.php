@@ -30,7 +30,6 @@ class RoleController extends Controller
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         $restrictions = Restrictions::create()
-            ->eq('builtin', 0)
             ->contains(['role_name', 'display_name'], $keyword);
 
         $orders = ['role_id' => SORT_DESC];
@@ -83,6 +82,12 @@ class RoleController extends Controller
         return $this->roleRepository->update($role);
     }
 
+    #[GetMapping]
+    public function detailAction(int $role_id)
+    {
+        return $this->roleRepository->first(['role_id' => $role_id]);
+    }
+
     #[PostMapping]
     public function deleteAction(int $role_id)
     {
@@ -90,6 +95,11 @@ class RoleController extends Controller
             return '删除失败: 有用户绑定到此角色';
         }
 
-        return $this->roleRepository->deleteById($role_id);
+        $role = $this->roleRepository->get($role_id);
+        if ($role->builtin) {
+            return '内置角色不能删除';
+        }
+
+        return $this->roleRepository->delete($role);
     }
 }
