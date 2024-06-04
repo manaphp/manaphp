@@ -5,7 +5,7 @@
                 v-for="role in roles"
                 :key="role.role_id"
                 :label="role.display_name"
-                :value="role.role_id">
+                :value="String(role.role_id)">
         </el-option>
     </el-select>
 </request-form>
@@ -49,7 +49,7 @@
                 label: {
                     permission_id: '权限id',
                     roles: '角色列表',
-                }
+                },
             },
             mounted() {
                 this.ajax_get("roles", (res) => this.roles = res);
