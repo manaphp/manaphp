@@ -841,21 +841,21 @@ Vue.prototype.extract_ill = function (data) {
 };
 
 Vue.prototype.extract_items = function (data) {
-    if (typeof data === 'object') {
+    if (Array.isArray(data)) {
+        if (typeof data[0] === 'object') {
+            return data.map(v => {
+                let [value, label] = Object.values(v);
+                return {value, label};
+            });
+        } else {
+            return data.map(v => ({value: v, label: v}));
+        }
+    } else if (typeof data === 'object') {
         let items = [];
         for (let key in data) {
             items.push({value: key, label: data[key]});
         }
         return items;
-    } else if (!data || data.length === 0) {
-        return [];
-    } else if (typeof data[0] === 'object') {
-        return data.map(v => {
-            let [value, label] = Object.values(v);
-            return {value, label};
-        });
-    } else {
-        return data.map(v => ({value: v, label: v}));
     }
 };
 App = Vue.extend({

@@ -30,17 +30,16 @@
                 edit: {},
                 filter: {
                     handler: '',
-                    grantable: '-1',
+                    grantable: '',
                 },
                 label: {
                     permission_id: '权限ID',
                     roles: '角色列表',
                 },
-                grantables: [
-                    {v: '-1', l: '不限'},
-                    {v: '1', l: '可授权'},
-                    {v: '0', l: '不可授权'},
-                ],
+                grantables: {
+                    1: '可授权',
+                    0: '不可授权',
+                },
             },
             computed: {
                 filteredResponse() {
@@ -49,7 +48,7 @@
                         if (filter.handler !== '' && !v.handler.startsWith(filter.handler + ':')) {
                             return false;
                         }
-                        if (filter.grantable !== '-1' && v.grantable != filter.grantable) {
+                        if (filter.grantable !== '' && v.grantable != filter.grantable) {
                             return false;
                         }
 
@@ -70,13 +69,6 @@
                         }
                     }
                     return handlers.sort();
-                }
-            },
-            watch: {
-                'filter.handler': function (newValue) {
-                    if (newValue === '') {
-                        this.request.permission_id = '';
-                    }
                 }
             },
             methods: {
