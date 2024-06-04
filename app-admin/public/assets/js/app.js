@@ -449,7 +449,7 @@ Vue.component('show-create', {
 });
 
 Vue.component('show-edit', {
-    props: ['row','disabled'],
+    props: ['row', 'disabled'],
     template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary" icon="el-icon-edit" title="编辑" :disabled="disabled"></el-button>`
 });
 
@@ -521,7 +521,7 @@ Vue.component('selector', {
     template: `
 <span>
     <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled" v-bind="$attrs">
-        <el-option v-for="item in extract_ill(data)" :key="item.id" :label="item.label" :value="String(item.id)"></el-option>
+        <el-option v-for="item in extract_items(data)" :key="item.value" :label="item.label" :value="String(item.value)"></el-option>
     </el-select>
 </span>`,
     data() {
@@ -840,6 +840,24 @@ Vue.prototype.extract_ill = function (data) {
     }
 };
 
+Vue.prototype.extract_items = function (data) {
+    if (typeof data === 'object') {
+        let items = [];
+        for (let key in data) {
+            items.push({value: key, label: data[key]});
+        }
+        return items;
+    } else if (!data || data.length === 0) {
+        return [];
+    } else if (typeof data[0] === 'object') {
+        return data.map(v => {
+            let [value, label] = Object.values(v);
+            return {value, label};
+        });
+    } else {
+        return data.map(v => ({value: v, label: v}));
+    }
+};
 App = Vue.extend({
     data() {
         return {

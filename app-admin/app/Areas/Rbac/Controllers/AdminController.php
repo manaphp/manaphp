@@ -36,7 +36,7 @@ class AdminController extends Controller
                    'roles' => ['role_id', 'display_name']
         ];
 
-        $restrictions = Restrictions::create();
+        $restrictions = Restrictions::of($this->request->all(), ['status']);
         if (str_contains($keyword, '@')) {
             $restrictions->contains('email', $keyword);
         } else {
@@ -46,6 +46,12 @@ class AdminController extends Controller
         $orders = ['admin_id' => SORT_DESC];
 
         return $this->adminRepository->paginate($restrictions, $fields, $orders, Page::of($page, $size));
+    }
+
+    #[GetMapping]
+    public function detailAction(int $admin_id)
+    {
+        return $this->adminRepository->get($admin_id);
     }
 
     #[GetMapping]

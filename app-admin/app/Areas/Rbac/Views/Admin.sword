@@ -1,5 +1,6 @@
 <request-form>
     <request-text prop="keyword" placeholder="用户名或邮箱"></request-text>
+    <request-select prop="status" :data="statuses"></request-select>
 </request-form>
 <create-form>
     <create-text prop="admin_name"></create-text>
@@ -22,18 +23,30 @@
         </el-checkbox>
     </el-checkbox-group>
 </edit-form>
+
+<detail-form>
+    <detail-text prop="admin_id"></detail-text>
+    <detail-text prop="admin_name"></detail-text>
+    <detail-text prop="email"></detail-text>
+    <detail-text prop="white_ip"></detail-text>
+    <detail-text prop="login_ip"></detail-text>
+    <detail-timestamp prop="login_time"></detail-timestamp>
+    <detail-timestamp prop="created_time"></detail-timestamp>
+</detail-form>
+
 <result-table>
     <result-index></result-index>
     <result-account prop="admin_name"></result-account>
     <result-email></result-email>
-    <result-column prop="status" width="100" v-slot="{row}">@{{ statuses[row.status] }}</result-column>
     <result-tag prop="roles"></result-tag>
     <result-ip prop="login_ip"></result-ip>
     <result-timestamp prop="login_time"></result-timestamp>
     <result-timestamp prop="created_time"></result-timestamp>
-    <result-op v-slot="{row}" width="125">
-        <result-button v-if="row.status==1" @click="do_lock(row)" type="danger" icon="el-icon-lock" title="锁定"></result-button>
-        <result-button v-else="row.status!==1" @click="do_active(row)" type="warning" icon="el-icon-unlock" title="激活"></result-button>
+    <result-op v-slot="{row}" width="180">
+        <result-button v-if="row.status==1" @click="do_lock(row)" type="danger" icon="el-icon-lock"
+                       title="锁定"></result-button>
+        <result-button v-else="row.status!==1" @click="do_active(row)" type="warning" icon="el-icon-unlock"
+                       title="激活"></result-button>
     </result-op>
 </result-table>
 @section('script')
@@ -43,6 +56,7 @@
             data: {
                 topic: '用户',
                 request: {
+                    status: '',
                     keyword: '',
                     size: 20,
                     page: 1
@@ -71,7 +85,7 @@
                     login_ip: '登录IP',
                     login_time: '登录时间',
                     roles: '角色',
-                }
+                },
             },
             methods: {
                 do_lock(row) {
