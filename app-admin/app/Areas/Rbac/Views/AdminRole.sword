@@ -1,5 +1,5 @@
 <request-form>
-    <selector v-model="request.role_id" :data="roles"></selector>
+    <request-select prop="role_id" data="roles"></request-select>
     <request-text prop="keyword" placeholder="用户名"></request-text>
 </request-form>
 <edit-form>
