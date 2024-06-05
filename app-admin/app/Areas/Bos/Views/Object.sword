@@ -5,7 +5,7 @@
     <request-text prop="extension"></request-text>
 </div>
 <create-form>
-    <create-select prop="bucket_name" :data="buckets"></create-select>
+    <create-select prop="bucket_name" data="buckets"></create-select>
     <create-text prop="key" title="ext,file,md5,md5_l1,md5_2,uuid,uuid_l1,uuid_l2,ymd..."></create-text>
     <create-checkbox label="仅增加" prop="insert_only">是</create-checkbox>
     <el-form-item prop="image_url">

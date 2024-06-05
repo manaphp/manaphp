@@ -3,7 +3,7 @@
     <request-select prop="group_id" data="groups"></request-select>
 </request-form>
 <create-form>
-    <create-select prop="group_id" :data="groups"></create-select>
+    <create-select prop="group_id" data="groups"></create-select>
     <create-text prop="item_name"></create-text>
     <create-text prop="display_order"></create-text>
     <create-text prop="url"></create-text>

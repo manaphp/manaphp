@@ -615,7 +615,7 @@ Vue.component('create-select', {
     props: ['label', 'prop', 'data', 'disabled'],
     template: `
 <el-form-item :label="(label||$root.label[prop]||prop)+':'">
-    <selector v-model="$root.create[prop]" :data="data" :disabled="disabled" v-bind="$attrs"></selector>
+    <selector v-model="$root.create[prop]" :data="isString(data)?$root[data]:data" :disabled="disabled" v-bind="$attrs"></selector>
 </el-form-item>`
 });
 
