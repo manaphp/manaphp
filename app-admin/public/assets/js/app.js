@@ -557,7 +557,7 @@ Vue.component('request-date', {
 
 Vue.component('request-select', {
     props: ['prop', 'data'],
-    template: `<selector v-model.trim="$root.request[prop]" :data="data"></selector>`
+    template: `<selector v-model.trim="$root.request[prop]" :data="isString(data)?$root[data]:data"></selector>`
 });
 
 Vue.component('request-button', {
@@ -855,6 +855,11 @@ Vue.prototype.extract_items = function (data) {
         return items;
     }
 };
+
+Vue.prototype.isString = function (v) {
+    return typeof v === 'string';
+}
+
 App = Vue.extend({
     data() {
         return {

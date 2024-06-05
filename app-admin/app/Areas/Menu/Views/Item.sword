@@ -1,6 +1,6 @@
 <request-form @open-create="create.group_id=request.group_id">
     <show-create></show-create>
-    <request-select prop="group_id" :data="groups"></request-select>
+    <request-select prop="group_id" data="groups"></request-select>
 </request-form>
 <create-form>
     <create-select prop="group_id" :data="groups"></create-select>

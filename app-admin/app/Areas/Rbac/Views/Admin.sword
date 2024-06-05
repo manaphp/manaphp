@@ -1,7 +1,7 @@
 <request-form>
     <show-create></show-create>
     <request-text prop="keyword" placeholder="用户名或邮箱"></request-text>
-    <request-select prop="status" :data="statuses"></request-select>
+    <request-select prop="status" data="statuses"></request-select>
 </request-form>
 
 <create-form>

@@ -1,6 +1,6 @@
 <div class="search-box">
     <show-create @click="create.bucket_name=request.bucket_name"></show-create>
-    <request-select prop="bucket_name" :data="buckets"></request-select>
+    <request-select prop="bucket_name" data="buckets"></request-select>
     <request-text prop="prefix"></request-text>
     <request-text prop="extension"></request-text>
 </div>
