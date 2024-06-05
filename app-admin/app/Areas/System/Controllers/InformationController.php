@@ -40,7 +40,7 @@ class InformationController extends Controller
         return ['data' => $data];
     }
 
-    #[ViewGetMapping('', vars: 'indexVars')]
+    #[ViewGetMapping(vars: 'indexVars')]
     public function indexAction()
     {
 

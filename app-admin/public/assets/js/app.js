@@ -6,11 +6,6 @@ Vue.prototype.sessionStorage = window.sessionStorage;
 Vue.prototype.localStorage = window.localStorage;
 Vue.prototype.console = console;
 
-CONTROLLER_URL = location.pathname.substr(BASE_URL.length);
-if (CONTROLLER_URL.endsWith('/index')) {
-    CONTROLLER_URL = CONTROLLER_URL.substr(0, CONTROLLER_URL.length - 6);
-}
-
 (function () {
     let urlKey = `last_url_query.${document.location.pathname}`;
     window.onbeforeunload = (e) => {
@@ -325,7 +320,7 @@ Vue.component('my-menu', {
      </template>
 </el-menu>`,
     created() {
-        this.ajax_get('/menu/my?cache=2', (res) => {
+        this.ajax_get('/menu/my/index?cache=2', (res) => {
             this.groups = res;
 
             for (let group of res) {
@@ -434,7 +429,7 @@ Vue.component('system-time', {
     },
     methods: {
         update() {
-            axios.get('/admin/time?t=' + Date.now()).then((res) => {
+            axios.get('/admin/time/index?t=' + Date.now()).then((res) => {
                 if (res.data.code === 0) {
                     this.diff = Math.round(Date.now() - res.data.data.timestamp * 1000) / 1000;
                     window.sessionStorage.setItem(this.key, this.diff);
@@ -931,7 +926,7 @@ App = Vue.extend({
             if (typeof create === 'string') {
                 this.$refs[create].validate(valid => success = valid);
             }
-            success && this.ajax_post(CONTROLLER_URL + "/create", this.create, (res) => {
+            success && this.ajax_post("create", this.create, (res) => {
                 this.createVisible = false;
                 this.$refs.create.resetFields();
                 this.reload();
@@ -954,7 +949,7 @@ App = Vue.extend({
             this.editVisible = true;
         },
         do_edit() {
-            this.ajax_post(CONTROLLER_URL + "/edit", this.edit, () => {
+            this.ajax_post("edit", this.edit, () => {
                 this.editVisible = false;
                 this.reload();
             });
@@ -963,7 +958,7 @@ App = Vue.extend({
             this.detailVisible = true;
 
             let key = Object.keys(row)[0];
-            this.ajax_get(CONTROLLER_URL + '/' + (action ? action : "detail"), {[key]: row[key]}, (res) => {
+            this.ajax_get((action ? action : "detail"), {[key]: row[key]}, (res) => {
                 this.detail = res;
             });
         },
@@ -976,20 +971,20 @@ App = Vue.extend({
             }
 
             if (window.event.ctrlKey) {
-                this.ajax_post(CONTROLLER_URL + "/delete", {[key]: row[key]}, () => this.reload());
+                this.ajax_post("delete", {[key]: row[key]}, () => this.reload());
             } else {
                 this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(() => {
-                    this.ajax_post(CONTROLLER_URL + "/delete", {[key]: row[key]}, () => this.reload());
+                    this.ajax_post("delete", {[key]: row[key]}, () => this.reload());
                 });
             }
         },
         do_enable(row) {
             let key = Object.keys(row)[0];
-            this.ajax_post(CONTROLLER_URL + "/enable", {[key]: row[key]}, () => row.enabled = 1);
+            this.ajax_post("enable", {[key]: row[key]}, () => row.enabled = 1);
         },
         do_disable(row) {
             let key = Object.keys(row)[0];
-            this.ajax_post(CONTROLLER_URL + "/disable", {[key]: row[key]}, () => row.enabled = 0);
+            this.ajax_post("disable", {[key]: row[key]}, () => row.enabled = 0);
         }
     },
 });

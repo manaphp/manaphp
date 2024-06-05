@@ -18,7 +18,7 @@ class ItemController extends Controller
 {
     #[Autowired] protected ItemRepository $itemRepository;
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction()
     {
         $restrictions = Restrictions::of($this->request->all(), ['group_id']);

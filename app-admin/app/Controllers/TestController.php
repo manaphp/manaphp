@@ -11,7 +11,7 @@ use ManaPHP\Http\Router\Attribute\RequestMapping;
 #[RequestMapping('/test')]
 class TestController extends Controller
 {
-    #[GetMapping('')]
+    #[GetMapping]
     public function indexAction()
     {
 

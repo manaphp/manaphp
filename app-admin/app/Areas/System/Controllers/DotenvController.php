@@ -24,7 +24,7 @@ class DotenvController extends Controller
 
     public const REDIS_KEY = '.env';
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction(string $app_id = '')
     {
         if ($app_id === '') {

@@ -25,7 +25,7 @@ class AdminRoleController extends Controller
     #[Autowired] protected RoleRepository $roleRepository;
     #[Autowired] protected AdminRoleRepository $adminRoleRepository;
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction(int $role_id = 0, string $keyword = '', int $page = 1, int $size = 10)
     {
         $fields = ['admin_id', 'admin_name', 'created_time',

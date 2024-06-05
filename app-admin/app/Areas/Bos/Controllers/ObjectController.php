@@ -24,7 +24,7 @@ class ObjectController extends Controller
         return $this->bosClient->listBuckets();
     }
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction($bucket_name = '', string $prefix = '', string $extension = '', int $page = 1,
         int $size = 10
     ) {

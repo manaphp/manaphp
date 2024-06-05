@@ -31,7 +31,7 @@ class RolePermissionController extends Controller
     #[Autowired] protected RolePermissionRepository $rolePermissionRepository;
     #[Autowired] protected RoleService $roleService;
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction(int $role_id = 0)
     {
         if ($role_id > 0) {

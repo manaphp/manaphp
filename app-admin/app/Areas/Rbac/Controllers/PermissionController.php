@@ -25,7 +25,7 @@ class PermissionController extends Controller
     #[Autowired] protected PermissionService $permissionService;
     #[Autowired] protected RoleService $roleService;
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction()
     {
         $fields = ['roles' => ['role_id', 'display_name']];

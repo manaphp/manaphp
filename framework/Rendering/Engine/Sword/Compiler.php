@@ -107,15 +107,6 @@ class Compiler
         return $absolute;
     }
 
-    protected function completeLinks(string $file, string $str): string
-    {
-        return preg_replace_callback(
-            '#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
-            fn($match) => $match[1] . $this->completeRelativeLinks($file, $match[2]),
-            $str
-        );
-    }
-
     public function compileString(string $value): string
     {
         $result = '';
@@ -162,8 +153,6 @@ class Compiler
         }
 
         $result = $this->compileString($str);
-
-        $result = $this->completeLinks($source, $result);
 
         if (file_put_contents($compiled, $result, LOCK_EX) === false) {
             $error = error_get_last()['message'] ?? '';

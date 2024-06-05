@@ -19,7 +19,7 @@ class ActionLogController extends Controller
     #[Autowired] protected AdminActionLogRepository $adminActionLogRepository;
 
     #[Authorize]
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction(int $page = 1, int $size = 10)
     {
         $restrictions = Restrictions::of(

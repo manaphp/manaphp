@@ -26,7 +26,7 @@ class RoleController extends Controller
     #[Autowired] protected AdminRoleRepository $adminRoleRepository;
     #[Autowired] protected RoleService $roleService;
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction(string $keyword = '', int $page = 1, int $size = 10)
     {
         $restrictions = Restrictions::create()

@@ -19,7 +19,7 @@ class GroupController extends Controller
 {
     #[Autowired] protected GroupRepository $groupRepository;
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction()
     {
         $restrictions = Restrictions::of($this->request->all(), ['group_id']);

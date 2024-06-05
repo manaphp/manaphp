@@ -16,7 +16,7 @@ class MyController extends Controller
 {
     #[Autowired] protected GroupRepository $groupRepository;
 
-    #[GetMapping('')]
+    #[GetMapping]
     public function indexAction()
     {
         $fields = ['group_id', 'group_name', 'icon',

@@ -18,7 +18,7 @@ class LoginLogController extends Controller
     #[Autowired] protected AdminLoginLogRepository $adminLoginLogRepository;
 
     #[Authorize]
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction(int $page = 1, int $size = 10)
     {
         $fields = ['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'];

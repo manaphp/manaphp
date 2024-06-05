@@ -17,7 +17,7 @@ class BucketController extends Controller
 {
     #[Autowired] protected ClientInterface $bosClient;
 
-    #[ViewGetMapping('')]
+    #[ViewGetMapping]
     public function indexAction()
     {
         return $this->bosClient->listBuckets();

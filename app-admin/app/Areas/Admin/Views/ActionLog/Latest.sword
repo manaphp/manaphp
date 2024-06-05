@@ -23,7 +23,7 @@
     <result-ip prop="client_ip"></result-ip>
     <result-column prop="client_udid" width="200" show-overflow-tooltip></result-column>
     <result-timestamp prop="created_time"></result-timestamp>
-    <result-op detail-link="../detail" width="65"></result-op>
+    <result-op detail-link="detail" width="65"></result-op>
 </result-table>
 @section('script')
     <script>
