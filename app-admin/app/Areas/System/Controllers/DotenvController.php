@@ -16,7 +16,7 @@ use ManaPHP\Persistence\Page;
 use ManaPHP\Redis\RedisDbInterface;
 
 #[Authorize]
-#[RequestMapping('/system')]
+#[RequestMapping('/system/dotenv')]
 class DotenvController extends Controller
 {
     #[Autowired] protected RedisDbInterface $redisDb;
