@@ -22,7 +22,6 @@ Vue.prototype.console = console;
 
 document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
 
-axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 axios.interceptors.request.use(function (config) {
@@ -320,7 +319,7 @@ Vue.component('my-menu', {
      </template>
 </el-menu>`,
     created() {
-        this.ajax_get('/menu/my/index?cache=2', (res) => {
+        this.ajax_get(BASE_URL + '/menu/my/index?cache=2', (res) => {
             this.groups = res;
 
             for (let group of res) {
@@ -429,7 +428,7 @@ Vue.component('system-time', {
     },
     methods: {
         update() {
-            axios.get('/admin/time/index?t=' + Date.now()).then((res) => {
+            axios.get(BASE_URL + '/admin/time/index?t=' + Date.now()).then((res) => {
                 if (res.data.code === 0) {
                     this.diff = Math.round(Date.now() - res.data.data.timestamp * 1000) / 1000;
                     window.sessionStorage.setItem(this.key, this.diff);
