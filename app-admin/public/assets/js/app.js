@@ -603,10 +603,15 @@ Vue.component('create-checkbox', {
 
 Vue.component('create-radio', {
     props: ['label', 'prop', 'data', 'disabled'],
+    computed: {
+        radios() {
+            return this.isString(this.data) ? this.$root[this.data] : this.data;
+        }
+    },
     template: `
 <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
     <el-radio-group v-model="$root.create[prop]" :disabled="disabled">
-        <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
+        <el-radio v-for="(status, id) in radios" :label="id" :key="id">{{status}}</el-radio>
     </el-radio-group>
 </el-form-item>`
 });

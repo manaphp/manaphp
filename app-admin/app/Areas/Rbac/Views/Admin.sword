@@ -10,7 +10,7 @@
     <create-text prop="password"></create-text>
     <create-text prop="white_ip"></create-text>
     <create-select prop="role_id" data="roles"></create-select>
-    <create-radio prop="status" :data="statuses"></create-radio>
+    <create-radio prop="status" data="statuses"></create-radio>
 </create-form>
 
 <edit-form>
