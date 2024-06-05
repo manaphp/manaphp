@@ -1,4 +1,5 @@
 <request-form>
+    <show-create></show-create>
     <request-select prop="app_id" :data="apps"></request-select>
 </request-form>
 <create-form>
