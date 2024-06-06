@@ -732,12 +732,22 @@ Vue.component('result-ip', {
 });
 
 Vue.component('result-enabled', {
-    template: `<el-table-column prop="enabled" :formatter="$root.fEnabled" label="状态" width="100"></el-table-column>`
+    template: `<el-table-column prop="enabled" :formatter="formatEnabled" label="状态" width="100"></el-table-column>`,
+    methods: {
+        formatEnabled(row, column, value) {
+            return ['禁用', '启用'][value];
+        }
+    }
 });
 
 Vue.component('result-timestamp', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="$root.fDate" width="123"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="formatDate" width="123"></el-table-column>`,
+    methods: {
+        formatDate(row, column, value) {
+            value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
+        }
+    }
 });
 
 Vue.component('result-column', {
@@ -810,10 +820,6 @@ Vue.component('result-op', {
 Vue.component('result-button', {
     template: `<el-button size="mini" v-bind="$attrs" @click="$emit('click')"><slot></slot></el-button>`
 });
-
-Vue.prototype.format_date = function (value) {
-    return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
-};
 
 Vue.prototype.auto_reload = function () {
     if (this.request && this.response) {
@@ -917,13 +923,6 @@ App = Vue.extend({
                     this.response = res.data.data;
                 }
             });
-        },
-        fDate(row, column, value) {
-            return this.format_date(value);
-        },
-
-        fEnabled(row, column, value) {
-            return ['禁用', '启用'][value];
         },
         do_create(create) {
             let success = true;
