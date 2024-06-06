@@ -49,7 +49,7 @@
                     this.edit.admin_id = row.admin_id;
                     this.editVisible = true;
                     if (!this.roles.length) {
-                        this.ajax_get("../role/list", (res) => {
+                        this.ajaxGet("../role/list", (res) => {
                             this.roles = res;
                             this.editVisible = true;
                         })
@@ -59,7 +59,7 @@
                 }
             },
             mounted() {
-                this.ajax_get("roles", (res) => this.roles = res);
+                this.ajaxGet("roles", (res) => this.roles = res);
             },
         });
     </script>

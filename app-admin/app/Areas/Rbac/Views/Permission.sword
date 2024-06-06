@@ -73,7 +73,7 @@
             },
             methods: {
                 do_rebuild() {
-                    this.ajax_post("rebuild", {}, () => this.reload());
+                    this.ajaxPost("rebuild", {}, () => this.reload());
                 }
             }
         });

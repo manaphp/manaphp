@@ -91,10 +91,10 @@
             },
             methods: {
                 do_lock(row) {
-                    this.ajax_post("lock", {admin_id: row.admin_id}, () => row.status = 2);
+                    this.ajaxPost("lock", {admin_id: row.admin_id}, () => row.status = 2);
                 },
                 do_active(row) {
-                    this.ajax_post("active", {admin_id: row.admin_id}, () => row.status = 1);
+                    this.ajaxPost("active", {admin_id: row.admin_id}, () => row.status = 1);
                 },
                 show_edit(row) {
                     this.edit = Object.assign({}, row);
@@ -103,7 +103,7 @@
                 }
             },
             created() {
-                this.ajax_get('roles', (res) => this.roles = res);
+                this.ajaxGet('roles', (res) => this.roles = res);
             }
         });
     </script>

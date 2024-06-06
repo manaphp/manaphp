@@ -62,7 +62,7 @@
                 }
             },
             mounted() {
-                this.ajax_get("../group/list", (res) => this.groups = res);
+                this.ajaxGet("../group/list", (res) => this.groups = res);
             }
         });
     </script>

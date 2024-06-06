@@ -82,7 +82,7 @@ axios.interceptors.response.use(function (res) {
         }
     });
 
-Vue.prototype.ajax_get = function (url, data, success) {
+Vue.prototype.ajaxGet = function (url, data, success) {
     if (typeof data === 'function') {
         success = data;
         data = null;
@@ -115,7 +115,7 @@ Vue.prototype.ajax_get = function (url, data, success) {
     });
 };
 
-Vue.prototype.ajax_post = function (url, data, success) {
+Vue.prototype.ajaxPost = function (url, data, success) {
     if (typeof data === 'function') {
         success = data;
         data = {};
@@ -319,7 +319,7 @@ Vue.component('my-menu', {
      </template>
 </el-menu>`,
     created() {
-        this.ajax_get(BASE_URL + '/menu/my/index?cache=2', (res) => {
+        this.ajaxGet(BASE_URL + '/menu/my/index?cache=2', (res) => {
             this.groups = res;
 
             for (let group of res) {
@@ -925,7 +925,7 @@ App = Vue.extend({
             if (typeof create === 'string') {
                 this.$refs[create].validate(valid => success = valid);
             }
-            success && this.ajax_post("create", this.create, (res) => {
+            success && this.ajaxPost("create", this.create, (res) => {
                 this.createVisible = false;
                 this.$refs.create.resetFields();
                 this.reload();
@@ -948,7 +948,7 @@ App = Vue.extend({
             this.editVisible = true;
         },
         do_edit() {
-            this.ajax_post("edit", this.edit, () => {
+            this.ajaxPost("edit", this.edit, () => {
                 this.editVisible = false;
                 this.reload();
             });
@@ -957,7 +957,7 @@ App = Vue.extend({
             this.detailVisible = true;
 
             let key = Object.keys(row)[0];
-            this.ajax_get((action ? action : "detail"), {[key]: row[key]}, (res) => {
+            this.ajaxGet((action ? action : "detail"), {[key]: row[key]}, (res) => {
                 this.detail = res;
             });
         },
@@ -970,20 +970,20 @@ App = Vue.extend({
             }
 
             if (window.event.ctrlKey) {
-                this.ajax_post("delete", {[key]: row[key]}, () => this.reload());
+                this.ajaxPost("delete", {[key]: row[key]}, () => this.reload());
             } else {
                 this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(() => {
-                    this.ajax_post("delete", {[key]: row[key]}, () => this.reload());
+                    this.ajaxPost("delete", {[key]: row[key]}, () => this.reload());
                 });
             }
         },
         do_enable(row) {
             let key = Object.keys(row)[0];
-            this.ajax_post("enable", {[key]: row[key]}, () => row.enabled = 1);
+            this.ajaxPost("enable", {[key]: row[key]}, () => row.enabled = 1);
         },
         do_disable(row) {
             let key = Object.keys(row)[0];
-            this.ajax_post("disable", {[key]: row[key]}, () => row.enabled = 0);
+            this.ajaxPost("disable", {[key]: row[key]}, () => row.enabled = 0);
         }
     },
 });

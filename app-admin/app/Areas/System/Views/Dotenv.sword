@@ -50,7 +50,7 @@
                 }
             },
             created() {
-                this.ajax_get('apps', (res) => this.apps = res);
+                this.ajaxGet('apps', (res) => this.apps = res);
             }
         });
     </script>
