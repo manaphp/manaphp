@@ -455,7 +455,7 @@ Vue.component('show-edit', {
 Vue.component('show-delete', {
     props: ['row'],
     template: '<el-button @click="do_delete(row)" size="mini" type="danger" icon="el-icon-delete" title="删除"></el-button>',
-    methods:{
+    methods: {
         do_delete(row, name = '') {
             let keys = Object.keys(row);
             let key = keys[0];
@@ -670,10 +670,18 @@ Vue.component('edit-form', {
         <slot></slot>
     </el-form>
     <span slot="footer">
-        <el-button type="primary" @click="$root.do_edit" size="small">保存</el-button>
+        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
         <el-button @click="$root.editVisible=false" size="small">取消</el-button>
     </span>
 </el-dialog>`,
+    methods: {
+        do_edit() {
+            this.ajaxPost("edit", this.$root.edit, () => {
+                this.$root.editVisible = false;
+                this.$root.reload();
+            });
+        },
+    }
 });
 Vue.component('edit-text', {
     props: ['label', 'prop', 'disabled'],
@@ -964,12 +972,6 @@ App = Vue.extend({
             }
 
             this.editVisible = true;
-        },
-        do_edit() {
-            this.ajaxPost("edit", this.edit, () => {
-                this.editVisible = false;
-                this.reload();
-            });
-        },
+        }
     },
 });
