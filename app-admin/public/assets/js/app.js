@@ -459,7 +459,17 @@ Vue.component('show-delete', {
 
 Vue.component('show-detail', {
     props: ['row', 'link'],
-    template: '<el-button @click="$root.show_detail(row,link)" size="mini" type="info" icon="el-icon-more" title="详情"></el-button>'
+    template: '<el-button @click="show_detail(row,link)" size="mini" type="info" icon="el-icon-more" title="详情"></el-button>',
+    methods: {
+        show_detail(row, action) {
+            this.$root.detailVisible = true;
+
+            let key = Object.keys(row)[0];
+            this.ajaxGet((action ? action : "detail"), {[key]: row[key]}, (res) => {
+                this.$root.detail = res;
+            });
+        }
+    }
 });
 
 Vue.component('show-enable', {
@@ -967,14 +977,6 @@ App = Vue.extend({
             this.ajaxPost("edit", this.edit, () => {
                 this.editVisible = false;
                 this.reload();
-            });
-        },
-        show_detail(row, action) {
-            this.detailVisible = true;
-
-            let key = Object.keys(row)[0];
-            this.ajaxGet((action ? action : "detail"), {[key]: row[key]}, (res) => {
-                this.detail = res;
             });
         },
         do_delete(row, name = '') {
