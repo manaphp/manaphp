@@ -465,8 +465,18 @@ Vue.component('show-detail', {
 Vue.component('show-enable', {
     props: ['row'],
     template: `
-<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini" type="danger" icon="el-icon-lock" title="禁用"></el-button>
-<el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini" type="warning" icon="el-icon-unlock" title="启用"></el-button>`
+<el-button v-if="row.enabled" @click.native.prevent="do_disable(row)" size="mini" type="danger" icon="el-icon-lock" title="禁用"></el-button>
+<el-button v-else @click.native.prevent="do_enable(row)" size="mini" type="warning" icon="el-icon-unlock" title="启用"></el-button>`,
+    methods: {
+        do_enable(row) {
+            let key = Object.keys(row)[0];
+            this.ajaxPost("enable", {[key]: row[key]}, () => row.enabled = 1);
+        },
+        do_disable(row) {
+            let key = Object.keys(row)[0];
+            this.ajaxPost("disable", {[key]: row[key]}, () => row.enabled = 0);
+        }
+    }
 });
 
 Vue.component('create-dialog', {
@@ -982,14 +992,6 @@ App = Vue.extend({
                     this.ajaxPost("delete", {[key]: row[key]}, () => this.reload());
                 });
             }
-        },
-        do_enable(row) {
-            let key = Object.keys(row)[0];
-            this.ajaxPost("enable", {[key]: row[key]}, () => row.enabled = 1);
-        },
-        do_disable(row) {
-            let key = Object.keys(row)[0];
-            this.ajaxPost("disable", {[key]: row[key]}, () => row.enabled = 0);
         }
     },
 });
