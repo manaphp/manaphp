@@ -29,7 +29,12 @@ axios.interceptors.request.use(function (config) {
         vm.loading = true;
     }
 
+    if (config.url.startsWith('/')) {
+        config.url = BASE_URL + config.url;
+    }
+
     config.url += config.url.indexOf('?') === -1 ? '?ajax' : '&ajax';
+
     return config;
 });
 
@@ -319,7 +324,7 @@ Vue.component('my-menu', {
      </template>
 </el-menu>`,
     created() {
-        this.ajaxGet(BASE_URL + '/menu/my/index?cache=2', (res) => {
+        this.ajaxGet('/menu/my/index?cache=2', (res) => {
             this.groups = res;
 
             for (let group of res) {
@@ -428,7 +433,7 @@ Vue.component('system-time', {
     },
     methods: {
         update() {
-            axios.get(BASE_URL + '/admin/time/index?t=' + Date.now()).then((res) => {
+            axios.get('/admin/time/index?t=' + Date.now()).then((res) => {
                 if (res.data.code === 0) {
                     this.diff = Math.round(Date.now() - res.data.data.timestamp * 1000) / 1000;
                     window.sessionStorage.setItem(this.key, this.diff);
