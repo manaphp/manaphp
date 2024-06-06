@@ -33,7 +33,7 @@ class SessionController extends Controller
 
     #[Config] protected string $app_env;
 
-    #[PostMapping]
+    #[GetMapping]
     public function captchaAction()
     {
         return $this->captcha->generate();
