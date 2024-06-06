@@ -520,7 +520,7 @@ Vue.component('selector', {
     template: `
 <span>
     <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled" v-bind="$attrs">
-        <el-option v-for="item in extract_items(data)" :key="item.value" :label="item.label" :value="String(item.value)"></el-option>
+        <el-option v-for="item in extractItems(data)" :key="item.value" :label="item.label" :value="String(item.value)"></el-option>
     </el-select>
 </span>`,
     data() {
@@ -529,6 +529,26 @@ Vue.component('selector', {
     watch: {
         value(val) {
             this.val = String(val);
+        }
+    },
+    methods: {
+        extractItems: function (data) {
+            if (Array.isArray(data)) {
+                if (typeof data[0] === 'object') {
+                    return data.map(v => {
+                        let [value, label] = Object.values(v);
+                        return {value, label};
+                    });
+                } else {
+                    return data.map(v => ({value: v, label: v}));
+                }
+            } else if (typeof data === 'object') {
+                let items = [];
+                for (let key in data) {
+                    items.push({value: key, label: data[key]});
+                }
+                return items;
+            }
         }
     }
 });
@@ -844,25 +864,6 @@ Vue.prototype.extract_ill = function (data) {
         });
     } else {
         return data.map(v => ({id: v, label: v}));
-    }
-};
-
-Vue.prototype.extract_items = function (data) {
-    if (Array.isArray(data)) {
-        if (typeof data[0] === 'object') {
-            return data.map(v => {
-                let [value, label] = Object.values(v);
-                return {value, label};
-            });
-        } else {
-            return data.map(v => ({value: v, label: v}));
-        }
-    } else if (typeof data === 'object') {
-        let items = [];
-        for (let key in data) {
-            items.push({value: key, label: data[key]});
-        }
-        return items;
     }
 };
 
