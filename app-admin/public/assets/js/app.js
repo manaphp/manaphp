@@ -798,8 +798,24 @@ Vue.component('result-tag', {
     props: ['label', 'prop'],
     template: `
 <el-table-column :label="label||$root.label[prop]||prop" v-bind="$attrs" v-slot="{row}">
-    <el-tag size="small" v-for="item in extract_ill(row[prop])" :key="item.id">{{item.label}}</el-tag>
+    <el-tag size="small" v-for="item in extractItems(row[prop])" :key="item.id">{{item.label}}</el-tag>
 </el-table-column>`,
+    methods: {
+        extractItems(data) {
+            if (!Array.isArray(data)) {
+                return [];
+            } else if (!data || data.length === 0) {
+                return [];
+            } else if (typeof data[0] === 'object') {
+                return data.map(v => {
+                    let [id, label] = Object.values(v);
+                    return {id, label};
+                });
+            } else {
+                return data.map(v => ({id: v, label: v}));
+            }
+        }
+    }
 });
 
 Vue.component('result-link', {
@@ -849,21 +865,6 @@ Vue.prototype.auto_reload = function () {
         }
 
         this.reload().then(() => this.$watch('request', _.debounce(() => this.reload(), 500), {deep: true}));
-    }
-};
-
-Vue.prototype.extract_ill = function (data) {
-    if (!Array.isArray(data)) {
-        return [];
-    } else if (!data || data.length === 0) {
-        return [];
-    } else if (typeof data[0] === 'object') {
-        return data.map(v => {
-            let [id, label] = Object.values(v);
-            return {id, label};
-        });
-    } else {
-        return data.map(v => ({id: v, label: v}));
     }
 };
 
