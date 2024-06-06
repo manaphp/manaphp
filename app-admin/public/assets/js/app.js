@@ -454,7 +454,25 @@ Vue.component('show-edit', {
 
 Vue.component('show-delete', {
     props: ['row'],
-    template: '<el-button @click="$root.do_delete(row)" size="mini" type="danger" icon="el-icon-delete" title="删除"></el-button>'
+    template: '<el-button @click="do_delete(row)" size="mini" type="danger" icon="el-icon-delete" title="删除"></el-button>',
+    methods:{
+        do_delete(row, name = '') {
+            let keys = Object.keys(row);
+            let key = keys[0];
+
+            if (!name) {
+                name = (keys[1] && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
+            }
+
+            if (window.event.ctrlKey) {
+                this.ajaxPost("delete", {[key]: row[key]}, () => this.$root.reload());
+            } else {
+                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(() => {
+                    this.ajaxPost("delete", {[key]: row[key]}, () => this.$root.reload());
+                });
+            }
+        }
+    }
 });
 
 Vue.component('show-detail', {
@@ -979,21 +997,5 @@ App = Vue.extend({
                 this.reload();
             });
         },
-        do_delete(row, name = '') {
-            let keys = Object.keys(row);
-            let key = keys[0];
-
-            if (!name) {
-                name = (keys[1] && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
-            }
-
-            if (window.event.ctrlKey) {
-                this.ajaxPost("delete", {[key]: row[key]}, () => this.reload());
-            } else {
-                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(() => {
-                    this.ajaxPost("delete", {[key]: row[key]}, () => this.reload());
-                });
-            }
-        }
     },
 });
