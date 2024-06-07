@@ -602,10 +602,24 @@ Vue.component('create-form', {
         <slot></slot>
     </el-form>
     <span slot="footer">
-         <el-button type="primary" @click="$root.do_create" size="small">创建</el-button>
+         <el-button type="primary" @click="do_create" size="small">创建</el-button>
         <el-button @click="$root.createVisible = false; $root.$refs.create.resetFields()" size="small">取消</el-button>
     </span>
 </el-dialog>`,
+    methods: {
+        do_create(create) {
+            let success = true;
+
+            if (typeof create === 'string') {
+                this.$root.$refs[create].validate(valid => success = valid);
+            }
+            success && this.ajaxPost("create", this.$root.create, (res) => {
+                this.$root.createVisible = false;
+                this.$root.$refs.create.resetFields();
+                this.$root.reload();
+            });
+        }
+    }
 });
 
 Vue.component('create-text', {
@@ -924,17 +938,6 @@ App = Vue.extend({
                 } else {
                     this.response = res.data.data;
                 }
-            });
-        },
-        do_create(create) {
-            let success = true;
-            if (typeof create === 'string') {
-                this.$refs[create].validate(valid => success = valid);
-            }
-            success && this.ajaxPost("create", this.create, (res) => {
-                this.createVisible = false;
-                this.$refs.create.resetFields();
-                this.reload();
             });
         },
         show_edit(row, overwrite = {}) {
