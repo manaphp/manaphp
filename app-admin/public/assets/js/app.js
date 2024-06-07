@@ -785,7 +785,7 @@ Vue.component('result-timestamp', {
     template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="formatDate" width="123"></el-table-column>`,
     methods: {
         formatDate(row, column, value) {
-            value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
+            return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
         }
     }
 });
