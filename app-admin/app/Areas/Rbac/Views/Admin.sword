@@ -44,7 +44,9 @@
     <result-ip prop="login_ip"></result-ip>
     <result-timestamp prop="login_time"></result-timestamp>
     <result-timestamp prop="created_time"></result-timestamp>
-    <result-op v-slot="{row}" width="180">
+    <result-op width="180" v-slot="{row}">
+        <show-detail :row="row"></show-detail>
+        <show-edit :row="row"></show-edit>
         <result-button v-if="row.status==1" @click="do_lock(row)" type="danger" icon="el-icon-lock"
                        title="锁定"></result-button>
         <result-button v-else="row.status!==1" @click="do_active(row)" type="warning" icon="el-icon-unlock"

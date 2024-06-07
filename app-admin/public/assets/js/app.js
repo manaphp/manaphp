@@ -847,30 +847,10 @@ Vue.component('result-link', {
 });
 
 Vue.component('result-op', {
-    props: ['show-detail', 'detail-link', 'show-edit', 'show-enable', 'show-delete', 'width'],
     template: `
-<el-table-column fixed="right" label="操作" :width="calcWidth()" v-slot="{row}">
-    <show-detail v-if="$root.hasDetail&&showDetail!==false" :row="row" :link="detailLink"></show-detail>
-    <show-edit v-if="$root.edit&&showEdit!==false" :row="row"></show-edit>
+<el-table-column fixed="right" label="操作" v-bind="$attrs" v-slot="{row}">
     <slot :row="row"></slot>
-    <show-enable v-if="showEnable===''||showEnable===true" :row="row"></show-enable>
-    <show-delete v-if="showDelete===''||showDelete===true" :row="row"></show-delete>
-</el-table-column>`,
-    methods: {
-        calcWidth() {
-            if (this.width > 0) {
-                return this.width;
-            }
-
-            let count = 0;
-            count += !!this.$root.hasDetail && this.showDetail !== false;
-            count += !!this.$root.edit && this.showEdit !== false;
-            count += this.showEnable === '' || this.showEnable === true;
-            count += this.showDelete === '' || this.showDelete === true;
-
-            return count * 80;
-        }
-    }
+</el-table-column>`
 });
 
 Vue.component('result-button', {

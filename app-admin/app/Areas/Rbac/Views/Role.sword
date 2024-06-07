@@ -32,7 +32,12 @@
     <result-column prop="builtin"></result-column>
     <result-account prop="updator_name"></result-account>
     <result-timestamp prop="updated_time"></result-timestamp>
-    <result-op show-detail show-enable show-delete width="240"></result-op>
+    <result-op width="240" v-slot="{row}">
+        <show-detail :row="row"></show-detail>
+        <show-edit :row="row"></show-edit>
+        <show-enable :row="row"></show-enable>
+        <show-delete :row="row"></show-delete>
+    </result-op>
 </result-table>
 @section('script')
     <script>

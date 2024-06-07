@@ -18,7 +18,9 @@
     <result-account prop="admin_name"></result-account>
     <result-tag prop="roles"></result-tag>
     <result-timestamp prop="created_time"></result-timestamp>
-    <result-op width="65"></result-op>
+    <result-op width="65" v-slot="{row}">
+        <show-edit :row="row"></show-edit>
+    </result-op>
 </result-table>
 @section('script')
     <script>
