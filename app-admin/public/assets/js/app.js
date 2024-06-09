@@ -20,7 +20,7 @@ Vue.prototype.console = console;
 }());
 
 
-document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
+document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substring(1)) : {};
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -367,7 +367,7 @@ Vue.component('my-menu-tabs', {
 
         return {
             tabs: tabs,
-            tab: location.pathname.substr(window.BASE_URL.length)
+            tab: location.pathname.substring(window.BASE_URL.length)
         }
     },
     methods: {
@@ -926,7 +926,7 @@ App = Vue.extend({
 
             let qs = this.$qs.stringify(this.request);
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
-            document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
+            document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substring(1)) : {};
 
             if (Array.isArray(this.response)) {
                 this.response = [];

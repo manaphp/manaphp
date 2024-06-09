@@ -6,9 +6,9 @@ Vue.prototype.sessionStorage = window.sessionStorage;
 Vue.prototype.localStorage = window.localStorage;
 Vue.prototype.console = console;
 
-CONTROLLER_URL = location.pathname.substr(BASE_URL.length);
+CONTROLLER_URL = location.pathname.substring(BASE_URL.length);
 if (CONTROLLER_URL.endsWith('/index')) {
-    CONTROLLER_URL = CONTROLLER_URL.substr(0, CONTROLLER_URL.length - 6);
+    CONTROLLER_URL = CONTROLLER_URL.substring(0, CONTROLLER_URL.length - 6);
 }
 
 (function () {
@@ -25,7 +25,7 @@ if (CONTROLLER_URL.endsWith('/index')) {
 }());
 
 
-document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
+document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substring(1)) : {};
 
 axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -409,7 +409,7 @@ Vue.component('my-menu-tabs', {
 
         return {
             tabs: tabs,
-            tab: location.pathname.substr(window.BASE_URL.length)
+            tab: location.pathname.substring(window.BASE_URL.length)
         }
     },
     methods: {
@@ -919,7 +919,7 @@ App = Vue.extend({
 
             let qs = this.$qs.stringify(this.request);
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
-            document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
+            document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substring(1)) : {};
 
             if (Array.isArray(this.response)) {
                 this.response = [];
