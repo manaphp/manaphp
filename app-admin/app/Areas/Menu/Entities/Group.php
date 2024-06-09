@@ -31,6 +31,7 @@ class Group extends Entity
     public int $created_time;
     public int $updated_time;
 
+    /** @var Item[] $items */
     #[HasMany(Item::class, orderBy: ['display_order' => SORT_DESC, 'item_id' => SORT_ASC])]
     public array $items;
 }

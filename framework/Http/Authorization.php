@@ -6,7 +6,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\ForbiddenException;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Authorization\RoleRepositoryInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
@@ -16,8 +15,8 @@ use ReflectionClass;
 use ReflectionMethod;
 use function basename;
 use function in_array;
-use function preg_match;
 use function str_contains;
+use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
 use function strpos;
@@ -53,7 +52,7 @@ class Authorization implements AuthorizationInterface
 
         if (!isset($context->role_permissions[$role])) {
             $permissions = $this->roleRepository->getPermissions($role) ?? '';
-            return $context->role_permissions[$role] = $permissions;
+            return $context->role_permissions[$role] = ",$permissions,";
         } else {
             return $context->role_permissions[$role];
         }
@@ -73,6 +72,11 @@ class Authorization implements AuthorizationInterface
         return $attribute->newInstance();
     }
 
+    protected function isAllowedInternal(string $permission, string $role): bool
+    {
+        return str_contains($this->getAllowed($role), ",$permission,");
+    }
+
     public function isAllowed(string $permission, ?array $roles = null): bool
     {
         $roles = $roles ?? $this->identity->getRoles();
@@ -81,32 +85,26 @@ class Authorization implements AuthorizationInterface
             return true;
         }
 
-        if (str_contains($permission, '/')) {
-            if (!str_starts_with($permission, '/')) {
-                if (preg_match('#\\\\Areas\\\\(\w+)\\\\#', $this->dispatcher->getController(), $match) !== 1) {
-                    throw new MisuseException(['permission is not start with /: {1}', $permission]);
-                } else {
-                    $permission = Str::snakelize($match[1]) . "/$permission";
-                }
-            }
-        } else {
+        if (!str_contains($permission, '::')) {
             if (($controller = $this->dispatcher->getController()) === null) {
                 return false;
             }
 
             $action = Str::camelize($permission);
+            if (!str_ends_with($action, 'Action')) {
+                $action .= 'Action';
+            }
+
             if (($authorize = $this->getAuthorize($controller, $action)) !== null) {
-                //allow guest
                 if (in_array(Authorize::GUEST, $authorize->roles, true)) {
                     return true;
                 }
 
-                // role is guest
-                if (in_array(Authorize::GUEST, $roles, true)) {
+                if ($roles === []) {
                     return false;
                 }
 
-                if ($roles !== [] && in_array(Authorize::USER, $authorize->roles, true)) {
+                if (in_array(Authorize::USER, $authorize->roles, true)) {
                     return true;
                 }
 
@@ -115,39 +113,29 @@ class Authorization implements AuthorizationInterface
                         return true;
                     }
                 }
-
-                return false;
             }
-
             $permission = $this->getPermission($controller, $action);
         }
 
-        $checked = ",$permission,";
+        if ($this->isAllowedInternal($permission, Authorize::GUEST)) {
+            return true;
+        }
 
-        if ($roles === [] || $roles === [Authorize::GUEST]) {
-            return str_contains($this->getAllowed(Authorize::GUEST), $checked);
-        } elseif ($roles === [Authorize::USER]) {
-            if (str_contains($this->getAllowed(Authorize::GUEST), $checked)) {
-                return true;
-            }
-            return str_contains($this->getAllowed(Authorize::USER), $checked);
-        } else {
-            if (str_contains($this->getAllowed(Authorize::GUEST), $checked)) {
-                return true;
-            }
-
-            if (str_contains($this->getAllowed(Authorize::USER), $checked)) {
-                return true;
-            }
-
-            foreach ($roles as $role) {
-                if (str_contains($this->getAllowed($role), $checked)) {
-                    return true;
-                }
-            }
-
+        if ($roles === []) {
             return false;
         }
+
+        if ($this->isAllowedInternal($permission, Authorize::USER)) {
+            return true;
+        }
+
+        foreach ($roles as $role) {
+            if ($this->isAllowedInternal($permission, $role)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function authorize(): void

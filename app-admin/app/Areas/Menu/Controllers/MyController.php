@@ -20,7 +20,7 @@ class MyController extends Controller
     public function indexAction()
     {
         $fields = ['group_id', 'group_name', 'icon',
-                   'items' => ['item_id', 'item_name', 'url', 'icon', 'group_id']
+                   'items' => ['item_id', 'item_name', 'url', 'icon', 'group_id', 'permission_code']
         ];
         $orders = ['display_order' => SORT_DESC, 'group_id' => SORT_ASC];
 
@@ -28,19 +28,10 @@ class MyController extends Controller
 
         $menu = [];
         foreach ($groups as $group) {
-            $items = $group['items'];
+            $items = $group->items;
             foreach ($items as $k => $item) {
-                $url = $item['url'];
-
-                if (!$url || $url[0] !== '/') {
-                    continue;
-                }
-
-                if (($pos = strpos($url, '?')) !== false) {
-                    $url = substr($url, 0, $pos);
-                }
-
-                if (!$this->authorization->isAllowed($url)) {
+                $permission_code = $item->permission_code;
+                if ($permission_code === '' || !$this->authorization->isAllowed($permission_code)) {
                     unset($items[$k]);
                 }
             }
@@ -49,7 +40,7 @@ class MyController extends Controller
                 continue;
             }
 
-            $group['items'] = array_values($items);
+            $group->items = array_values($items);
             $menu[] = $group;
         }
 

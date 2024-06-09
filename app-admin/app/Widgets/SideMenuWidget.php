@@ -7,6 +7,7 @@ use App\Areas\Menu\Repositories\GroupRepository;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Persistence\AdditionalRelationCriteria;
+use function array_values;
 
 class SideMenuWidget extends Widget
 {
@@ -17,7 +18,7 @@ class SideMenuWidget extends Widget
     {
         $fields = ['group_id', 'group_name', 'icon',
                    'items' => AdditionalRelationCriteria::of(
-                       ['item_id', 'item_name', 'url', 'icon', 'group_id'],
+                       ['item_id', 'item_name', 'url', 'icon', 'group_id', 'permission_code'],
                        ['display_order' => SORT_DESC, 'item_id' => SORT_ASC]
                    )];
         $orders = ['display_order' => SORT_DESC, 'group_id' => SORT_ASC];
@@ -26,19 +27,10 @@ class SideMenuWidget extends Widget
 
         $menu = [];
         foreach ($groups as $group) {
-            $items = $group['items'];
+            $items = $group->items;
             foreach ($items as $k => $item) {
-                $url = $item['url'];
-
-                if (!$url || $url[0] !== '/') {
-                    continue;
-                }
-
-                if (($pos = strpos($url, '?')) !== false) {
-                    $url = substr($url, 0, $pos);
-                }
-
-                if (!$this->authorization->isAllowed($url)) {
+                $permission_code = $item->permission_code;
+                if ($permission_code === '' || !$this->authorization->isAllowed($permission_code)) {
                     unset($items[$k]);
                 }
             }
@@ -47,7 +39,7 @@ class SideMenuWidget extends Widget
                 continue;
             }
 
-            $group['items'] = $items;
+            $group->items = array_values($items);
             $menu[] = $group;
         }
 

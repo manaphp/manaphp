@@ -109,7 +109,7 @@ class RoleService
             $permissions = $this->getPermissionsInternal(
                 $controllerPermissions, $actionPermissions, $role->role_name, $granted
             );
-            $role->permissions = ',' . implode(',', $permissions) . ',';
+            $role->permissions = implode(',', $permissions);
 
             $this->roleRepository->update($role);
         }
