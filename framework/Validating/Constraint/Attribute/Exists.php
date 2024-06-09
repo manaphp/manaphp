@@ -50,7 +50,8 @@ class Exists extends AbstractConstraint
         try {
             $repository = $this->entityMetadata->getRepository($className);
             $repository->get($value);
-        } catch (Exception) {
+        } /** @noinspection PhpRedundantCatchClauseInspection */
+        catch (Exception) {
             return false;
         }
 
