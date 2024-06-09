@@ -33,6 +33,8 @@ class Item extends Entity
     #[MaxLength(64)]
     public string $icon;
 
+    public string $permission_code;
+
     public string $creator_name;
     public string $updator_name;
     public int $created_time;

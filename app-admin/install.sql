@@ -183,6 +183,7 @@ CREATE TABLE `menu_item` (
   `display_order` tinyint(4) NOT NULL,
   `url` varchar(128) NOT NULL,
   `icon` varchar(32) CHARACTER SET ascii NOT NULL,
+  `permission_code` varchar(64) NOT NULL DEFAULT '',
   `creator_name` varchar(32) CHARACTER SET ascii NOT NULL,
   `updator_name` varchar(32) CHARACTER SET ascii NOT NULL,
   `created_time` int(11) NOT NULL,
@@ -193,22 +194,22 @@ CREATE TABLE `menu_item` (
 
 /*Data for the table `menu_item` */
 
-insert  into `menu_item`(`item_id`,`item_name`,`group_id`,`display_order`,`url`,`icon`,`creator_name`,`updator_name`,`created_time`,`updated_time`) values 
-(8,'角色权限',3,0,'/rbac/role-permission','el-icon-arrow-right','admin','admin',0,0),
-(4,'用户',3,3,'/rbac/admin','el-icon-arrow-right','admin','admin',0,0),
-(9,'系统信息',5,0,'/system/information','el-icon-arrow-right','admin','',0,0),
-(5,'角色',3,0,'/rbac/role','el-icon-arrow-right','admin','admin',0,0),
-(6,'权限',3,0,'/rbac/permission','el-icon-arrow-right','admin','admin',0,0),
-(7,'用户角色',3,0,'/rbac/admin-role','el-icon-arrow-right','admin','admin',0,0),
-(10,'登录日志',4,0,'/admin/login-log','el-icon-arrow-right','admin','admin',0,0),
-(11,'菜单组',2,0,'/menu/group','el-icon-arrow-right','admin','',0,0),
-(12,'菜单项',2,0,'/menu/item','el-icon-arrow-right','admin','admin',0,0),
-(13,'动作日志',4,0,'/admin/action-log','el-icon-arrow-right','mark','mark',0,0),
-(1,'最近登录',1,0,'/admin/login-log/latest','el-icon-arrow-right','admin','admin',0,0),
-(2,'最近操作',1,0,'/admin/action-log/latest','el-icon-arrow-right','admin','admin',0,0),
-(3,'修改密码',1,0,'/admin/password/change','el-icon-arrow-right','admin','admin',0,0),
-(15,'存储对象管理',6,0,'/bos/object','el-icon-arrow-right','admin','admin',0,0),
-(14,'存储桶管理',6,0,'/bos/bucket','el-icon-arrow-right','admin','admin',0,0);
+insert  into `menu_item`(`item_id`,`item_name`,`group_id`,`display_order`,`url`,`icon`,`permission_code`,`creator_name`,`updator_name`,`created_time`,`updated_time`) values
+(8,'角色权限',3,0,'/rbac/role-permission','el-icon-arrow-right','','admin','admin',0,0),
+(4,'用户',3,3,'/rbac/admin','el-icon-arrow-right','','admin','admin',0,0),
+(9,'系统信息',5,0,'/system/information','el-icon-arrow-right','','admin','',0,0),
+(5,'角色',3,0,'/rbac/role','el-icon-arrow-right','','admin','admin',0,0),
+(6,'权限',3,0,'/rbac/permission','el-icon-arrow-right','','admin','admin',0,0),
+(7,'用户角色',3,0,'/rbac/admin-role','el-icon-arrow-right','','admin','admin',0,0),
+(10,'登录日志',4,0,'/admin/login-log','el-icon-arrow-right','','admin','admin',0,0),
+(11,'菜单组',2,0,'/menu/group','el-icon-arrow-right','','admin','',0,0),
+(12,'菜单项',2,0,'/menu/item','el-icon-arrow-right','','admin','admin',0,0),
+(13,'动作日志',4,0,'/admin/action-log','el-icon-arrow-right','','mark','mark',0,0),
+(1,'最近登录',1,0,'/admin/login-log/latest','el-icon-arrow-right','','admin','admin',0,0),
+(2,'最近操作',1,0,'/admin/action-log/latest','el-icon-arrow-right','','admin','admin',0,0),
+(3,'修改密码',1,0,'/admin/password/change','el-icon-arrow-right','','admin','admin',0,0),
+(15,'存储对象管理',6,0,'/bos/object','el-icon-arrow-right','','admin','admin',0,0),
+(14,'存储桶管理',6,0,'/bos/bucket','el-icon-arrow-right','','admin','admin',0,0);
 
 /*Table structure for table `metadata_constant` */
 
