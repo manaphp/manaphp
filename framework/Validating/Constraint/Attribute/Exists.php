@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Validating\Constraint\Attribute;
 
 use Attribute;
+use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Persistence\Entity;
+use ManaPHP\Persistence\EntityMetadataInterface;
 use ManaPHP\Validating\AbstractConstraint;
 use ManaPHP\Validating\Validation;
 use function get_class;
@@ -17,6 +19,8 @@ use function sprintf;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Exists extends AbstractConstraint
 {
+    #[Autowired] protected EntityMetadataInterface $entityMetadata;
+
     public function validate(Validation $validation): bool
     {
         if (!$validation->source instanceof Entity) {
@@ -44,7 +48,8 @@ class Exists extends AbstractConstraint
         }
 
         try {
-            $className::get($value);
+            $repository = $this->entityMetadata->getRepository($className);
+            $repository->get($value);
         } catch (Exception) {
             return false;
         }
