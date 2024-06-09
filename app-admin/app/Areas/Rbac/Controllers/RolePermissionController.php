@@ -35,18 +35,18 @@ class RolePermissionController extends Controller
     public function indexAction(int $role_id = 0)
     {
         if ($role_id > 0) {
-            $fields = ['permission_id', 'handler', 'display_name', 'created_time'];
+            $fields = ['permission_id', 'permission_code', 'display_name', 'created_time'];
             $role = $this->roleRepository->get($role_id);
 
             $restrictions = Restrictions::create();
-            $restrictions->in('handler', explode(',', trim($role->permissions)));
+            $restrictions->in('permission_code', explode(',', trim($role->permissions)));
 
             $permissions = $this->permissionRepository->all($restrictions, $fields);
 
             $roles = $this->roleRepository->all();
             foreach ($permissions as $permission) {
                 foreach ($roles as $role) {
-                    if (str_contains($role->permissions, $permission->handler)) {
+                    if (str_contains($role->permissions, $permission->permission_code)) {
                         $permission->roles[] = $role;
                     }
                 }
@@ -85,8 +85,8 @@ class RolePermissionController extends Controller
     #[GetMapping]
     public function permissionsAction()
     {
-        $fields = ['permission_id', 'handler', 'display_name'];
-        $orders = ['handler' => SORT_ASC];
+        $fields = ['permission_id', 'permission_code', 'display_name'];
+        $orders = ['permission_code' => SORT_ASC];
         return $this->permissionRepository->all(['grantable' => 1], $fields, $orders);
     }
 

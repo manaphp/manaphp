@@ -27,7 +27,7 @@ class PermissionService
         $oldPermissions = [];
 
         foreach ($this->permissionRepository->all() as $permission) {
-            $oldPermissions[$permission->handler] = $permission;
+            $oldPermissions[$permission->permission_code] = $permission;
         }
 
         $newPermissions = [];
@@ -40,11 +40,11 @@ class PermissionService
 
                 $permission = new Permission();
 
-                $permission->handler = $this->authorization->getPermission($controller, '*');
+                $permission->permission_code = $this->authorization->getPermission($controller, '*');
                 $permission->display_name = $controller . '::*';
                 $permission->authorize = implode(',', $controllerAuthorize->roles);
                 $permission->grantable = (int)$controllerAuthorize->isGrantable();
-                $newPermissions[$permission->handler] = $permission;
+                $newPermissions[$permission->permission_code] = $permission;
             } else {
                 $controllerAuthorize = null;
             }
@@ -57,7 +57,7 @@ class PermissionService
 
                 $permission = new Permission();
 
-                $permission->handler = $this->authorization->getPermission($controller, $action);
+                $permission->permission_code = $this->authorization->getPermission($controller, $action);
                 $permission->display_name = $controller . '::' . $action;
 
                 if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) !== null) {
@@ -71,13 +71,13 @@ class PermissionService
                     $permission->grantable = $controllerAuthorize ? 0 : 1;
                 }
 
-                $newPermissions[$permission->handler] = $permission;
+                $newPermissions[$permission->permission_code] = $permission;
             }
         }
 
         $deletedCount = 0;
-        foreach ($oldPermissions as $handler => $permission) {
-            if (!isset($newPermissions[$handler])) {
+        foreach ($oldPermissions as $permission_code => $permission) {
+            if (!isset($newPermissions[$permission_code])) {
                 $deletedCount++;
                 $this->permissionRepository->delete($permission);
             }
@@ -85,13 +85,13 @@ class PermissionService
 
         $createdCount = 0;
         $updatedCount = 0;
-        foreach ($newPermissions as $handler => $permission) {
-            if (($oldPermission = $oldPermissions[$handler] ?? null) === null) {
+        foreach ($newPermissions as $permission_code => $permission) {
+            if (($oldPermission = $oldPermissions[$permission_code] ?? null) === null) {
                 $createdCount++;
                 $this->permissionRepository->create($permission);
             } else {
                 $diff = false;
-                foreach (['handler', 'display_name', 'authorize', 'grantable'] as $field) {
+                foreach (['permission_code', 'display_name', 'authorize', 'grantable'] as $field) {
                     if ($permission->$field !== $oldPermission->$field) {
                         $diff = true;
                         break;

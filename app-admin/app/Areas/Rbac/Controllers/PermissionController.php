@@ -38,8 +38,8 @@ class PermissionController extends Controller
     #[GetMapping]
     public function listAction()
     {
-        $fields = ['permission_id', 'handler', 'display_name'];
-        $orders = ['handler' => SORT_ASC];
+        $fields = ['permission_id', 'permission_code', 'display_name'];
+        $orders = ['permission_code' => SORT_ASC];
         return $this->permissionRepository->all([], $fields, $orders);
     }
 

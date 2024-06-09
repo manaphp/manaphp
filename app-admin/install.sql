@@ -246,14 +246,14 @@ CREATE TABLE `rbac_admin_role` (
 
 CREATE TABLE `rbac_permission` (
   `permission_id` int(11) NOT NULL AUTO_INCREMENT,
-  `handler` varchar(64) CHARACTER SET ascii NOT NULL,
+  `permission_code` varchar(64) CHARACTER SET ascii NOT NULL,
   `authorize` varchar(64) CHARACTER SET ascii NOT NULL,
   `grantable` tinyint(4) NOT NULL DEFAULT 1,
   `display_name` varchar(128) NOT NULL,
   `created_time` int(11) NOT NULL,
   `updated_time` int(11) NOT NULL,
   PRIMARY KEY (`permission_id`),
-  UNIQUE KEY `handler` (`handler`)
+  UNIQUE KEY `permission_code` (`permission_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Data for the table `rbac_permission` */

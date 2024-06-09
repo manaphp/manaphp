@@ -44,9 +44,9 @@ class RoleService
         array $granted
     ): array {
         $permissions = [];
-        foreach ($actionPermissions as $handler => $permission) {
+        foreach ($actionPermissions as $permission_code => $permission) {
             if ($permission->authorize === '' && !$permission->grantable) {
-                list($controller,) = explode('::', $handler, 2);
+                list($controller,) = explode('::', $permission_code, 2);
                 $permission = $controllerPermissions[$controller . '::*'] ?? null;
             }
 
@@ -54,12 +54,12 @@ class RoleService
                 SuppressWarnings::noop();
             } else {
                 if ($permission->grantable) {
-                    if (in_array($permission->handler, $granted, true)) {
-                        $permissions[] = $handler;
+                    if (in_array($permission->permission_code, $granted, true)) {
+                        $permissions[] = $permission_code;
                     }
                 } else {
                     if ($permission->authorize === $role) {
-                        $permissions[] = $handler;
+                        $permissions[] = $permission_code;
                     }
                 }
             }
@@ -74,11 +74,11 @@ class RoleService
         $controllerPermissions = [];
         $actionPermissions = [];
         foreach ($this->permissionRepository->all() as $permission) {
-            $handler = $permission->handler;
-            if (str_ends_with($handler, '*')) {
-                $controllerPermissions[$handler] = $permission;
+            $permission_code = $permission->permission_code;
+            if (str_ends_with($permission_code, '*')) {
+                $controllerPermissions[$permission_code] = $permission;
             } else {
-                $actionPermissions[$handler] = $permission;
+                $actionPermissions[$permission_code] = $permission;
             }
         }
 
@@ -88,7 +88,7 @@ class RoleService
     public function getGrantedPermissions(int $role_id): array
     {
         $permission_ids = $this->rolePermissionRepository->values('permission_id', ['role_id' => $role_id]);
-        return $this->permissionRepository->values('handler', ['permission_id' => $permission_ids]);
+        return $this->permissionRepository->values('permission_code', ['permission_id' => $permission_ids]);
     }
 
     public function rebuildPermissions(): void
@@ -96,11 +96,11 @@ class RoleService
         $controllerPermissions = [];
         $actionPermissions = [];
         foreach ($this->permissionRepository->all() as $permission) {
-            $handler = $permission->handler;
-            if (str_ends_with($handler, '*')) {
-                $controllerPermissions[$handler] = $permission;
+            $permission_code = $permission->permission_code;
+            if (str_ends_with($permission_code, '*')) {
+                $controllerPermissions[$permission_code] = $permission;
             } else {
-                $actionPermissions[$handler] = $permission;
+                $actionPermissions[$permission_code] = $permission;
             }
         }
 

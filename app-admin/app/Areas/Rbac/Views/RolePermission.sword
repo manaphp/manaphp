@@ -14,14 +14,14 @@
         <el-checkbox v-for="permission in permissions" :label="permission.permission_id"
                      :key="permission.permission_id" style="width: 40%; text-align: left"
                      :title="permission.display_name">
-            @{{permission.handler}}
+            @{{permission.permission_code}}
         </el-checkbox>
     </el-checkbox-group>
 </edit-form>
 <result-table>
     <result-index></result-index>
     <result-link prop="permission_id" href="/rbac/permission" width="50"></result-link>
-    <result-column prop="handler" width="200"></result-column>
+    <result-column prop="permission_code" width="200"></result-column>
     <result-column prop="roles" width="300" v-slot="{row}">
         <el-button size="small" v-for="role in row.roles" :key="role.role_id" type="text"
                    @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id"

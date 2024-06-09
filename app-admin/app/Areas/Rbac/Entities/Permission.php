@@ -15,7 +15,7 @@ class Permission extends Entity
     #[Id]
     public int $permission_id;
 
-    public string $handler;
+    public string $permission_code;
 
     public string $authorize;
 

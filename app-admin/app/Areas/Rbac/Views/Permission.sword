@@ -1,18 +1,18 @@
 <request-form>
     <request-button @click="do_rebuild" type="primary" icon="el-icon-refresh">重新扫描</request-button>
-    <selector filterable v-model="filter.handler" :data="handlers"></selector>
+    <selector filterable v-model="filter.permission_code" :data="permission_codes"></selector>
     <selector v-model="filter.grantable" :data="grantables"></selector>
 </request-form>
 <edit-form>
     <edit-text prop="permission_id" disabled></edit-text>
-    <edit-text prop="handler" disabled></edit-text>
+    <edit-text prop="permission_code" disabled></edit-text>
     <edit-text prop="authorize" disabled></edit-text>
     <edit-text prop="display_name"></edit-text>
 </edit-form>
 <result-table :data="filteredResponse" row-class-name="el-alert el-alert--warning is-light">
     <result-index></result-index>
     <result-id prop="permission_id"></result-id>
-    <result-column prop="handler" width="200" title="display_name"></result-column>
+    <result-column prop="permission_code" width="200" title="display_name"></result-column>
     <result-tag prop="roles"></result-tag>
     <result-column prop="grantable" width="80" label="可授权"></result-column>
     <result-column prop="authorize" width="100"></result-column>
@@ -32,11 +32,13 @@
                 response: [],
                 edit: {},
                 filter: {
-                    handler: '',
+                    permission_code: '',
                     grantable: '',
                 },
                 label: {
                     permission_id: '权限ID',
+                    permission_code: '权限代码',
+                    authorize: '内置授限',
                     roles: '角色列表',
                 },
                 grantables: {
@@ -48,7 +50,7 @@
                 filteredResponse() {
                     let filter = this.filter;
                     return this.response.filter(v => {
-                        if (filter.handler !== '' && !v.handler.startsWith(filter.handler + ':')) {
+                        if (filter.permission_code !== '' && !v.permission_code.startsWith(filter.permission_code + ':')) {
                             return false;
                         }
                         if (filter.grantable !== '' && v.grantable != filter.grantable) {
@@ -58,20 +60,20 @@
                         return true;
                     });
                 },
-                handlers() {
-                    let handlers = [];
+                permission_codes() {
+                    let permission_codes = [];
                     for (let item of this.response) {
-                        let handler = item.handler;
+                        let permission_code = item.permission_code;
 
-                        let pos = handler.indexOf(':');
+                        let pos = permission_code.indexOf(':');
                         if (pos !== -1) {
-                            let controller = handler.substring(0, pos);
-                            if (!handlers.includes(controller)) {
-                                handlers.push(controller);
+                            let controller = permission_code.substring(0, pos);
+                            if (!permission_codes.includes(controller)) {
+                                permission_codes.push(controller);
                             }
                         }
                     }
-                    return handlers.sort();
+                    return permission_codes.sort();
                 }
             },
             methods: {
