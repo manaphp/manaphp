@@ -74,7 +74,7 @@ class UserActionLogListener
         $userActionLog->client_ip = $this->request->ip();
         $userActionLog->method = $this->request->method();
         $userActionLog->url = $this->request->path();
-        $userActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
+        $userActionLog->tag = $this->getTag() & 0xFFFFFFFF;
         $userActionLog->data = json_stringify($data);
         $userActionLog->handler = (string)$this->dispatcher->getHandler();
         $userActionLog->client_udid = $this->cookies->get('CLIENT_UDID');

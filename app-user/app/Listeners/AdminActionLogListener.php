@@ -72,7 +72,7 @@ class AdminActionLogListener
         $adminActionLog->client_ip = $this->request->ip();
         $adminActionLog->method = $this->request->method();
         $adminActionLog->url = $this->request->path();
-        $adminActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
+        $adminActionLog->tag = $this->getTag() & 0xFFFFFFFF;
         $adminActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $adminActionLog->handler = (string)$this->dispatcher->getHandler();
         $adminActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
