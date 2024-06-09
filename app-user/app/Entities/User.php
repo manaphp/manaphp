@@ -17,9 +17,9 @@ use ManaPHP\Validating\Constraint\Attribute\Unique;
 
 class User extends Entity
 {
-    const STATUS_INIT = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_LOCKED = 2;
+    public const STATUS_INIT = 0;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_LOCKED = 2;
 
     #[Id]
     public $user_id;
