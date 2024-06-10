@@ -16,10 +16,11 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Persistence\Attribute\Connection;
-use ManaPHP\Persistence\Attribute\Id;
 use function count;
 use function dirname;
 use function in_array;
+use function sprintf;
+use function str_contains;
 
 class DbCommand extends Command
 {
@@ -183,6 +184,7 @@ class DbCommand extends Command
         $uses = [];
         if (strpos($class, '\\Areas\\')) {
             $uses[] = 'App\Entities\Entity';
+            $uses[] = 'ManaPHP\Persistence\Attribute\Table';
         }
 
         $attributes = [];
@@ -191,12 +193,8 @@ class DbCommand extends Command
             $attributes[] = "#[Connection('$connection')]";
         }
 
-        $primaryKeys = $metadata[Db::METADATA_PRIMARY_KEY];
-        if ($primaryKey = count($primaryKeys) === 1 ? $primaryKeys[0] : null) {
-            if ($primaryKey !== 'id' && $primaryKey !== $table . '_id' && $primaryKey !== $table . 'Id') {
-                $uses[] = Id::class;
-                $attributes[] = "#[PrimaryKey('$primaryKey')]";
-            }
+        if (($primaryKey = $metadata[Db::METADATA_PRIMARY_KEY][0] ?? '') !== '') {
+            $uses[] = 'ManaPHP\Persistence\Attribute\Id';
         }
 
         sort($uses);
@@ -213,7 +211,10 @@ class DbCommand extends Command
             $str .= $attribute . PHP_EOL;
         }
 
-        $str .= 'class ' . $plainClass . ' extends Model' . PHP_EOL;
+        if (str_contains($class, '\\Areas\\')) {
+            $str .= sprintf("#[Table('%s')]", $table) . PHP_EOL;
+        }
+        $str .= 'class ' . $plainClass . ' extends Entity' . PHP_EOL;
         $str .= '{';
         if ($constants) {
             $str .= PHP_EOL . $constants . PHP_EOL;
@@ -221,30 +222,12 @@ class DbCommand extends Command
 
         $str .= PHP_EOL;
         foreach ($fields as $field => $type) {
+            if ($field === $primaryKey) {
+                $str .= '    #[Id]' . PHP_EOL;
+            }
             $field = $camelized ? Str::camelize($field) : $field;
             $php_type = $this->dbTypeToPhpType($type);
             $str .= "    public $php_type $$field;" . PHP_EOL;
-        }
-
-        if ($connection !== 'default') {
-            $str .= PHP_EOL;
-            $str .= '    public function connection(): string' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$connection';" . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
-        $autoIncField = $metadata[Db::METADATA_AUTO_INCREMENT_KEY];
-        if ($optimized) {
-            $str .= PHP_EOL;
-            $str .= '    public function autoIncrementField(): ?string' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            if ($autoIncField) {
-                $str .= "        return '$autoIncField';" . PHP_EOL;
-            } else {
-                $str .= '        return null;' . PHP_EOL;
-            }
-            $str .= '    }' . PHP_EOL;
         }
 
         $str .= '}';
