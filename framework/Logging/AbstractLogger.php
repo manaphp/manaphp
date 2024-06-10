@@ -5,7 +5,6 @@ namespace ManaPHP\Logging;
 
 use JsonSerializable;
 use ManaPHP\AliasInterface;
-use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\SuppressWarnings;
@@ -24,8 +23,6 @@ use function json_stringify;
 
 abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 {
-    use ContextTrait;
-
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected AliasInterface $alias;
 
