@@ -7,10 +7,13 @@ use JsonSerializable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Helper\Container;
 use ManaPHP\Helper\SuppressWarnings;
+use ManaPHP\Logging\Appender\FileAppender;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\Logger\Log;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 use Stringable;
 use Throwable;
@@ -21,7 +24,7 @@ use function is_scalar;
 use function is_string;
 use function json_stringify;
 
-abstract class AbstractLogger extends \Psr\Log\AbstractLogger
+class Logger extends AbstractLogger
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected AliasInterface $alias;
@@ -29,11 +32,21 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
     #[Autowired] protected string $level = LogLevel::DEBUG;
     #[Autowired] protected ?string $hostname;
     #[Autowired] protected string $time_format = 'Y-m-d\TH:i:s.uP';
+    #[Autowired] protected array $appenders = [FileAppender::class];
 
     public const  MILLISECONDS = 'v';
     public const MICROSECONDS = 'u';
 
-    abstract public function append(Log $log): void;
+    public function __construct()
+    {
+        foreach ($this->appenders as $index => $appender) {
+            if (is_string($appender)) {
+                $this->appenders[$index] = Container::make($appender);
+            } else {
+                $this->appenders[$index] = Container::make($appender['class'], $appender);
+            }
+        }
+    }
 
     public function exceptionToString(Throwable $exception): string
     {
@@ -161,6 +174,8 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 
         $this->eventDispatcher->dispatch(new LoggerLog($this, $level, $message, $context, $log));
 
-        $this->append($log);
+        foreach ($this->appenders as $appender) {
+            $appender->append($log);
+        }
     }
 }

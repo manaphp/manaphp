@@ -1,16 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Logging\Logger\Adapter;
+namespace ManaPHP\Logging\Appender;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
-use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\AppenderInterface;
 use ManaPHP\Logging\Logger\Log;
 use function dirname;
 
-class File extends AbstractLogger
+class FileAppender implements AppenderInterface
 {
+    #[Autowired] protected AliasInterface $alias;
+
     #[Autowired] protected string $file = '@runtime/logger/{app_id}.log';
     #[Autowired] protected string $line_format = '[:time][:level][:category][:location] :message';
 

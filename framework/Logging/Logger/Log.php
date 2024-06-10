@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger;
 
-use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Logger;
 use stdClass;
 
 class Log extends stdClass
@@ -24,12 +24,12 @@ class Log extends stdClass
         $this->hostname = $hostname;
 
         $this->timestamp = $timestamp = microtime(true);
-        if (str_contains($time_format, AbstractLogger::MILLISECONDS)) {
+        if (str_contains($time_format, Logger::MILLISECONDS)) {
             $ms = sprintf('%03d', ($this->timestamp - (int)$timestamp) * 1000);
-            $time_format = str_replace(AbstractLogger::MILLISECONDS, $ms, $time_format);
-        } elseif (str_contains($time_format, AbstractLogger::MICROSECONDS)) {
+            $time_format = str_replace(Logger::MILLISECONDS, $ms, $time_format);
+        } elseif (str_contains($time_format, Logger::MICROSECONDS)) {
             $ms = sprintf('%06d', ($this->timestamp - (int)$timestamp) * 1000000);
-            $time_format = str_replace(AbstractLogger::MICROSECONDS, $ms, $time_format);
+            $time_format = str_replace(Logger::MICROSECONDS, $ms, $time_format);
         }
 
         $this->time = date($time_format, (int)$timestamp);

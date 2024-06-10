@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 return [
-    'Psr\Log\LoggerInterface'               => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
+    'Psr\Log\LoggerInterface'               => ['class' => 'ManaPHP\Logging\Logger',
                                                 'level' => env('LOGGER_LEVEL', 'info')],
     'ManaPHP\Identifying\IdentityInterface' => 'ManaPHP\Identifying\Identity\Adapter\Jwt',
     'ManaPHP\Http\RouterInterface'          => ['class'  => 'App\Router',

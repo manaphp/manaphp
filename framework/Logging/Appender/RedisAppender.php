@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Logging\Logger\Adapter;
+namespace ManaPHP\Logging\Appender;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
-use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\AppenderInterface;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Redis\RedisBrokerInterface;
 
-class Redis extends AbstractLogger
+class RedisAppender implements AppenderInterface
 {
     #[Autowired] protected RedisBrokerInterface $redisBroker;
 

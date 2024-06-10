@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Logging\Logger\Adapter;
+namespace ManaPHP\Logging\Appender;
 
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\AppenderInterface;
 use ManaPHP\Logging\Logger\Log;
 
-class Stdout extends AbstractLogger
+class StdoutAppender implements AppenderInterface
 {
     #[Autowired] protected string $line_format = '[:time][:level][:category][:location] :message';
 

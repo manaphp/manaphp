@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Logging\Logger\Adapter;
+namespace ManaPHP\Logging\Appender;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\AppenderInterface;
 use ManaPHP\Logging\Logger\Log;
 use function strlen;
 
@@ -18,7 +18,7 @@ use function strlen;
 //$template myTemplate,"/var/log/test/%PROGRAMNAME%.log"
 //user.*  ?myTemplate
 
-class Syslog extends AbstractLogger
+class SyslogAppender implements AppenderInterface
 {
     #[Autowired] protected string $uri;
     #[Autowired] protected int $facility = 1;

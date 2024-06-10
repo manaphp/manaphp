@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 return [
     'ManaPHP\Security\CryptInterface'       => ['master_key' => env('MASTER_KEY', 'dev')],
-    'Psr\Log\LoggerInterface'               => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
-                                                'level' => env('LOGGER_LEVEL', 'info')],
     'ManaPHP\Http\SessionInterface'         => ['class'  => 'ManaPHP\Http\Session\Adapter\Redis',
                                                 'ttl'    => seconds('1d'),
                                                 'params' => ['path' => '/']],
