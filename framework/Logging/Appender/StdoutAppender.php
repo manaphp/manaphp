@@ -5,7 +5,7 @@ namespace ManaPHP\Logging\Appender;
 
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Logging\AppenderInterface;
-use ManaPHP\Logging\Logger\Log;
+use ManaPHP\Logging\Log;
 
 class StdoutAppender implements AppenderInterface
 {

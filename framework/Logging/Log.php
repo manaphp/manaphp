@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Logging\Logger;
+namespace ManaPHP\Logging;
 
-use ManaPHP\Logging\Logger;
 use stdClass;
 
 class Log extends stdClass

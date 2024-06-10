@@ -8,7 +8,7 @@ use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\Attribute\Verbosity;
 use ManaPHP\Helper\SuppressWarnings;
-use ManaPHP\Logging\Logger\Event\LoggerLog;
+use ManaPHP\Logging\Event\LoggerLog;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
 use ManaPHP\Redis\Event\RedisCalled;
 use ManaPHP\Redis\Event\RedisCalling;

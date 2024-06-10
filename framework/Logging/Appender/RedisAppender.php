@@ -6,7 +6,7 @@ namespace ManaPHP\Logging\Appender;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Logging\AppenderInterface;
-use ManaPHP\Logging\Logger\Log;
+use ManaPHP\Logging\Log;
 use ManaPHP\Redis\RedisBrokerInterface;
 
 class RedisAppender implements AppenderInterface

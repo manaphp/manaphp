@@ -7,7 +7,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logging\AppenderInterface;
-use ManaPHP\Logging\Logger\Log;
+use ManaPHP\Logging\Log;
 use function strlen;
 
 /** @noinspection SpellCheckingInspection */

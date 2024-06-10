@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Logging\Logger\Event;
+namespace ManaPHP\Logging\Event;
 
 use ManaPHP\Eventing\Attribute\Verbosity;
-use ManaPHP\Logging\Logger\Log;
+use ManaPHP\Logging\Log;
 use Psr\Log\LoggerInterface;
 
 #[Verbosity(Verbosity::HIGH)]
