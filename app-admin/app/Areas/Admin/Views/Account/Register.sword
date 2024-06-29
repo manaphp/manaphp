@@ -36,7 +36,7 @@
     <el-input v-model.trim="request.admin_name" placeholder="用户名" ref="admin_name">
         <template slot="prepend">账号</template>
     </el-input>
-    <el-input v-model.trim="request.email" placeholder="邮箱" ref="admin_name">
+    <el-input v-model.trim="request.email" placeholder="邮箱" ref="email">
         <template slot="prepend">邮箱</template>
     </el-input>
     <el-input v-model.trim="request.password" type="password" placeholder="密码" ref="password">

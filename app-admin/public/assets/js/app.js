@@ -433,7 +433,7 @@ Vue.component('system-time', {
     },
     methods: {
         update() {
-            axios.get('/admin/time/index?t=' + Date.now()).then((res) => {
+            axios.get('/time/current?t=' + Date.now()).then((res) => {
                 if (res.data.code === 0) {
                     this.diff = Math.round(Date.now() - res.data.data.timestamp * 1000) / 1000;
                     window.sessionStorage.setItem(this.key, this.diff);
