@@ -25,6 +25,10 @@
             left: 0;
             z-index: -1000;
         }
+
+        .password-forget{
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body id="particles-js">

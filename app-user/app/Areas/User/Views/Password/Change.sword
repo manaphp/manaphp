@@ -38,7 +38,7 @@
         vm = new App({
             data: {
                 edit: {
-                    user_name: "<?=container('identity')->getName()?>",
+                    user_name: "<?=container('ManaPHP\Identifying\IdentityInterface')->getName()?>",
                     old_password: '',
                     new_password: '',
                     new_password_confirm: '',

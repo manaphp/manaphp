@@ -29,7 +29,7 @@ class SessionController extends Controller
 
     #[Config] protected string $app_env;
 
-    #[PostMapping]
+    #[GetMapping]
     public function captchaAction()
     {
         return $this->captcha->generate();
@@ -38,6 +38,7 @@ class SessionController extends Controller
     public function loginVars(): array
     {
         $vars = [];
+
         $vars['redirect'] = $this->request->input('redirect', $this->router->createUrl('/'));
         $vars['user_name'] = $this->cookies->get('user_name');
 
@@ -94,6 +95,7 @@ class SessionController extends Controller
         $this->adminLoginLogRepository->create($adminLoginLog);
     }
 
+    #[Authorize(Authorize::USER)]
     #[GetMapping(['/logout', '/user/session/logout'])]
     public function logoutAction()
     {

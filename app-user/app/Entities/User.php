@@ -22,26 +22,27 @@ class User extends Entity
     public const STATUS_LOCKED = 2;
 
     #[Id]
-    public $user_id;
+    public int $user_id;
 
     #[Length(4, 16), Account, Immutable]
-    public $user_name;
+    public string $user_name;
 
     #[Constant]
-    public $status;
+    public int $status;
 
     #[Email, Lowercase, Unique]
-    public $email;
+    public string $email;
 
-    public $salt;
-    public $password;
-    public $login_ip;
-    public $login_time;
-    public $session_id;
-    public $creator_name;
-    public $updator_name;
-    public $created_time;
-    public $updated_time;
+    public string $salt;
+    #[Length(6, 16)]
+    public string $password;
+    public string $login_ip;
+    public int $login_time;
+    public string $session_id;
+    public string $creator_name;
+    public string $updator_name;
+    public int $created_time;
+    public int $updated_time;
 
     public function hashPassword(string $password): string
     {

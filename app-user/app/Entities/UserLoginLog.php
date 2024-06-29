@@ -8,17 +8,12 @@ use ManaPHP\Persistence\Attribute\Id;
 class UserLoginLog extends Entity
 {
     #[Id]
-    public $login_id;
+    public int $login_id;
 
-    public $user_id;
-    public $user_name;
-    public $client_ip;
-    public $client_udid;
-    public $user_agent;
-    public $created_time;
-
-    public function primaryKey(): string
-    {
-        return 'login_id';
-    }
+    public int $user_id;
+    public string $user_name;
+    public string $client_ip;
+    public string $client_udid;
+    public string $user_agent;
+    public int $created_time;
 }

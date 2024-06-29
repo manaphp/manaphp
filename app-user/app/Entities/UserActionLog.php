@@ -8,16 +8,16 @@ use ManaPHP\Persistence\Attribute\Id;
 class UserActionLog extends Entity
 {
     #[Id]
-    public $id;
+    public int $id;
 
-    public $user_id;
-    public $user_name;
-    public $method;
-    public $handler;
-    public $tag;
-    public $url;
-    public $data;
-    public $client_ip;
-    public $client_udid;
-    public $created_time;
+    public int $user_id;
+    public string $user_name;
+    public string $method;
+    public string $handler;
+    public int $tag;
+    public string $url;
+    public string $data;
+    public string $client_ip;
+    public string $client_udid;
+    public int $created_time;
 }

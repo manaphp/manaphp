@@ -50,6 +50,12 @@ class AdminActionLogListener
         if ($context->logged) {
             return;
         }
+		
+		if ($event instanceof DbExecuting) {
+            if (!$this->dispatcher->isInvoking()) {
+                return;
+            }
+        }
 
         if ($event instanceof UserActionLog) {
             if ($this->dispatcher->isInvoking() || str_contains($this->dispatcher->getController(), '\\Areas\\Admin\\')) {
@@ -72,8 +78,8 @@ class AdminActionLogListener
         $adminActionLog->client_ip = $this->request->ip();
         $adminActionLog->method = $this->request->method();
         $adminActionLog->url = $this->request->path();
-        $adminActionLog->tag = $this->getTag() & 0xFFFFFFFF;
-        $adminActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $adminActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
+        $adminActionLog->data = json_stringify($data);
         $adminActionLog->handler = (string)$this->dispatcher->getHandler();
         $adminActionLog->client_udid = $this->cookies->get('CLIENT_UDID');
 

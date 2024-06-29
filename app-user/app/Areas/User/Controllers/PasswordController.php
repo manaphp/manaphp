@@ -11,7 +11,6 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Http\CaptchaInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\InputInterface;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mailing\MailerInterface;
@@ -33,18 +32,19 @@ class PasswordController extends Controller
         return $this->captcha->generate();
     }
 
-    public function forgetVars()
+    public function forgetVars(): array
     {
-        $this->view->setVar('redirect', $this->request->input('redirect', $this->router->createUrl('/')));
+        $vars = [];
 
-        return $this->view->setVar('user_name', $this->cookies->get('user_name'));
+        $vars['redirect'] = $this->request->input('redirect', $this->router->createUrl('/'));
+        $vars['user_name'] = $this->cookies->get('user_name');
+
+        return $vars;
     }
 
     #[ViewGetMapping(vars: 'forgetVars'), PostMapping]
-    public function forgetAction(InputInterface $input)
+    public function forgetAction(string $user_name, string $email)
     {
-        $user_name = $input->string('user_name');
-        $email = $input->string('email');
 
         $user = $this->userRepository->first(['user_name' => $user_name]);
         if (!$user || $user->email !== $email) {
@@ -67,7 +67,6 @@ class PasswordController extends Controller
     public function resetVars(): array
     {
         $token = $this->request->input('token');
-
         try {
             $claims = jwt_decode($token, 'user.password.forget');
         } catch (Exception $exception) {

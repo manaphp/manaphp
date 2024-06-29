@@ -56,7 +56,7 @@ CREATE TABLE `admin_action_log` (
   `admin_id` int(11) NOT NULL,
   `admin_name` varchar(32) CHARACTER SET ascii NOT NULL,
   `method` varchar(15) CHARACTER SET ascii NOT NULL,
-  `path` varchar(64) CHARACTER SET ascii NOT NULL,
+  `handler` varchar(64) CHARACTER SET ascii NOT NULL,
   `tag` int(11) NOT NULL DEFAULT 0,
   `url` varchar(128) NOT NULL,
   `data` text NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE `admin_action_log` (
   `created_time` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`admin_id`),
-  KEY `path` (`path`)
+  KEY `handler` (`handler`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `admin_action_log` */
