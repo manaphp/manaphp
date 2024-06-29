@@ -9,7 +9,6 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Http\ControllersInterface;
-use ManaPHP\Http\Router\Attribute\Mapping;
 use ManaPHP\Http\Router\Attribute\MappingInterface;
 use ReflectionAttribute;
 use ReflectionClass;
