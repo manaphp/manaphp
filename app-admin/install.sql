@@ -195,21 +195,21 @@ CREATE TABLE `menu_item` (
 /*Data for the table `menu_item` */
 
 insert  into `menu_item`(`item_id`,`item_name`,`group_id`,`display_order`,`url`,`icon`,`permission_code`,`creator_name`,`updator_name`,`created_time`,`updated_time`) values
-(8,'角色权限',3,0,'/rbac/role-permission','el-icon-arrow-right','','admin','admin',0,0),
-(4,'用户',3,3,'/rbac/admin','el-icon-arrow-right','','admin','admin',0,0),
-(9,'系统信息',5,0,'/system/information','el-icon-arrow-right','','admin','',0,0),
-(5,'角色',3,0,'/rbac/role','el-icon-arrow-right','','admin','admin',0,0),
-(6,'权限',3,0,'/rbac/permission','el-icon-arrow-right','','admin','admin',0,0),
-(7,'用户角色',3,0,'/rbac/admin-role','el-icon-arrow-right','','admin','admin',0,0),
-(10,'登录日志',4,0,'/admin/login-log','el-icon-arrow-right','','admin','admin',0,0),
-(11,'菜单组',2,0,'/menu/group','el-icon-arrow-right','','admin','',0,0),
-(12,'菜单项',2,0,'/menu/item','el-icon-arrow-right','','admin','admin',0,0),
-(13,'动作日志',4,0,'/admin/action-log','el-icon-arrow-right','','mark','mark',0,0),
-(1,'最近登录',1,0,'/admin/login-log/latest','el-icon-arrow-right','','admin','admin',0,0),
-(2,'最近操作',1,0,'/admin/action-log/latest','el-icon-arrow-right','','admin','admin',0,0),
-(3,'修改密码',1,0,'/admin/password/change','el-icon-arrow-right','','admin','admin',0,0),
-(15,'存储对象管理',6,0,'/bos/object','el-icon-arrow-right','','admin','admin',0,0),
-(14,'存储桶管理',6,0,'/bos/bucket','el-icon-arrow-right','','admin','admin',0,0);
+(8,'角色权限',3,0,'/rbac/role-permission/indx','el-icon-arrow-right','rbac.role-permission::index','admin','admin',0,0),
+(4,'用户',3,3,'/rbac/admin/index','el-icon-arrow-right','rbac.admin::index','admin','admin',0,0),
+(9,'系统信息',5,0,'/system/information/index','el-icon-arrow-right','system.information::index','admin','',0,0),
+(5,'角色',3,0,'/rbac/role/index','el-icon-arrow-right','rbac.role::index','admin','admin',0,0),
+(6,'权限',3,0,'/rbac/permission/index','el-icon-arrow-right','rbac.permission::index','admin','admin',0,0),
+(7,'用户角色',3,0,'/rbac/admin-role/index','el-icon-arrow-right','rbac.admin-role::index','admin','admin',0,0),
+(10,'登录日志',4,0,'/admin/login-log/index','el-icon-arrow-right','admin.login-log::index','admin','admin',0,0),
+(11,'菜单组',2,0,'/menu/group/index','el-icon-arrow-right','menu.group::index','admin','',0,0),
+(12,'菜单项',2,0,'/menu/item/index','el-icon-arrow-right','menu.item::index','admin','admin',0,0),
+(13,'动作日志',4,0,'/admin/action-log/index','el-icon-arrow-right','admin.action-log::index','mark','mark',0,0),
+(1,'最近登录',1,0,'/admin/login-log/latest','el-icon-arrow-right','admin.login-log::latest','admin','admin',0,0),
+(2,'最近操作',1,0,'/admin/action-log/latest','el-icon-arrow-right','admin.action-log::latest','admin','admin',0,0),
+(3,'修改密码',1,0,'/admin/password/change','el-icon-arrow-right','admin.password::change','admin','admin',0,0),
+(15,'存储对象管理',6,0,'/bos/object/index','el-icon-arrow-right','bos.object::index','admin','admin',0,0),
+(14,'存储桶管理',6,0,'/bos/bucket/index','el-icon-arrow-right','bos.bucket::index','admin','admin',0,0);
 
 /*Table structure for table `metadata_constant` */
 
