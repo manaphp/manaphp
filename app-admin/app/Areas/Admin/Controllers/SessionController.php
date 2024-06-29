@@ -20,6 +20,7 @@ use ManaPHP\Http\Router\Attribute\GetMapping;
 use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
+use function substr;
 
 #[Authorize(Authorize::GUEST)]
 #[RequestMapping('/admin/session')]
@@ -106,7 +107,7 @@ class SessionController extends Controller
         $adminLoginLog->admin_name = $admin->admin_name;
         $adminLoginLog->client_ip = $client_ip;
         $adminLoginLog->client_udid = $udid;
-        $adminLoginLog->user_agent = \substr($this->request->header('user-agent'), 0, 255);
+        $adminLoginLog->user_agent = substr($this->request->header('user-agent'), 0, 255);
 
         return $this->adminLoginLogRepository->create($adminLoginLog);
     }

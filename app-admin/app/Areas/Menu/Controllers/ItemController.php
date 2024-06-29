@@ -14,6 +14,7 @@ use ManaPHP\Http\Router\Attribute\PostMapping;
 use ManaPHP\Http\Router\Attribute\RequestMapping;
 use ManaPHP\Mvc\View\Attribute\ViewGetMapping;
 use ManaPHP\Persistence\Restrictions;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use function basename;
@@ -69,7 +70,7 @@ class ItemController extends Controller
 
         foreach ($this->controllers->getControllers() as $controller) {
             $rClass = new ReflectionClass($controller);
-            if (($attribute = $rClass->getAttributes(RequestMapping::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ??
+            if (($attribute = $rClass->getAttributes(RequestMapping::class, ReflectionAttribute::IS_INSTANCEOF)[0] ??
                     null) !== null
             ) {
                 /** @var RequestMapping $controllerRequestMapping */
@@ -86,7 +87,7 @@ class ItemController extends Controller
 
             $rMethod = new ReflectionMethod($controller, $action);
 
-            if (($attribute = $rMethod->getAttributes(ViewGetMapping::class, \ReflectionAttribute::IS_INSTANCEOF)[0]
+            if (($attribute = $rMethod->getAttributes(ViewGetMapping::class, ReflectionAttribute::IS_INSTANCEOF)[0]
                     ?? null) === null
             ) {
                 continue;
