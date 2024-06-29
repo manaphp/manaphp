@@ -153,14 +153,12 @@ class DbCommand extends Command
      * @param string $connection
      * @param string $class
      * @param string $table
-     * @param bool   $optimized
      * @param bool   $camelized
      *
      * @return string
      */
-    protected function renderEntity(string $connection, string $class, string $table, bool $optimized = false,
-        bool $camelized = false
-    ): string {
+    protected function renderEntity(string $connection, string $class, string $table, bool $camelized = false): string
+    {
         $db = $this->connector->get($connection);
         $metadata = $db->getMetadata($table);
 
@@ -326,14 +324,12 @@ class DbCommand extends Command
      *
      * @param string $table      table name
      * @param string $connection connection name
-     * @param bool   $optimized  output as more methods as possible
      * @param bool   $camelized
      *
      * @return void
      */
-    public function entityAction(string $table, string $connection = '', bool $optimized = false,
-        bool $camelized = false
-    ): void {
+    public function entityAction(string $table, string $connection = '', bool $camelized = false): void
+    {
         if ($connection) {
             $db = $this->connector->get($connection);
             if (!in_array($table, $db->getTables(), true)) {
@@ -355,7 +351,7 @@ class DbCommand extends Command
         $plainClass = Str::pascalize($table);
         $fileName = "@runtime/db_entity/$plainClass.php";
         $class = "App\Entities\\$plainClass";
-        $entity_str = $this->renderEntity($connection, $class, $table, $optimized, $camelized);
+        $entity_str = $this->renderEntity($connection, $class, $table, $camelized);
         LocalFS::filePut($fileName, $entity_str);
 
         $this->console->writeLn("`$table` table saved to `$fileName`");
@@ -371,9 +367,8 @@ class DbCommand extends Command
      *
      * @return void
      */
-    public function entitiesAction(array $connections = [], string $table_pattern = '', bool $optimized = false,
-        bool $camelized = false
-    ): void {
+    public function entitiesAction(array $connections = [], string $table_pattern = '', bool $camelized = false): void
+    {
         $areas = $this->getAreas();
 
         foreach ($connections ?: $this->getConnections() as $connection) {
@@ -390,7 +385,7 @@ class DbCommand extends Command
                     }
                 }
 
-                $entity_str = $this->renderEntity($connection, $class, $table, $optimized, $camelized);
+                $entity_str = $this->renderEntity($connection, $class, $table, $camelized);
                 LocalFS::filePut($fileName, $entity_str);
 
                 $this->console->writeLn(" `$table` table saved to `$fileName`");
