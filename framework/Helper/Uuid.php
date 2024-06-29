@@ -32,9 +32,13 @@ class Uuid
         );
     }
 
-    public static function encode_int32(int $n): string
+    public static function encode_int32(int $n): string|false
     {
         $bytes = unpack('n1a/n1g/n1b/n1c/n1d/n1e/N1f', random_bytes(16));
+        if ($bytes === false) {
+            return false;
+        }
+
         $bytes['b'] = (~$bytes['a'] ^ ($n >> 16)) & 0xFFFF;
         $bytes['c'] = (~$bytes['g'] ^ $n) & 0xFFFF;
 
