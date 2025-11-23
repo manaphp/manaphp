@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rendering;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Coroutine\ContextAware;
 use ManaPHP\Coroutine\ContextManagerInterface;
 use ManaPHP\Coroutine\Mutex;
@@ -34,12 +34,11 @@ class Renderer implements RendererInterface, ContextAware
 {
     #[Autowired] protected ContextManagerInterface $contextManager;
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected EngineFactory $engineFactory;
 
     #[Autowired] protected array $engines
         = ['.phtml' => 'ManaPHP\Rendering\Engine\Php',
-           '.sword' => 'ManaPHP\Rendering\Engine\Sword'];
+            '.sword' => 'ManaPHP\Rendering\Engine\Sword'];
 
     protected array $files = [];
     protected Mutex $mutex;
@@ -80,7 +79,7 @@ class Renderer implements RendererInterface, ContextAware
             $template = dirname(end($context->templates)) . '/' . $template;
         }
 
-        $template = $this->alias->resolve($template);
+        $template = Path::resolve($template);
 
         if (isset($this->files[$template])) {
             list($file, $extension) = $this->files[$template];
@@ -168,7 +167,7 @@ class Renderer implements RendererInterface, ContextAware
             $template = dirname(end($context->templates)) . '/' . $template;
         }
 
-        $template = $this->alias->resolve($template);
+        $template = Path::resolve($template);
 
         if (isset($this->files[$template])) {
             return true;

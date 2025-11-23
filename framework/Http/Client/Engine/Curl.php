@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Engine;
 
-use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Alias\Path;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
@@ -27,8 +26,6 @@ use function substr;
 
 class Curl implements EngineInterface
 {
-    #[Autowired] protected AliasInterface $alias;
-
     protected mixed $curl = null;
 
     public function __destruct()
@@ -125,7 +122,7 @@ class Curl implements EngineInterface
             }
 
             if (($cafile = $request->options['cafile']) !== null) {
-                curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($cafile));
+                curl_setopt($curl, CURLOPT_CAINFO, Path::resolve($cafile));
             } elseif (DIRECTORY_SEPARATOR === '\\') {
                 $request->options['verify_peer'] = false;
             }

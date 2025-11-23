@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ManaPHP\Rendering\Engine\Sword;
 
 use JetBrains\PhpStorm\ArrayShape;
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -20,7 +20,6 @@ use function strlen;
 
 class Compiler
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected RouterInterface $router;
 
     #[Autowired] protected int $hash_length = 12;
@@ -68,7 +67,7 @@ class Compiler
                 }
 
                 $path = '@public' . $url;
-                $file = $this->alias->resolve($path);
+                $file = Path::resolve($path);
                 if (!is_file($file)) {
                     return $match[0];
                 }
@@ -141,8 +140,8 @@ class Compiler
 
     public function compileFile(string $source, string $compiled): static
     {
-        $source = $this->alias->resolve($source);
-        $compiled = $this->alias->resolve($compiled);
+        $source = Path::resolve($source);
+        $compiled = Path::resolve($compiled);
 
         $dir = dirname($compiled);
 
@@ -185,7 +184,7 @@ class Compiler
     protected function getEchoMethods(): array
     {
         $methods = [
-            'compileRawEchos'     => strlen(stripcslashes($this->rawTags[0])),
+            'compileRawEchos' => strlen(stripcslashes($this->rawTags[0])),
             'compileEscapedEchos' => strlen(stripcslashes($this->escapedTags[0])),
         ];
 

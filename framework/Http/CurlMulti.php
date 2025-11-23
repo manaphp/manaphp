@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use Countable;
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
@@ -49,7 +49,6 @@ use function unlink;
 
 class CurlMulti implements CurlMultiInterface, Countable
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected LoggerInterface $logger;
     #[Autowired] protected MakerInterface $maker;
 
@@ -182,7 +181,7 @@ class CurlMulti implements CurlMultiInterface, Countable
 
         if (isset($options['file'])) {
             if ($options['file'] === '') {
-                $request->options['file'] = tempnam($this->alias->resolve('@runtime/curlMulti'), 'curl_');
+                $request->options['file'] = tempnam(Path::resolve('@runtime/curlMulti'), 'curl_');
             }
 
             $file = fopen($request->options['file'], 'wb');

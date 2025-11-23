@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use ManaPHP\AliasInterface;
 use ManaPHP\Debugging\DataDumpInterface;
 use ManaPHP\Di\ConfigInterface;
 use ManaPHP\EnvInterface;
@@ -92,13 +91,6 @@ if (!function_exists('dd')) {
     function dd(mixed $message): void
     {
         Container::get(DataDumpInterface::class)->output($message);
-    }
-}
-
-if (!function_exists('path')) {
-    function path(string $path): string
-    {
-        return Container::get(AliasInterface::class)->resolve($path);
     }
 }
 

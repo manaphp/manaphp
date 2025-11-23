@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Request;
 
 use JsonSerializable;
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
@@ -17,8 +17,6 @@ use function unlink;
 
 class File implements FileInterface, JsonSerializable
 {
-    #[Autowired] protected AliasInterface $alias;
-
     #[Autowired] protected array $file;
 
     public function getSize(): int
@@ -88,13 +86,13 @@ class File implements FileInterface, JsonSerializable
         LocalFS::dirCreate(dirname($dst));
 
         if (PHP_SAPI === 'cli') {
-            LocalFS::fileMove($this->file['tmp_name'], $this->alias->resolve($dst));
-        } elseif (!move_uploaded_file($this->file['tmp_name'], $this->alias->resolve($dst))) {
+            LocalFS::fileMove($this->file['tmp_name'], Path::of($dst));
+        } elseif (!move_uploaded_file($this->file['tmp_name'], Path::resolve($dst))) {
             $error = error_get_last()['message'] ?? '';
             throw new FileException('Could not move uploaded file to destination "{dst}": {error}.', ['dst' => $dst, 'error' => $error]);
         }
 
-        if (!chmod($this->alias->resolve($dst), 0644)) {
+        if (!chmod(Path::resolve($dst), 0644)) {
             $error = error_get_last()['message'] ?? '';
             throw new FileException('Could not set file permissions for destination "{dst}": {error}.', ['dst' => $dst, 'error' => $error]);
         }

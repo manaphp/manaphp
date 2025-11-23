@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Alias\Path;
 use Stringable;
 
 interface ResponseInterface
@@ -60,9 +61,9 @@ interface ResponseInterface
 
     public function hasContent(): bool;
 
-    public function download(string $file, ?string $name = null): static;
+    public function download(Path $file, ?string $name = null): static;
 
-    public function getFile(): ?string;
+    public function getFile(): ?Path;
 
     public function hasFile(): bool;
 

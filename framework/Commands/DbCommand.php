@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Db\Db;
@@ -43,7 +43,6 @@ use function ucfirst;
 
 class DbCommand extends Command
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected DbFactoryInterface $dbFactory;
 
     protected array $tableConstants = [];
@@ -83,7 +82,7 @@ class DbCommand extends Command
         }
 
         $constants = '';
-        foreach (file($this->alias->resolve($file)) as $line) {
+        foreach (file(Path::resolve($file)) as $line) {
             if (preg_match('#^\s+const\s+[A-Z\d_]+\s*=#', $line) === 1) {
                 $constants .= $line;
             } elseif (trim($line) === '') {
@@ -488,7 +487,7 @@ class DbCommand extends Command
                 LocalFS::dirCreate(dirname($fileName));
                 $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
-                $file = fopen($this->alias->resolve($fileName), 'wb');
+                $file = fopen(Path::resolve($fileName), 'wb');
 
                 $startTime = microtime(true);
                 foreach ($rows as $row) {
@@ -524,7 +523,7 @@ class DbCommand extends Command
                 $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
 
-                $file = fopen($this->alias->resolve($fileName), 'wb');
+                $file = fopen(Path::resolve($fileName), 'wb');
 
                 if ($bom) {
                     fprintf($file, "\xEF\xBB\xBF");

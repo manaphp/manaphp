@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter\Native;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\SuppressWarnings;
@@ -25,7 +25,6 @@ class Sender implements SenderInterface
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected ResponseInterface $response;
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected RouterInterface $router;
 
     public function sendHeaders(): void
@@ -66,7 +65,7 @@ class Sender implements SenderInterface
         } elseif ($this->request->method() === 'HEAD') {
             header('Content-Length: ' . strlen($content));
         } elseif ($file = $this->response->getFile()) {
-            readfile($this->alias->resolve($file));
+            readfile(Path::resolve($file));
         } else {
             echo $content;
         }

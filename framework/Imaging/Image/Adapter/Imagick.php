@@ -7,8 +7,7 @@ namespace ManaPHP\Imaging\Image\Adapter;
 use Imagick as PhpImagick;
 use ImagickDraw;
 use ImagickPixel;
-use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Alias\Path;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidFormatException;
@@ -27,21 +26,18 @@ use function strtolower;
 
 class Imagick extends AbstractImage
 {
-    #[Autowired] protected AliasInterface $alias;
-
     protected string $file;
     protected PhpImagick $image;
     protected int $width;
     protected int $height;
 
-    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(string $file)
     {
         if (!extension_loaded('imagick')) {
             throw new ExtensionNotInstalledException('Imagick extension is not installed.');
         }
 
-        $this->file = realpath($this->alias->resolve($file));
+        $this->file = realpath(Path::resolve($file));
         if (!$this->file) {
             throw new InvalidValueException('The image file "{file}" does not exist.', ['file' => $file]);
         }
@@ -128,7 +124,7 @@ class Imagick extends AbstractImage
         $textColor = sprintf('rgb(%u,%u,%u)', ($color >> 16) & 0xFF, ($color >> 8) & 0xFF, $color & 0xFF);
         $draw->setFillColor(new ImagickPixel($textColor));
         if ($font_file) {
-            $draw->setFont($this->alias->resolve($font_file));
+            $draw->setFont(Path::resolve($font_file));
         }
         $draw->setFontSize($size);
         $draw->setFillOpacity($opacity);
@@ -141,7 +137,7 @@ class Imagick extends AbstractImage
 
     public function do_watermark(string $file, int $offsetX = 0, int $offsetY = 0, float $opacity = 1.0): static
     {
-        $watermark = new PhpImagick($this->alias->resolve($file));
+        $watermark = new PhpImagick(Path::resolve($file));
 
         /** @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection */
         if ($watermark->getImageAlphaChannel() === PhpImagick::ALPHACHANNEL_UNDEFINED) {
@@ -172,7 +168,7 @@ class Imagick extends AbstractImage
 
     public function do_save(string $file, int $quality = 80): void
     {
-        $file = $this->alias->resolve($file);
+        $file = Path::resolve($file);
 
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 

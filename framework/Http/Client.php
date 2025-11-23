@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Helper\SuppressWarnings;
@@ -52,7 +51,6 @@ use function trim;
 class Client implements ClientInterface
 {
     #[Autowired] protected EventDispatcherInterface $eventDispatcher;
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected PoolsInterface $pools;
 
     #[Autowired] protected string $engine = 'ManaPHP\Http\Client\Engine';

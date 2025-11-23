@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\ListenerProviderInterface;
@@ -21,7 +21,6 @@ use function xdebug_stop_trace;
 class XdebugTracer implements XdebugTracerInterface
 {
     #[Autowired] protected ListenerProviderInterface $listenerProvider;
-    #[Autowired] protected AliasInterface $alias;
 
     #[Autowired] protected int $params = 3;
     #[Autowired] protected int $return = 0;
@@ -42,7 +41,7 @@ class XdebugTracer implements XdebugTracerInterface
     {
         SuppressWarnings::unused($event);
 
-        $file = $this->alias->resolve('@runtime/backtrace/trace_{ymd_His}_{8}.log');
+        $file = Path::resolve('@runtime/backtrace/trace_{ymd_His}_{8}.log');
         $dir = dirname($file);
         if (!is_dir($dir)) {
             /** @noinspection MkdirRaceConditionInspection */

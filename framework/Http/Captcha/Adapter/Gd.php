@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Captcha\Adapter;
 
+use ManaPHP\Alias\Path;
 use ManaPHP\Http\AbstractCaptcha;
 use function count;
 use function explode;
@@ -29,7 +30,7 @@ class Gd extends AbstractCaptcha
 
         imagefilledrectangle($image, 0, 0, $width, $height, $bgColor);
 
-        $font_file = $this->alias->resolve($this->fonts[random_int(0, count($this->fonts) - 1)]);
+        $font_file = Path::resolve($this->fonts[random_int(0, count($this->fonts) - 1)]);
 
         $x = 0;
         $length = strlen($code);
@@ -43,7 +44,7 @@ class Gd extends AbstractCaptcha
         }
 
         for ($k = 0; $k < $this->char_noise; $k++) {
-            $font_file = $this->alias->resolve($this->fonts[random_int(0, count($this->fonts) - 1)]);
+            $font_file = Path::resolve($this->fonts[random_int(0, count($this->fonts) - 1)]);
 
             $y = random_int((int)($height * 0.3), (int)($height * 0.7));
             $x = random_int(0, $width) - $this->size;

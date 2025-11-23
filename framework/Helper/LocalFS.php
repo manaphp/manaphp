@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\RuntimeException;
@@ -36,21 +36,19 @@ use function unlink;
 
 class LocalFS
 {
-    public static AliasInterface $alias;
-
-    public static function fileExists(string $file): bool
+    public static function fileExists(string|Path $file): bool
     {
-        return is_file(self::$alias->resolve($file));
+        return is_file(Path::resolve($file));
     }
 
-    public static function fileSize(string $file): ?int
+    public static function fileSize(string|Path $file): ?int
     {
-        $v = @filesize(self::$alias->resolve($file));
+        $v = @filesize(Path::resolve($file));
 
         return $v === false ? null : $v;
     }
 
-    public static function fileDelete(string $file): void
+    public static function fileDelete(string|Path $file): void
     {
         if (str_contains($file, '*')) {
             foreach (self::files($file) as $f) {
@@ -60,7 +58,7 @@ class LocalFS
                 }
             }
         } else {
-            $file = self::$alias->resolve($file);
+            $file = Path::resolve($file);
 
             if (!unlink($file) && self::fileExists($file)) {
                 $error = error_get_last()['message'] ?? '';
@@ -69,25 +67,25 @@ class LocalFS
         }
     }
 
-    protected static function dirCreateInternal(string $dir, int $mode = 0755): void
+    protected static function dirCreateInternal(string|Path $dir, int $mode = 0755): void
     {
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
         }
     }
 
-    public static function fileGet(string $file): string
+    public static function fileGet(string|Path $file): string
     {
-        if (($r = @file_get_contents(self::$alias->resolve($file))) === false) {
+        if (($r = @file_get_contents(Path::resolve($file))) === false) {
             throw new FileNotFoundException($file);
         }
 
         return $r;
     }
 
-    public static function filePut(string $file, string $data): void
+    public static function filePut(string|Path $file, string $data): void
     {
-        $file = self::$alias->resolve($file);
+        $file = Path::resolve($file);
 
         self::dirCreateInternal(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
@@ -96,9 +94,9 @@ class LocalFS
         }
     }
 
-    public static function fileAppend(string $file, string $data): void
+    public static function fileAppend(string|Path $file, string $data): void
     {
-        $file = self::$alias->resolve($file);
+        $file = Path::resolve($file);
         self::dirCreateInternal(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
@@ -107,10 +105,10 @@ class LocalFS
         }
     }
 
-    public static function fileMove(string $src, string $dst, bool $overwrite = false): void
+    public static function fileMove(string|Path $src, string|Path $dst, bool $overwrite = false): void
     {
-        $src = self::$alias->resolve($src);
-        $dst = self::$alias->resolve($dst);
+        $src = Path::resolve($src);
+        $dst = Path::resolve($dst);
 
         if (rtrim($dst, '\\/') !== $dst) {
             $dst .= basename($src);
@@ -130,14 +128,14 @@ class LocalFS
         }
     }
 
-    public static function fileCopy(string $src, string $dst, bool $overwrite = false): void
+    public static function fileCopy(string|Path $src, string|Path $dst, bool $overwrite = false): void
     {
         if (rtrim($dst, '\\/') !== $dst) {
             $dst .= basename($src);
         }
 
-        $src = self::$alias->resolve($src);
-        $dst = self::$alias->resolve($dst);
+        $src = Path::resolve($src);
+        $dst = Path::resolve($dst);
 
         if ($overwrite || !is_file($dst)) {
             self::dirCreateInternal(dirname($dst));
@@ -149,12 +147,12 @@ class LocalFS
         }
     }
 
-    public static function dirExists(string $dir): bool
+    public static function dirExists(string|Path $dir): bool
     {
-        return is_dir(self::$alias->resolve($dir));
+        return is_dir(Path::resolve($dir));
     }
 
-    protected static function dirDeleteInternal(string $dir): void
+    protected static function dirDeleteInternal(string|Path $dir): void
     {
         foreach (scandir($dir, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -180,9 +178,9 @@ class LocalFS
         }
     }
 
-    public static function dirDelete(string $dir): void
+    public static function dirDelete(string|Path $dir): void
     {
-        $dir = self::$alias->resolve($dir);
+        $dir = Path::resolve($dir);
 
         if (!is_dir($dir)) {
             return;
@@ -191,22 +189,22 @@ class LocalFS
         self::dirDeleteInternal($dir);
     }
 
-    public static function dirCreate(string $dir, int $mode = 0755): void
+    public static function dirCreate(string|Path $dir, int $mode = 0755): void
     {
-        self::dirCreateInternal(self::$alias->resolve($dir), $mode);
+        self::dirCreateInternal(Path::resolve($dir), $mode);
     }
 
-    public static function dirReCreate(string $dir, int $mode = 0755): void
+    public static function dirReCreate(string|Path $dir, int $mode = 0755): void
     {
         self::dirDelete($dir);
 
         self::dirCreate($dir, $mode);
     }
 
-    public static function dirMove(string $src, string $dst, bool $overwrite = false): void
+    public static function dirMove(string|Path $src, string|Path $dst, bool $overwrite = false): void
     {
-        $src = self::$alias->resolve($src);
-        $dst = self::$alias->resolve($dst);
+        $src = Path::resolve($src);
+        $dst = Path::resolve($dst);
 
         if (!$overwrite && is_dir($dst)) {
             throw new RuntimeException('Unable to move directory "{src}" to "{dst}": destination directory already exists and overwrite is disabled.', ['src' => $src, 'dst' => $dst]);
@@ -222,7 +220,7 @@ class LocalFS
         }
     }
 
-    protected static function dirCopyInternal(string $src, string $dst, bool $overwrite): void
+    protected static function dirCopyInternal(string|Path $src, string|Path $dst, bool $overwrite): void
     {
         foreach (scandir($src, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -249,10 +247,10 @@ class LocalFS
         }
     }
 
-    public static function dirCopy(string $src, string $dst, bool $overwrite = false): void
+    public static function dirCopy(string|Path $src, string|Path $dst, bool $overwrite = false): void
     {
-        $src = self::$alias->resolve($src);
-        $dst = self::$alias->resolve($dst);
+        $src = Path::resolve($src);
+        $dst = Path::resolve($dst);
 
         if (!is_dir($src)) {
             throw new RuntimeException('Unable to copy directory "{src}" to "{dst}": source directory does not exist.', ['src' => $src, 'dst' => $dst]);
@@ -261,9 +259,9 @@ class LocalFS
         self::dirCopyInternal($src, $dst, $overwrite);
     }
 
-    public static function glob(string $pattern, int $flags = 0): array
+    public static function glob(string|Path $pattern, int $flags = 0): array
     {
-        $pattern = self::$alias->resolve($pattern);
+        $pattern = Path::resolve($pattern);
 
         if (str_starts_with($pattern, 'phar://')) {
             $dir = dirname($pattern);
@@ -304,9 +302,9 @@ class LocalFS
         return $r;
     }
 
-    public static function scandir(string $dir, int $sorting_order = SCANDIR_SORT_ASCENDING): array
+    public static function scandir(string|Path $dir, int $sorting_order = SCANDIR_SORT_ASCENDING): array
     {
-        $r = @scandir(self::$alias->resolve($dir), $sorting_order);
+        $r = @scandir(Path::resolve($dir), $sorting_order);
         if ($r === false) {
             $error = error_get_last()['message'] ?? '';
             throw new RuntimeException('Failed to scan directory "{dir}": {error}.', ['dir' => $dir, 'error' => $error]);
@@ -322,9 +320,9 @@ class LocalFS
         return $items;
     }
 
-    public static function files(string $dir): array
+    public static function files(string|Path $dir): array
     {
-        $dir = self::$alias->resolve($dir);
+        $dir = Path::resolve($dir);
 
         $files = [];
         foreach (self::glob($dir . (str_contains($dir, '*') ? '' : '/*'), SCANDIR_SORT_ASCENDING) as $item) {
@@ -336,25 +334,23 @@ class LocalFS
         return $files;
     }
 
-    public static function directories(string $dir): array
+    public static function directories(string|Path $dir): array
     {
         return self::glob($dir . (str_contains($dir, '*') ? '' : '/*'), GLOB_ONLYDIR);
     }
 
-    public static function getModifiedTime(string $path): ?int
+    public static function getModifiedTime(string|Path $path): ?int
     {
-        $v = filemtime(self::$alias->resolve($path));
+        $v = filemtime(Path::resolve($path));
 
         return $v === false ? null : $v;
     }
 
-    public static function chmod(string $file, int $mode): void
+    public static function chmod(string|Path $file, int $mode): void
     {
-        if (!chmod(self::$alias->resolve($file), $mode)) {
+        if (!chmod(Path::resolve($file), $mode)) {
             $error = error_get_last()['message'] ?? '';
             throw new RuntimeException('Failed to change file "{file}" mode to "{mode}": {error}.', ['file' => $file, 'mode' => $mode, 'error' => $error]);
         }
     }
 }
-
-LocalFS::$alias = Container::get(AliasInterface::class);

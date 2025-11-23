@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Alias\Path;
+
 class ResponseContext
 {
     public int $status_code = 200;
@@ -11,6 +13,6 @@ class ResponseContext
     public array $headers = [];
     public array $cookies = [];
     public mixed $content = null;
-    public ?string $file = null;
+    public ?Path $file = null;
     public bool $chunked = false;
 }

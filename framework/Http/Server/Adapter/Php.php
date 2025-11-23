@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
@@ -22,7 +22,6 @@ class Php extends AbstractServer
 {
     #[Autowired] protected SenderInterface $sender;
     #[Autowired] protected StaticHandlerInterface $staticHandler;
-    #[Autowired] protected AliasInterface $alias;
 
     #[Autowired] protected array $settings = [];
 
@@ -56,7 +55,7 @@ class Php extends AbstractServer
                 putenv("PHP_CLI_SERVER_WORKERS=$worker_num");
             }
 
-            $public_dir = $this->alias->resolve('@public');
+            $public_dir = Path::resolve('@public');
 
             $index = @get_included_files()[0];
             $cmd = PHP_BINARY . " -S $this->host:$this->port -t $public_dir  $index";

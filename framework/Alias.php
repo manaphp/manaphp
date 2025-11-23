@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
+use ManaPHP\Alias\AliasNotExistException;
+use ManaPHP\Alias\InvalidAliasNameException;
 use ManaPHP\Di\Attribute\Autowired;
-use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Exception\MisuseException;
 use function bin2hex;
 use function date;
 use function is_numeric;
@@ -32,8 +32,8 @@ class Alias implements AliasInterface, JsonSerializable
 
     public function set(string $name, string $path): string
     {
-        if ($name[0] !== '@') {
-            throw new MisuseException('The alias name "{name}" must start with "@" character.', ['name' => $name]);
+        if (!str_starts_with($name, '@')) {
+            throw new InvalidAliasNameException($name);
         }
 
         if ($path === '') {
@@ -53,8 +53,8 @@ class Alias implements AliasInterface, JsonSerializable
 
     public function get(string $name): ?string
     {
-        if ($name[0] !== '@') {
-            throw new MisuseException('The alias name "{name}" must start with "@" character.', ['name' => $name]);
+        if (!str_starts_with($name, '@')) {
+            throw new InvalidAliasNameException($name);
         }
 
         return $this->aliases[$name] ?? null;
@@ -62,8 +62,8 @@ class Alias implements AliasInterface, JsonSerializable
 
     public function has(string $name): bool
     {
-        if ($name[0] !== '@') {
-            throw new MisuseException('The alias name "{name}" must start with "@" character.', ['name' => $name]);
+        if (!str_starts_with($name, '@')) {
+            throw new InvalidAliasNameException($name);
         }
 
         return isset($this->aliases[$name]);
@@ -71,7 +71,7 @@ class Alias implements AliasInterface, JsonSerializable
 
     public function resolve(string $path): string
     {
-        if ($path[0] !== '@') {
+        if (!str_starts_with($path, '@')) {
             return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
         }
 
@@ -94,7 +94,7 @@ class Alias implements AliasInterface, JsonSerializable
 
         if (($pos = strpos($path, '/')) === false) {
             if (!isset($this->aliases[$path])) {
-                throw new InvalidArgumentException('The alias "{path}" is not defined.', ['path' => $path]);
+                throw new AliasNotExistException('The alias "{path}" is not defined.', ['path' => $path]);
             }
             return $this->aliases[$path];
         }
@@ -102,7 +102,7 @@ class Alias implements AliasInterface, JsonSerializable
         $alias = substr($path, 0, $pos);
 
         if (!isset($this->aliases[$alias])) {
-            throw new InvalidArgumentException('The alias "{alias}" does not exist for path "{path}".', ['alias' => $alias, 'path' => $path]);
+            throw new AliasNotExistException('The alias "{alias}" does not exist for path "{path}".', ['alias' => $alias, 'path' => $path]);
         }
 
         return $this->aliases[$alias] . substr($path, $pos);

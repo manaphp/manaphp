@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace ManaPHP\Db\Connection\Adapter;
 
 use JetBrains\PhpStorm\ArrayShape;
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Db\AbstractConnection;
 use ManaPHP\Db\Db;
-use ManaPHP\Di\Attribute\Autowired;
 use PDO;
 use function explode;
 use function str_contains;
@@ -16,14 +15,12 @@ use function str_replace;
 
 class Sqlite extends AbstractConnection
 {
-    #[Autowired] protected AliasInterface $alias;
-
     /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct()
     {
         $file = $this->uri;
 
-        $this->dsn = 'sqlite:' . ($file[0] === '@' ? $this->alias->resolve($file) : $file);
+        $this->dsn = 'sqlite:' . Path::resolve($file);
         parent::__construct();
     }
 

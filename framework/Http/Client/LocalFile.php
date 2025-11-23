@@ -6,8 +6,7 @@ namespace ManaPHP\Http\Client;
 
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
-use ManaPHP\AliasInterface;
-use ManaPHP\Helper\Container;
+use ManaPHP\Alias\Path;
 use function basename;
 use function file_exists;
 use function file_get_contents;
@@ -19,9 +18,9 @@ class LocalFile implements FileInterface, JsonSerializable
     protected ?string $mimeType;
     protected string $postName;
 
-    public function __construct(string $fileName, ?string $mimeType = null, ?string $postName = null)
+    public function __construct(string|Path $fileName, ?string $mimeType = null, ?string $postName = null)
     {
-        $fileName = $fileName[0] === '@' ? Container::get(AliasInterface::class)->resolve($fileName) : $fileName;
+        $fileName = Path::resolve($fileName);
 
         if (!file_exists($fileName)) {
             throw new Exception('File "{fileName}" does not exist.', ['fileName' => $fileName]);

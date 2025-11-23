@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Router\Matcher;
 use ManaPHP\Http\Router\MatcherInterface;
@@ -29,7 +28,6 @@ use function substr;
 
 class Router implements RouterInterface
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected RequestInterface $request;
     #[Autowired] protected PatternCompilerInterface $patternCompiler;
 

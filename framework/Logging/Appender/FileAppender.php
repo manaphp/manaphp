@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Appender;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Logging\AppenderInterface;
@@ -22,8 +22,6 @@ use function trigger_error;
 
 class FileAppender implements AppenderInterface
 {
-    #[Autowired] protected AliasInterface $alias;
-
     #[Autowired] protected string $file = '@runtime/logger/{app_id}.log';
     #[Autowired] protected string $line_format = '[:time][:level][:category][:location] :message';
 
@@ -58,7 +56,7 @@ class FileAppender implements AppenderInterface
      */
     protected function write(string $str): void
     {
-        $file = $this->alias->resolve(strtr($this->file, ['{app_id}' => $this->app_id]));
+        $file = Path::resolve(strtr($this->file, ['{app_id}' => $this->app_id]));
         if (!is_file($file)) {
             $dir = dirname($file);
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {

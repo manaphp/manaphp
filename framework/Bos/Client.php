@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Bos;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
@@ -21,7 +21,6 @@ use function str_replace;
 
 class Client implements ClientInterface
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected HttpClientInterface $httpClient;
 
     #[Autowired] protected string $endpoint;
@@ -94,11 +93,11 @@ class Client implements ClientInterface
             . jwt_encode($policy, $ttl, 'bos.object.create.request');
     }
 
-    public function putObject(string $file, string $bucket, string $key, array $policy = []): array
+    public function putObject(string|Path $file, string $bucket, string $key, array $policy = []): array
     {
         $url = $this->getPutObjectUrl($bucket, $key, $policy);
 
-        $file = $this->alias->resolve($file);
+        $file = Path::resolve($file);
 
         $curl_file = curl_file_create($file, mime_content_type($file), basename($file));
 

@@ -3,6 +3,7 @@
 namespace Tests;
 
 use ManaPHP\Alias;
+use ManaPHP\Alias\InvalidAliasNameException;
 use PHPUnit\Framework\TestCase;
 
 class AliasTest extends TestCase
@@ -25,7 +26,7 @@ class AliasTest extends TestCase
             $alias->set('a', 'fdf');
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
-            $this->assertInstanceOf('ManaPHP\Exception\MisuseException', $e);
+            $this->assertInstanceOf(InvalidAliasNameException::class, $e);
         }
     }
 
@@ -40,7 +41,7 @@ class AliasTest extends TestCase
             $alias->get('app');
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
-            $this->assertInstanceOf('ManaPHP\Exception\MisuseException', $e);
+            $this->assertInstanceOf(InvalidAliasNameException::class, $e);
         }
     }
 

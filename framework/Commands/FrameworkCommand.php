@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Cli\Command;
-use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
 use function array_merge;
 use function asort;
@@ -29,8 +28,6 @@ use function substr_count;
 
 class FrameworkCommand extends Command
 {
-    #[Autowired] protected AliasInterface $alias;
-
     /**
      * @param string $str
      *
@@ -38,9 +35,9 @@ class FrameworkCommand extends Command
      */
     protected function stripWhitespaces(string $str): string
     {
-        $tmp = '@runtime/framework/strip.tmp';
+        $tmp = Path::resolve('@runtime/framework/strip.tmp');
         LocalFS::filePut($tmp, $str);
-        return php_strip_whitespace($this->alias->resolve($tmp));
+        return php_strip_whitespace($tmp);
         //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
         //        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
         //        $str = preg_replace('#([\r\n]+)\s+{#', '{', $str);//repositionClose;
@@ -95,7 +92,7 @@ class FrameworkCommand extends Command
      */
     public function minifyAction(): int
     {
-        $ManaPHPSrcDir = $this->alias->get('@manaphp');
+        $ManaPHPSrcDir = Path::resolve('@manaphp');
         $ManaPHPDstDir = $ManaPHPSrcDir . '_' . date('ymd');
         $totalClassLines = 0;
         $totalInterfaceLines = 0;

@@ -7,6 +7,7 @@ namespace ManaPHP\Http;
 use DateTime;
 use DateTimeZone;
 use JsonSerializable;
+use ManaPHP\Alias\Path;
 use ManaPHP\Coroutine\ContextAware;
 use ManaPHP\Coroutine\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
@@ -22,7 +23,6 @@ use ManaPHP\Http\Response\Appenders\ResponseTimeAppender;
 use ManaPHP\Http\Response\Appenders\RouteAppender;
 use Stringable;
 use function array_keys;
-use function basename;
 use function current;
 use function explode;
 use function fclose;
@@ -82,12 +82,12 @@ class Response implements ResponseInterface, ContextAware
         }
 
         $context->cookies[$name] = [
-            'name'     => $name,
-            'value'    => $value,
-            'expire'   => $expire,
-            'path'     => $path,
-            'domain'   => $domain,
-            'secure'   => $secure,
+            'name' => $name,
+            'value' => $value,
+            'expire' => $expire,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
             'httponly' => $httponly
         ];
 
@@ -349,7 +349,7 @@ class Response implements ResponseInterface, ContextAware
         return $content !== '' && $content !== null;
     }
 
-    public function download(string $file, ?string $name = null): static
+    public function download(Path $file, ?string $name = null): static
     {
         $context = $this->getContext();
 
@@ -360,12 +360,12 @@ class Response implements ResponseInterface, ContextAware
 
         $context->file = $file;
 
-        $this->setAttachment($name ?? basename($file));
+        $this->setAttachment($name ?? Path::basename($file));
 
         return $this;
     }
 
-    public function getFile(): ?string
+    public function getFile(): ?Path
     {
         return $this->getContext()->file;
     }

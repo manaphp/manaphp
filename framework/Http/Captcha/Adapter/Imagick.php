@@ -7,6 +7,7 @@ namespace ManaPHP\Http\Captcha\Adapter;
 use Imagick as PhpImagick;
 use ImagickDraw;
 use ImagickPixel;
+use ManaPHP\Alias\Path;
 use ManaPHP\Http\AbstractCaptcha;
 use function count;
 use function min;
@@ -20,7 +21,7 @@ class Imagick extends AbstractCaptcha
         $image = new PhpImagick();
         $draw = new ImagickDraw();
         $image->newImage($width, $height, new ImagickPixel('rgb(' . $this->bg_rgb . ')'));
-        $draw->setFont($this->alias->resolve($this->fonts[random_int(0, count($this->fonts) - 1)]));
+        $draw->setFont(Path::resolve($this->fonts[random_int(0, count($this->fonts) - 1)]));
         $draw->setGravity(PhpImagick::GRAVITY_NORTHWEST);
 
         $referenceFontSize = min($height, $width / $this->length);

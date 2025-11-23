@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Helper\LocalFS;
@@ -13,7 +13,6 @@ use function str_replace;
 
 class SwordCommand extends Command
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected Compiler $swordCompiler;
 
     /**
@@ -52,7 +51,7 @@ class SwordCommand extends Command
         if ($replace) {
             $compiled = str_replace('.sword', '.phtml', $file);
         } else {
-            $compiled = str_replace($this->alias->get('@root'), $this->alias->resolve('@runtime/sword'), $file);
+            $compiled = str_replace(Path::resolve('@root'), Path::resolve('@runtime/sword'), $file);
         }
 
         $this->swordCompiler->compileFile($file, $compiled);

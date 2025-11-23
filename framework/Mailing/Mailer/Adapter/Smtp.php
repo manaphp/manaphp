@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Coroutine\ContextAware;
 use ManaPHP\Coroutine\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
@@ -46,7 +46,6 @@ use function strlen;
 class Smtp extends AbstractMailer implements ContextAware
 {
     #[Autowired] protected ContextManagerInterface $contextManager;
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected LoggerInterface $logger;
 
     #[Autowired] protected string $uri;
@@ -139,7 +138,7 @@ class Smtp extends AbstractMailer implements ContextAware
             throw new ConnectionException('SMTP server response "{response}" does not indicate ready state (expected 220).', ['response' => trim($response)]);
         }
 
-        $context->file = $this->alias->resolve('@runtime/mail/{ymd}/{ymd_His_}{16}.log');
+        $context->file = Path::resolve('@runtime/mail/{ymd}/{ymd_His_}{16}.log');
 
         /** @noinspection MkdirRaceConditionInspection */
         @mkdir(dirname($context->file), 0777, true);
@@ -239,7 +238,7 @@ class Smtp extends AbstractMailer implements ContextAware
     protected function sendAttachments(array $attachments, string $boundary): static
     {
         foreach ($attachments as $attachment) {
-            $file = $this->alias->resolve($attachment['file']);
+            $file = Path::resolve($attachment['file']);
             if (!is_file($file)) {
                 throw new InvalidValueException('Email attachment file "{file}" does not exist or is not accessible.', ['file' => $file]);
             }
@@ -260,7 +259,7 @@ class Smtp extends AbstractMailer implements ContextAware
     protected function sendEmbeddedFiles(array $embeddedFiles, string $boundary): static
     {
         foreach ($embeddedFiles as $embeddedFile) {
-            if (!is_file($file = $this->alias->resolve($embeddedFile['file']))) {
+            if (!is_file($file = Path::resolve($embeddedFile['file']))) {
                 throw new InvalidValueException('Email inline attachment file "{file}" does not exist or is not accessible.', ['file' => $file]);
             }
             $this->writeLine()

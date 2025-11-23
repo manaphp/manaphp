@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace ManaPHP\Imaging\Image\Adapter;
 
 use GdImage;
-use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Alias\Path;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\FileNotFoundException;
@@ -17,21 +16,18 @@ use function extension_loaded;
 
 class Gd extends AbstractImage
 {
-    #[Autowired] protected AliasInterface $alias;
-
     protected string $file;
     protected GdImage $image;
     protected int $width;
     protected int $height;
 
-    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(string $file)
     {
         if (!extension_loaded('gd')) {
             throw new ExtensionNotInstalledException('GD extension is not installed.');
         }
 
-        $this->file = realpath($this->alias->resolve($file));
+        $this->file = realpath(Path::resolve($file));
         if (!$this->file) {
             throw new FileNotFoundException('File "{file}" does not exist.', ['file' => $file]);
         }
@@ -138,7 +134,7 @@ class Gd extends AbstractImage
         $blue = $color & 0xFF;
         $textColor = imagecolorallocatealpha($this->image, $red, $green, $blue, abs(1 - $opacity) * 127);
         if ($font_file) {
-            $font_file = $this->alias->resolve($font_file);
+            $font_file = Path::resolve($font_file);
             imagettftext($this->image, $size, 0, $offsetX, $offsetY, $textColor, $font_file, $text);
         } else {
             imagestring($this->image, $size, $offsetX, $offsetY, $text, $textColor);
@@ -149,7 +145,7 @@ class Gd extends AbstractImage
 
     public function do_watermark(string $file, int $offsetX = 0, int $offsetY = 0, float $opacity = 1.0): static
     {
-        $file = $this->alias->resolve($file);
+        $file = Path::resolve($file);
 
         list($maskWidth, $maskHeight, $maskType) = getimagesize($file);
 
@@ -184,7 +180,7 @@ class Gd extends AbstractImage
 
     public function do_save(string $file, int $quality = 80): void
     {
-        $file = $this->alias->resolve($file);
+        $file = Path::resolve($file);
 
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if ($ext === '') {

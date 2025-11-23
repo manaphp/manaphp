@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Http\AbstractSession;
@@ -28,8 +28,6 @@ use function unlink;
 
 class File extends AbstractSession
 {
-    #[Autowired] protected AliasInterface $alias;
-
     #[Autowired] protected string $dir = '@runtime/session';
     #[Autowired] protected string $extension = '.session';
     #[Autowired] protected int $level = 1;
@@ -42,7 +40,7 @@ class File extends AbstractSession
             $shard .= '/' . substr($sessionId, $i + $i, 2);
         }
 
-        return $this->alias->resolve($this->dir . $shard . '/' . $sessionId . $this->extension);
+        return Path::resolve($this->dir . $shard . '/' . $sessionId . $this->extension);
     }
 
     public function do_read(string $session_id): string
@@ -102,7 +100,7 @@ class File extends AbstractSession
 
     public function do_gc(int $ttl): void
     {
-        $dir = $this->alias->resolve($this->dir);
+        $dir = Path::resolve($this->dir);
         if (is_dir($dir)) {
             $this->clean($dir);
         }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\Captcha\InvalidCaptchaException;
 use function random_int;
@@ -14,7 +13,6 @@ use function time;
 
 abstract class AbstractCaptcha implements CaptchaInterface
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected ResponseInterface $response;
     #[Autowired] protected SessionInterface $session;
 

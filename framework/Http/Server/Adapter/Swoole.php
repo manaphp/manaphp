@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Coroutine\ContextAware;
 use ManaPHP\Coroutine\ContextManagerInterface;
 use ManaPHP\Di\Attribute\Autowired;
@@ -53,7 +53,6 @@ use function substr;
 class Swoole extends AbstractServer implements ContextAware
 {
     #[Autowired] protected ContextManagerInterface $contextManager;
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected StaticHandlerInterface|Lazy $staticHandler;
     #[Autowired] protected LoggerInterface $logger;
 
@@ -360,7 +359,7 @@ class Swoole extends AbstractServer implements ContextAware
             $response->header('Content-Length', (string)strlen($content), false);
             $response->end('');
         } elseif ($file = $this->response->getFile()) {
-            $response->sendfile($this->alias->resolve($file));
+            $response->sendfile(Path::resolve($file));
         } else {
             $response->end($content);
         }

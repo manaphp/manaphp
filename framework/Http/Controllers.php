@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Alias\Path;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
@@ -16,8 +15,6 @@ use function substr;
 
 class Controllers implements ControllersInterface
 {
-    #[Autowired] protected AliasInterface $alias;
-
     protected ?array $controllers = null;
 
     public function getControllers(): array
@@ -26,12 +23,12 @@ class Controllers implements ControllersInterface
             $controllers = [];
 
             foreach (LocalFS::glob('@app/Controllers/?*Controller.php') as $item) {
-                $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
+                $controller = str_replace(Path::resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 
             foreach (LocalFS::glob('@app/Areas/*/Controllers/?*Controller.php') as $item) {
-                $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
+                $controller = str_replace(Path::resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 

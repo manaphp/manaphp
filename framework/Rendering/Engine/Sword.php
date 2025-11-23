@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rendering\Engine;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Rendering\Engine\Sword\Compiler;
@@ -19,7 +19,6 @@ use function substr;
 
 class Sword implements EngineInterface
 {
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected Compiler $swordCompiler;
 
     #[Config] protected bool $app_debug;
@@ -35,7 +34,7 @@ class Sword implements EngineInterface
 
     public function getCompiledFile(string $source): string
     {
-        if (str_starts_with($source, $root = $this->alias->get('@root'))) {
+        if (str_starts_with($source, $root = Path::resolve('@root'))) {
             $compiled = '@runtime/sword' . substr($source, strlen($root));
         } elseif ($this->doc_root !== '' && str_starts_with($source, $this->doc_root)) {
             $compiled = '@runtime/sword/' . substr($source, strlen($this->doc_root));
@@ -46,7 +45,7 @@ class Sword implements EngineInterface
             }
         }
 
-        $compiled = $this->alias->resolve($compiled);
+        $compiled = Path::resolve($compiled);
 
         if ($this->app_debug || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
             $this->swordCompiler->compileFile($source, $compiled);

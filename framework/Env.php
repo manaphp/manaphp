@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -18,15 +19,13 @@ use function is_int;
 
 class Env implements EnvInterface, JsonSerializable
 {
-    #[Autowired] protected AliasInterface $alias;
-
     #[Autowired] protected string $file = '@config/.env';
 
     public function load(): static
     {
-        $file = $this->alias->resolve($this->file);
+        $file = Path::resolve($this->file);
 
-        if (!str_contains($this->file, '://') && !is_file($file)) {
+        if (!str_contains($file, '://') && !is_file($file)) {
             throw new FileNotFoundException('The .env file could not be found at "{file}".', ['file' => $file]);
         }
 

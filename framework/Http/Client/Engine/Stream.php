@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Engine;
 
-use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Alias\Path;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
@@ -17,8 +16,6 @@ use function strlen;
 
 class Stream implements EngineInterface
 {
-    #[Autowired] protected AliasInterface $alias;
-
     protected mixed $stream = null;
 
     public function __destruct()
@@ -67,7 +64,7 @@ class Stream implements EngineInterface
                 !$request->options['verify_peer'];
 
             if (($cafile = $request->options['cafile']) !== null) {
-                $ssl['cafile'] = $this->alias->resolve($cafile);
+                $ssl['cafile'] = Path::resolve($cafile);
             }
 
             $ctx = stream_context_create(['ssl' => $ssl]);

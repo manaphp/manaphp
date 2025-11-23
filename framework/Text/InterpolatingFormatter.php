@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Text;
 
 use JsonSerializable;
-use ManaPHP\AliasInterface;
-use ManaPHP\Di\Attribute\Autowired;
+use ManaPHP\Alias\Path;
 use ManaPHP\Helper\SuppressWarnings;
 use Stringable;
 use Throwable;
@@ -23,8 +22,6 @@ use function strtr;
 
 class InterpolatingFormatter implements InterpolatingFormatterInterface
 {
-    #[Autowired] protected AliasInterface $alias;
-
     public function interpolate(string|Stringable $message, array $context): string
     {
         $replaces = [];
@@ -96,9 +93,7 @@ class InterpolatingFormatter implements InterpolatingFormatterInterface
         }
 
         $replaces = [];
-        if ($this->alias->has('@root')) {
-            $replaces[dirname(realpath($this->alias->get('@root'))) . DIRECTORY_SEPARATOR] = '';
-        }
+        $replaces[dirname(realpath(Path::resolve('@root'))) . DIRECTORY_SEPARATOR] = '';
 
         return strtr($str, $replaces);
     }

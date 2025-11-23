@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Di\Attribute\Autowired;
@@ -41,7 +41,6 @@ use function ucfirst;
 class MongodbCommand extends Command
 {
     #[Autowired] protected ContainerInterface $container;
-    #[Autowired] protected AliasInterface $alias;
     #[Autowired] protected MongodbFactoryInterface $mongodbFactory;
 
     /**
@@ -185,7 +184,7 @@ class MongodbCommand extends Command
         }
 
         $constants = '';
-        foreach (file($this->alias->resolve($file)) as $line) {
+        foreach (file(Path::resolve($file)) as $line) {
             if (preg_match('#^\s+const\s+\w+\s*=#', $line) === 1) {
                 $constants .= $line;
             } elseif (trim($line) === '') {
@@ -272,11 +271,11 @@ class MongodbCommand extends Command
                         continue;
                     }
 
-                    $fileName = "@runtime/mongodb_csv/$db/$collection.csv";
+                    $fileName = Path::resolve("@runtime/mongodb_csv/$db/$collection.csv");
 
                     LocalFS::dirCreate(dirname($fileName));
 
-                    $file = fopen($this->alias->resolve($fileName), 'wb');
+                    $file = fopen(Path::resolve($fileName), 'wb');
 
                     if ($bom) {
                         fprintf($file, "\xEF\xBB\xBF");

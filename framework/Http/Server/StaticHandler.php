@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server;
 
-use ManaPHP\AliasInterface;
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RouterInterface;
 use function count;
@@ -14,16 +14,14 @@ use function strlen;
 class StaticHandler implements StaticHandlerInterface
 {
     #[Autowired] protected RouterInterface $router;
-    #[Autowired] protected AliasInterface $alias;
 
     protected string $doc_root;
     protected array $locations;
     protected array $mime_types;
 
-    /** @noinspection PhpTypedPropertyMightBeUninitializedInspection */
     public function __construct(?string $doc_root = null, ?array $locations = null)
     {
-        $this->doc_root = $doc_root ?? $this->alias->get('@public');
+        $this->doc_root = $doc_root ?? Path::resolve('@public');
         $this->locations = $locations ?? $this->getLocations();
         $this->mime_types = $this->getMimeTypes();
     }

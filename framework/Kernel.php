@@ -52,7 +52,7 @@ class Kernel
             'Psr\SimpleCache\CacheInterface'                => 'ManaPHP\Caching\SimpleCache',
             'Psr\EventDispatcher\EventDispatcherInterface'  => 'ManaPHP\Eventing\EventDispatcherInterface',
             'Psr\EventDispatcher\ListenerProviderInterface' => 'ManaPHP\Eventing\ListenerProviderInterface',
-            'ManaPHP\AliasInterface'                        => [
+            'ManaPHP\AliasInterface' => [
                 'aliases' => [
                     '@manaphp' => __DIR__,
                     '@public'  => "$root/public",

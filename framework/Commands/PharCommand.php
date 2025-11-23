@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use FilesystemIterator;
+use ManaPHP\Alias\Path;
 use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Autowired;
@@ -23,9 +24,9 @@ class PharCommand extends Command
     public function manacliAction(): void
     {
         $this->alias->set('@phar', '@runtime/manacli_phar');
-        $pharFile = $this->alias->resolve('@root/manacli.phar');
+        $pharFile = Path::resolve('@root/manacli.phar');
 
-        $this->console->writeLn(sprintf('cleaning "%s" dir', $this->alias->resolve('@phar')));
+        $this->console->writeLn(sprintf('cleaning "%s" dir', Path::resolve('@phar')));
         LocalFS::dirReCreate('@phar');
 
         $this->console->writeLn('copying manaphp framework files.');
@@ -35,11 +36,11 @@ class PharCommand extends Command
 
         $flags = FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME;
         $phar = new Phar($pharFile, $flags, basename($pharFile));
-        $phar->buildFromDirectory($this->alias->resolve('@phar'));
+        $phar->buildFromDirectory(Path::resolve('@phar'));
         $phar->setStub($phar::createDefaultStub('manacli.php'));
         $this->console->writeLn('compressing files');
         $phar->compressFiles(Phar::BZ2);
 
-        $this->console->writeLn(sprintf('"%s" created successfully', $this->alias->resolve($pharFile)));
+        $this->console->writeLn(sprintf('"%s" created successfully', Path::resolve($pharFile)));
     }
 }
