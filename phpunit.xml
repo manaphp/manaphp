@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="true"
+         backupStaticAttributes="false"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="all">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+        <testsuite name="alias">
+            <file>tests/AliasTest.php</file>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <include>
+            <directory suffix=".php">framework</directory>
+        </include>
+        <exclude>
+            <directory>framework/Exception</directory>
+        </exclude>
+    </coverage>
+</phpunit>
+

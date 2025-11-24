@@ -18,3 +18,4 @@
 /apps/api/app/Controllers/TimeController.php
 /apps/cli/app/Commands/TestCommand.php
 /build/.subsplit/
+/.phpunit.result.cache
