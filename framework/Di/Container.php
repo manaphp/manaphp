@@ -83,16 +83,22 @@ class Container implements ContainerInterface
     protected function getLazyTypeName(ReflectionUnionType $ruType): ?string
     {
         $lazy = false;
-        $type = null;
+        $types = [];
+
         foreach ($ruType->getTypes() as $rType) {
-            if ($rType->getName() === Lazy::class) {
+            $typeName = $rType->getName();
+            if ($typeName === Lazy::class) {
                 $lazy = true;
             } else {
-                $type = $rType->getName();
+                $types[] = $typeName;
             }
         }
 
-        return $lazy ? $type : null;
+        if (!$lazy || count($types) !== 1) {
+            return null;
+        }
+
+        return $types[0];
     }
 
     protected function getInjectedObject(string $type, string $name, ?string $value): object
@@ -249,8 +255,14 @@ class Container implements ContainerInterface
 
     public function make(string $name, array $parameters = [], ?string $id = null): mixed
     {
+        $visited = [];
         while (is_string($definition = $this->definitions[$name] ?? null) && !str_contains($definition, '#')) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            if (isset($visited[$name])) {
+                throw new CircularDefinitionDetectedException('Circular definition detected: {path}',
+                    ['path' => implode(' -> ', array_keys($visited)) . " -> $name"]);
+            }
+
+            $visited[$name] = true;
             $name = $definition;
         }
 
