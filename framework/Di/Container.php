@@ -314,23 +314,24 @@ class Container implements ContainerInterface
         return $instance;
     }
 
-    public function get(string $id): mixed
+    protected function getById(string $id): mixed
     {
-        if (($instance = $this->instances[$id] ?? null) !== null) {
-            return $instance;
-        } elseif (($definition = $this->definitions[$id] ?? null) === null) {
-            if (str_contains($id, '#')) {
-                throw new Exception('The definition for "{id}" could not be found.', ['id' => $id]);
-            }
+        if (str_contains($id, '#')) {
+            throw new Exception('The definition for "{id}" could not be found.', ['id' => $id]);
+        }
 
-            $instance = $this->make($id, [], $id);
-            if (class_exists($id, false) && interface_exists($id . self::INTERFACE_SUFFIX, false)) {
-                unset($this->instances[$id]);
-                throw new MisuseException('Please use "{id}Interface" instead of "{id}" for autowiring.', ['id' => $id]);
-            }
+        $instance = $this->make($id, [], $id);
+        if (class_exists($id, false) && interface_exists($id . self::INTERFACE_SUFFIX, false)) {
+            unset($this->instances[$id]);
+            throw new MisuseException('Please use "{id}Interface" instead of "{id}" for autowiring.', ['id' => $id]);
+        }
 
-            return $this->instances[$id] = $instance;
-        } elseif (is_object($definition)) {
+        return $this->instances[$id] = $instance;
+    }
+
+    protected function getByDefinition(string $id, mixed $definition): mixed
+    {
+        if (is_object($definition)) {
             return $this->instances[$id] = $definition;
         } elseif (is_array($definition)) {
             if (($class = $definition['class'] ?? null) !== null) {
@@ -353,6 +354,19 @@ class Container implements ContainerInterface
             return $this->instances[$id] = $this->get($definition);
         } else {
             return $this->instances[$id] = $this->make($definition, [], $id);
+        }
+    }
+
+    public function get(string $id): mixed
+    {
+        if (($instance = $this->instances[$id] ?? null) !== null) {
+            return $instance;
+        }
+
+        if (($definition = $this->definitions[$id] ?? null) === null) {
+            return $this->getById($id);
+        } else {
+            return $this->getByDefinition($id, $definition);
         }
     }
 
