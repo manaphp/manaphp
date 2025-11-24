@@ -42,14 +42,22 @@ class Container implements ContainerInterface
     protected array $definitions = [];
     protected array $instances = [];
 
-    public function __construct(array $definitions = [])
+    public function __construct(array $definitions = [], bool $autoRegisterSelf = true)
     {
         $this->definitions = $definitions;
 
-        $this->definitions['Psr\Container\ContainerInterface'] = $this;
-        $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
-        $this->definitions['ManaPHP\Di\MakerInterface'] = $this;
-        $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;
+        if ($autoRegisterSelf) {
+            $this->registerSelfInterfaces();
+        }
+    }
+
+    protected function registerSelfInterfaces(): void
+    {
+        foreach (class_implements(static::class) as $interface) {
+            if (!isset($this->definitions[$interface])) {
+                $this->definitions[$interface] = $this;
+            }
+        }
     }
 
     protected function dispatchEvent(object $event): void
