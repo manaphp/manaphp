@@ -36,6 +36,9 @@ use function substr;
 
 class Container implements ContainerInterface
 {
+    private const INTERFACE_SUFFIX = 'Interface';
+    private const INTERFACE_SUFFIX_LENGTH = 9;
+
     protected array $definitions = [];
     protected array $instances = [];
 
@@ -272,8 +275,8 @@ class Container implements ContainerInterface
 
         $exists = false;
         /** @noinspection NotOptimalIfConditionsInspection */
-        if (str_ends_with($name, 'Interface') && interface_exists($name)) {
-            $prefix = substr($name, 0, -9);
+        if (str_ends_with($name, self::INTERFACE_SUFFIX) && interface_exists($name)) {
+            $prefix = substr($name, 0, -self::INTERFACE_SUFFIX_LENGTH);
             if (class_exists($prefix)) {
                 $exists = true;
                 $name = $prefix;
@@ -312,7 +315,7 @@ class Container implements ContainerInterface
             }
 
             $instance = $this->make($id, [], $id);
-            if (class_exists($id, false) && interface_exists($id . 'Interface', false)) {
+            if (class_exists($id, false) && interface_exists($id . self::INTERFACE_SUFFIX, false)) {
                 unset($this->instances[$id]);
                 throw new MisuseException('Please use "{id}Interface" instead of "{id}" for autowiring.', ['id' => $id]);
             }
