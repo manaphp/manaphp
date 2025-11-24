@@ -56,7 +56,7 @@ class FileAppender implements AppenderInterface
      */
     protected function write(string $str): void
     {
-        $file = Path::resolve(strtr($this->file, ['{app_id}' => $this->app_id]));
+        $file = Path::resolve($this->file, ['app_id' => $this->app_id]);
         if (!is_file($file)) {
             $dir = dirname($file);
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {

@@ -18,8 +18,10 @@ use ManaPHP\Mailing\Mailer\Message;
 use Psr\Log\LoggerInterface;
 use function array_merge;
 use function base64_encode;
+use function bin2hex;
 use function chunk_split;
 use function count;
+use function date;
 use function dirname;
 use function explode;
 use function file_get_contents;
@@ -42,6 +44,7 @@ use function rtrim;
 use function str_contains;
 use function str_replace;
 use function strlen;
+use function time;
 
 class Smtp extends AbstractMailer implements ContextAware
 {
@@ -138,7 +141,12 @@ class Smtp extends AbstractMailer implements ContextAware
             throw new ConnectionException('SMTP server response "{response}" does not indicate ready state (expected 220).', ['response' => trim($response)]);
         }
 
-        $context->file = Path::resolve('@runtime/mail/{ymd}/{ymd_His_}{16}.log');
+        $time = time();
+        $context->file = Path::resolve('@runtime/mail/{date}/{time}_{rand}.log', [
+            'date' => date('ymd', $time),
+            'time' => date('ymd_His', $time),
+            'rand' => bin2hex(random_bytes(8))
+        ]);
 
         /** @noinspection MkdirRaceConditionInspection */
         @mkdir(dirname($context->file), 0777, true);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
+use ManaPHP\Alias\Path;
 use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Di\Attribute\Config;
 use ManaPHP\Eventing\Attribute\Event;
@@ -45,7 +46,7 @@ class SlowlogMiddleware
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = $message . PHP_EOL;
 
-        LocalFS::fileAppend(strtr($this->file, ['{app_id}' => $this->app_id]), strtr($this->format, $replaced));
+        LocalFS::fileAppend(Path::of($this->file, ['app_id' => $this->app_id]), strtr($this->format, $replaced));
     }
 
     public function onEnd(#[Event] RequestEnd $event): void

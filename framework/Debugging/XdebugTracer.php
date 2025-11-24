@@ -11,10 +11,12 @@ use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Helper\SuppressWarnings;
 use ManaPHP\Http\Event\RequestBegin;
 use ManaPHP\Http\Event\RequestEnd;
+use function bin2hex;
 use function dirname;
 use function ini_set;
 use function is_dir;
 use function mkdir;
+use function random_bytes;
 use function xdebug_start_trace;
 use function xdebug_stop_trace;
 
@@ -41,7 +43,11 @@ class XdebugTracer implements XdebugTracerInterface
     {
         SuppressWarnings::unused($event);
 
-        $file = Path::resolve('@runtime/backtrace/trace_{ymd_His}_{8}.log');
+        $file = Path::resolve('@runtime/backtrace/trace_{date}_{rand}.log', [
+            'date' => date('ymd_His'),
+            'rand' => bin2hex(random_bytes(4))
+        ]);
+
         $dir = dirname($file);
         if (!is_dir($dir)) {
             /** @noinspection MkdirRaceConditionInspection */

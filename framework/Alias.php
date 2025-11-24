@@ -8,18 +8,11 @@ use JsonSerializable;
 use ManaPHP\Alias\AliasNotExistException;
 use ManaPHP\Alias\InvalidAliasNameException;
 use ManaPHP\Di\Attribute\Autowired;
-use function bin2hex;
-use function date;
-use function is_numeric;
-use function preg_match_all;
-use function random_bytes;
-use function str_contains;
-use function str_replace;
+use function rtrim;
 use function str_starts_with;
 use function strpos;
 use function strtr;
 use function substr;
-use function time;
 
 class Alias implements AliasInterface, JsonSerializable
 {
@@ -30,19 +23,24 @@ class Alias implements AliasInterface, JsonSerializable
         return $this->aliases;
     }
 
-    public function set(string $name, string $path): string
+    protected function validateName(string $name): void
     {
         if (!str_starts_with($name, '@')) {
             throw new InvalidAliasNameException($name);
         }
+    }
+
+    public function set(string $name, string $path): string
+    {
+        $this->validateName($name);
 
         if ($path === '') {
             $this->aliases[$name] = $path;
         } elseif ($path[0] !== '@') {
             if (DIRECTORY_SEPARATOR === '/' || str_starts_with($name, '@ns.')) {
-                $this->aliases[$name] = $path;
+                $this->aliases[$name] = rtrim($path, '/');
             } else {
-                $this->aliases[$name] = strtr($path, '\\', '/');
+                $this->aliases[$name] = rtrim(strtr($path, '\\', '/'), '/');
             }
         } else {
             $this->aliases[$name] = $this->resolve($path);
@@ -53,39 +51,31 @@ class Alias implements AliasInterface, JsonSerializable
 
     public function get(string $name): ?string
     {
-        if (!str_starts_with($name, '@')) {
-            throw new InvalidAliasNameException($name);
-        }
+        $this->validateName($name);
 
         return $this->aliases[$name] ?? null;
     }
 
     public function has(string $name): bool
     {
-        if (!str_starts_with($name, '@')) {
-            throw new InvalidAliasNameException($name);
-        }
+        $this->validateName($name);
 
         return isset($this->aliases[$name]);
     }
 
-    public function resolve(string $path): string
+    public function resolve(string $path, array $context = []): string
     {
-        if (!str_starts_with($path, '@')) {
-            return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
+        if ($context !== []) {
+            $replacements = [];
+            foreach ($context as $k => $v) {
+                $replacements["{{$k}}"] = (string)$v;
+            }
+
+            $path = strtr($path, $replacements);
         }
 
-        if (str_contains($path, '{') && preg_match_all('#{([^}]+)}#', $path, $matches)) {
-            foreach ((array)$matches[1] as $k => $match) {
-                if (is_numeric($match)) {
-                    $replaced = substr(bin2hex(random_bytes($match / 2 + 1)), 0, (int)$match);
-                } else {
-                    $ts = $ts ?? time();
-                    $replaced = date($match, $ts);
-                }
-
-                $path = str_replace($matches[0][$k], $replaced, $path);
-            }
+        if (!str_starts_with($path, '@')) {
+            return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
         }
 
         if (DIRECTORY_SEPARATOR === '\\') {
@@ -94,7 +84,7 @@ class Alias implements AliasInterface, JsonSerializable
 
         if (($pos = strpos($path, '/')) === false) {
             if (!isset($this->aliases[$path])) {
-                throw new AliasNotExistException('The alias "{path}" is not defined.', ['path' => $path]);
+                throw new AliasNotExistException('The alias "{path}" does not exist.', ['path' => $path]);
             }
             return $this->aliases[$path];
         }
@@ -106,6 +96,13 @@ class Alias implements AliasInterface, JsonSerializable
         }
 
         return $this->aliases[$alias] . substr($path, $pos);
+    }
+
+    public function remove(string $name): void
+    {
+        $this->validateName($name);
+
+        unset($this->aliases[$name]);
     }
 
     public function jsonSerialize(): array

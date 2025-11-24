@@ -13,10 +13,10 @@ class Path implements Stringable
 {
     protected string $path;
 
-    public function __construct(string $path)
+    public function __construct(string $path, array $context = [])
     {
-        if (str_starts_with($path, '@')) {
-            $this->path = Container::get(AliasInterface::class)->resolve($path);
+        if ($context !== [] || str_starts_with($path, '@')) {
+            $this->path = Container::get(AliasInterface::class)->resolve($path, $context);
         } else {
             $this->path = $path;
         }
@@ -27,14 +27,14 @@ class Path implements Stringable
         return $this->path;
     }
 
-    public static function of(string|Path $path): static
+    public static function of(string|Path $path, array $context = []): static
     {
-        return is_string($path) ? new static($path) : $path;
+        return is_string($path) ? new static($path, $context) : $path;
     }
 
-    public static function resolve(string|Path $path): string
+    public static function resolve(string|Path $path, array $context = []): string
     {
-        return (string)self::of($path);
+        return (string)self::of($path, $context);
     }
 
     public static function basename(string|Path $path): string

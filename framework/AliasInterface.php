@@ -14,5 +14,7 @@ interface AliasInterface
 
     public function has(string $name): bool;
 
-    public function resolve(string $path): string;
+    public function resolve(string $path, array $context = []): string;
+
+    public function remove(string $name): void;
 }
