@@ -367,7 +367,7 @@ class Container implements ContainerInterface
         }
     }
 
-    public function call(callable $callable, array $parameters = [], $useInterceptor = true): mixed
+    public function call(callable $callable, array $parameters = [], bool $useInterceptor = true): mixed
     {
         if (is_array($callable)) {
             $rFunction = new ReflectionMethod($callable[0], $callable[1]);
