@@ -1,0 +1,8 @@
+/.github
+/.idea
+/.vscode
+/app-api
+/app-cli
+/app-user
+/app-ws
+/build
