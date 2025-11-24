@@ -14,15 +14,30 @@ use function strpos;
 use function strtr;
 use function substr;
 
+/**
+ * Path alias manager implementation.
+ *
+ * @inheritDoc
+ * @see https://github.com/manaphp/framework/blob/master/docs/en/reference/alias.md For complete API reference.
+ */
 class Alias implements AliasInterface, JsonSerializable
 {
     #[Autowired] protected array $aliases = ['@manaphp' => __DIR__];
 
+    /**
+     * @inheritDoc
+     */
     public function all(): array
     {
         return $this->aliases;
     }
 
+    /**
+     * Validates that the alias name starts with '@'.
+     *
+     * @param string $name The alias name to validate.
+     * @throws InvalidAliasNameException If the alias name doesn't start with '@'.
+     */
     protected function validateName(string $name): void
     {
         if (!str_starts_with($name, '@')) {
@@ -30,6 +45,9 @@ class Alias implements AliasInterface, JsonSerializable
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function set(string $name, string $path): string
     {
         $this->validateName($name);
@@ -49,6 +67,9 @@ class Alias implements AliasInterface, JsonSerializable
         return $this->aliases[$name];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function get(string $name): ?string
     {
         $this->validateName($name);
@@ -56,6 +77,9 @@ class Alias implements AliasInterface, JsonSerializable
         return $this->aliases[$name] ?? null;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function has(string $name): bool
     {
         $this->validateName($name);
@@ -63,6 +87,9 @@ class Alias implements AliasInterface, JsonSerializable
         return isset($this->aliases[$name]);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function resolve(string $path, array $context = []): string
     {
         if ($context !== []) {
@@ -98,6 +125,9 @@ class Alias implements AliasInterface, JsonSerializable
         return $this->aliases[$alias] . substr($path, $pos);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function remove(string $name): void
     {
         $this->validateName($name);
@@ -105,6 +135,11 @@ class Alias implements AliasInterface, JsonSerializable
         unset($this->aliases[$name]);
     }
 
+    /**
+     * Returns all aliases for JSON serialization.
+     *
+     * @return array<string, string> All registered aliases.
+     */
     public function jsonSerialize(): array
     {
         return $this->all();
