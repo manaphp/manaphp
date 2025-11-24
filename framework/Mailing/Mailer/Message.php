@@ -19,6 +19,7 @@ use function md5;
 use function pathinfo;
 use function preg_match;
 use function random_bytes;
+use function str_starts_with;
 use function substr;
 
 class Message implements JsonSerializable
@@ -181,7 +182,7 @@ class Message implements JsonSerializable
             $vars = $body;
             unset($vars[0]);
 
-            if ($template[0] !== '@') {
+            if (!str_starts_with($template, '@')) {
                 $template = "@views/Mail/$template";
             }
 

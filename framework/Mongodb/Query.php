@@ -33,6 +33,7 @@ use function preg_match;
 use function str_contains;
 use function str_pad;
 use function str_replace;
+use function str_starts_with;
 use function strlen;
 use function strpos;
 use function strtolower;
@@ -521,7 +522,7 @@ class Query extends AbstractQuery
             return '';
         }
 
-        if ($like[0] !== '%') {
+        if (!str_starts_with($like, '%')) {
             $like = '^' . $like;
         }
 

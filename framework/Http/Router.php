@@ -139,7 +139,7 @@ class Router implements RouterInterface
 
         $url = rtrim($url, '/') ?: '/';
 
-        if ($url[0] !== '/') {
+        if (!str_starts_with($url, '/')) {
             $url = parse_url($url, PHP_URL_PATH);
         }
 

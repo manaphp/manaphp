@@ -20,6 +20,7 @@ use function explode;
 use function is_string;
 use function preg_replace_callback;
 use function str_contains;
+use function str_starts_with;
 use function ucfirst;
 
 class View implements ViewInterface, ContextAware
@@ -183,7 +184,7 @@ class View implements ViewInterface, ContextAware
 
     public function block(string $path, array $vars = []): void
     {
-        if ($path[0] !== '@' && !str_contains($path, '/')) {
+        if (!str_starts_with($path, '@') && !str_contains($path, '/')) {
             $path = "@views/Blocks/$path";
         }
 

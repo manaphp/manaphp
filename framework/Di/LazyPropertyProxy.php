@@ -7,6 +7,7 @@ namespace ManaPHP\Di;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 use function call_user_func_array;
+use function str_starts_with;
 
 class LazyPropertyProxy implements Lazy
 {
@@ -38,7 +39,7 @@ class LazyPropertyProxy implements Lazy
         $type = $this->type;
         $value = $this->value;
         if ($value !== null) {
-            $value = $container->get($value[0] === '#' ? "$type$value" : $value);
+            $value = $container->get(str_starts_with($value, '#') ? "$type$value" : $value);
         } else {
             $alias = "$type#" . $this->property->getName();
             $value = $container->has($alias) ? $container->get($alias) : $container->get($type);

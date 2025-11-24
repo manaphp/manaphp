@@ -16,6 +16,7 @@ use function count;
 use function dirname;
 use function in_array;
 use function is_array;
+use function str_starts_with;
 use function strlen;
 
 class Compiler
@@ -85,7 +86,7 @@ class Compiler
             return $str;
         }
 
-        if ($str[0] === '/') {
+        if (str_starts_with($str, '/')) {
             return $str;
         }
 
@@ -454,7 +455,7 @@ class Compiler
 
     protected function compile_php(string $expression): string
     {
-        if ($expression[0] === '(') {
+        if (str_starts_with($expression, '(')) {
             $expression = substr($expression, 1, -1);
         }
 

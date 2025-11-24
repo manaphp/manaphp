@@ -34,7 +34,7 @@ class Document
         if ($str !== null) {
             if (preg_match('#^https?://#', $str)) {
                 $this->loadUrl($str);
-            } elseif ($str[0] === '@' || $str[0] === '/' || $str[1] === ':') {
+            } elseif (str_starts_with($str, '@') || str_starts_with($str, '/') || ($str[1] ?? '') === ':') {
                 $this->loadFile($str, $url);
             } else {
                 $this->loadString($str, $url);
@@ -134,7 +134,7 @@ class Document
 
             if (preg_match('#^https?://#', $href)) {
                 return $href;
-            } elseif ($href[0] === '/') {
+            } elseif (str_starts_with($href, '/')) {
                 return substr($this->url, 0, strpos($this->url, '/', 10)) . $href;
             } else {
                 return substr($this->url, 0, strrpos($this->url, '/', 10) + 1) . $href;
@@ -168,9 +168,9 @@ class Document
 
         if ($url === '') {
             return $this->base;
-        } elseif ($url[0] === '/') {
+        } elseif (str_starts_with($url, '/')) {
             return substr($this->base, 0, strpos($this->base, '/', 10)) . $url;
-        } elseif ($url[0] === '#') {
+        } elseif (str_starts_with($url, '#')) {
             if (($pos = strrpos($this->url, '#')) === false) {
                 return $this->url . $url;
             } else {

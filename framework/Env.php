@@ -16,6 +16,7 @@ use function is_array;
 use function is_bool;
 use function is_float;
 use function is_int;
+use function str_starts_with;
 
 class Env implements EnvInterface, JsonSerializable
 {
@@ -36,7 +37,7 @@ class Env implements EnvInterface, JsonSerializable
         for ($i = 0; $i < $count; $i++) {
             $line = trim($lines[$i]);
 
-            if ($line === '' || $line[0] === '#') {
+            if ($line === '' || str_starts_with($line, '#')) {
                 continue;
             }
 
@@ -100,10 +101,10 @@ class Env implements EnvInterface, JsonSerializable
             return $default;
         }
 
-        if (is_array($default)) {
-            if (is_array($value)) {
-                return $value;
-            } elseif ($value !== '' && $value[0] === '{') {
+            if (is_array($default)) {
+                if (is_array($value)) {
+                    return $value;
+                } elseif ($value !== '' && str_starts_with($value, '{')) {
                 if (is_array($r = json_parse($value))) {
                     return $r;
                 } else {

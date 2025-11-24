@@ -16,6 +16,7 @@ use function explode;
 use function preg_match;
 use function str_contains;
 use function str_pad;
+use function str_starts_with;
 use function strlen;
 use function strtotime;
 use function strtr;
@@ -132,7 +133,7 @@ class DateCommand extends Command
         $arguments = explode(' ', $this->options->get(''));
         if (count($arguments) === 1) {
             $argument = $arguments[0];
-            if ($argument[0] === 't') {
+            if (str_starts_with($argument, 't')) {
                 $date = '';
                 $time = substr($argument, 1);
             } else {
@@ -170,7 +171,7 @@ class DateCommand extends Command
         $date = $year . '-' . $month . '-' . $day;
 
         $time = $time ? trim($time) : date('H:i:s');
-        if ($time[0] === ':') {
+        if (str_starts_with($time, ':')) {
             $time = date('H') . $time;
         }
         switch (substr_count($time, ':')) {

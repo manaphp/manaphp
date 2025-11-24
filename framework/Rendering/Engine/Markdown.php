@@ -504,7 +504,7 @@ class Markdown implements EngineInterface
 
         $text = trim($Line['text'], '#');
 
-        if ($this->strictMode && isset($text[0]) && $text[0] !== ' ') {
+        if ($this->strictMode && isset($text[0]) && !str_starts_with($text, ' ')) {
             return;
         }
 
@@ -641,7 +641,7 @@ class Markdown implements EngineInterface
             return null;
         }
 
-        if ($Line['text'][0] === '[' && $this->blockReference($Line)) {
+        if (str_starts_with($Line['text'], '[') && $this->blockReference($Line)) {
             return $Block;
         }
 
@@ -706,7 +706,7 @@ class Markdown implements EngineInterface
             return;
         }
 
-        if ($Line['text'][0] === '>' && preg_match('/^>[ ]?+(.*+)/', $Line['text'], $matches)) {
+        if (str_starts_with($Line['text'], '>') && preg_match('/^>[ ]?+(.*+)/', $Line['text'], $matches)) {
             $Block['element']['handler']['argument'] [] = $matches[1];
 
             return $Block;
@@ -740,8 +740,8 @@ class Markdown implements EngineInterface
             return;
         }
 
-        if ($Line['indent'] < 4 && rtrim(rtrim($Line['text'], ' '), $Line['text'][0]) === '') {
-            $Block['element']['name'] = $Line['text'][0] === '=' ? 'h1' : 'h2';
+        if ($Line['indent'] < 4 && rtrim(rtrim($Line['text'], ' '), $Line['text'][0] ?? '') === '') {
+            $Block['element']['name'] = str_starts_with($Line['text'], '=') ? 'h1' : 'h2';
 
             return $Block;
         }
@@ -891,7 +891,7 @@ class Markdown implements EngineInterface
 
             $alignment = null;
 
-            if ($dividerCell[0] === ':') {
+            if (str_starts_with($dividerCell, ':')) {
                 $alignment = 'left';
             }
 
@@ -970,7 +970,7 @@ class Markdown implements EngineInterface
             return;
         }
 
-        if (count($Block['alignments']) === 1 || $Line['text'][0] === '|' || strpos($Line['text'], '|')) {
+        if (count($Block['alignments']) === 1 || str_starts_with($Line['text'], '|') || strpos($Line['text'], '|')) {
             $Elements = [];
 
             $row = $Line['text'];

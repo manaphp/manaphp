@@ -11,6 +11,7 @@ use DOMXPath;
 use ManaPHP\Exception\MisuseException;
 use function is_array;
 use function is_int;
+use function str_starts_with;
 use function strpos;
 use function substr;
 
@@ -50,7 +51,7 @@ class Query
 
     public function css(string|array $css, ?DOMNode $context = null): DOMNodeList
     {
-        if ($css !== '' && $css[0] === '!') {
+        if ($css !== '' && str_starts_with($css, '!')) {
             $is_not = true;
             $css = substr($css, 1);
         } else {
@@ -64,7 +65,7 @@ class Query
             $xpath = $this->cssToXPath->transform($css);
         }
 
-        if ($context && $xpath[0] === '/') {
+        if ($context && str_starts_with($xpath, '/')) {
             $xpath = '.' . $xpath;
         }
 

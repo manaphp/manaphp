@@ -30,6 +30,7 @@ use function method_exists;
 use function preg_match;
 use function str_contains;
 use function str_ends_with;
+use function str_starts_with;
 use function strpos;
 use function strrpos;
 use function substr;
@@ -116,9 +117,9 @@ class Container implements ContainerInterface
     {
         if ($value !== null) {
             if (str_contains($value, '#')) {
-                $this->dispatchEvent(new FactoryObjectInjected($type, $name, $value[0] === '#' ? "$type$value" : $value));
+                $this->dispatchEvent(new FactoryObjectInjected($type, $name, str_starts_with($value, '#') ? "$type$value" : $value));
             }
-            $value = $this->get($value[0] === '#' ? "$type$value" : $value);
+            $value = $this->get(str_starts_with($value, '#') ? "$type$value" : $value);
         } else {
             $alias = "$type#$name";
             if (isset($this->definitions[$alias])) {
@@ -347,7 +348,7 @@ class Container implements ContainerInterface
             } else {
                 $type = $id;
             }
-            return $this->instances[$id] = $this->get($definition[0] === '#' ? "$type$definition" : $definition);
+            return $this->instances[$id] = $this->get(str_starts_with($definition, '#') ? "$type$definition" : $definition);
         } elseif (interface_exists($definition)) {
             return $this->instances[$id] = $this->get($definition);
         } else {

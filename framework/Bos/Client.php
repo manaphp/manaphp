@@ -18,6 +18,7 @@ use function mime_content_type;
 use function preg_replace;
 use function str_contains;
 use function str_replace;
+use function str_starts_with;
 
 class Client implements ClientInterface
 {
@@ -82,7 +83,7 @@ class Client implements ClientInterface
 
     public function getPutObjectUrl(string $bucket, string $key, array $policy = [], int $ttl = 3600): string
     {
-        if ($key[0] === '/') {
+        if (str_starts_with($key, '/')) {
             throw new MisuseException('BOS object key cannot start with "/" character.', ['bucket' => $bucket, 'key' => $key]);
         }
 

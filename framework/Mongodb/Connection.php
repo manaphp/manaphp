@@ -18,6 +18,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use function is_bool;
 use function key;
 use function microtime;
+use function str_starts_with;
 
 class Connection implements ConnectionInterface
 {
@@ -110,7 +111,7 @@ class Connection implements ConnectionInterface
         $bulk = new BulkWrite();
 
         try {
-            $bulk->update($filter, key($document)[0] === '$' ? $document : ['$set' => $document], ['multi' => true]);
+            $bulk->update($filter, str_starts_with(key($document), '$') ? $document : ['$set' => $document], ['multi' => true]);
         } catch (\Exception $exception) {
             throw new MongodbException($exception);
         }
@@ -126,7 +127,7 @@ class Connection implements ConnectionInterface
             $pkValue = $document[$primaryKey];
             unset($document[$primaryKey]);
             try {
-                $bulk->update([$primaryKey => $pkValue], key($document)[0] === '$' ? $document : ['$set' => $document]);
+                $bulk->update([$primaryKey => $pkValue], str_starts_with(key($document), '$') ? $document : ['$set' => $document]);
             } catch (\Exception $exception) {
                 throw new MongodbException($exception);
             }

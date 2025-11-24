@@ -210,7 +210,7 @@ class BashCompletionCommand extends Command
         $action = null;
         if ($count > 2) {
             $action = $arguments[2];
-            if ($action !== '' && $action[0] === '-') {
+            if ($action !== '' && str_starts_with($action, '-')) {
                 $action = 'default';
             }
         }

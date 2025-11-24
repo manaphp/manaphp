@@ -9,6 +9,7 @@ use ManaPHP\Di\Attribute\Autowired;
 use ManaPHP\Http\RouterInterface;
 use function count;
 use function in_array;
+use function str_starts_with;
 use function strlen;
 
 class StaticHandler implements StaticHandlerInterface
@@ -31,7 +32,7 @@ class StaticHandler implements StaticHandlerInterface
         $locations = [];
         foreach (glob($this->doc_root . '/*') as $file) {
             $file = basename($file);
-            if ($file[0] === '.' || pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+            if (str_starts_with($file, '.') || pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 continue;
             }
 

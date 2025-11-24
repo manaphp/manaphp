@@ -36,7 +36,7 @@ class Alias implements AliasInterface, JsonSerializable
 
         if ($path === '') {
             $this->aliases[$name] = $path;
-        } elseif ($path[0] !== '@') {
+        } elseif (!str_starts_with($path, '@')) {
             if (DIRECTORY_SEPARATOR === '/' || str_starts_with($name, '@ns.')) {
                 $this->aliases[$name] = rtrim($path, '/');
             } else {

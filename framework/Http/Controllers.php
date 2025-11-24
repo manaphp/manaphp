@@ -11,6 +11,7 @@ use ManaPHP\Helper\Str;
 use function get_class_methods;
 use function preg_match;
 use function str_replace;
+use function str_starts_with;
 use function substr;
 
 class Controllers implements ControllersInterface
@@ -42,7 +43,7 @@ class Controllers implements ControllersInterface
     {
         $actions = [];
         foreach (get_class_methods($controller) as $method) {
-            if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
+            if (str_starts_with($method, '_') || !preg_match('#^(.*)Action$#', $method, $match)) {
                 continue;
             }
 

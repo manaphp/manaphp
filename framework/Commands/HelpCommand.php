@@ -168,7 +168,7 @@ class HelpCommand extends Command
                     continue;
                 }
 
-                if ($line[0] !== '@') {
+                if (!str_starts_with($line, '@')) {
                     $description = $line;
                 }
                 break;
@@ -200,7 +200,7 @@ class HelpCommand extends Command
                 continue;
             }
 
-            if ($line[0] !== '@') {
+            if (!str_starts_with($line, '@')) {
                 $description = $line;
             }
             break;

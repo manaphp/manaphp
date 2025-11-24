@@ -21,6 +21,7 @@ use function sprintf;
 use function str_contains;
 use function str_ends_with;
 use function str_replace;
+use function str_starts_with;
 use function strpos;
 use function strtr;
 use function substr;
@@ -55,7 +56,7 @@ class FrameworkCommand extends Command
 
         $dh = opendir($dir);
         while ($file = readdir($dh)) {
-            if ($file[0] === '.') {
+            if (str_starts_with($file, '.')) {
                 continue;
             }
 

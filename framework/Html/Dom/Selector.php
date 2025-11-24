@@ -9,6 +9,7 @@ use DOMNode;
 use DOMText;
 use function in_array;
 use function is_string;
+use function str_starts_with;
 use function strpos;
 use function substr;
 
@@ -175,7 +176,7 @@ class Selector
 
         $data = [];
         foreach ($rules as $name => $rule) {
-            if ($rule[0] === '@') {
+            if (str_starts_with($rule, '@')) {
                 $data[$name] = $node->getAttribute(substr($rule, 1));
             } elseif ($rule === 'text()') {
                 $data[$name] = $node->textContent;

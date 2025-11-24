@@ -30,6 +30,7 @@ use function is_int;
 use function is_scalar;
 use function json_stringify;
 use function microtime;
+use function str_starts_with;
 
 abstract class AbstractConnection implements ConnectionInterface
 {
@@ -107,7 +108,7 @@ abstract class AbstractConnection implements ConnectionInterface
     {
         $list = [];
         foreach (explode('.', $identifier) as $id) {
-            if ($identifier[0] === '[') {
+            if (str_starts_with($identifier, '[')) {
                 $list[] = $id;
             } else {
                 $list[] = "[$id]";
@@ -152,7 +153,7 @@ abstract class AbstractConnection implements ConnectionInterface
             if (is_int($parameter)) {
                 $tr[$parameter + 1] = $value;
             } else {
-                $tr[$parameter[0] === ':' ? $parameter : ':' . $parameter] = $value;
+                $tr[str_starts_with($parameter, ':') ? $parameter : ':' . $parameter] = $value;
             }
         }
 

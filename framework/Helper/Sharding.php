@@ -17,6 +17,7 @@ use function preg_split;
 use function range;
 use function sprintf;
 use function str_contains;
+use function str_starts_with;
 use function strlen;
 use function substr;
 
@@ -24,7 +25,7 @@ class Sharding
 {
     public static function divisorToFD(string $divisor): array
     {
-        if ($divisor[0] === '0') {
+        if (str_starts_with($divisor, '0')) {
             $divisor = substr($divisor, 1);
             return ['%0' . strlen($divisor) . 'd', (int)$divisor];
         } else {
