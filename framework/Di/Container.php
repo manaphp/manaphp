@@ -115,6 +115,14 @@ class Container implements ContainerInterface
         return $value;
     }
 
+    protected function ensurePropertyAccessible(ReflectionProperty $property): void
+    {
+        if (PHP_VERSION_ID < 80100) {
+            /** @noinspection PhpExpressionResultUnusedInspection */
+            $property->setAccessible(true);
+        }
+    }
+
     protected function injectObject(ReflectionProperty $property, object $object, array $parameters): void
     {
         $name = $property->getName();
@@ -132,10 +140,7 @@ class Container implements ContainerInterface
             }
         }
 
-        if (PHP_VERSION_ID < 80100) {
-            /** @noinspection PhpExpressionResultUnusedInspection */
-            $property->setAccessible(true);
-        }
+        $this->ensurePropertyAccessible($property);
         $property->setValue($object, $value);
     }
 
@@ -144,10 +149,7 @@ class Container implements ContainerInterface
         $rType = $property->getType();
 
         if ($rType !== null && $rType->allowsNull()) {
-            if (PHP_VERSION_ID < 80100) {
-                /** @noinspection PhpExpressionResultUnusedInspection */
-                $property->setAccessible(true);
-            }
+            $this->ensurePropertyAccessible($property);
             $property->setValue($object, null);
         } else {
             throw new Exception(
@@ -161,10 +163,7 @@ class Container implements ContainerInterface
         $name = $property->getName();
 
         if (array_key_exists($name, $parameters)) {
-            if (PHP_VERSION_ID < 80100) {
-                /** @noinspection PhpExpressionResultUnusedInspection */
-                $property->setAccessible(true);
-            }
+            $this->ensurePropertyAccessible($property);
             $property->setValue($object, $parameters[$name]);
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
             $this->injectNoValue($property, $object);
@@ -178,10 +177,7 @@ class Container implements ContainerInterface
         if (array_key_exists($name, $parameters)) {
             $property->setValue($object, $parameters[$name]);
         } elseif (($config = $this->get(ConfigInterface::class))->has($name)) {
-            if (PHP_VERSION_ID < 80100) {
-                /** @noinspection PhpExpressionResultUnusedInspection */
-                $property->setAccessible(true);
-            }
+            $this->ensurePropertyAccessible($property);
             $property->setValue($object, $config->get($name));
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
             $this->injectNoValue($property, $object);
