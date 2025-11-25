@@ -23,7 +23,8 @@
   "autoload" : {
     "psr-4" : {
       "ManaPHP\\" : "../framework/",
-      "App\\" : "app/"
+      "App\\" : "app/",
+      "Tests\\" : "../tests/",
     },
     "files" : [
       "../framework/helpers.php"
@@ -37,5 +38,8 @@
     "psr/log" : "2.0.0",
     "psr/simple-cache" : "^3.0",
     "psr/event-dispatcher" : "1.0.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^12.0"
   }
 }
