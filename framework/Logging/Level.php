@@ -26,6 +26,6 @@ class Level
 
     public static function gt(string $l1, string $l2): bool
     {
-        return self::$map[$l1] > self::$map[$l2];
+        return (self::$map[$l1] ?? 7) > (self::$map[$l2] ?? 7);
     }
 }
